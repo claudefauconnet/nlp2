@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../../common/js/jquery/jquery.min.js"></script>
+    <script src="../../common/js/jquery/jquery-ui.min.js"></script>
+
+   <!-- <script src="../../common/js/jsTree/jstree.min.js"></script>-->
+    <script src="../../common/js/jsTreeController.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <script>
+
+        var elasticUrl = "../../../elastic";
+        var currentConcept = null
+        var getDocument = function (documentId) {
+            var words = currentConcept.data.synonyms.split(";")
+
+            var payload = {
+                findDocumentsById: 1,
+                indexName: "_all",
+                ids: [documentId],
+                //    words: words
+
+            };
+
+          //  console.log(JSON.stringify(payload, null, 2))
+            $.ajax({
+                type: "POST",
+                url: elasticUrl,
+                data: payload,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    var htmlDetails = "<table>"
+                    var document = data.docs[0];
+
+
+                    for (var key in document) {
+                        var text = document[key];
+                        if (key = "content" && typeof text === "string") {
+                            words.forEach(function (word) {
+                                if (word != "")
+
+                                    var regex = new RegExp(word, "gmi")
+                                text = text.replace(regex, "<mark>" + word + "</mark>");
+
+                            })
+                        }
+
+
+                        htmlDetails += "<tr><td>" + key + "</td></tr><tr><td>" + text + "</td></tr>"
+
+                    }
+                    htmlDetails += "</table>";
+                    $("#detailsDiv").html(htmlDetails)
+
+                },
+                error: function (err, textStatus, jqXHR) {
+
+                }
+            })
+
+        }
+        var showNodeInfos = function (obj) {
+            var html = "";
+            currentConcept = obj;
+            $("#detailsDiv").html("")
+
+            var documentHtml = "<ul>";
+            obj.data.documents.forEach(function (document) {
+                documentHtml += "<li>";
+                var title = "xxxx";
+                if (document.title)
+                    title = document.title
+                documentHtml += "<a href='javascript:function(){}' onclick=getDocument('" + document.id + "')>"+document.index+" : "+title+"</a>";
+
+                documentHtml += "</li>";
+            })
+            documentHtml += "</ul>";
+
+            html = "<table>" +
+                "<tr>" +
+                "<td>nom</td>" +
+                "<td>" + obj.text + "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td>uri</td>" +
+                "<td>" + obj.id + "</td>" +
+                "</tr>" +
+                /*  "<tr>" +
+                  "<td>ancetres</td>" +
+                  "<td>" + obj.data.ancestors.toString() + "</td>" +
+                  "</tr>"+*/
+                "<tr>" +
+                "<td>synonymes</td>" +
+                "<td>" + obj.data.synonyms.toString() + "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td>documents</td>" +
+                "<td>" + documentHtml + "</td>" +
+                "</tr>" +
+                "</table>"
+
+
+            $("#dataDiv").html(html)
+
+
+        }
+        $(function () {
+
+            //   $("#treeDiv").width(300).height(600).css("visibility", "visible")
+
+
+
+            $.ajax({
+                type: "GET",
+                // url: "/semanticWeb/eurovocFr.json",
+                url: "/semanticWeb/eurovocFrAnnotated.json",
+                dataType: "json",
+                success: function (_data, textStatus, jqXHR) {
+                    var jsTreeData = _data;
+
+
+                    //console.log(JSON.stringify(jsTreeData,null,2))
+                    var plugins = [];
+                    plugins.push("search");
+
+                  plugins.push("sort");
+                 /*   plugins.push("types");
+                    plugins.push("contextmenu");*/
+
+
+                    $('#treeDiv').jstree({
+                        'core': {
+                            'check_callback': true,
+                            'data': jsTreeData,
+
+
+                        }
+                        , 'contextmenu': {
+                            'items': null
+                        },
+                        'plugins': plugins,
+                        "search": {
+                            "case_sensitive": false,
+                            "show_only_matches": true
+                        }
+                    }).on("select_node.jstree",
+                        function (evt, obj) {
+                            var x = obj;
+                            showNodeInfos(obj.node);
+                            //   $("#dataDiv").html(JSON.stringify(obj.node.data,null,2))
+                        })
+                    var to = false;
+                    $('#searchInput').keyup(function () {
+                        if (to) {
+                            clearTimeout(to);
+                        }
+                        to = setTimeout(function () {
+                            $("#searchInput").keyup(function () {
+                                var searchString = $(this).val();
+                                if(searchString.length>3 || searchString.length==0)
+                                $('#treeDiv').jstree('search', searchString);
+                            });
+                        }, 500);
+                    });
+
+
+                },
+                error: function (xhr, err, msg) {
+                    $("#message").css("color", "red");
+                    $("#message").html(err);
+                    console.log(xhr);
+                    console.log(err);
+                    console.log(msg);
+                }
+            });
+        })
+
+    </script>
+
+</head>
+<body>
+
+
+<br>
+<div style="display: flex;flex-direction: row">
+    <div>
+        <input id="searchInput">
+        <div id="treeDiv" style="width:400px;height: 800px;overflow: auto"></div>
+    </div>
+    <div id="dataDiv" style="width:300px;height: 400px;"></div>
+    <div id="detailsDiv" style="width:300px;height: 400px;"></div>
+</div>
+<script>
+
+</script>
+
+</body>
+</html>
