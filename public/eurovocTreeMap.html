@@ -108,13 +108,13 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         var payload = {
             findDocumentsById: 1,
             indexName: "_all",
-            ids: [documentId],
+            ids: JSON.stringify([documentId]),
             //    words: words
 
         };
 
         //  console.log(JSON.stringify(payload, null, 2))
-        var elasticUrl = "../../../elastic";
+        var elasticUrl = "../elastic";
         $.ajax({
             type: "POST",
             url: elasticUrl,
