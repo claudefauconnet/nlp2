@@ -80,6 +80,11 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 </head>
 
 <body>
+<div>
+    <input id="searchInput"><button onclick="search()">chercher</button>
+
+
+</div>
 <div id="chart"></div>
 <table>
     <tr>
@@ -96,6 +101,40 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
+    var elasticUrl = "../elastic";
+function search(){
+var word=$("#searchInput").val();
+    var payload = {
+        findDocuments: 1,
+        options: {
+            from: 0,
+            size: 1000,
+            indexName: "bordereaux",
+            word: word,
+
+        }
+    };
+    $.ajax({
+        type: "POST",
+        url: elasticUrl,
+        data: payload,
+        dataType: "json",
+        success: function (data, textStatus, jqXHR) {
+var xx=data;
+
+        }
+        , error: function (err) {
+
+            console.log(err.responseText)
+            if (callback) {
+                return callback(err)
+            }
+            return (err);
+        }
+
+    });
+
+}
 
 
     window.addEventListener('message', function (e) {
@@ -118,7 +157,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         };
 
         //  console.log(JSON.stringify(payload, null, 2))
-        var elasticUrl = "../elastic";
+
         $.ajax({
             type: "POST",
             url: elasticUrl,

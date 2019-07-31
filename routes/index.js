@@ -41,10 +41,14 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             processResponse(response, error, result)
         });
 
-    else if (req.body && req.body.findDocuments)
+    else if (req.body && req.body.findDocuments) {
+      //  var options = req.body.options;
+        if (typeof req.body == "string")
+            var options = JSON.parse(req.body).options
         elasticProxy.findDocuments(req.body.options, function (error, result) {
             processResponse(response, error, result)
         });
+    }
     else if (req.body && req.body.findDocumentsById)
         elasticProxy.findDocumentsById(req.body.indexName, req.body.ids, req.body.words, function (error, result) {
             processResponse(response, error, result)
