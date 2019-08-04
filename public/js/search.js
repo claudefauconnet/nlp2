@@ -1,74 +1,102 @@
-var Search=(function(){
-var self={};
+var Search = (function () {
+    var self = {};
 
 
-self.analyzeQuestion=function(question, callback){
-    var regex=/[.*^\s]\s*/gm
- var words=question.trim().split(regex);
+    self.searchPlainText = function (question, callback) {
+        self.analyzeQuestion(question, function (err, query) {
+            $("#queryTA").val(JSON.stringify(query, null, 2))
 
-    var sentencesArray=[];
-    var currentSentence=null;
-    var simpleWordsArray=[];
-    var wildCardWordsArray=[];
-    var wordsArray=[];
+            mainController.queryElastic({
+                query: query,
+                from: context.elasticQuery.from,
+                size: context.elasticQuery.size,
+                _source: context.elasticQuery.source,
+
+            },function(err,result){
 
 
-    // analyze question step 1 ! separate words and sentences
-    var status="word"
- words.forEach(function(word){
+            })
 
-    if(word.charAt(0)=='"'){
-        currentSentence=word;
-        status="sentence"
+        })
+
+
     }
-    else if(status=="sentence") {
-        currentSentence += " " + word;
 
-        if (word.charAt(word.length) == '"') {
-            sentencesArray.push(currentSentence);
-            currentSentence=null;
-        }
-    }
-    else{
-        wordsArray.push(word);
-    }
- })
+    self.analyzeQuestion = function (question, callback) {
+        var query = {}
+// other than match phrase
+        var regexPhrase = /"(.*)"([0-9]*)/gm;
+        var array = regexPhrase.exec(question);
+        if (array && array.length > 1) {// on enleve les "
+            var slop = 0;
+            if (array.length == 3)
+                slop = array[2];
+            question = array[1];
+            query = {
+                "match_phrase": {
+                    "content": question,
+                    "slop": slop
+                }
+            }
 
-    // analyze question step 2 ! process wildcard in wordsArray
-
-    wordsArray.forEach(function(word){
-        if( word.indexOf("*")>-1){
-            wildCardWordsArray.push(word)
-        }
-        else{
-            simpleWordsArray.push(word)
+            return callback(null, query);
         }
 
-
-    })
-
-
-
-
-    //getElementaryQuery match +slop  -->sentencesArray
-
-    // wordArray bool should (or)
-      //if * in word array should clause  "wildcard": {"content": word}
-
-    // beetween words wordArray bool must
-    //if * in word array should clause  "wildcard": {"content": word}
+// other than match phrase
+        question = question.replace(/\*/g, "%") //wildcard * does not split correctly
+        var regexSplit = /[.*^\s]\s*/gm
+        var words = question.trim().split(regexSplit);
+        var shouldArray = [];
+        var mustArray = [];
 
 
+        var getWordQuery = function (word) {
+            if (word.indexOf("%") > 0) {// wildcard * does not split correctly
+                return {
+                    "wildcard": {
+                        "content": {
+                            "value": word.replace(/%/g, "*"),
+                        }
+                    }
+                }
+            } else {
+                return {
+                    "match": {
+                        "content": word
+                    }
+                }
+            }
 
-}
+
+        }
+
+        words.forEach(function (word) {
+            if (word.indexOf("/") > 0) {// or
+                var array = word.split("/");
+                array.forEach(function (orWord) {
+                    shouldArray.push(getWordQuery(orWord))
+                })
+
+            } else { // normal and  : boolean must
+                mustArray.push(getWordQuery(word))
+
+            }
+        })
+        if (mustArray.length + shouldArray.length > 0) {
+            query = {
+                "bool": {
+                    "must": mustArray,
+                    "should": shouldArray,
+                }
+            }
+        }
+
+        return callback(null, query)
 
 
+    }
 
-
-
-
-
-return self;
+    return self;
 
 
 })()

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+<script src="js/context.js"></script>
+<script src="js/mainController.js"></script>
+<script src="js/search.js"></script>
+<script>
+    $(function () {
+        mainController.bindControls()
+    })
+</script>
+<style>
+    .container {
+        display: flex;
+        flex-direction: row;
+        font-family: Verdana;
+    }
+
+    .lefDiv {
+        flex-direction: column;
+        min-width: 200px;
+        background: whitesmoke;
+    }
+
+    .rightDiv {
+        flex-direction: column;
+        min-width: 200px;
+        background: whitesmoke;
+    }
+
+    .centerDiv {
+        flex-direction: column;
+    }
+
+    .searchDiv {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .resultDiv {
+        width: 100%;
+        padding: 10px;
+        background: whitesmoke;
+    }
+
+    #questionInput {
+        width: 400px;
+    }
+
+    .usageDiv{
+        font-size: 12px;
+
+    }
+    .usageDiv td {
+        padding: 2px;
+    }
+</style>
+<body>
+
+<div class="container">
+    <div class="lefDiv">
+
+    </div>
+    <div class="centerDiv">
+        <div class="searchDiv">
+            <input id="questionInput">
+        </div>
+        <div class="usageDiv">
+            <table border="1px">
+                <tr style="font-weight: bold">
+                    <td>syntaxe</td>
+                    <td>recherche les documents qui contiennent :"</td>
+                </tr>
+                <tr>
+                    <td>mot1 mot2 mot3</td>
+                    <td>les 3 mots (quelque soit l'écart)"</td>
+                </tr>
+                <tr>
+                    <td>"mot1 mot2 mot3"</td>
+                    <td> la phrase exacte</td>
+                </tr>
+                <tr>
+                    <td>"mot1 mot2 mot3"X</td>
+                    <td>les 3 mots au plus distants de X</td>
+                </tr>
+
+
+                <tr>
+                    <td>mot1/mot2 mot3</td>
+                    <td> (mot1 ou mot2) et le mot 3</td>
+                </tr>
+
+                <tr>
+                    <td>"mot1* mot3"</td>
+                    <td> les mots qui commencent par mot1 et le mot 3</td>
+                </tr>
+                <tr>
+                    <td>"*mot1 mot3"</td>
+                    <td> les mots qui finisent par mot1 et le mot 3</td>
+                </tr>
+
+            </table>
+
+
+        </div>
+        <div class="resultDiv">
+            <textarea id="queryTA" row="20" cols="40"></textarea>
+        </div>
+    </div>
+    <div class="rightDiv"></div>
+
+
+</div>
+
+
+</body>
+</html>

@@ -354,7 +354,43 @@ var elasticProxy = {
 
         });
     },
+    executeQuery:function(query,indexes,_callback){
+        var callback=_callback;
+        var indexesStr=""
+        if(Array.isArray(indexes)){
+            indexes.forEach(function(index,p){
+                if(p>0)
+                    indexesStr+=","
+                    indexesStr=index;
+            })
 
+        }
+        else
+            indexesStr=indexes
+        var options = {
+            method: 'POST',
+            json: query,
+            url: baseUrl + indexesStr + "/_search"
+        };
+
+
+        request(options, function (error, response, body) {
+            if(error)
+               return  callback(error);
+            if(body.error && body.error.reason)
+                return  callback(body.error.reason)
+            var hits=body.hits.hits
+            return callback(null, body)
+         /*   var options = {
+                error: error,
+                index: indexesStr,
+                body: body,
+                callback: callback
+            }
+            elasticProxy.processSearchResult(options);*/
+
+        });
+    },
 
     findDocumentsById: function (index, ids, words, callback) {
         if(typeof ids ==="string")

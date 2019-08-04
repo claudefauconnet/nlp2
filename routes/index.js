@@ -23,6 +23,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
+
+    if(req.body.executeQuery){
+        elasticProxy.executeQuery(JSON.parse(req.body.executeQuery),JSON.parse(req.body.indexes), function (error, result) {
+            processResponse(response, error, result)
+        });
+
+    }
     if (req.body && req.body.searchWordAll)
         elasticProxy.searchWordAll(req.body.searchWordAll, function (error, result) {
             processResponse(response, error, result)
