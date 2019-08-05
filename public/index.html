@@ -4,14 +4,25 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<!--<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+-->
 
+<link rel="stylesheet" media="screen" type="text/css" title="Design" href="js/jquery/jquery-ui.min.css"/>
+
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/jquery/jquery-ui.min.js"></script>
+
+
+<script src="js/config.js"></script>
 <script src="js/context.js"></script>
 <script src="js/mainController.js"></script>
 <script src="js/search.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/entities.js"></script>
 <script>
     $(function () {
-        mainController.bindControls()
+        mainController.bindControls();
+        context=config;
     })
 </script>
 <style>
@@ -35,6 +46,7 @@
 
     .centerDiv {
         flex-direction: column;
+        background: whitesmoke;
     }
 
     .searchDiv {
@@ -43,9 +55,10 @@
     }
 
     .resultDiv {
-        width: 100%;
-        padding: 10px;
-        background: whitesmoke;
+
+        padding: 5px;
+
+
     }
 
     #questionInput {
@@ -59,6 +72,23 @@
     .usageDiv td {
         padding: 2px;
     }
+    .excerpt
+
+    .hlt1 {
+        background-color: #FFFF00
+    }
+
+    .hit{
+        background-color: white;
+        border: darkgray 1px solid;
+        border-radius: 3px;
+        margin:5px;
+        padding: 3px;
+    }
+    .excerpt {
+        font-size: 10px;
+        font-style: italic;
+    }
 </style>
 <body>
 
@@ -68,7 +98,7 @@
     </div>
     <div class="centerDiv">
         <div class="searchDiv">
-            <input id="questionInput">
+            <input id="questionInput" value="infantile">
         </div>
         <div class="usageDiv">
             <table border="1px">
@@ -108,12 +138,16 @@
 
 
         </div>
-        <div class="resultDiv">
+        <div class="resultDiv" id="resultDiv">
             <textarea id="queryTA" row="20" cols="40"></textarea>
         </div>
     </div>
     <div class="rightDiv"></div>
 
+
+</div>
+
+<div id="dialogDiv">
 
 </div>
 

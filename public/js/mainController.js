@@ -15,17 +15,26 @@ var mainController = (function () {
 
                 var str = $(this).val();
                 context.question = str;
-                Search.searchPlainText(str)
+                Search.searchPlainText(str,function(err, result){
+
+                })
             }
 
         })
+        $("#dialogDiv").dialog({
+            autoOpen: false,
+                height: self.windowHeight - 100,
+                width: "70%",
+                modal: true,
+        })
     }
 
-    self.queryElastic=function(query, callback){
-
+    self.queryElastic=function(query, indexes,callback){
+if(!indexes)
+    indexes=context.elasticQuery.indexes;
         var payload = {
             executeQuery: JSON.stringify(query),
-            indexes:JSON.stringify(context.elasticQuery.indexes)
+            indexes:JSON.stringify(indexes)
 
         }
         $.ajax({
@@ -35,7 +44,7 @@ var mainController = (function () {
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
                 var xx=data;
-                callback(data)
+                callback(null,data)
 
             }
             , error: function (err) {

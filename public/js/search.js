@@ -11,13 +11,60 @@ var Search = (function () {
                 from: context.elasticQuery.from,
                 size: context.elasticQuery.size,
                 _source: context.elasticQuery.source,
+                highlight:context.elasticQuery.highlight
 
-            },function(err,result){
-
+            },null,function(err,result){
+                if(err){
+                    return $("#resultDiv").html(err);
+                }
+                if(result.hits.hits.length==0)
+                    return $("#resultDiv").html("pas de résultats");
+                entities.getQuestionEntities();
+                return ui.showResults(result.hits.hits);
 
             })
 
         })
+
+
+    }
+
+    self.searchHitDetails=function(hitId){
+
+    // on ajoute la question + l'id pour avoir les highlight
+        self.analyzeQuestion( context.question, function (err, query) {
+
+            query.bool.must.push( {
+                "term": {
+                    "_id": hitId
+                }
+            })
+            mainController.queryElastic({
+                    query:query,
+                    _source: context.elasticQuery.source,
+                highlight: {
+                  tags_schema: "styled",
+                    fragment_size: 500,
+                    number_of_fragments: 0,
+                    fields: {
+                        "content": {},
+
+                    }
+                }
+
+                },null
+
+                    , function (err, result) {
+                        if (err) {
+                            return $("#resultDiv").html(err);
+                        }
+                        if (result.hits.hits.length == 0)
+                            return $("#resultDiv").html("pas de résultats");
+                        return ui.showHitDetails(result.hits.hits[0])
+
+                    })
+            })
+
 
 
     }
