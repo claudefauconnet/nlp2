@@ -1,4 +1,6 @@
 var config = {
+    elasticUrl : "../elastic",
+    indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
     searchExpression: "",
     elasticQuery: {
         from: 0,
@@ -17,11 +19,13 @@ var config = {
 
     },
     hitsEntitiesQuery: {
-        "_source": {"excludes": ["documents"]},
+        "_source": {},
+        from:0,
+        size: 5000,
         "query":
             {
                 "terms": {
-                    "documents.id": []
+                    "data.documents.id": []
                 }
             }
     }

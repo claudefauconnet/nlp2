@@ -361,7 +361,7 @@ var elasticProxy = {
             indexes.forEach(function(index,p){
                 if(p>0)
                     indexesStr+=","
-                    indexesStr=index;
+                    indexesStr+=index;
             })
 
         }

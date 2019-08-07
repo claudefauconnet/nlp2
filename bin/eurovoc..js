@@ -10,226 +10,293 @@ var ndjson = require('ndjson')
 var eurovoc = {
 
 
-    annotateCorpus: function (thesaurusPath, corpusIndexes, conceptsIndexName) {
+    annotateCorpus: function (thesaurusPath, corpusIndexes, conceptsIndexName, globalOptions) {
+        var entities = null;
+        async.series([
 
-        var thesaurusConcepts = JSON.parse("" + fs.readFileSync(thesaurusPath));
-        var conceptQueries = [];
-        thesaurusConcepts.forEach(function (concept, conceptIndex) {
-            if (conceptIndex > 10000)
-                return;
-            var synonymsShould = [];
-            if (concept.data.synonyms) {
-                var synonyms = concept.data.synonyms.split(";")
-                synonyms.forEach(function (synonym, indexSynonym) {
-                    if (synonym != "")
-                        synonymsShould.push({term: {content: synonym}})
-                })
-                if (synonymsShould.length > 0) {
-                    thesaurusConcepts[conceptIndex].elasticQuery = ({query: {bool: {should: synonymsShould}}, size: 10000, _source: "title"});
+
+                function (callbackSeries) {   // annotate docs
+                    //    return callbackSeries();
+                    entities = JSON.parse("" + fs.readFileSync(thesaurusPath));
+                    var conceptQueries = [];
+                    console.log("extractingEntities in docs " + entities.length)
+                    entities.forEach(function (concept, conceptIndex) {
+                        entities[conceptIndex].source_id=  entities[conceptIndex].id
+                     /*   var p = concept.id.lastIndexOf("/");
+                        if (p > -1)
+                            entities[conceptIndex].id = concept.id.substring(p + 1);
+                        var p = concept.parent.lastIndexOf("/");
+                        if (p > -1)
+                            entities[conceptIndex].parent = concept.parent.substring(p + 1);*/
+
+                        if (conceptIndex > 10000)
+                            return;
+
+                        var synonymsShould = [];
+                        if (concept.data.synonyms) {
+                            var synonyms = concept.data.synonyms.split(";")
+                            synonyms.forEach(function (synonym, indexSynonym) {
+                                if (synonym != "")
+                                    synonymsShould.push({term: {content: synonym}})
+                            })
+                            if (synonymsShould.length > 0) {
+                                entities[conceptIndex].elasticQuery = ({query: {bool: {should: synonymsShould}}, size: 10000, _source: "title"});
+
+                            }
+
+                        }
+
+
+                    })
+                    var ndjsonStr = ""
+                    var serialize = ndjson.serialize();
+                    serialize.on('data', function (line) {
+                        ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
+                    })
+                    entities.forEach(function (concept) {
+                        if (concept.elasticQuery) {
+                            serialize.write({index: corpusIndexes})
+                            serialize.write(concept.elasticQuery)
+                        }
+                    })
+                    serialize.end();
+                    var options = {
+                        method: 'POST',
+                        body: ndjsonStr,
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+
+                        url: "http://localhost:9200/_msearch"
+                    };
+
+                    request(options, function (error, response, body) {
+                        if (error)
+                            return callbackSeries(err);
+                        var json = JSON.parse(response.body);
+                        var responses = json.responses;
+                        var totalDocsAnnotated = 0
+                        responses.forEach(function (response, responseIndex) {
+                            entities[responseIndex].data.documents = [];
+                            var hits = response.hits.hits;
+                            hits.forEach(function (hit) {
+                                var document = {id: hit._id, index: hit._index, title: hit._source.title};
+                                entities[responseIndex].data.documents.push(document);
+                                totalDocsAnnotated += 1
+                            })
+                        })
+                        console.log("totalDocsAnnotated " + totalDocsAnnotated)
+                        callbackSeries();
+                    })
+                },
+
+
+                function (callbackSeries) {// delete index
+                    if (!globalOptions.indexEntities)
+                        return callbackSeries();
+                    var options = {
+                        method: 'DELETE',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        url: "http://localhost:9200/" + conceptsIndexName
+                    };
+                    request(options, function (error, response, body) {
+                        if (error)
+                            return callbackSeries(error);
+                        console.log("index " + conceptsIndexName + " deleted")
+                        var json = JSON.parse(response.body);
+                        callbackSeries();
+                    })
+                }
+                ,
+
+
+                function (callbackSeries) {//create index and mappings
+                    if (!globalOptions.indexEntities)
+                        return callbackSeries();
+
+
+                    var json = {mappings: {}}
+                    json.mappings[conceptsIndexName] = {
+                        "properties": {
+                            "source_id": {
+                                "type": "keyword"
+                            },
+                            "parent": {
+                                "type": "keyword"
+                            },
+
+                        }
+                    }
+                    var options = {
+                        json: json,
+                        method: 'PUT',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        url: "http://localhost:9200/" + conceptsIndexName
+                    };
+                    request(options, function (error, response, body) {
+                        if (error)
+                            return callbackSeries(error);
+                        console.log("index " + conceptsIndexName + " created")
+                        callbackSeries();
+                    })
+                }
+                ,
+
+
+                function (callbackSeries) {  // indexEntities
+
+                    if (!globalOptions.indexEntities)
+                        return callbackSeries();
+                    console.log("indexing entities")
+                    var conceptsNdjsonWithDocs = ""
+                    var serialize = ndjson.serialize();
+                    serialize.on('data', function (line) {
+                        conceptsNdjsonWithDocs += line; // line is a line of stringified JSON with a newline delimiter at the end
+                    })
+
+                    entities.forEach(function (concept) {
+                        if (concept.elasticQuery && concept.data.documents.length > 0) {
+                            var newElasticId = Math.round(Math.random() * 10000000)
+                            serialize.write({"index": {"_index": conceptsIndexName, "_type": conceptsIndexName, "_id": newElasticId}})
+                            delete concept.elasticQuery
+                            serialize.write(concept)
+                        }
+
+                    })
+                    serialize.end();
+                    var options = {
+                        method: 'POST',
+                        body: conceptsNdjsonWithDocs,
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        url: "http://localhost:9200/_bulk"
+                    };
+                    request(options, function (error, response, body) {
+                        if (error)
+                            return callbackSeries(error);
+                        var json = JSON.parse(response.body);
+                        callbackSeries();
+
+
+                    })
+                },
+
+
+                function (callbackSeries) {   //generateThesaurusTreeMap
+                    if (!globalOptions.generateThesaurusTreeMap)
+                        return callbackSeries()
+
+                    console.log("generateThesaurusTreeMap")
+                    var conceptsMap = {};
+                    entities.forEach(function (concept) {
+                        concept.children = [];
+                        conceptsMap[concept.id] = concept;
+                    })
+// set Children
+                    entities.forEach(function (concept, index) {
+                        if (concept.parent && concept.parent != "#")
+                            conceptsMap[concept.parent].children.push(concept)
+
+                    })
+
+                    function recurse(parentTreeNode, obj) {
+                        var childTreeNode = {
+                            key: obj.text,
+                        }
+                        parentTreeNode.values.push(childTreeNode)
+                        if (obj.children.length == 0) {
+                            childTreeNode.value = obj.data.documents ? obj.data.documents.length : 0
+                            childTreeNode.data = {
+                                documents: obj.data.documents,
+                                synonyms: obj.data.synonyms
+                            }
+                        } else {
+                            childTreeNode.values = [];
+                            obj.children.forEach(function (child, index) {
+                                if (child.children.length > 0 || child.data.documents.length > 0)
+
+                                    recurse(childTreeNode, child)
+
+                            })
+                        }
+
+
+                    }
+
+                    // set tree
+                    var tree = {key: "root", values: []};
+                    entities.forEach(function (concept, index) {
+                        if (concept.parent && concept.parent == "#")
+                            recurse(tree, concept)
+
+                    })
+// only top domains
+                    tree = tree.values[2].values
+
+                    fs.writeFileSync(jstreeJsonPathAnnotated.replace(".json", "Tree.json"), JSON.stringify(tree, null, 2))
+                    var x = tree;
+                    callbackSeries();
+
 
                 }
 
-            }
+
+                , function (callbackSeries) { //generateThesaurusJstreeWithDocuments
+                    if (!globalOptions.generateThesaurusJstreeWithDocuments)
+                        return callbackSeries()
+                    console.log("generateThesaurusJstreeWithDocuments")
+                    var conceptsMap = {};
+                    entities.forEach(function (concept) {
+
+                        conceptsMap[concept.id] = concept;
+                    })
+
+                    entities.forEach(function (concept, indexConcept) {
+                        //  if (concept.data.documents) {//} && concept.data.documents.length > 0)
+
+                        function recurse(conceptId, chilDocumentCount) {
+                            if (!concept.data.documents)
+                                concept.data.documents = [];
+                            if (!conceptsMap[conceptId].data.docsCount)
+                                conceptsMap[conceptId].data.docsCount = chilDocumentCount;
+                            conceptsMap[conceptId].data.docsCount += concept.data.documents.length;
+                            if (conceptsMap[conceptId].parent && conceptsMap[conceptId].parent != "#")
+                                recurse(conceptsMap[conceptId].parent, conceptsMap[conceptId].data.docsCount)
+                        }
+
+                        recurse(concept.id, 0)
+                    })
+                    var entitiesAnnotated = []
+
+                    for (var key in conceptsMap) {
+                        var concept = conceptsMap[key];
+                        if (concept.data.docsCount) {
+                            concept.text = "*" + concept.data.docsCount + "* " + concept.text
+                        }
+                        delete concept.elasticQuery;
+                        entitiesAnnotated.push(concept)
+                    }
+                    fs.writeFileSync(jstreeJsonPathAnnotated, JSON.stringify(entitiesAnnotated, null, 2))
+                    callbackSeries();
+                }
 
 
-        })
-        var ndjsonStr = ""
-        var serialize = ndjson.serialize();
-        serialize.on('data', function (line) {
-            ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
-        })
+            ],
 
-        thesaurusConcepts.forEach(function (concept) {
-            if (concept.elasticQuery) {
-
-                serialize.write({index: corpusIndexes})
-                serialize.write(concept.elasticQuery)
-            }
-
-        })
-
-
-        serialize.end();
-        var xx = ndjsonStr;
-
-
-        //  conceptQueries+="\n"
-
-        // console.log(ndjsonStr);
-        var options = {
-            method: 'POST',
-            body: ndjsonStr,
-            headers: {
-                'content-type': 'application/json'
-            },
-
-            url: "http://localhost:9200/_msearch"
-        };
-        request(options, function (error, response, body) {
-            var json = JSON.parse(response.body);
-            var responses = json.responses;
-            responses.forEach(function (response, responseIndex) {
-                thesaurusConcepts[responseIndex].data.documents = [];
-                var hits = response.hits.hits;
-                hits.forEach(function (hit) {
-                    var document = {id: hit._id, index: hit._index, title: hit._source.title};
-
-                    thesaurusConcepts[responseIndex].data.documents.push(document);
-
-
-                })
-
+            // at the end
+            function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+                return console.log("Done");
             })
 
 
-            function generateThesaurusJstreeWithDocuments() {
-                var conceptsMap = {};
-                thesaurusConcepts.forEach(function (concept) {
-
-                    conceptsMap[concept.id] = concept;
-                })
-
-                thesaurusConcepts.forEach(function (concept, indexConcept) {
-                    //  if (concept.data.documents) {//} && concept.data.documents.length > 0)
-
-                    function recurse(conceptId, chilDocumentCount) {
-                        if (!concept.data.documents)
-                            concept.data.documents = [];
-                        if (!conceptsMap[conceptId].data.docsCount)
-                            conceptsMap[conceptId].data.docsCount = chilDocumentCount;
-                        conceptsMap[conceptId].data.docsCount += concept.data.documents.length;
-                        if (conceptsMap[conceptId].parent && conceptsMap[conceptId].parent != "#")
-                            recurse(conceptsMap[conceptId].parent, conceptsMap[conceptId].data.docsCount)
-
-
-                    }
-
-                    recurse(concept.id, 0)
-
-
-                })
-                var thesaurusConceptsAnnotated = []
-
-                for (var key in conceptsMap) {
-                    var concept = conceptsMap[key];
-
-                    if (concept.data.docsCount) {
-                        concept.text = "*" + concept.data.docsCount + "* " + concept.text
-                    }
-                    delete concept.elasticQuery;
-                    thesaurusConceptsAnnotated.push(concept)
-
-
-                }
-                fs.writeFileSync(jstreeJsonPathAnnotated, JSON.stringify(thesaurusConceptsAnnotated, null, 2))
-
-
-            }
-
-            function generateThesaurusTreeMap() {
-                var conceptsMap = {};
-                thesaurusConcepts.forEach(function (concept) {
-                    concept.children = [];
-                    conceptsMap[concept.id] = concept;
-                })
-// set Children
-                thesaurusConcepts.forEach(function (concept,index) {
-                    if (concept.parent && concept.parent != "#")
-                        conceptsMap[concept.parent].children.push(concept)
-
-                })
-
-
-
-
-
-                function recurse(parentTreeNode,obj){
-                   var childTreeNode={
-                       key:obj.text,
-                   }
-                    parentTreeNode.values.push(childTreeNode)
-                   if(   obj.children.length==0) {
-                       childTreeNode.value = obj.data.documents?obj.data.documents.length:0
-                       childTreeNode.data={
-                           documents:obj.data.documents,
-                           synonyms:obj.data.synonyms
-                       }
-                   }
-                    else
-                    {
-                        childTreeNode.values = [];
-                        obj.children.forEach(function (child, index) {
-                           if(child.children.length>0 || child.data.documents.length>0)
-
-                            recurse(childTreeNode, child)
-
-                        })
-                    }
-
-
-                }
-                // set tree
-                var tree={key: "root",values:[]};
-                thesaurusConcepts.forEach(function (concept,index) {
-                    if (concept.parent && concept.parent == "#")
-                        recurse(tree,concept)
-
-                })
-// only top domains
-                tree=tree.values[2].values
-
-                fs.writeFileSync(jstreeJsonPathAnnotated.replace(".json","Tree.json"), JSON.stringify(tree, null, 2))
-                   var x=tree;
-
-
-            }
-
-
-            function indexEntities() {
-                // write concepts and docs in new Index
-                var conceptsNdjsonWithDocs = ""
-
-
-                var serialize = ndjson.serialize();
-                serialize.on('data', function (line) {
-                    conceptsNdjsonWithDocs += line; // line is a line of stringified JSON with a newline delimiter at the end
-                })
-
-                thesaurusConcepts.forEach(function (concept) {
-                    if (concept.elasticQuery && concept.data.documents.length > 0) {
-                        var newElasticId = Math.round(Math.random() * 10000000)
-                        serialize.write({"index": {"_index": conceptsIndexName, "_type": conceptsIndexName, "_id": newElasticId}})
-                        delete concept.elasticQuery
-                        serialize.write(concept)
-                    }
-
-                })
-                serialize.end();
-
-                var options = {
-                    method: 'POST',
-                    body: conceptsNdjsonWithDocs,
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-
-                    url: "http://localhost:9200/_bulk"
-                };
-                request(options, function (error, response, body) {
-                    var json = JSON.parse(response.body);
-
-
-                })
-            }
-
-        //    indexEntities();
-          //  generateThesaurusJstreeWithDocuments()
-            generateThesaurusTreeMap()
-
-        })
-
-
-        // console.log(JSON.stringify(thesaurusConcepts,null,2))
     },
 
 
@@ -261,8 +328,7 @@ var eurovoc = {
                         concept.prefLabels[key2].forEach(function (str) {
                             obj.data.synonyms += str + ";"
                         })
-                    }
-                    else {
+                    } else {
                         obj.data.synonyms += concept.prefLabels[key2] + ";"
                     }
 
@@ -273,16 +339,12 @@ var eurovoc = {
                         concept.altLabels[key2].forEach(function (str) {
                             obj.data.synonyms += str + ";"
                         })
-                    }
-                    else {
+                    } else {
                         obj.data.synonyms += concept.altLabels[key2] + ";"
                     }
 
                 }
-
-
 // indentification des domaines
-
                 if (concept.schemes.length == 1 && concept.schemes.indexOf("http://eurovoc.europa.eu/domains") > -1) {
                     var domainKey = concept.prefLabels["fr"].substring(0, 2);
                     domains[domainKey] = concept.id
@@ -292,25 +354,17 @@ var eurovoc = {
                 if (concept.topConcepts.length > 0) {// && concept.topConcepts.indexOf("http://eurovoc.europa.eu/candidates")<0) {
                     obj.parent = concept.topConcepts[concept.topConcepts.length - 1];
                     obj.data.ancestors = concept.topConcepts;
-                }
-
-                else if (concept.schemes.length > 0) {// && concept.topConcepts.indexOf("http://eurovoc.europa.eu/candidates")<0) {
+                } else if (concept.schemes.length > 0) {// && concept.topConcepts.indexOf("http://eurovoc.europa.eu/candidates")<0) {
                     obj.parent = concept.schemes[concept.schemes.length - 1];
                     obj.data.ancestors = concept.schemes;
-                }
-                else {
+                } else {
                     if (concept.broaders.length > 0) {
                         obj.parent = concept.broaders[concept.broaders.length - 1];
                         obj.data.ancestors = concept.broaders;
                     }
                 }
-
-// console.log(concept.id)
                 treeMap[concept.id] = obj
-
-
             }
-
 
 // gestion de la hierarchie des parents
             for (var key in treeMap) {
@@ -320,7 +374,6 @@ var eurovoc = {
                     concept.data.ancestors.forEach(function (ancestor, index) {
                         if (index < concept.data.ancestors.length && treeMap[ancestor].parent == "#")
                             treeMap[ancestor].parent = concept.data.ancestors[index + 1];
-
                     })
                 }
             }
@@ -339,17 +392,12 @@ var eurovoc = {
                     }
                 }
             }
-
-
             var conceptsArray = []
             for (var key in treeMap) {
-
                 if (!treeMap[key].parent)
                     treeMap[key].parent = "#"
                 conceptsArray.push(treeMap[key])
             }
-
-
             var str = JSON.stringify(conceptsArray, null, 2);
             fs.writeFileSync("./eurovocFr.json", str)
             fs.writeFileSync(targetPath, str)
@@ -359,7 +407,6 @@ var eurovoc = {
 
 
         }
-
 
         var conceptsMap = {}
         var currentConcept = null;
@@ -477,22 +524,12 @@ var eurovoc = {
         })
         saxStream.on("end", function (node) {
             var x = conceptsMap;
-
             processMap(conceptsMap)
-
-
         })
 
-
-// pipe is supported, and it's readable/writable
-// same chunks coming in also go out.
         fs.createReadStream(sourcePath)
             .pipe(saxStream)
-//   .pipe(fs.createWriteStream("file-copy.xml"))
-
-
     }
-
 }
 
 module.exports = eurovoc;
@@ -504,7 +541,17 @@ var jstreeJsonPathAnnotated = "D:\\GitHub\\souslesensGraph\\souslesensGraph\\pub
 
 
 if (true) {
-    eurovoc.annotateCorpus(jstreeJsonPath, ["artotheque","phototheque","videotheque" ,"audiotheque","ocr","bordereaux"], "eurovoc_entities")
+    var options = {
+        indexEntities: true,
+        generateThesaurusTreeMap: false,
+        generateThesaurusJstreeWithDocuments: true
+
+    }
+
+
+    eurovoc.annotateCorpus(jstreeJsonPath, ["artotheque", "phototheque", "videotheque", "audiotheque", "ocr", "bordereaux"],
+        "eurovoc_entities"
+        , options)
 }
 
 if (false) {

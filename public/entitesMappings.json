@@ -1,0 +1,94 @@
+{
+  "eurovoc_entities": {
+    "aliases": {},
+    "mappings": {
+      "eurovoc_entities": {
+        "properties": {
+          "data": {
+            "properties": {
+              "ancestors": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "documents": {
+                "properties": {
+                  "id": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "index": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  },
+                  "title": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "synonyms": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "id": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "keyword"
+          },
+          "parent": {
+            "type": "keyword"
+          },
+          "text": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "creation_date": "1565157647827",
+        "number_of_shards": "5",
+        "number_of_replicas": "1",
+        "uuid": "kHuBicLgTCep_Gm-OyFqdg",
+        "version": {
+          "created": "6010199"
+        },
+        "provided_name": "eurovoc_entities"
+      }
+    }
+  }
+}

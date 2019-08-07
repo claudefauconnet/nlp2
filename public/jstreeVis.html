@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
-    <script src="../../common/js/jquery/jquery.min.js"></script>
-    <script src="../../common/js/jquery/jquery-ui.min.js"></script>
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/jquery/jquery-ui.min.js"></script>
 
    <!-- <script src="../../common/js/jsTree/jstree.min.js"></script>-->
-    <script src="../../common/js/jsTreeController.js"></script>
+  <!--  <script src="js/jsTreeController.js"></script>--->
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
@@ -120,7 +120,7 @@
             $.ajax({
                 type: "GET",
                 // url: "/semanticWeb/eurovocFr.json",
-                url: "/semanticWeb/eurovocFrAnnotated.json",
+                url: "/eurovocFrAnnotated.json",
                 dataType: "json",
                 success: function (_data, textStatus, jqXHR) {
                     var jsTreeData = _data;
