@@ -14,7 +14,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-
+<script src="js/others/async.js"></script>
 
 <script src="js/config.js"></script>
 <script src="js/context.js"></script>
@@ -22,11 +22,22 @@
 <script src="js/search.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/entities.js"></script>
+<script src="js/authentification.js"></script>
 <script>
     $(function () {
-        context=config;
-        mainController.bindControls();
-        mainController.initIndexesDiv()
+
+        if (config.loginMode!='none') {
+            authentication.init(true, function (err, result) {
+                mainController.init0();
+            })
+            /* $("#searchTableInput").attr("disabled", true)
+             $("#leftAccordion").css("opacity", 0.2);
+             $("#loginDialogDiv").dialog("open");*/
+        }
+        else {
+            mainController.init0();
+        }
+
 
     })
 </script>
@@ -153,11 +164,11 @@
             <table border="1px">
                 <tr style="font-weight: bold">
                     <td>syntaxe</td>
-                    <td>recherche les documents qui contiennent :"</td>
+                    <td>recherche les documents qui contiennent :</td>
                 </tr>
                 <tr>
                     <td>mot1 mot2 mot3</td>
-                    <td>les 3 mots (quelque soit l'écart)"</td>
+                    <td>les 3 mots (quelque soit l'écart)</td>
                 </tr>
                 <tr>
                     <td>"mot1 mot2 mot3"</td>
@@ -204,6 +215,17 @@
 
 </div>
 
+<div id="loginDiv"
+     style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
+    <div> login<input id="loginInput">
+        password<input type="password" id="passwordInput" onkeydown="if (event.keyCode == 13)
+                        document.getElementById('loginButton').click()">
+        <button id="loginButton" onclick="authentication.doLogin()">OK</button>
+        <!--   <button id="xxx" onclick="Tablette.updateCotesParTabletteZeros()">TEST boites</button>-->
+
+        <div id="loginMessage"></div>
+    </div>
+</div>
 
 </body>
 </html>

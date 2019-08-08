@@ -1,31 +1,21 @@
 var express = require('express');
 var router = express.Router();
-var serverParams={routesRootUrl:""}
+var serverParams = {routesRootUrl: ""}
 
 
-
-
-
-
-
-
-
-
-var elasticProxy=require('../bin/elasticProxy')
-
-
-
+var elasticProxy = require('../bin/elasticProxy');
+var authentication=require('../bin/authentication..js')
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', function (req, res, next) {
+    res.render('index', {title: 'Express'});
 });
 
 router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
-    if(req.body.executeQuery){
-        elasticProxy.executeQuery(JSON.parse(req.body.executeQuery),JSON.parse(req.body.indexes), function (error, result) {
+    if (req.body.executeQuery) {
+        elasticProxy.executeQuery(JSON.parse(req.body.executeQuery), JSON.parse(req.body.indexes), function (error, result) {
             processResponse(response, error, result)
         });
 
@@ -49,14 +39,13 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         });
 
     else if (req.body && req.body.findDocuments) {
-      //  var options = req.body.options;
+        //  var options = req.body.options;
         if (typeof req.body == "string")
             var options = JSON.parse(req.body).options
         elasticProxy.findDocuments(req.body.options, function (error, result) {
             processResponse(response, error, result)
         });
-    }
-    else if (req.body && req.body.findDocumentsById)
+    } else if (req.body && req.body.findDocumentsById)
         elasticProxy.findDocumentsById(req.body.indexName, req.body.ids, req.body.words, function (error, result) {
             processResponse(response, error, result)
         });
@@ -66,6 +55,26 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             processResponse(response, error, result)
         });
 })
+
+
+router.post('/authDB', function (req, res, next) {
+    console.log(JSON.stringify(req.body))
+    if (req.body.tryLogin) {
+        authentication.loginInDB(req.body.login, req.body.password, function (err, result) {
+            processResponse(res, err, result)
+
+        })
+
+    }
+})
+router.post('/bailletarchives-authentication', function (req, response) {
+    if (req.body.authentify)
+        authentication.authentify(req.body.login, req.body.password, function (error, result) {
+            processResponse(response, error, result)
+        });
+
+});
+
 function processResponse(response, error, result) {
     if (response && !response.finished) {
         /* res.setHeader('Access-Control-Allow-Origin', '*');
@@ -84,28 +93,25 @@ function processResponse(response, error, result) {
                 error = JSON.stringify(error, null, 2);
             }
             console.log("ERROR !!" + error);
-         //   socket.message("ERROR !!" + error);
+            //   socket.message("ERROR !!" + error);
             response.status(404).send({ERROR: error});
 
-        }
-        else if (!result) {
+        } else if (!result) {
             response.send({done: true});
         } else {
 
             if (typeof result == "string") {
                 resultObj = {result: result};
-              //  socket.message(resultObj);
+                //  socket.message(resultObj);
                 response.send(JSON.stringify(resultObj));
-            }
-            else {
+            } else {
                 if (result.contentType && result.data) {
                     response.setHeader('Content-type', result.contentType);
                     if (typeof result.data == "object")
                         response.send(JSON.stringify(result.data));
                     else
                         response.send(result.data);
-                }
-                else {
+                } else {
                     var resultObj = result;
                     // response.send(JSON.stringify(resultObj));
                     response.send(resultObj);
@@ -116,4 +122,5 @@ function processResponse(response, error, result) {
 
     }
 }
+
 module.exports = router;

@@ -1,4 +1,5 @@
 var config = {
+   loginMode:"json",
     elasticUrl : "../elastic",
    indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
  //   indexes:["testpdfquantum"],

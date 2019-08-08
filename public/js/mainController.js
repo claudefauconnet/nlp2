@@ -6,6 +6,12 @@ var mainController = (function () {
     self.windowHeight = $(window).height();
     self.windowWidth = $(window).width();
 
+    self.init0= function () {
+        context = config;
+        mainController.bindControls();
+        mainController.initIndexesDiv()
+    }
+
     self.bindControls = function () {
 
         //   $("#questionInput").keyup(function(event){
