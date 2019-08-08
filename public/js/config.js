@@ -1,6 +1,7 @@
 var config = {
     elasticUrl : "../elastic",
-    indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
+  //  indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
+    indexes:["testpdf"],
     searchExpression: "",
     elasticQuery: {
         from: 0,

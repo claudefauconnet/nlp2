@@ -48,7 +48,7 @@ var Search = (function () {
             var size = options.size || context.elasticQuery.size
             var from = options.from || (options.page ? (size * options.page) : null) || context.elasticQuery.from;
             if (options.page)
-                context.currentPage = (options.page<0?0:options.page);
+                context.currentPage = (options.page < 0 ? 0 : options.page);
             else
                 context.currentPage = 0;
         }
@@ -131,6 +131,9 @@ var Search = (function () {
         // on ajoute la question + l'id pour avoir les highlight
         self.analyzeQuestion(context.question, function (err, query) {
 
+            if(!query.bool)
+               query={bool:{must:[query]}};
+
             query.bool.must.push({
                 "term": {
                     "_id": hitId
@@ -171,14 +174,21 @@ var Search = (function () {
         var regexPhrase = /"(.*)"([0-9]*)/gm;
         var array = regexPhrase.exec(question);
         if (array && array.length > 1) {// on enleve les "
-            var slop = 0;
-            if (array.length == 3)
-                slop = array[2];
+            var slop = 2;
+            if (array.length == 3 && array[2]!="")
+                try{
+                slop = parseInt(array[2])
+                }catch(e){
+                $("#resultDiv").html("la distance doit etre un nombre")
+                }
             question = array[1];
             query = {
                 "match_phrase": {
-                    "content": question,
-                    "slop": slop
+                    "content": {
+                        "query": array[1],
+                        "slop": slop
+                    }
+
                 }
             }
 
