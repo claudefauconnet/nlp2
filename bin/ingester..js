@@ -182,7 +182,14 @@ var ingester = {
 
 }
 module.exports = ingester;
+if( false) {
+    var path = "D:\\livres\\l-ideologie-de-la-silicon-valley.pdf";
+    ingester.indexDocumentByPages(path, "testpdf");
+}
+if( true) {
+    var path = "D:\\livres\\GS_EP_DEV_002_EN.pdf";
+    ingester.indexDocumentByPages(path, "testpdfquantum");
+}
 
-var path = "D:\\livres\\l-ideologie-de-la-silicon-valley.pdf";
-ingester.indexDocumentByPages(path,"testpdf");
+
 //var path="D:\\livres\\livrenumerique.pdf"

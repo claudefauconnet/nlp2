@@ -170,7 +170,6 @@ var Search = (function () {
 
     self.analyzeQuestion = function (question, callback) {
         var query = {}
-// other than match phrase
         var regexPhrase = /"(.*)"([0-9]*)/gm;
         var array = regexPhrase.exec(question);
         if (array && array.length > 1) {// on enleve les "
