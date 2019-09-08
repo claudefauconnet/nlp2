@@ -3,6 +3,7 @@ let fs = require('fs'),
 var async = require('async');
 var ndjson = require('ndjson');
 var request=require('request');
+var path=require('path');
 var ingester = {
 
     parsePdf: function (pdfPath, callback) {
@@ -127,7 +128,7 @@ var ingester = {
     },
 
 
-    indexDocumentByPages: function (path,index) {
+    indexDocumentByPages: function (path,index, callback) {
         var pdfText = "";
         var pdfPages=[];
         var docTitle="";
@@ -173,10 +174,36 @@ var ingester = {
 
             }
         ], function (err) {
-            if (err)
-                console.log(err)
-            console.log("Done")
+           callback(err);
         })
+    }
+    ,
+
+
+    indexDocumentsByPages:function(dir,index,callback) {
+
+        if (fs.statSync(dir).isDirectory()) {
+            var files = fs.readdirSync(dir);
+
+            async.eachSeries(files,function (file,callbackEach){
+                var xx=path.extname(file)
+             if( path.extname(file).toLocaleLowerCase()==".pdf"){
+                 ingester.indexDocumentByPages(dir+path.sep+file, index,callbackEach);
+
+             }
+             else{
+                 callbackEach()
+             }
+
+            },function(err) {
+                    if (err)
+                        return callback(err);
+                    return callback(null, "done");
+                }
+            )
+
+
+        }
     }
 
 
@@ -184,11 +211,20 @@ var ingester = {
 module.exports = ingester;
 if( false) {
     var path = "D:\\livres\\l-ideologie-de-la-silicon-valley.pdf";
-    ingester.indexDocumentByPages(path, "testpdf");
+    ingester.indexDocumentByPages(path, "testpdf", function (err, result) {
+        if (err)
+            return console.log(err);
+        return console.log("DONE");
+    });
 }
+
 if( true) {
-    var path = "D:\\livres\\GS_EP_DEV_002_EN.pdf";
-    ingester.indexDocumentByPages(path, "testpdfquantum");
+    var dir = "D:\\ATD_Baillet\\livres";
+    ingester.indexDocumentsByPages(dir, "testpdfquantum",function(err, result){
+        if(err)
+            return console.log(err);
+        return console.log("DONE");
+    });
 }
 
 

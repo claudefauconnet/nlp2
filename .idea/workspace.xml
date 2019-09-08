@@ -2,17 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="90bd8942-8710-4432-9cd3-21dad83adcc0" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/bin/authentication..js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/jsonFileStorage.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/logger..js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/users/users.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/authentification.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/async.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/neoRestProxy..js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/wolf..js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/data/stopwords-fr..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/elasticProxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/elasticProxy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/ingester..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/ingester..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/mainController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/entities.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/entities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/search.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/search.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -41,22 +41,24 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="10.16.0" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../souslesens" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\bin" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\bin" />
+      <recent name="D:\GitHub\nlp2\data" />
       <recent name="D:\GitHub\nlp2\public\js\others" />
       <recent name="D:\GitHub\nlp2\config\users" />
       <recent name="D:\GitHub\nlp2\public\js" />
-      <recent name="D:\GitHub\nlp2\public\icons" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public" />
+      <recent name="D:\GitHub\nlp2" />
+      <recent name="D:\GitHub\nlp2\bin" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -71,7 +73,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
+  <component name="RunManager" selected="Node.js.wolf..js">
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/nlp2/public/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -81,10 +83,14 @@
     <configuration name="ingester..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ingester..js" working-dir="$PROJECT_DIR$/bin">
       <method v="2" />
     </configuration>
+    <configuration name="wolf..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="wolf..js" working-dir="$PROJECT_DIR$/bin">
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JavaScript Debug.index.html" />
+        <item itemvalue="Node.js.wolf..js" />
         <item itemvalue="Node.js.ingester..js" />
+        <item itemvalue="JavaScript Debug.index.html" />
         <item itemvalue="Node.js.eurovoc..js" />
       </list>
     </recent_temporary>
@@ -108,7 +114,11 @@
       <workItem from="1564576933429" duration="4094000" />
       <workItem from="1564762684796" duration="597000" />
       <workItem from="1564829836004" duration="122000" />
-      <workItem from="1564927333650" duration="79188000" />
+      <workItem from="1564927333650" duration="81013000" />
+      <workItem from="1565357777101" duration="4724000" />
+      <workItem from="1565510447250" duration="1579000" />
+      <workItem from="1565630605827" duration="14074000" />
+      <workItem from="1567072631973" duration="44217000" />
     </task>
     <servers />
   </component>
@@ -127,39 +137,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint type="javascript">
-          <url>file://$PROJECT_DIR$/routes/index.js</url>
-          <line>44</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint type="javascript">
-          <url>file://$PROJECT_DIR$/app.js</url>
-          <line>33</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/js/ui.js</url>
-          <line>29</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/js/entities.js</url>
-          <line>64</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/logger..js</url>
-          <line>7</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="69" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

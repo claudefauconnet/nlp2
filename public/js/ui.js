@@ -4,7 +4,8 @@ var ui = (function () {
 
     self.getHitDiv = function (hit) {
         var title = hit._source.title
-
+if(!title)
+    title="";
 
         var htmlHighlight = "<span class='excerpt'>";
         hit.highlight.content.forEach(function (highlight, index) {
@@ -44,19 +45,22 @@ var ui = (function () {
             htmlHighlight += highlight
         })
         htmlHighlight += "<span>"
-
+        if (!hit._source.date)
+            hit._source.date = ""
+        if (!hit._source.title)
+            hit._source.title = ""
         var html = "<div class='hitDetail'>" +
-            "<div style=' font-size: 12px;font-weight: bold'>" + hit._source.title + "</div>"+
-        "<div>" + hit._source.date + "</div>"+
-       // "<div>" + hit._source.content + "</div>"+
+            "<div style=' font-size: 12px;font-weight: bold'>" + hit._source.title + "</div>" +
+            "<div>" + hit._source.date + "</div>" +
+            // "<div>" + hit._source.content + "</div>"+
 
-            htmlHighlight+
-        "" +
-        "" +
-        "</div>"
+            htmlHighlight +
+            "" +
+            "" +
+            "</div>"
 
         $("#dialogDiv").html(html);
-        $(".hlt1").css( "background-color"," #FFFF00");
+        $(".hlt1").css("background-color", " #FFFF00");
         $("#dialogDiv").dialog("open")
 
     }

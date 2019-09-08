@@ -1,8 +1,8 @@
 var config = {
-   loginMode:"json",
+   loginMode:"none",
     elasticUrl : "../elastic",
    indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
- //   indexes:["testpdfquantum"],
+ //  indexes:["testpdfquantum"],
     searchExpression: "",
     elasticQuery: {
         from: 0,

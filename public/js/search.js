@@ -38,6 +38,39 @@ var Search = (function () {
 
 
     }
+
+    self.executeMsearch=function(ndjson,callback){
+        var payload = {
+            executeMsearch: 1,
+            ndjson: ndjson
+
+        }
+        $.ajax({
+            type: "POST",
+            url: config.elasticUrl,
+            data: payload,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                var xx = data;
+                callback(null, data)
+
+            }
+            , error: function (err) {
+
+                console.log(err.responseText)
+                if (callback) {
+                    return callback(err)
+                }
+                return (err);
+            }
+
+        });
+
+    }
+
+
+
+
     self.searchPlainText = function (options, callback) {
         if (!options)
             options = {};
@@ -57,8 +90,8 @@ var Search = (function () {
         $("#paginationDiv").html("")
         $("#associatedWordsDiv").html("")
 
-        if (!question || question.length < 4)
-            return $("#resultDiv").html("entrer une question (au moins 4 lettres");
+        if (!question || question.length < 3)
+            return $("#resultDiv").html("entrer une question (au moins 3 lettres");
 
         if (context.indexes.length == 0)
             return $("#resultDiv").html("selectionner au moins un index");
@@ -75,7 +108,7 @@ var Search = (function () {
                 "aggregations": {
                     "associatedWords": {
                         "significant_terms": {
-                            "size": 20,
+                            "size": 30,
                             "field": "content"
                         }
                     },
@@ -104,8 +137,12 @@ var Search = (function () {
                 }
                 if (result.hits.hits.length == 0)
                     return $("#resultDiv").html("pas de résultats");
-                // Entities.showQuestionEntitiesInJsTree(query);
+               //  Entities.showQuestionEntitiesInJsTree(query);
+
+            //    Entities.showAssociatedWordsWordnetEntitiesInJsTree(result.aggregations.associatedWords);
+            // Entities.showAssociatedWordsEntitiesInJsTree(result.aggregations.associatedWords,result.hits.hits);
                 Entities.showAssociatedWords(result.aggregations.associatedWords)
+                Entities.showAssociatedWordsWolf(result.aggregations.associatedWords)
                 self.setResultsCountByIndex(result.aggregations.indexesCountDocs)
                 $("#indexDocCount_all").html("(" + result.hits.total + ")");
                 mainController.showPageControls(result.hits.total);
@@ -169,7 +206,10 @@ var Search = (function () {
     }
 
     self.analyzeQuestion = function (question, callback) {
+        question = question.replace(/\*/g, "%") //wildcard * does not split correctly
         var query = {}
+
+        //match phrase
         var regexPhrase = /"(.*)"([0-9]*)/gm;
         var array = regexPhrase.exec(question);
         if (array && array.length > 1) {// on enleve les "
@@ -181,6 +221,11 @@ var Search = (function () {
                 $("#resultDiv").html("la distance doit etre un nombre")
                 }
             question = array[1];
+          /*  if(question.match(/[%///]+/)){
+
+
+
+            }*/
             query = {
                 "match_phrase": {
                     "content": {
@@ -195,7 +240,7 @@ var Search = (function () {
         }
 
 // other than match phrase
-        question = question.replace(/\*/g, "%") //wildcard * does not split correctly
+
         var regexSplit = /[.*^\s]\s*/gm
         var words = question.trim().split(regexSplit);
         var shouldArray = [];

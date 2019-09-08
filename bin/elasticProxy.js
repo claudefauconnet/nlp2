@@ -354,6 +354,41 @@ var elasticProxy = {
 
         });
     },
+
+
+
+    executeMsearch:function(ndjson,callback){
+        var options = {
+            method: 'POST',
+            body: ndjson,
+            encoding: null,
+            headers: {
+                'content-type': 'application/json'
+            },
+            url: baseUrl+"/_msearch"
+        };
+
+        console.log(ndjson)
+        request(options, function (error, response, body) {
+            if(error)
+                return  callback(error);
+            if(body.error && body.error.reason)
+                return  callback(body.error.reason)
+            var json = JSON.parse(response.body);
+            var responses = json.responses;
+            var totalDocsAnnotated = 0
+          /*  responses.forEach(function (response, responseIndex) {
+
+                var hits = response.hits.hits;
+                hits.forEach(function (hit) {
+
+                })
+            })*/
+            return callback(null, responses)
+
+        });
+
+    },
     executeQuery:function(query,indexes,_callback){
         var callback=_callback;
         var indexesStr=""
@@ -381,13 +416,6 @@ var elasticProxy = {
                 return  callback(body.error.reason)
             var hits=body.hits.hits
             return callback(null, body)
-         /*   var options = {
-                error: error,
-                index: indexesStr,
-                body: body,
-                callback: callback
-            }
-            elasticProxy.processSearchResult(options);*/
 
         });
     },

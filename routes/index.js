@@ -20,6 +20,14 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         });
 
     }
+    if (req.body.executeMsearch) {
+        elasticProxy.executeMsearch(req.body.ndjson, function (error, result) {
+            processResponse(response, error, result)
+        });
+
+    }
+
+
     if (req.body && req.body.searchWordAll)
         elasticProxy.searchWordAll(req.body.searchWordAll, function (error, result) {
             processResponse(response, error, result)
