@@ -142,7 +142,7 @@ var Search = (function () {
             //    Entities.showAssociatedWordsWordnetEntitiesInJsTree(result.aggregations.associatedWords);
             // Entities.showAssociatedWordsEntitiesInJsTree(result.aggregations.associatedWords,result.hits.hits);
                 Entities.showAssociatedWords(result.aggregations.associatedWords)
-                Entities.showAssociatedWordsWolf(result.aggregations.associatedWords)
+               // Entities.showAssociatedWordsWolf(result.aggregations.associatedWords)
                 self.setResultsCountByIndex(result.aggregations.indexesCountDocs)
                 $("#indexDocCount_all").html("(" + result.hits.total + ")");
                 mainController.showPageControls(result.hits.total);
