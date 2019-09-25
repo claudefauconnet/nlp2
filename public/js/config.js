@@ -1,7 +1,9 @@
 var config = {
    loginMode:"none",
+    locale:"Fr",
     elasticUrl : "../elastic",
    indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
+  //  indexes:["gmail_cf"],
  //  indexes:["testpdfquantum"],
     searchExpression: "",
     elasticQuery: {
@@ -15,6 +17,7 @@ var config = {
             fragment_size: 150,
             fields: {
                 "content": {},
+               // "text": {},
 
             }
         }

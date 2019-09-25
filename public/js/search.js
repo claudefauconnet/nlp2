@@ -10,8 +10,10 @@ var Search = (function () {
         console.log(JSON.stringify(indexes, null, 2))
         console.log(JSON.stringify(query, null, 2))
 
+
+        var strQuery=JSON.stringify(query);
         var payload = {
-            executeQuery: JSON.stringify(query),
+            executeQuery: strQuery,
             indexes: JSON.stringify(indexes)
 
         }
@@ -91,10 +93,10 @@ var Search = (function () {
         $("#associatedWordsDiv").html("")
 
         if (!question || question.length < 3)
-            return $("#resultDiv").html("entrer une question (au moins 3 lettres");
+            return $("#resultDiv").html("entrer une question (au moins 3 lettres)");
 
         if (context.indexes.length == 0)
-            return $("#resultDiv").html("selectionner au moins un index");
+            return $("#resultDiv").html("selectionner au moins une source");
 
         self.analyzeQuestion(question, function (err, query) {
             $("#queryTA").val(JSON.stringify(query, null, 2))
@@ -168,8 +170,10 @@ var Search = (function () {
         // on ajoute la question + l'id pour avoir les highlight
         self.analyzeQuestion(context.question, function (err, query) {
 
+
             if(!query.bool)
-               query={bool:{must:[query]}};
+                query={bool:{must:[]}};
+            //   query={bool:{must:[query]}};
 
             query.bool.must.push({
                 "term": {
@@ -178,16 +182,16 @@ var Search = (function () {
             })
             Search.queryElastic({
                     query: query,
-                    _source: context.elasticQuery.source,
-                    highlight: {
-                        tags_schema: "styled",
-                        fragment_size: 500,
-                        number_of_fragments: 0,
-                        fields: {
-                            "content": {},
+                   // _source: context.elasticQuery.source,
+                   highlight: {
+                       tags_schema: "styled",
+                       fragment_size: 1,
+                       number_of_fragments: 0,
+                       fields: {
+                           "content": {},
 
-                        }
-                    }
+                       }
+                   }
 
                 }, null
 
@@ -197,7 +201,8 @@ var Search = (function () {
                     }
                     if (result.hits.hits.length == 0)
                         return $("#resultDiv").html("pas de résultats");
-                    return ui.showHitDetails(result.hits.hits[0])
+                    var displayConfig=result.configs[result.hits.hits[0]._index].display.details;
+                    return ui.showHitDetails(result.hits.hits[0],displayConfig)
 
                 })
         })
@@ -267,6 +272,8 @@ var Search = (function () {
 
         }
 
+
+
         words.forEach(function (word) {
             if (word.indexOf("/") > 0) {// or
                 var array = word.split("/");
@@ -292,6 +299,8 @@ var Search = (function () {
 
 
     }
+
+
 
     return self;
 

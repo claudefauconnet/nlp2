@@ -4,7 +4,8 @@ var serverParams = {routesRootUrl: ""}
 
 
 var elasticProxy = require('../bin/elasticProxy');
-var authentication=require('../bin/authentication..js')
+var authentication=require('../bin/authentication..js');
+var configLoader=require('../bin/configLoader..js')
 
 
 /* GET home page. */
@@ -16,7 +17,13 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
     if (req.body.executeQuery) {
         elasticProxy.executeQuery(JSON.parse(req.body.executeQuery), JSON.parse(req.body.indexes), function (error, result) {
-            processResponse(response, error, result)
+            if( error)
+              return  processResponse(response, error, result)
+            configLoader.getIndexConfigs(JSON.parse(req.body.indexes),function(err, configs){
+                result.configs=configs;
+                processResponse(response, error, result)
+            })
+
         });
 
     }

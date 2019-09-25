@@ -8,7 +8,7 @@
 -->
 
 <link rel="stylesheet" media="screen" type="text/css" title="Design" href="js/jquery/jquery-ui.min.css"/>
-
+<link rel="stylesheet" type="text/css"  href="css/default.css">
 <script src="js/jquery/jquery.min.js"></script>
 <script src="js/jquery/jquery-ui.min.js"></script>
 
@@ -19,6 +19,7 @@
 <script src="js/config.js"></script>
 <script src="js/context.js"></script>
 <script src="js/mainController.js"></script>
+<script src="js/indexes.js"></script>
 <script src="js/search.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/entities.js"></script>
@@ -159,8 +160,8 @@
     </div>
     <div class="centerDiv">
         <div class="searchDiv">
-            <img src="icons/clear.png" class="icon" onclick="mainController.resetQuestion()">
-            <input id="questionInput" placeholder="saisissez les mots cherchés  puis tapez entree ">
+            <img src="icons/clear.png" title="effacer" class="icon" onclick="mainController.resetQuestion()">
+            <input id="questionInput"  title="saisissez les mots cherchés  puis tapez entrée"  placeholder="saisissez les mots cherchés  puis tapez entrée ">
 
         </div>
         <div class="usageDiv" onclick="mainController.hideUsageDiv()">

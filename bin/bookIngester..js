@@ -4,7 +4,7 @@ var async = require('async');
 var ndjson = require('ndjson');
 var request=require('request');
 var path=require('path');
-var ingester = {
+var bookIngester = {
 
     parsePdf: function (pdfPath, callback) {
         let pdfParser = new PDFParser(this, 1);
@@ -144,7 +144,7 @@ var ingester = {
 
             },
             function (callbackSeries) {
-                ingester.parsePdf(path, function (err, result) {
+                bookIngester.parsePdf(path, function (err, result) {
                     if (err)
                         return callbackSeries(err);
                     pdfText=result;
@@ -153,7 +153,7 @@ var ingester = {
 
             },
             function (callbackSeries) {
-                ingester.splitPdfTextInPages(pdfText, function (err, result) {
+                bookIngester.splitPdfTextInPages(pdfText, function (err, result) {
                     if (err)
                         return callbackSeries(err);
                     pdfPages=result;
@@ -165,7 +165,7 @@ var ingester = {
 
 
             function (callbackSeries) {
-                ingester.indexPages(index,docTitle,path,pdfPages, function (err, result) {
+                bookIngester.indexPages(index,docTitle,path,pdfPages, function (err, result) {
                     if (err)
                         return callbackSeries(err);
                     pdfText=result;
@@ -188,7 +188,7 @@ var ingester = {
             async.eachSeries(files,function (file,callbackEach){
                 var xx=path.extname(file)
              if( path.extname(file).toLocaleLowerCase()==".pdf"){
-                 ingester.indexDocumentByPages(dir+path.sep+file, index,callbackEach);
+                 bookIngester.indexDocumentByPages(dir+path.sep+file, index,callbackEach);
 
              }
              else{
@@ -208,10 +208,10 @@ var ingester = {
 
 
 }
-module.exports = ingester;
+module.exports = bookIngester;
 if( false) {
     var path = "D:\\livres\\l-ideologie-de-la-silicon-valley.pdf";
-    ingester.indexDocumentByPages(path, "testpdf", function (err, result) {
+    bookIngester.indexDocumentByPages(path, "testpdf", function (err, result) {
         if (err)
             return console.log(err);
         return console.log("DONE");
@@ -220,7 +220,7 @@ if( false) {
 
 if( true) {
     var dir = "D:\\ATD_Baillet\\livres";
-    ingester.indexDocumentsByPages(dir, "testpdfquantum",function(err, result){
+    bookIngester.indexDocumentsByPages(dir, "testpdfquantum",function(err, result){
         if(err)
             return console.log(err);
         return console.log("DONE");

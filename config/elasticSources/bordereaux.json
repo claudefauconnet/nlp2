@@ -1,0 +1,88 @@
+{
+  "connector": {
+    "type": "fs",
+    "settings": "ATD",
+    "dir": "D:\\ATD_Baillet\\versements2018",
+    "schema": "officeDocument"
+  },
+  "schema": {
+    "properties": {
+      "author": {
+        "type": "text"
+      },
+      "content": {
+        "type": "text",
+        "index_options": "offsets",
+        "fields": {
+          "contentKeyWords": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        },
+        "fielddata": true
+      },
+      "date": {
+        "type": "text"
+      },
+      "path": {
+        "type": "text"
+      },
+      "title": {
+        "type": "text"
+      }
+    }
+  },
+  "display": {
+    "list": [
+      {
+        "title": {
+          "cssClass": "list title"
+        }
+      },
+      {
+        "date": {
+          "cssClass": "list date"
+        }
+      },
+      {
+        "author": {
+          "cssClass": "list"
+        }
+      },
+      {
+        "extract": {
+          "cssClass": "list extract"
+        }
+      }
+    ],
+    "details": [
+      {
+        "title": {
+          "cssClass": "details title",
+          "labelFr": "Titre"
+        }
+      },
+      {
+        "date": {
+          "cssClass": "details date",
+          "labelFr": "Date"
+        }
+      },
+      {
+        "author": {
+          "cssClass": "details",
+          "labelFr": "Auteur"
+        }
+      },
+      {
+        "content": {
+          "cssClass": "details text",
+          "labelFr": "Contenu",
+          "highlightWords": 1
+        }
+      }
+    ],
+    "csv": [
+    ]
+  }
+}

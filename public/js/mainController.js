@@ -9,7 +9,7 @@ var mainController = (function () {
     self.init0= function () {
         context = config;
         mainController.bindControls();
-        mainController.initIndexesDiv()
+        indexes.initIndexesDiv(false)
     }
 
     self.bindControls = function () {
@@ -47,62 +47,7 @@ var mainController = (function () {
     }
 
 
-    self.onIndexCBXchange = function (cbx) {
-        var allchecked = true;
 
-        $(".indexesCbxes").each(function (cbx) {
-            if (!$(this).prop("checked"))
-                allchecked = false;
-        })
-
-        $("#indexesCbxes_all").prop("checked", allchecked)
-        self.setContextIndexes();
-        Search.searchPlainText()
-
-
-    }
-    self.setContextIndexes = function () {
-        var indexes = [];
-        $(".indexesCbxes").each(function (cbx) {
-
-            var id = $(this).attr("id");
-            if ($(this).prop("checked"))
-                indexes.push(id);
-
-        })
-        context.indexes = indexes;
-
-    }
-
-
-    self.onIndexAllCBXchange = function () {
-        var checkedAll = $("#indexesCbxes_all").prop("checked");
-        $(".indexesCbxes").each(function (cbx) {
-            $(this).prop("checked", checkedAll);
-
-        })
-        self.setContextIndexes();
-        Search.searchPlainText()
-    }
-
-
-    self.initIndexesDiv = function () {
-        var indexes = context.indexes;
-        indexesCxbs = "<span class='ui_title'>Sources</span><ul>";
-
-        indexesCxbs += "<li><input type='checkbox' checked='checked'  id='indexesCbxes_all' onchange='mainController.onIndexAllCBXchange()'>" +
-            "Toutes <index> <span class='indexDocCount' id='indexDocCount_all'/></li>"
-        indexesCxbs += ""
-        indexes.forEach(function (index) {
-
-            indexesCxbs += "<li><input type='checkbox' checked='checked' onchange='mainController.onIndexCBXchange(this)' class='indexesCbxes' id='" + index + "'>" +
-                //  index+"<index> </li>"
-                index + " <span class='indexDocCount' id='indexDocCount_" + index + "'/></li>"
-        })
-        indexesCxbs += "<ul>";
-        $("#indexesDiv").html(indexesCxbs);
-
-    }
 
 
     self.showPageControls = function (total) {
