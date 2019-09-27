@@ -14,6 +14,11 @@
     font-size: larger;
 }
 
+.titleList {
+    font-weight: bold;
+    font-size: smaller;
+}
+
 .date {
     font-weight: normal;
    font-style: italic;

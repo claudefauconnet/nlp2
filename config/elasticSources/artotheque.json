@@ -1,0 +1,271 @@
+{
+  "general": {
+    "description": "index de l'artoheque de Baillet",
+    "label": "Oeuvres d'art"
+  },
+  "connector": {
+    "type": "mySQL",
+    "schema": "artotheque",
+    "settings": "ATD",
+    "connOptions": {
+      "host": "localhost",
+      "user": "root",
+      "password": "vi0lon",
+      "database": "artotheque"
+    },
+    "sqlQuery": "select * from artotheque"
+  },
+  "schema": {
+    "mappings": {
+      "artotheque": {
+        "properties": {
+          "id": {
+            "isId": true,
+            "type": "integer"
+          },
+          "indexCIJW": {
+            "type": "keyword",
+            "isTitle": true,
+            "inCSV": true
+          },
+          "lien": {
+            "type": "keyword"
+          },
+          "fonds": {
+            "type": "keyword"
+          },
+          "collection": {
+            "type": "keyword"
+          },
+          "document": {
+            "type": "keyword"
+          },
+          "type": {
+            "type": "keyword",
+            "inCSV": true
+          },
+          "createur": {
+            "type": "keyword",
+            "inCSV": true
+          },
+          "titre": {
+            "type": "keyword",
+            "inCSV": true
+          },
+          "epoque": {
+            "type": "keyword"
+          },
+          "materiaux": {
+            "type": "keyword",
+            "inCSV": true
+          },
+          "dimensions": {
+            "type": "keyword"
+          },
+          "provenance": {
+            "type": "keyword"
+          },
+          "description": {
+            "type": "text"
+          },
+          "localisation": {
+            "type": "keyword"
+          },
+          "temoin_ref": {
+            "type": "keyword"
+          },
+          "liens": {
+            "type": "keyword"
+          },
+          "mots_cles": {
+            "type": "keyword"
+          },
+          "divers": {
+            "type": "keyword"
+          },
+          "dateMaj": {
+            "type": "date"
+          },
+          "redacteur": {
+            "type": "keyword"
+          },
+          "content": {
+            "type": "text",
+            "index_options": "offsets",
+            "analyzer": "ATD",
+            "fielddata": true,
+            "fields": {
+              "contentKeyWords": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "list": [
+      {
+        "indexCIJW": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "fonds": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "collection": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "document": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "type": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "createur": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "titre": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "epoque": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "materiaux": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "excerpt": {
+          "cssClass": "excerpt"
+        }
+      }
+    ],
+    "details": [
+      {
+        "id": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "indexCIJW": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "lien": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "fonds": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "collection": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "document": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "type": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "createur": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "titre": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "epoque": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "materiaux": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "dimensions": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "provenance": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "description": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "localisation": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "temoin_ref": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "liens": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "mots_cles": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "divers": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "dateMaj": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "redacteur": {
+          "cssClass": "text"
+        }
+      }
+    ],
+    "csv": [
+    ]
+  }
+}

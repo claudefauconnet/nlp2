@@ -148,7 +148,7 @@ var Search = (function () {
                 self.setResultsCountByIndex(result.aggregations.indexesCountDocs)
                 $("#indexDocCount_all").html("(" + result.hits.total + ")");
                 mainController.showPageControls(result.hits.total);
-                return ui.showResults(result.hits.hits);
+                return ui.showResultList(result.hits.hits);
 
             })
 
@@ -201,8 +201,8 @@ var Search = (function () {
                     }
                     if (result.hits.hits.length == 0)
                         return $("#resultDiv").html("pas de résultats");
-                    var displayConfig=result.configs[result.hits.hits[0]._index].display.details;
-                    return ui.showHitDetails(result.hits.hits[0],displayConfig)
+
+                    return ui.showHitDetails(result.hits.hits[0])
 
                 })
         })

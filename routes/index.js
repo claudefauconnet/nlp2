@@ -17,16 +17,26 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
     if (req.body.executeQuery) {
         elasticProxy.executeQuery(JSON.parse(req.body.executeQuery), JSON.parse(req.body.indexes), function (error, result) {
-            if( error)
+            processResponse(response, error, result);
+          /*  if( error)
               return  processResponse(response, error, result)
             configLoader.getIndexConfigs(JSON.parse(req.body.indexes),function(err, configs){
                 result.configs=configs;
                 processResponse(response, error, result)
-            })
+            })*/
 
         });
 
     }
+
+    if (req.body.getIndexConfigs) {
+        configLoader.getIndexConfigs(JSON.parse(req.body.indexes),function(error, result){
+            processResponse(response, error, result)
+        });
+
+    }
+
+
     if (req.body.executeMsearch) {
         elasticProxy.executeMsearch(req.body.ndjson, function (error, result) {
             processResponse(response, error, result)

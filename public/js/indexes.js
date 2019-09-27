@@ -3,6 +3,31 @@ var indexes=(function(){
 
     var self= {};
 
+    self.loadIndexConfigs=function(callback){
+        var payload={
+            getIndexConfigs:1,
+            indexes:JSON.stringify(config.indexes)
+        }
+        $.ajax({
+            type: "POST",
+            url: config.elasticUrl,
+            data: payload,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                context.indexConfigs=data;
+                callback(null, data);
+
+            }
+            , error: function (err) {
+                console.log(err.responseText)
+                    return callback(err)
+                }
+
+        });
+
+
+    }
+
     self.uncheckAllIndexes=function(){
         $("#indexesCbxes_all").prop("checked", false)
         $(".indexesCbxes").each(function (cbx) {
@@ -82,7 +107,7 @@ var indexes=(function(){
 
                 indexesCxbs += "<li><input type='checkbox' checked='checked' onchange='indexes.onIndexCBXchange(this)' class='indexesCbxes' id='" + index + "'>" +
                     //  index+"<index> </li>"
-                    "<span onclick=indexes.onIndexSelect('"+index+"') >"+index+"</span><span class='indexDocCount' id='indexDocCount_" + index + "'/></li>"
+                    "<span onclick=indexes.onIndexSelect('"+index+"') >"+context.indexConfigs[index].general.label+"</span><span class='indexDocCount' id='indexDocCount_" + index + "'/></li>"
             })
             indexesCxbs += "<ul>";
             $("#indexesDiv").html(indexesCxbs);

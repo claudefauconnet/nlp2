@@ -1,0 +1,240 @@
+{
+  "general": {
+    "description": "index de la phototheque de Baillet",
+    "label": "Photos"
+  },
+  "connector": {
+    "type": "mySQL",
+    "schema": "phototheque",
+    "settings": "ATD",
+    "connOptions": {
+      "host": "localhost",
+      "user": "root",
+      "password": "vi0lon",
+      "database": "phototheque"
+    },
+    "sqlQuery": "select * from phototheque"
+  },
+  "schema": {
+    "mappings": {
+      "phototheque": {
+        "properties": {
+          "id": {
+            "type": "keyword",
+            "isId": true
+          },
+          "indexCIJW": {
+            "type": "keyword",
+            "isTitle": true,
+            "inCSV": true
+          },
+          "dossier": {
+            "type": "keyword",
+            "inCSV": true
+          },
+          "sousdossier": {
+            "type": "keyword",
+            "inCSV": true
+          },
+          "document": {
+            "type": "keyword",
+            "inCSV": true
+          },
+          "versement": {
+            "type": "integer"
+          },
+          "lien": {
+            "type": "keyword"
+          },
+          "photographe": {
+            "type": "text"
+          },
+          "agence": {
+            "type": "text"
+          },
+          "droit_auteur": {
+            "type": "keyword"
+          },
+          "droit_image": {
+            "type": "keyword"
+          },
+          "contenu": {
+            "type": "text",
+            "analyzer": "ATD"
+          },
+          "temoin_ref": {
+            "type": "text"
+          },
+          "date": {
+            "type": "date",
+            "inCSV": true
+          },
+          "lieu": {
+            "type": "text"
+          },
+          "description": {
+            "type": "text",
+            "analyzer": "ATD"
+          },
+          "local": {
+            "type": "keyword"
+          },
+          "support": {
+            "type": "keyword"
+          },
+          "dateMaj": {
+            "type": "date"
+          },
+          "redacteur": {
+            "type": "keyword"
+          },
+          "content": {
+            "type": "text",
+            "index_options": "offsets",
+            "analyzer": "ATD",
+            "fielddata": true,
+            "fields": {
+              "contentKeyWords": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "list": [
+      {
+        "versement": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "lien": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "photographe": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "agence": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "excerpt": {
+          "cssClass": "excerpt"
+        }
+      }
+    ],
+    "details": [
+      {
+        "id": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "indexCIJW": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "dossier": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "sousdossier": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "document": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "versement": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "lien": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "photographe": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "agence": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "droit_auteur": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "droit_image": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "contenu": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "temoin_ref": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "date": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "lieu": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "description": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "local": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "support": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "dateMaj": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "redacteur": {
+          "cssClass": "text"
+        }
+      }
+    ],
+    "csv": [
+    ]
+  }
+}

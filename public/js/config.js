@@ -2,14 +2,15 @@ var config = {
    loginMode:"none",
     locale:"Fr",
     elasticUrl : "../elastic",
-   indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
+    indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
+  // indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
   //  indexes:["gmail_cf"],
  //  indexes:["testpdfquantum"],
     searchExpression: "",
     elasticQuery: {
         from: 0,
         size: 25,
-        indexes: ["bordereaux"],//, "phototheque"],
+        indexes: [],
         source: {"excludes": ["content"]},
         highlight: {
             tags_schema: "styled",
@@ -17,7 +18,6 @@ var config = {
             fragment_size: 150,
             fields: {
                 "content": {},
-               // "text": {},
 
             }
         }

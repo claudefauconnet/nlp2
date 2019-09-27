@@ -1,14 +1,12 @@
-
 {
   "general": {
-  "description":"index des bordereaux de versement de Baillet",
-  "label":"Bordereaux"
-
-},
-  "connector": {
+    "description": "index des rapports moraux de Baillet",
+    "label": "Rapports moraux"
+  },
+  "connector":{
     "type": "fs",
     "settings": "ATD",
-    "dir": "D:\\ATD_Baillet\\versements2018",
+    "dir": "H:\\ATD\\ATD_QUART_MONDE_Cde2017_2128_Cde01_BP10_PDF",
     "schema": "officeDocument"
   },
   "schema": {

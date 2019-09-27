@@ -9,7 +9,12 @@ var mainController = (function () {
     self.init0= function () {
         context = config;
         mainController.bindControls();
-        indexes.initIndexesDiv(false)
+        indexes.loadIndexConfigs(function(err,result){
+            if(err)
+                return $("#resultDiv").html("la configuration des index n'a pu être chargée :"+err.message);
+            indexes.initIndexesDiv(false)
+        })
+
     }
 
     self.bindControls = function () {
