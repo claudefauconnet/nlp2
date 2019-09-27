@@ -9,6 +9,8 @@ var mainController = (function () {
     self.init0= function () {
         context = config;
         mainController.bindControls();
+        self.hideUsageDiv();
+        $("#questionInput").focus()
         indexes.loadIndexConfigs(function(err,result){
             if(err)
                 return $("#resultDiv").html("la configuration des index n'a pu être chargée :"+err.message);
@@ -100,7 +102,14 @@ var mainController = (function () {
     }
 
     self.hideUsageDiv=function(){
-        $("#usageDiv").hide()
+        if(!context.usageHtml){
+            context.usageHtml= $(".usageDiv").html()
+            $(".usageDiv").html("cliquez ici pour le mode d'emploi...")
+    }
+        else{
+            $(".usageDiv").html( context.usageHtml);
+            context.usageHtml=null;
+        }
     }
 
     return self;

@@ -50,16 +50,20 @@
         font-family: Verdana;
     }
 
-    .lefDiv {
+    .leftDiv {
+        display: flex;
         flex-direction: column;
-        min-width: 300px;
-        background: whitesmoke;
+        min-width: 250px;
+        max-width: 250px;
+        background: #e0dddd;
     }
 
     .rightDiv {
+        display: flex;
         flex-direction: column;
-        min-width: 300px;
-        background: whitesmoke;
+        min-width: 250px;
+        max-width: 250px;
+        background: #e0dddd;
     }
 
     .centerDiv {
@@ -67,6 +71,7 @@
         background: whitesmoke;
         display: flex;
         align-items: center;
+        min-width: 500px;
        // justify-content: center;
     }
 
@@ -90,10 +95,14 @@
 
     .usageDiv{
         font-size: 12px;
+        background: #e0dddd;
 
     }
     .usageDiv td {
         padding: 2px;
+    }
+    table {
+       border: 1px;
     }
 
 
@@ -117,6 +126,10 @@
         font-size: 14px;
         font-style: normal;
         font-weight: bold;
+        text-align: justify;
+        margin: 0 auto;
+        width:250px;
+
     }
     .currentPage{
       background: #6a7179;
@@ -149,13 +162,19 @@
         opacity: 50%;
         width:20px
     }
+
+    ul {
+        list-style-type: none;
+    }
 </style>
 <body>
 
 <div class="container">
-    <div class="lefDiv">
-        <div id="associatedWordsDiv" style="width:90%;padding:3px"></div>
-        <div id="associatedWordsEntitiesDiv" style="width:90%;padding:3px"></div>
+    <div class="leftDiv">
+
+
+        <div id="indexesDiv"></div>
+        <div id="jstreeDiv"></div>
 
     </div>
     <div class="centerDiv">
@@ -208,8 +227,13 @@
         </div>
     </div>
     <div class="rightDiv">
-        <div id="indexesDiv"></div>
-        <div id="jstreeDiv"></div>
+        <p align="center" > centre Joseph Wrésinski  moteur de recherche fédéree </p>
+        <div style="display:table-cell; vertical-align:middle; text-align:center">
+            <img src="images/logoATD.png" width="100px">
+        </div>
+
+        <div id="associatedWordsDiv" style="width:90%;padding:3px; font-size:12px"></div>
+        <div id="associatedWordsEntitiesDiv" style="width:90%;padding:3px"></div>
     </div>
 
 

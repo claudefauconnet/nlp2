@@ -88,6 +88,10 @@ var authentication = (function () {
             if(!user)
                 return $("#loginMessage").html("invalid  login or password");
 
+            var userGroups=user.groupes.split(",");
+            if(userGroups.indexOf("admin")<0 && userGroups.indexOf(config.appName)<0 )
+                return $("#loginMessage").html("user not allowed on this application  : "+config.appName);
+
             $("#loginDiv").css("visibility", "hidden");
             $("#main").css("visibility", "visible");
             self.currentUser=user;

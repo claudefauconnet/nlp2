@@ -98,10 +98,11 @@ var indexes=(function(){
 
         self.initIndexesDiv = function (checked) {
             var indexes = context.indexes;
-            indexesCxbs = "<span class='ui_title'>Sources</span><ul>";
+            indexesCxbs = "<ul>";
 
+            indexesCxbs += "<span class='ui_title'>Sources</span>";
             indexesCxbs += "<li><input type='checkbox' checked='checked'  id='indexesCbxes_all' onchange='indexes.onIndexAllCBXchange()'>" +
-                "Toutes <index> <span class='indexDocCount' id='indexDocCount_all'/></li>"
+                "Toutes <index> <span class='indexDocCount' id='indexDocCount_all'/></li><li>&nbsp;</li>"
             indexesCxbs += ""
             indexes.forEach(function (index) {
 

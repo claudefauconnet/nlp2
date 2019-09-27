@@ -11,7 +11,7 @@ var Search = (function () {
         console.log(JSON.stringify(query, null, 2))
 
 
-        var strQuery=JSON.stringify(query);
+        var strQuery = JSON.stringify(query);
         var payload = {
             executeQuery: strQuery,
             indexes: JSON.stringify(indexes)
@@ -41,7 +41,7 @@ var Search = (function () {
 
     }
 
-    self.executeMsearch=function(ndjson,callback){
+    self.executeMsearch = function (ndjson, callback) {
         var payload = {
             executeMsearch: 1,
             ndjson: ndjson
@@ -69,8 +69,6 @@ var Search = (function () {
         });
 
     }
-
-
 
 
     self.searchPlainText = function (options, callback) {
@@ -139,14 +137,18 @@ var Search = (function () {
                 }
                 if (result.hits.hits.length == 0)
                     return $("#resultDiv").html("pas de résultats");
-               //  Entities.showQuestionEntitiesInJsTree(query);
+                //  Entities.showQuestionEntitiesInJsTree(query);
 
-            //    Entities.showAssociatedWordsWordnetEntitiesInJsTree(result.aggregations.associatedWords);
-            // Entities.showAssociatedWordsEntitiesInJsTree(result.aggregations.associatedWords,result.hits.hits);
+                //    Entities.showAssociatedWordsWordnetEntitiesInJsTree(result.aggregations.associatedWords);
+                // Entities.showAssociatedWordsEntitiesInJsTree(result.aggregations.associatedWords,result.hits.hits);
                 Entities.showAssociatedWords(result.aggregations.associatedWords)
-               // Entities.showAssociatedWordsWolf(result.aggregations.associatedWords)
-                self.setResultsCountByIndex(result.aggregations.indexesCountDocs)
-                $("#indexDocCount_all").html("(" + result.hits.total + ")");
+                // Entities.showAssociatedWordsWolf(result.aggregations.associatedWords)
+                self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
+
+                if ($("#indexesCbxes_all").prop("checked"))
+                    $("#indexDocCount_all").html("(" + result.hits.total + ")");
+                else
+                    $("#indexDocCount_all").html("");
                 mainController.showPageControls(result.hits.total);
                 return ui.showResultList(result.hits.hits);
 
@@ -171,8 +173,8 @@ var Search = (function () {
         self.analyzeQuestion(context.question, function (err, query) {
 
 
-            if(!query.bool)
-                query={bool:{must:[]}};
+            if (!query.bool)
+                query = {bool: {must: []}};
             //   query={bool:{must:[query]}};
 
             query.bool.must.push({
@@ -182,16 +184,16 @@ var Search = (function () {
             })
             Search.queryElastic({
                     query: query,
-                   // _source: context.elasticQuery.source,
-                   highlight: {
-                       tags_schema: "styled",
-                       fragment_size: 1,
-                       number_of_fragments: 0,
-                       fields: {
-                           "content": {},
+                    // _source: context.elasticQuery.source,
+                    highlight: {
+                        tags_schema: "styled",
+                        fragment_size: 1,
+                        number_of_fragments: 0,
+                        fields: {
+                            "content": {},
 
-                       }
-                   }
+                        }
+                    }
 
                 }, null
 
@@ -219,18 +221,18 @@ var Search = (function () {
         var array = regexPhrase.exec(question);
         if (array && array.length > 1) {// on enleve les "
             var slop = 2;
-            if (array.length == 3 && array[2]!="")
-                try{
-                slop = parseInt(array[2])
-                }catch(e){
-                $("#resultDiv").html("la distance doit etre un nombre")
+            if (array.length == 3 && array[2] != "")
+                try {
+                    slop = parseInt(array[2])
+                } catch (e) {
+                    $("#resultDiv").html("la distance doit etre un nombre")
                 }
             question = array[1];
-          /*  if(question.match(/[%///]+/)){
+            /*  if(question.match(/[%///]+/)){
 
 
 
-            }*/
+              }*/
             query = {
                 "match_phrase": {
                     "content": {
@@ -273,7 +275,6 @@ var Search = (function () {
         }
 
 
-
         words.forEach(function (word) {
             if (word.indexOf("/") > 0) {// or
                 var array = word.split("/");
@@ -299,7 +300,6 @@ var Search = (function () {
 
 
     }
-
 
 
     return self;

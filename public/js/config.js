@@ -1,5 +1,6 @@
 var config = {
-   loginMode:"none",
+    appName:"search",
+   loginMode:"database",  //database or none
     locale:"Fr",
     elasticUrl : "../elastic",
     indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],

@@ -26,6 +26,7 @@ var Entities = (function () {
         words.sort(function (a, b) {
             return a.score - b.score
         })
+        html+="<li><span class='ui_title'>Mots associés</span></li></li></li>";
         words.forEach(function (key) {
             var word = key
             var p = key.indexOf("'");
@@ -33,11 +34,11 @@ var Entities = (function () {
                 word = key.substring(p + 1)
 
             var doc_count = tokens[key].doc_count;
-            html += "<li onclick=mainController.addAssciatedWordToQuestion('" + word + "')>(" + doc_count + " ) " + word;
+            html += "<li onclick=mainController.addAssciatedWordToQuestion('" + word + "')>(" + doc_count + " ) " + word+"</li>";
 
 
         })
-        html += "</li>";
+        html += "</ul>";
 
         $("#associatedWordsDiv").html(html);
     }

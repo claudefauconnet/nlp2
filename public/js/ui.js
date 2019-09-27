@@ -3,9 +3,9 @@ var ui = (function () {
 
 
     self.getHitDiv = function (hit, displayConfig) {
-
+        var indexLabel=context.indexConfigs[hit._index].general.label
         var html = "<div class='hit' onclick=Search.searchHitDetails('" + hit._id + "') >" +
-            "<span style=' font-size: 12px;font-weight: bold'>" + hit._index + " : </span>  " +
+            "<span style=' font-size: 12px;font-weight: bold'>" + indexLabel + " : </span>  " +
             "" + self.getHitHtml(hit, displayConfig, "list") +
             "" +
             "" +
