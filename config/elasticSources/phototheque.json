@@ -5,8 +5,6 @@
   },
   "connector": {
     "type": "mySQL",
-    "schema": "phototheque",
-    "settings": "ATD",
     "connOptions": {
       "host": "localhost",
       "user": "root",
@@ -16,87 +14,90 @@
     "sqlQuery": "select * from phototheque"
   },
   "schema": {
+    "settings": {},
     "mappings": {
-      "phototheque": {
-        "properties": {
-          "id": {
-            "type": "keyword",
-            "isId": true
-          },
-          "indexCIJW": {
-            "type": "keyword",
-            "isTitle": true,
-            "inCSV": true
-          },
-          "dossier": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "sousdossier": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "document": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "versement": {
-            "type": "integer"
-          },
-          "lien": {
-            "type": "keyword"
-          },
-          "photographe": {
-            "type": "text"
-          },
-          "agence": {
-            "type": "text"
-          },
-          "droit_auteur": {
-            "type": "keyword"
-          },
-          "droit_image": {
-            "type": "keyword"
-          },
-          "contenu": {
-            "type": "text",
-            "analyzer": "ATD"
-          },
-          "temoin_ref": {
-            "type": "text"
-          },
-          "date": {
-            "type": "date",
-            "inCSV": true
-          },
-          "lieu": {
-            "type": "text"
-          },
-          "description": {
-            "type": "text",
-            "analyzer": "ATD"
-          },
-          "local": {
-            "type": "keyword"
-          },
-          "support": {
-            "type": "keyword"
-          },
-          "dateMaj": {
-            "type": "date"
-          },
-          "redacteur": {
-            "type": "keyword"
-          },
-          "content": {
-            "type": "text",
-            "index_options": "offsets",
-            "analyzer": "ATD",
-            "fielddata": true,
-            "fields": {
-              "contentKeyWords": {
-                "type": "keyword",
-                "ignore_above": 256
+      "mappings": {
+        "phototheque": {
+          "properties": {
+            "id": {
+              "type": "keyword",
+              "isId": true
+            },
+            "indexCIJW": {
+              "type": "keyword",
+              "isTitle": true,
+              "inCSV": true
+            },
+            "dossier": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "sousdossier": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "document": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "versement": {
+              "type": "integer"
+            },
+            "lien": {
+              "type": "keyword"
+            },
+            "photographe": {
+              "type": "text"
+            },
+            "agence": {
+              "type": "text"
+            },
+            "droit_auteur": {
+              "type": "keyword"
+            },
+            "droit_image": {
+              "type": "keyword"
+            },
+            "contenu": {
+              "type": "text",
+              "analyzer": "ATD"
+            },
+            "temoin_ref": {
+              "type": "text"
+            },
+            "date": {
+              "type": "date",
+              "inCSV": true
+            },
+            "lieu": {
+              "type": "text"
+            },
+            "description": {
+              "type": "text",
+              "analyzer": "ATD"
+            },
+            "local": {
+              "type": "keyword"
+            },
+            "support": {
+              "type": "keyword"
+            },
+            "dateMaj": {
+              "type": "date"
+            },
+            "redacteur": {
+              "type": "keyword"
+            },
+            "content": {
+              "type": "text",
+              "index_options": "offsets",
+              "analyzer": "ATD",
+              "fielddata": true,
+              "fields": {
+                "contentKeyWords": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
               }
             }
           }

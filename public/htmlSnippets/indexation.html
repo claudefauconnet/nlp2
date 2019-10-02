@@ -1,0 +1,26 @@
+<style>
+
+    .htmlSnippet {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+
+
+    }
+
+</style>
+
+<div class="htmlSnippet">
+
+
+    <div><input type="checkbox" checked="checked" id="indexation-reCreateIndexCBX">re create index</div>
+    <div> indexation <select id="indexation-type">
+        <option>full</option>
+        <option>incremental</option>
+    </select>
+    </div>
+    <div>
+        <button onclick="mainController.indexCurrentSource()">start indexation</button>
+    </div>
+    <div class="message" id="indexation-message"></div>
+</div>

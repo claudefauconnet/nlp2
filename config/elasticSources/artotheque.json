@@ -5,8 +5,6 @@
   },
   "connector": {
     "type": "mySQL",
-    "schema": "artotheque",
-    "settings": "ATD",
     "connOptions": {
       "host": "localhost",
       "user": "root",
@@ -16,88 +14,91 @@
     "sqlQuery": "select * from artotheque"
   },
   "schema": {
+    "settings": {},
     "mappings": {
-      "artotheque": {
-        "properties": {
-          "id": {
-            "isId": true,
-            "type": "integer"
-          },
-          "indexCIJW": {
-            "type": "keyword",
-            "isTitle": true,
-            "inCSV": true
-          },
-          "lien": {
-            "type": "keyword"
-          },
-          "fonds": {
-            "type": "keyword"
-          },
-          "collection": {
-            "type": "keyword"
-          },
-          "document": {
-            "type": "keyword"
-          },
-          "type": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "createur": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "titre": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "epoque": {
-            "type": "keyword"
-          },
-          "materiaux": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "dimensions": {
-            "type": "keyword"
-          },
-          "provenance": {
-            "type": "keyword"
-          },
-          "description": {
-            "type": "text"
-          },
-          "localisation": {
-            "type": "keyword"
-          },
-          "temoin_ref": {
-            "type": "keyword"
-          },
-          "liens": {
-            "type": "keyword"
-          },
-          "mots_cles": {
-            "type": "keyword"
-          },
-          "divers": {
-            "type": "keyword"
-          },
-          "dateMaj": {
-            "type": "date"
-          },
-          "redacteur": {
-            "type": "keyword"
-          },
-          "content": {
-            "type": "text",
-            "index_options": "offsets",
-            "analyzer": "ATD",
-            "fielddata": true,
-            "fields": {
-              "contentKeyWords": {
-                "type": "keyword",
-                "ignore_above": 256
+      "mappings": {
+        "artotheque": {
+          "properties": {
+            "id": {
+              "isId": true,
+              "type": "integer"
+            },
+            "indexCIJW": {
+              "type": "keyword",
+              "isTitle": true,
+              "inCSV": true
+            },
+            "lien": {
+              "type": "keyword"
+            },
+            "fonds": {
+              "type": "keyword"
+            },
+            "collection": {
+              "type": "keyword"
+            },
+            "document": {
+              "type": "keyword"
+            },
+            "type": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "createur": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "titre": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "epoque": {
+              "type": "keyword"
+            },
+            "materiaux": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "dimensions": {
+              "type": "keyword"
+            },
+            "provenance": {
+              "type": "keyword"
+            },
+            "description": {
+              "type": "text"
+            },
+            "localisation": {
+              "type": "keyword"
+            },
+            "temoin_ref": {
+              "type": "keyword"
+            },
+            "liens": {
+              "type": "keyword"
+            },
+            "mots_cles": {
+              "type": "keyword"
+            },
+            "divers": {
+              "type": "keyword"
+            },
+            "dateMaj": {
+              "type": "date"
+            },
+            "redacteur": {
+              "type": "keyword"
+            },
+            "content": {
+              "type": "text",
+              "index_options": "offsets",
+              "analyzer": "ATD",
+              "fielddata": true,
+              "fields": {
+                "contentKeyWords": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
               }
             }
           }

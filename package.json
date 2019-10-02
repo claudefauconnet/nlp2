@@ -14,12 +14,14 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "latest": "^0.2.0",
     "logger": "0.0.1",
     "mime": "^2.4.4",
     "morgan": "~1.9.1",
     "ndjson": "^1.5.0",
-    "npm-upgrade": "^2.0.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "bcrypt": "^3.0.6",
+    "mysql": "^2.16.0",
+    "winston": "^3.2.1",
+    "xlsx": "^0.14.3"
   }
 }

@@ -2,7 +2,7 @@
     "indexDescriptions": {
         "phototheque": {
             "type": "mySQL",
-            "schema": "phototheque",
+            "mappings": "phototheque",
             "settings": "ATD",
             "connOptions": {
                 "host": "localhost",
@@ -14,7 +14,7 @@
         },
         "artotheque": {
             "type": "mySQL",
-            "schema": "phototheque",
+            "mappings": "phototheque",
             "settings": "ATD",
             "connOptions": {
                 "host": "localhost",
@@ -26,7 +26,7 @@
         },
         "audiotheque": {
             "type": "mySQL",
-            "schema": "audiotheque",
+            "mappings": "audiotheque",
             "settings": "ATD",
             "connOptions": {
                 "host": "localhost",
@@ -38,7 +38,7 @@
         },
         "videotheque": {
             "type": "mySQL",
-            "schema": "default",
+            "mappings": "default",
             "settings": "ATD",
             "connOptions": {
                 "host": "localhost",
@@ -52,19 +52,19 @@
             "type": "fs",
             "settings": "ATD",
             "dir": "D:\\ATD_Baillet\\versements2018",
-            "schema": "officeDocument"
+            "mappings": "officeDocument"
         },
         "ocr": {
             "type": "fs",
             "settings": "ATD",
             "dir": "H:\\ATD\\ATD_QUART_MONDE_Cde2017_2128_Cde01_BP10_PDF",
-            "schema": "officeDocument"
+            "mappings": "officeDocument"
         },
         "testatd": {
             "type": "fs",
             "settings": "ATD",
             "dir": "C:\\Users\\claud\\Downloads\\test",
-            "schema": "officeDocument"
+            "mappings": "officeDocument"
         }
     }
 }

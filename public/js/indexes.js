@@ -3,10 +3,10 @@ var indexes=(function(){
 
     var self= {};
 
-    self.loadIndexConfigs=function(callback){
+    self.loadIndexConfigs=function(indexes,callback){
         var payload={
             getIndexConfigs:1,
-            indexes:JSON.stringify(config.indexes)
+            indexes:JSON.stringify(indexes)
         }
         $.ajax({
             type: "POST",
@@ -27,6 +27,58 @@ var indexes=(function(){
 
 
     }
+
+    self.saveIndexConfig=function(indexName,jsonStr,callback){
+
+        var payload={
+            saveIndexConfig:1,
+            index:indexName,
+            jsonStr:jsonStr
+        }
+        $.ajax({
+            type: "POST",
+            url: config.elasticUrl,
+            data: payload,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+
+                callback(null, data);
+
+            }
+            , error: function (err) {
+                console.log(err.responseText)
+                return callback(err)
+            }
+
+        });
+
+    }
+
+    self.deleteIndexConfig=function(indexName){
+        var payload={
+            deleteIndexConfig:1,
+            index:indexName
+        }
+        $.ajax({
+            type: "POST",
+            url: config.elasticUrl,
+            data: payload,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                context.indexConfigs=data;
+                callback(null, data);
+
+            }
+            , error: function (err) {
+                console.log(err.responseText)
+                return callback(err)
+            }
+
+        });
+
+
+    }
+
 
     self.uncheckAllIndexes=function(){
         $("#indexesCbxes_all").prop("checked", false)

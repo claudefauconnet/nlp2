@@ -39,6 +39,20 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
     }
 
+    if (req.body.saveIndexConfig) {
+        configLoader.saveIndexConfig(req.body.index,req.body.jsonStr,function(error, result){
+            processResponse(response, error, result)
+        });
+
+    }
+
+    if (req.body.deleteIndexConfig) {
+        configLoader.deleteIndexConfig(req.body.index,function(error, result){
+            processResponse(response, error, result)
+        });
+
+    }
+
 
     if (req.body.executeMsearch) {
         elasticProxy.executeMsearch(req.body.ndjson, function (error, result) {
@@ -105,15 +119,15 @@ router.post('/bailletarchives-authentication', function (req, response) {
 
 function processResponse(response, error, result) {
     if (response && !response.finished) {
-        /* res.setHeader('Access-Control-Allow-Origin', '*');
+     /*   res.setHeader('Access-Control-Allow-Origin', '*');
          res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
          res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype'); // If needed
-         res.setHeader('Access-Control-Allow-Credentials', true); // If needed.setHeader('Content-Type', 'application/json');
-         */
-        response.setHeader('Access-Control-Allow-Origin', '*');
+         res.setHeader('Access-Control-Allow-Credentials', true); // If needed.setHeader('Content-Type', 'application/json');*/
+
+     response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
         response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype'); // If needed
-        response.setHeader('Access-Control-Allow-Credentials', true); // If needed
+        response.setHeader('Access-Control-Allow-Credentials', true); // If needed*/
 
 
         if (error) {
@@ -122,10 +136,10 @@ function processResponse(response, error, result) {
             }
             console.log("ERROR !!" + error);
             //   socket.message("ERROR !!" + error);
-            response.status(404).send({ERROR: error});
+           return response.status(404).send({ERROR: error});
 
         } else if (!result) {
-            response.send({done: true});
+           return  response.send({done: true});
         } else {
 
             if (typeof result == "string") {

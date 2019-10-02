@@ -5,8 +5,6 @@
   },
   "connector": {
     "type": "mySQL",
-    "schema": "default",
-    "settings": "ATD",
     "connOptions": {
       "host": "localhost",
       "user": "root",
@@ -16,91 +14,94 @@
     "sqlQuery": "select * from videotheque"
   },
   "schema": {
+    "settings": {},
     "mappings": {
-      "videotheque": {
-        "properties": {
-          "id": {
-            "isId": true,
-            "type": "integer"
-          },
-          "indexCIJW": {
-            "type": "keyword",
-            "inCSV": true,
-            "isTitle": true
-          },
-          "projet": {
-            "type": "keyword"
-          },
-          "lien": {
-            "type": "keyword"
-          },
-          "cote": {
-            "type": "keyword"
-          },
-          "document": {
-            "type": "keyword"
-          },
-          "date_creation": {
-            "type": "keyword"
-          },
-          "titre": {
-            "type": "text",
-            "inCSV": true
-          },
-          "fonds": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "depot": {
-            "type": "keyword"
-          },
-          "droits": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "local": {
-            "type": "keyword"
-          },
-          "standard": {
-            "type": "keyword"
-          },
-          "observations": {
-            "type": "text"
-          },
-          "edition": {
-            "type": "text",
-            "inCSV": true
-          },
-          "langue": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "qualification": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "exploitation": {
-            "type": "keyword"
-          },
-          "notes_conjoncture": {
-            "type": "text"
-          },
-          "dateMaj": {
-            "type": "date"
-          },
-          "redacteur": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "content": {
-            "type": "text",
-            "index_options": "offsets",
-            "analyzer": "ATD",
-            "fielddata": true,
-            "fields": {
-              "contentKeyWords": {
-                "type": "keyword",
-                "ignore_above": 256
+      "mappings": {
+        "videotheque": {
+          "properties": {
+            "id": {
+              "isId": true,
+              "type": "integer"
+            },
+            "indexCIJW": {
+              "type": "keyword",
+              "inCSV": true,
+              "isTitle": true
+            },
+            "projet": {
+              "type": "keyword"
+            },
+            "lien": {
+              "type": "keyword"
+            },
+            "cote": {
+              "type": "keyword"
+            },
+            "document": {
+              "type": "keyword"
+            },
+            "date_creation": {
+              "type": "keyword"
+            },
+            "titre": {
+              "type": "text",
+              "inCSV": true
+            },
+            "fonds": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "depot": {
+              "type": "keyword"
+            },
+            "droits": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "local": {
+              "type": "keyword"
+            },
+            "standard": {
+              "type": "keyword"
+            },
+            "observations": {
+              "type": "text"
+            },
+            "edition": {
+              "type": "text",
+              "inCSV": true
+            },
+            "langue": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "qualification": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "exploitation": {
+              "type": "keyword"
+            },
+            "notes_conjoncture": {
+              "type": "text"
+            },
+            "dateMaj": {
+              "type": "date"
+            },
+            "redacteur": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "content": {
+              "type": "text",
+              "index_options": "offsets",
+              "analyzer": "ATD",
+              "fielddata": true,
+              "fields": {
+                "contentKeyWords": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
               }
             }
           }
@@ -120,7 +121,6 @@
           "cssClass": "text"
         }
       },
-
       {
         "cote": {
           "cssClass": "text"

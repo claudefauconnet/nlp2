@@ -11,7 +11,7 @@ var mainController = (function () {
         mainController.bindControls();
         self.hideUsageDiv();
         $("#questionInput").focus()
-        indexes.loadIndexConfigs(function(err,result){
+        indexes.loadIndexConfigs(config.indexes,function(err,result){
             if(err)
                 return $("#resultDiv").html("la configuration des index n'a pu être chargée :"+err.message);
             indexes.initIndexesDiv(false)

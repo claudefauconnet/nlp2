@@ -3,36 +3,37 @@
     "description": "index des rapports moraux de Baillet",
     "label": "Rapports moraux"
   },
-  "connector":{
+  "connector": {
     "type": "fs",
-    "settings": "ATD",
-    "dir": "H:\\ATD\\ATD_QUART_MONDE_Cde2017_2128_Cde01_BP10_PDF",
-    "schema": "officeDocument"
+    "dir": "H:\\ATD\\ATD_QUART_MONDE_Cde2017_2128_Cde01_BP10_PDF"
   },
   "schema": {
-    "properties": {
-      "author": {
-        "type": "text"
-      },
-      "content": {
-        "type": "text",
-        "index_options": "offsets",
-        "fields": {
-          "contentKeyWords": {
-            "type": "keyword",
-            "ignore_above": 256
-          }
+    "settings": {},
+    "mappings": {
+      "properties": {
+        "author": {
+          "type": "text"
         },
-        "fielddata": true
-      },
-      "date": {
-        "type": "text"
-      },
-      "path": {
-        "type": "text"
-      },
-      "title": {
-        "type": "text"
+        "content": {
+          "type": "text",
+          "index_options": "offsets",
+          "fields": {
+            "contentKeyWords": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          },
+          "fielddata": true
+        },
+        "date": {
+          "type": "text"
+        },
+        "path": {
+          "type": "text"
+        },
+        "title": {
+          "type": "text"
+        }
       }
     }
   },
@@ -86,7 +87,6 @@
         }
       }
     ],
-    "csv": [
-    ]
+    "csv": []
   }
 }

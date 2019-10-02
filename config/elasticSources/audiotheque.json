@@ -5,8 +5,6 @@
   },
   "connector": {
     "type": "mySQL",
-    "schema": "audiotheque",
-    "settings": "ATD",
     "connOptions": {
       "host": "localhost",
       "user": "root",
@@ -16,105 +14,108 @@
     "sqlQuery": "select * from audiotheque"
   },
   "schema": {
+    "settings": {},
     "mappings": {
-      "audiotheque": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "isId": true
-          },
-          "indexCIJW": {
-            "type": "keyword",
-            "isTitle": true,
-            "inCSV": true
-          },
-          "Cote": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "Type": {
-            "type": "keyword"
-          },
-          "NDA": {
-            "type": "keyword"
-          },
-          "Comptage": {
-            "type": "keyword"
-          },
-          "DateNumerisation": {
-            "type": "text"
-          },
-          "Operateur": {
-            "type": "keyword"
-          },
-          "Titre1": {
-            "type": "text",
-            "analyzer": "ATD",
-            "inCSV": true
-          },
-          "Titre2": {
-            "type": "text"
-          },
-          "TitreCatalogue": {
-            "type": "text"
-          },
-          "QualiteEcoute": {
-            "type": "keyword"
-          },
-          "RDB": {
-            "type": "keyword"
-          },
-          "RMDA": {
-            "type": "keyword"
-          },
-          "DocumentsAssocies": {
-            "type": "keyword"
-          },
-          "DateConformation": {
-            "type": "text"
-          },
-          "Conformation": {
-            "type": "text"
-          },
-          "DH": {
-            "type": "keyword"
-          },
-          "DM": {
-            "type": "keyword"
-          },
-          "DS": {
-            "type": "keyword"
-          },
-          "DS10_3": {
-            "type": "keyword"
-          },
-          "DateEnregistrement": {
-            "type": "text",
-            "inCSV": true
-          },
-          "MoisEnregistrement": {
-            "type": "integer",
-            "inCSV": true
-          },
-          "AnneeEnregistrement": {
-            "type": "integer",
-            "inCSV": true
-          },
-          "dateMaj": {
-            "type": "date"
-          },
-          "redacteur": {
-            "type": "keyword"
-          },
-          "content": {
-            "type": "text",
-            "index_options": "offsets",
-            "fielddata": true,
-            "analyzer": "ATD",
-            "fields": {
-              "contentKeyWords": {
-                "type": "keyword",
-                "ignore_above": 256
+      "mappings": {
+        "audiotheque": {
+          "properties": {
+            "id": {
+              "type": "integer",
+              "isId": true
+            },
+            "indexCIJW": {
+              "type": "keyword",
+              "isTitle": true,
+              "inCSV": true
+            },
+            "Cote": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "Type": {
+              "type": "keyword"
+            },
+            "NDA": {
+              "type": "keyword"
+            },
+            "Comptage": {
+              "type": "keyword"
+            },
+            "DateNumerisation": {
+              "type": "text"
+            },
+            "Operateur": {
+              "type": "keyword"
+            },
+            "Titre1": {
+              "type": "text",
+              "analyzer": "ATD",
+              "inCSV": true
+            },
+            "Titre2": {
+              "type": "text"
+            },
+            "TitreCatalogue": {
+              "type": "text"
+            },
+            "QualiteEcoute": {
+              "type": "keyword"
+            },
+            "RDB": {
+              "type": "keyword"
+            },
+            "RMDA": {
+              "type": "keyword"
+            },
+            "DocumentsAssocies": {
+              "type": "keyword"
+            },
+            "DateConformation": {
+              "type": "text"
+            },
+            "Conformation": {
+              "type": "text"
+            },
+            "DH": {
+              "type": "keyword"
+            },
+            "DM": {
+              "type": "keyword"
+            },
+            "DS": {
+              "type": "keyword"
+            },
+            "DS10_3": {
+              "type": "keyword"
+            },
+            "DateEnregistrement": {
+              "type": "text",
+              "inCSV": true
+            },
+            "MoisEnregistrement": {
+              "type": "integer",
+              "inCSV": true
+            },
+            "AnneeEnregistrement": {
+              "type": "integer",
+              "inCSV": true
+            },
+            "dateMaj": {
+              "type": "date"
+            },
+            "redacteur": {
+              "type": "keyword"
+            },
+            "content": {
+              "type": "text",
+              "index_options": "offsets",
+              "fielddata": true,
+              "analyzer": "ATD",
+              "fields": {
+                "contentKeyWords": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
               }
             }
           }
@@ -124,7 +125,6 @@
   },
   "display": {
     "list": [
-
       {
         "indexCIJW": {
           "cssClass": "text"
