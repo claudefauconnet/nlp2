@@ -4,7 +4,8 @@
     "label": "Oeuvres d'art"
   },
   "connector": {
-    "type": "mySQL",
+    "type": "sql",
+    "subType": "mySQL",
     "connOptions": {
       "host": "localhost",
       "user": "root",
@@ -13,10 +14,13 @@
     },
     "sqlQuery": "select * from artotheque"
   },
+  "indexation": {
+    "deleteOldIndex": true,
+    "elasticUrl": "http://localhost:9200/"
+  },
   "schema": {
     "settings": {},
     "mappings": {
-      "mappings": {
         "artotheque": {
           "properties": {
             "id": {
@@ -103,7 +107,7 @@
             }
           }
         }
-      }
+
     }
   },
   "display": {

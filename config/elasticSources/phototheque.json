@@ -4,7 +4,8 @@
     "label": "Photos"
   },
   "connector": {
-    "type": "mySQL",
+    "type": "sql",
+    "subType": "mySQL",
     "connOptions": {
       "host": "localhost",
       "user": "root",
@@ -13,10 +14,13 @@
     },
     "sqlQuery": "select * from phototheque"
   },
+  "indexation": {
+    "deleteOldIndex": true,
+    "elasticUrl": "http://localhost:9200/"
+  },
   "schema": {
     "settings": {},
     "mappings": {
-      "mappings": {
         "phototheque": {
           "properties": {
             "id": {
@@ -100,7 +104,6 @@
                 }
               }
             }
-          }
         }
       }
     }

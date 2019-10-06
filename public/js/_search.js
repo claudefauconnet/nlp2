@@ -109,7 +109,7 @@ var Search = (function () {
                     "associatedWords": {
                         "significant_terms": {
                             "size": 30,
-                            "field": "content"
+                            "field": "attachment.content"
                         }
                     },
                     /*   "associatedWords1":
@@ -119,7 +119,7 @@ var Search = (function () {
                                    {
                                        "size": 20,
                                        "field":
-                                           "content"
+                                           "attachment.content"
                                    }
                            },*/
 
@@ -190,7 +190,7 @@ var Search = (function () {
                         fragment_size: 1,
                         number_of_fragments: 0,
                         fields: {
-                            "content": {},
+                            "attachment.content": {},
 
                         }
                     }
@@ -235,7 +235,7 @@ var Search = (function () {
               }*/
             query = {
                 "match_phrase": {
-                    "content": {
+                    "attachment.content": {
                         "query": array[1],
                         "slop": slop
                     }
@@ -254,11 +254,14 @@ var Search = (function () {
         var mustArray = [];
 
 
+
+
+
         var getWordQuery = function (word) {
             if (word.indexOf("%") > 0) {// wildcard * does not split correctly
                 return {
                     "wildcard": {
-                        "content": {
+                        "attachment.content": {
                             "value": word.replace(/%/g, "*"),
                         }
                     }
@@ -266,7 +269,7 @@ var Search = (function () {
             } else {
                 return {
                     "match": {
-                        "content": word
+                        "attachment.content": word
                     }
                 }
             }

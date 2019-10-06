@@ -1,8 +1,8 @@
 {
   "general": {
-    "description": "index des bordereaux de versement de Baillet",
-    "label": "Bordereaux",
-    "indexName": "bordereaux"
+    "description": "index de test de documents",
+    "label": "testdocs",
+    "indexName": "testdocs"
   },
  "indexation": {
     "deleteOldIndex": true,
@@ -10,20 +10,38 @@
   },
   "connector": {
     "type": "fs",
-    "dir": "D:\\ATD_Baillet\\versements2018"
+    "dir": "D:\\ATD_Baillet\\testIndexation"
 
   },
   "settings": {
+    "analysis": {
+      "filter": {
+        "stemmer_filter": {
+          "type": "stemmer",
+          "language": "french"
+        }
+      },
+      "analyzer": {
+        "ATD": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "asciifolding",
+            "stemmer_filter"
+          ]
+        }
+      }
+    }
   },
   "schema": {
     "settings": {},
     "mappings": {
-      "borderaux": {
+      "testdocs": {
         "properties": {
           "author": {
             "type": "text"
           },
-          "content": {
+          "attachment.content": {
             "type": "text",
             "index_options": "offsets",
             "fields": {

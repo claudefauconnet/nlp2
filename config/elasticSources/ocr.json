@@ -7,6 +7,11 @@
     "type": "fs",
     "dir": "H:\\ATD\\ATD_QUART_MONDE_Cde2017_2128_Cde01_BP10_PDF"
   },
+
+  "indexation": {
+    "deleteOldIndex": true,
+    "elasticUrl": "http://localhost:9200/"
+  },
   "schema": {
     "settings": {},
     "mappings": {

@@ -12,6 +12,7 @@
     <script src="js/jquery/jquery-ui.min.js"></script>
     <script src="js/others/async.js"></script>
     <script src="js/others/socket.io.js"></script>
+    <script src="js/backoffice/configEditor.js"></script>
 
 
     <script src="js/backoffice/jquery.json-editor.min.js"></script>
@@ -245,6 +246,15 @@
         }
 
 
+        li{
+            list-style-type: none;
+        }
+
+        div{
+            border: #6a7179 1px solid;
+        }
+
+
     </style>
 
     <script>
@@ -338,6 +348,8 @@
                 <br>
                 <div id="magasinD3MessageDiv"></div>
             </div>
+
+            <button onclick="configEditor.editConfig(context.indexConfigs.testdocs)">editConfig</button>
 
             <!--   <h1>Magasins</h1>
                <div id="MagasinsDiv" class="accordionInnerDiv">

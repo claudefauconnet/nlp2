@@ -2,21 +2,22 @@ var async = require('async');
 var ndjson = require('ndjson');
 var request = require('request');
 var path = require('path');
-var socket = require('../routes/socket.js');
+var socket = require('../../routes/socket.js');
 var fs = require('fs');
 
 
 var documentCrawler = require("./_documentCrawler.");
-var pdfBookCrawler = require("./_pdfBookCrawler.");
+var bookCrawler = require("./_bookCrawler.");
 var sqlCrawler = require("./_sqlCrawler.");
-
+var csvCrawler = require("./_csvCrawler.");
+var imapCrawler = require("./_imapCrawler.");
 var indexer = {
-
 
     index: function (config, callback) {
         var index = config.general.indexName;
-        var elasticUrl = config.run.elasticUrl;
+        var elasticUrl = config.indexation.elasticUrl;
         var connector = config.connector;
+
         var indexExists = false;
 
         async.series([
@@ -60,11 +61,9 @@ var indexer = {
             },
 
 
-
-
             //******deleteIndex*************
             function (callbackSeries) {
-                if (!indexExists || !config.params.deleteOldIndex)
+                if (!indexExists || !config.indexation.deleteOldIndex)
                     return callbackSeries();
 
 
@@ -85,17 +84,23 @@ var indexer = {
             },
             //******create Index*************
             function (callbackSeries) {
-                if (!config.params.deleteOldIndex)
+                if (!config.indexation.deleteOldIndex)
                     return callbackSeries();
 
                 var json = {}
                 var indexSchema = config.schema;
+
+
                 if (indexSchema) {
                     if (indexSchema.settings)
                         json.settings = indexSchema.settings;
                     if (indexSchema.mappings)
                         json.mappings = indexSchema.mappings;
                 }
+
+
+                //updateRecordId  used for incremental update
+                json.mappings[index].properties.incrementRecordId = {"type": "keyword"};
 
                 var options = {
                     method: 'PUT',
@@ -117,158 +122,112 @@ var indexer = {
             },
 
 
-
-            //******get existing documents  versionid for incremental update*************
+            //******get existing documents  incrementRecordIds for incremental update*************
             function (callbackSeries) {
-                return callbackSeries();
-            },
-
-            //******fetch source*************
-            function (callbackSeries) {
-
-                if (!connector.type) {
-                    return callbackSeries("no connector type declared");
-                }
-                if (connector.type = "fs") {
-
-                }
-            }
-
-        var ndjsonStr = ""
-        var serialize = ndjson.serialize();
-        serialize.on('data', function (line) {
-            ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
-        })
-
-        var str = ""
-        pages.forEach(function (page, pageIndex) {
-            var id = docTitle + "_" + (pageIndex + 1)
-            var title = docTitle + "_" + (pageIndex + 1)
-
-            str += JSON.stringify({index: {"_index": index, _type: index, "_id": id}}) + "\r\n"
-            str += JSON.stringify({title: title, path: docPath, page: "page " + (pageIndex + 1), content: page}) + "\r\n"
-
-            //   serialize.write({"_index": index, "_id": id})
-            //   serialize.write({title: docTitle, path: docPath, page: (pageIndex + 1), content: page})
-
-        })
-        serialize.end();
-        var options = {
-            method: 'POST',
-            body: str,
-            encoding: null,
-            headers: {
-                'content-type': 'application/json'
-            },
-
-            url: "http://localhost:9200/_bulk"
-        };
-
-        request(options, function (error, response, body) {
-
-            if (error)
-                return callbackSeries(err);
-            var json = JSON.parse(response.body);
-            return callbackSeries(null, json);
-        })
-    }
-],
-
-function (err) {
-    callback(err)
-}
-
-)
-
-},
-
-
-indexDocumentByPages
-    :
-
-    function (path, index, callback) {
-        var pdfText = "";
-        var pdfPages = [];
-        var docTitle = "";
-        async.series([
-            function (callbackSeries) { //getDocTitle
-                var p = path.lastIndexOf("\\");
-                if (p < 0)
-                    p = path.lastIndexOf("/");//unix
-                var docTitle = path.substring(p + 1)
-                docTitle = docTitle.substring(0, docTitle.indexOf("."))
-
-                return callbackSeries()
-
-            },
-            function (callbackSeries) {
-                bookIngester.parsePdf(path, function (err, result) {
-                    if (err)
-                        return callbackSeries(err);
-                    pdfText = result;
+                config.incrementRecordIds =[];
+                if (!config.indexation.deleteOldIndex)
                     return callbackSeries();
-                })
 
-            },
-            function (callbackSeries) {
-                bookIngester.splitPdfTextInPages(pdfText, function (err, result) {
-                    if (err)
+
+                var incrementRecordIds = [];
+
+                var fecthSize=2000;
+                var resultSize = fecthSize;
+                var offset=0;
+                async.whilst(
+                    function (callbackTest) {//test
+                        return callbackTest(null, resultSize >= fecthSize);
+                    },
+                    function (callbackWhilst) {//iterate
+                        if (config.indexation.deleteOldIndex || !indexExists)
+                            return callbackSeries();
+                        var query = {
+                            size: fecthSize,
+                            from:offset,
+                            _source: "incrementRecordId",
+                            filter: {"match_all": {}}
+                        }
+                        var options = {
+                            method: 'POST',
+                            json: query,
+                            url: elasticUrl + index + "/_search"
+                        };
+
+
+                        request(options, function (error, response, body) {
+                            if (error)
+                                return callbackSeries(error);
+                            if (body.error && body.error.reason)
+                                return callbackSeries(body.error.reason)
+                            var hits = body.hits.hits;
+                            resultSize = hits.length;
+                            offset+=resultSize;
+
+                            hits.forEach(function (hit) {
+                                incrementRecordIds.push(hit._source.incrementRecordId);
+                            })
+
+
+                            return callbackWhilst();
+                        })
+
+
+                    },function(err){
+                        config.incrementRecordIds = incrementRecordIds;
                         return callbackSeries(err);
-                    pdfPages = result;
-                    return callbackSeries();
-                })
-
+                    })
             },
 
 
-            function (callbackSeries) {
-                bookIngester.indexPages(index, docTitle, path, pdfPages, function (err, result) {
-                    if (err)
-                        return callbackSeries(err);
-                    pdfText = result;
-                    return callbackSeries();
-                })
-
-            }
-        ], function (err) {
-            callback(err);
-        })
-    }
-
-,
+                    //******crawl source and index *************
+                    function (callbackSeries) {
 
 
-indexDocumentsByPages: function (dir, index, callback) {
+                        if (connector.type == "fs") {
+                            documentCrawler.indexSource(config, function (err, result) {
+                                return callbackSeries(err, result);
+                            })
+                        } else if (connector.type == "sql") {
+                            sqlCrawler.indexSource(config, function (err, result) {
+                                return callbackSeries(err, result);
+                            })
+                        } else if (connector.type == "csv") {
+                            csvCrawler.indexSource(config, function (err, result) {
+                                return callbackSeries(err, result);
+                            })
+                        } else if (connector.type == "imap") {
+                            imapCrawler.indexSource(config, function (err, result) {
+                                return callbackSeries(err, result);
+                            })
+                        } else if (connector.type == "book") {
+                            bookCrawler.indexSource(config, function (err, result) {
+                                return callbackSeries(err, result);
+                            })
+                        } else
+                            return callbackSeries("no valid connector type declared");
 
-    if (fs.statSync(dir).isDirectory()) {
-        var files = fs.readdirSync(dir);
 
-        async.eachSeries(files, function (file, callbackEach) {
-                var xx = path.extname(file)
-                if (path.extname(file).toLocaleLowerCase() == ".pdf") {
-                    bookIngester.indexDocumentByPages(dir + path.sep + file, index, callbackEach);
+                    }
+            ],
 
-                } else {
-                    callbackEach()
+                function (err) {
+                    callback(err)
                 }
 
-            }, function (err) {
-                if (err)
-                    return callback(err);
-                return callback(null, "done");
-            }
-        )
+            )
 
+            },
 
     }
-}
 
+    module.exports = exports;
 
-}
-module.exports = bookIngester;
 if (false) {
-    var path = "D:\\livres\\l-ideologie-de-la-silicon-valley.pdf";
-    bookIngester.indexDocumentByPages(path, "testpdf", function (err, result) {
+    var path = "D:\\GitHub\\nlp2\\config\\elasticSources\\testdocs.json";
+    var config = "" + fs.readFileSync(path);
+    config = JSON.parse(config);
+    config.run = {elasticUrl: "http://localhost:9200/"}
+    indexer.index(config, function (err, result) {
         if (err)
             return console.log(err);
         return console.log("DONE");
@@ -276,8 +235,11 @@ if (false) {
 }
 
 if (true) {
-    var dir = "D:\\ATD_Baillet\\livres";
-    bookIngester.indexDocumentsByPages(dir, "testpdfquantum", function (err, result) {
+    var path = "D:\\GitHub\\nlp2\\config\\elasticSources\\testsql.json";
+    var config = "" + fs.readFileSync(path);
+    config = JSON.parse(config);
+    //config.indexation = {elasticUrl: "http://localhost:9200/"}
+    indexer.index(config, function (err, result) {
         if (err)
             return console.log(err);
         return console.log("DONE");
@@ -285,4 +247,3 @@ if (true) {
 }
 
 
-//var path="D:\\livres\\livrenumerique.pdf"

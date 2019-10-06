@@ -100,13 +100,31 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
 
 router.post('/authDB', function (req, res, next) {
-    console.log(JSON.stringify(req.body))
+   // console.log(JSON.stringify(req.body))
     if (req.body.tryLogin) {
         authentication.loginInDB(req.body.login, req.body.password, function (err, result) {
             processResponse(res, err, result)
 
         })
 
+    }
+    if (req.body.enrole) {
+        if (req.body.enrole) {
+            if (typeof req.body.users === "string")
+                req.body.users = JSON.parse(req.body.users)
+            authentication.enrole(req.body.users, function (err, result) {
+                processResponse(res, err, result)
+
+            })
+        }
+    }
+    if (req.body.changePassword) {
+        if (req.body.changePassword) {
+            authentication.changePassword(req.body.login, req.body.oldPassword, req.body.newPassword, function (err, result) {
+                processResponse(res, err, result)
+
+            })
+        }
     }
 })
 router.post('/bailletarchives-authentication', function (req, response) {

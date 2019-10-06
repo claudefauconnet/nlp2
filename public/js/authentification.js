@@ -68,7 +68,7 @@ var authentication = (function () {
             if (err && err.responseJSON) {
                 if ( err.responseJSON.ERROR == "changePassword") {
                   //    $("#loginMessage").html("le mot de passe doit être changé (<a href='htmlSnippets/changerMotDePasse.html'>cliquer ici</a>)");
-                    $("#loginMessage").html("le mot de passe doit être changé <button onclick=tools.execTool('changerMotDePasse')>OK</button>");
+                    $("#loginMessage").html("le mot de passe doit être changé <button onclick='authentication.showChangePasswordDialog()'>OK</button>");
                    self.currentUser=user;
                     mainController.init0();
 
@@ -190,6 +190,16 @@ var authentication = (function () {
 
     }
 
+
+    self.showChangePasswordDialog=function(){
+        $("#dialogDiv").dialog("open");
+
+        $("#dialogDiv").load("./htmlSnippets/changerMotDePasse.html"), function () {
+
+        }
+    }
+
+
     self.changePassword=function() {//page htmlSnippets/ changerMotDePasse.html
         $("#changePassword_message").html("");
         var login = $("#changePassword_identifiant").val();
@@ -201,7 +211,7 @@ var authentication = (function () {
         if (!newPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/))
             return $("#changePassword_message").html("invalid  login : Minimum eight characters, at least one uppercase letter, one lowercase letter and one number");
 
-        var authenticationUrl = "../authDB";
+
         var payload = {
             changePassword: 1,
             login: login,

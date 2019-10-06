@@ -87,7 +87,7 @@ var ui = (function () {
 
             if (cssClass == "excerpt") {// traitement special
                 html += "<span class='excerpt'>";
-                hit.highlight.content.forEach(function (highlight, index) {
+                hit.highlight["attachment.content"].forEach(function (highlight, index) {
                     if (index > 0)
                         html += "  ...  "
                     html += highlight
