@@ -109,7 +109,7 @@ var Search = (function () {
                     "associatedWords": {
                         "significant_terms": {
                             "size": 30,
-                            "field": "attachment.content"
+                            "field": config.contentField
                         }
                     },
                     /*   "associatedWords1":
@@ -119,7 +119,7 @@ var Search = (function () {
                                    {
                                        "size": 20,
                                        "field":
-                                           "attachment.content"
+                                          config.contentField
                                    }
                            },*/
 
@@ -189,10 +189,10 @@ var Search = (function () {
                         tags_schema: "styled",
                         fragment_size: 1,
                         number_of_fragments: 0,
-                        fields: {
-                            "attachment.content": {},
+                        fields: {[config.contentField]:{}}
+                         //   "attachment.content": {},
 
-                        }
+                       // }
                     }
 
                 }, null
@@ -214,6 +214,32 @@ var Search = (function () {
 
     self.analyzeQuestion = function (question, callback) {
         question = question.replace(/\*/g, "%") //wildcard * does not split correctly
+        if (true || question.indexOf("\"") > -1) {
+
+            question = question.replace(/(\w*%?)\/(\w*\%?)/g, function (matched, $1, $2) {
+
+                return "("+$1+" | "+$2+")";
+            });
+            question = question.replace(/%/g, "*");
+            query = {
+
+                "simple_query_string": {
+                    "query": question,
+                    "fields": [config.contentField],
+                    "default_operator": "and"
+
+                }
+
+
+            }
+
+            return callback(null, query);
+
+
+        }
+
+
+        question = question.replace(/\*/g, "%") //wildcard * does not split correctly
         var query = {}
 
         //match phrase
@@ -233,15 +259,22 @@ var Search = (function () {
 
 
               }*/
-            query = {
-                "match_phrase": {
-                    "attachment.content": {
-                        "query": array[1],
-                        "slop": slop
-                    }
 
-                }
-            }
+          if( false) {
+              query = {
+                  "match_phrase": {
+                      [config.contentField]: {
+                          "query": array[1],
+                          "slop": slop
+                      }
+
+                  }
+              }
+          }
+
+
+
+
 
             return callback(null, query);
         }
@@ -261,7 +294,7 @@ var Search = (function () {
             if (word.indexOf("%") > 0) {// wildcard * does not split correctly
                 return {
                     "wildcard": {
-                        "attachment.content": {
+                       [config.contentField]: {
                             "value": word.replace(/%/g, "*"),
                         }
                     }
@@ -269,7 +302,7 @@ var Search = (function () {
             } else {
                 return {
                     "match": {
-                        "attachment.content": word
+                       [config.contentField]: word
                     }
                 }
             }

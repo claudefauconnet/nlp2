@@ -21,12 +21,6 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         elasticProxy.executeQuery(queryObj, JSON.parse(req.body.indexes), function (error, result) {
             logger.info("QUERY :"+JSON.stringify(queryObj.query.bool)+ "\n indexes :"+req.body.indexes)
             processResponse(response, error, result);
-          /*  if( error)
-              return  processResponse(response, error, result)
-            configLoader.getIndexConfigs(JSON.parse(req.body.indexes),function(err, configs){
-                result.configs=configs;
-                processResponse(response, error, result)
-            })*/
 
         });
 
@@ -61,42 +55,24 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
     }
 
+    if (req.body && req.body.getTemplates) {
+        configLoader.getTemplates( function (error, result) {
+            processResponse(response, error, result)
+        });
+    }
+    if(req.body && req.body.generateDefaultMappingFields){
 
-    if (req.body && req.body.searchWordAll)
-        elasticProxy.searchWordAll(req.body.searchWordAll, function (error, result) {
-            processResponse(response, error, result)
-        });
-    else if (req.body && req.body.searchDo)
-        elasticProxy.searchUI.search(req.body.indexName, req.body.type, req.body.payload, function (error, result) {
-            processResponse(response, error, result)
-        });
-    else if (req.body && req.body.indexOneDoc)
-        elasticProxy.indexOneDoc(req.body.indexName, req.body.type, req.body.id, req.body.payload, function (error, result) {
-            processResponse(response, error, result)
-        });
+        configLoader.generateDefaultMappingFields(JSON.parse(req.body.connector),function(error,result){
+            processResponse(response, error, result);
 
-    else if (req.body && req.body.findTerms)
-        elasticProxy.findTerms(req.body.indexName, req.body.type, req.body.field, req.body.terms, function (error, result) {
-            processResponse(response, error, result)
-        });
+        })
 
-    else if (req.body && req.body.findDocuments) {
-        //  var options = req.body.options;
-        if (typeof req.body == "string")
-            var options = JSON.parse(req.body).options
-        elasticProxy.findDocuments(req.body.options, function (error, result) {
-            processResponse(response, error, result)
-        });
-    } else if (req.body && req.body.findDocumentsById)
-        elasticProxy.findDocumentsById(req.body.indexName, req.body.ids, req.body.words, function (error, result) {
-            processResponse(response, error, result)
-        });
+    }
 
-    else if (req.body && req.body.findByIds)
-        elasticProxy.findByIds(req.body.options.indexName, req.body.ids, req.body.returnFields, function (error, result) {
-            processResponse(response, error, result)
-        });
+
+
 })
+
 
 
 router.post('/authDB', function (req, res, next) {

@@ -1,15 +1,25 @@
-var configDir = "../config/elasticSources/";
+var configDir = "../config/elastic/";
 var fs = require("fs");
 var path = require("path");
 var async = require("async");
 
+
+var documentCrawler = require("./backoffice/_documentCrawler.");
+var bookCrawler = require("./backoffice/_bookCrawler.");
+var sqlCrawler = require("./backoffice/_sqlCrawler.");
+var csvCrawler = require("./backoffice/_csvCrawler.");
+var imapCrawler = require("./backoffice/_imapCrawler.");
+
+
 var configs = {};
 var configLoader = {
+
+
     getAllIndexNames: function (callback) {
         try {
 
             var indexNames = [];
-            var pathStr = path.join(__dirname, configDir );
+            var pathStr = path.join(__dirname, configDir + "sources/");
             fs.readdirSync(pathStr).forEach(file => {
                 var p = file.indexOf(".json")
                 if (p > -1)
@@ -26,7 +36,7 @@ var configLoader = {
         var config = null;
         var str = null;
         try {
-            var pathStr = path.join(__dirname, configDir + index + ".json");
+            var pathStr = path.join(__dirname, configDir + "sources/" + index + ".json");
 
             //   console.log(pathStr);
             str = fs.readFileSync(pathStr);
@@ -43,24 +53,24 @@ var configLoader = {
 
 
     },
-    saveIndexConfig: function (index,jsonStr, callback) {
-        var pathStr = path.join(__dirname, configDir + index + ".json");
+    saveIndexConfig: function (index, jsonStr, callback) {
+        var pathStr = path.join(__dirname, configDir + "sources/" + index + ".json");
 
-        fs.writeFile(pathStr,jsonStr,function(err,result){
-            if(err)
+        fs.writeFile(pathStr, jsonStr, function (err, result) {
+            if (err)
                 return callback(err);
-            return callback(null, "index saved : "+index);
+            return callback(null, "index saved : " + index);
         });
 
     },
     deleteIndexConfig: function (index, callback) {
-            var pathStr = path.join(__dirname, configDir + index + ".json");
+        var pathStr = path.join(__dirname, configDir + "sources/" + index + ".json");
 
-          fs.unlink(pathStr,function(err,result){
-              if(err)
-                  return callback(err);
-              return callback(null, "index deleted : "+index);
-          });
+        fs.unlink(pathStr, function (err, result) {
+            if (err)
+                return callback(err);
+            return callback(null, "index deleted : " + index);
+        });
 
 
     },
@@ -124,7 +134,48 @@ var configLoader = {
 
     }
 
+    , getTemplates: function (callback) {
+        try {
 
+            var indexNames = [];
+            var dirPathStr = path.join(__dirname, configDir + "templates/");
+            var json = {}
+            fs.readdirSync(dirPathStr).forEach(file => {
+                var filePath = dirPathStr + file
+
+                var str = "" + fs.readFileSync(filePath);
+                var json0 = JSON.parse(str)
+                var p = file.indexOf(".json")
+                var name = file.substring(0, p);
+                json[name] = json0;
+            });
+        } catch (e) {
+            return callback(e);
+
+        }
+        return callback(null, json);
+
+
+    },
+
+    generateDefaultMappingFields: function (connector, callback) {
+
+        var connectorType = connector.type;
+
+        var fn = function (err, result) {
+            callback(err, result)
+        }
+        if (connectorType == "fs")
+            documentCrawler.generateDefaultMappingFields(connector, fn)
+        else if (connectorType == "sql")
+            sqlCrawler.generateDefaultMappingFields(connector, fn)
+        else if (connectorType == "imap")
+            imapCrawler.generateDefaultMappingFields(connector, fn)
+        else if (connectorType == "csv")
+            csvCrawler.generateDefaultMappingFields(connector, fn)
+        else if (connectorType == "book")
+            bookCrawler.generateDefaultMappingFields(connector, fn)
+    }
 }
 
 
@@ -132,6 +183,12 @@ module.exports = configLoader;
 
 if (false) {
     configLoader.getIndexConfigs("bordereaux", function (err, result) {
+        var xx = err;
+    })
+}
+
+if (false) {
+    configLoader.getTemplates(function (err, result) {
         var xx = err;
     })
 }

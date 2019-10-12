@@ -1,112 +1,117 @@
 {
   "general": {
-    "description": "index de l'artoheque de Baillet",
-    "label": "Oeuvres d'art"
+    "description": "index de l'audiotheque de Baillet",
+    "label": "Audios"
   },
   "connector": {
-    "type": "sql",
-    "subType": "mySQL",
+    "type": "mySQL",
     "connOptions": {
       "host": "localhost",
       "user": "root",
       "password": "vi0lon",
-      "database": "artotheque"
+      "database": "audiotheque",
+      "table": "audiotheque"
     },
-    "sqlQuery": "select * from artotheque"
+    "sqlQuery": "select * from audiotheque"
   },
   "indexation": {
     "deleteOldIndex": true,
     "elasticUrl": "http://localhost:9200/"
   },
   "schema": {
-    "settings": {},
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
     "mappings": {
-        "artotheque": {
           "properties": {
             "id": {
-              "isId": true,
-              "type": "integer"
+              "type": "integer",
+              "isId": true
             },
             "indexCIJW": {
               "type": "keyword",
               "isTitle": true,
               "inCSV": true
             },
-            "lien": {
-              "type": "keyword"
-            },
-            "fonds": {
-              "type": "keyword"
-            },
-            "collection": {
-              "type": "keyword"
-            },
-            "document": {
-              "type": "keyword"
-            },
-            "type": {
+            "Cote": {
               "type": "keyword",
               "inCSV": true
             },
-            "createur": {
-              "type": "keyword",
-              "inCSV": true
-            },
-            "titre": {
-              "type": "keyword",
-              "inCSV": true
-            },
-            "epoque": {
+            "Type": {
               "type": "keyword"
             },
-            "materiaux": {
-              "type": "keyword",
-              "inCSV": true
-            },
-            "dimensions": {
+            "NDA": {
               "type": "keyword"
             },
-            "provenance": {
+            "Comptage": {
               "type": "keyword"
             },
-            "description": {
+            "DateNumerisation": {
               "type": "text"
             },
-            "localisation": {
+            "Operateur": {
               "type": "keyword"
             },
-            "temoin_ref": {
+            "Titre1": {
+              "type": "text",
+              "analyzer": "ATD",
+              "inCSV": true
+            },
+            "Titre2": {
+              "type": "text"
+            },
+            "TitreCatalogue": {
+              "type": "text"
+            },
+            "QualiteEcoute": {
               "type": "keyword"
             },
-            "liens": {
+            "RDB": {
               "type": "keyword"
             },
-            "mots_cles": {
+            "RMDA": {
               "type": "keyword"
             },
-            "divers": {
+            "DocumentsAssocies": {
               "type": "keyword"
+            },
+            "DateConformation": {
+              "type": "text"
+            },
+            "Conformation": {
+              "type": "text"
+            },
+            "DH": {
+              "type": "keyword"
+            },
+            "DM": {
+              "type": "keyword"
+            },
+            "DS": {
+              "type": "keyword"
+            },
+            "DS10_3": {
+              "type": "keyword"
+            },
+            "DateEnregistrement": {
+              "type": "text",
+              "inCSV": true
+            },
+            "MoisEnregistrement": {
+              "type": "integer",
+              "inCSV": true
+            },
+            "AnneeEnregistrement": {
+              "type": "integer",
+              "inCSV": true
             },
             "dateMaj": {
               "type": "date"
             },
             "redacteur": {
               "type": "keyword"
-            },
-            "content": {
-              "type": "text",
-              "index_options": "offsets",
-              "analyzer": "ATD",
-              "fielddata": true,
-              "fields": {
-                "contentKeyWords": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
             }
           }
-        }
+
 
     }
   },
@@ -118,42 +123,45 @@
         }
       },
       {
-        "fonds": {
+        "Cote": {
           "cssClass": "text"
         }
       },
       {
-        "collection": {
+        "Type": {
           "cssClass": "text"
         }
       },
       {
-        "document": {
+        "NDA": {
+          "cssClass": "text"
+        },
+        "Comptage": {
           "cssClass": "text"
         }
       },
       {
-        "type": {
+        "DateNumerisation": {
           "cssClass": "text"
         }
       },
       {
-        "createur": {
+        "Operateur": {
           "cssClass": "text"
         }
       },
       {
-        "titre": {
+        "Titre1": {
           "cssClass": "text"
         }
       },
       {
-        "epoque": {
+        "Titre2": {
           "cssClass": "text"
         }
       },
       {
-        "materiaux": {
+        "TitreCatalogue": {
           "cssClass": "text"
         }
       },
@@ -175,87 +183,110 @@
         }
       },
       {
-        "lien": {
+        "Cote": {
           "cssClass": "text"
         }
       },
       {
-        "fonds": {
+        "Type": {
           "cssClass": "text"
         }
       },
       {
-        "collection": {
+        "NDA": {
+          "cssClass": "text"
+        },
+        "Comptage": {
           "cssClass": "text"
         }
       },
       {
-        "document": {
+        "DateNumerisation": {
           "cssClass": "text"
         }
       },
       {
-        "type": {
+        "Operateur": {
           "cssClass": "text"
         }
       },
       {
-        "createur": {
+        "Titre1": {
           "cssClass": "text"
         }
       },
       {
-        "titre": {
+        "Titre2": {
           "cssClass": "text"
         }
       },
       {
-        "epoque": {
+        "TitreCatalogue": {
           "cssClass": "text"
         }
       },
       {
-        "materiaux": {
+        "QualiteEcoute": {
           "cssClass": "text"
         }
       },
       {
-        "dimensions": {
+        "RDB": {
           "cssClass": "text"
         }
       },
       {
-        "provenance": {
+        "RMDA": {
           "cssClass": "text"
         }
       },
       {
-        "description": {
+        "DocumentsAssocies": {
           "cssClass": "text"
         }
       },
       {
-        "localisation": {
+        "DateConformation": {
           "cssClass": "text"
         }
       },
       {
-        "temoin_ref": {
+        "Conformation": {
           "cssClass": "text"
         }
       },
       {
-        "liens": {
+        "DH": {
           "cssClass": "text"
         }
       },
       {
-        "mots_cles": {
+        "DM": {
           "cssClass": "text"
         }
       },
       {
-        "divers": {
+        "DS": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "DS10_3": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "DateEnregistrement": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "MoisEnregistrement": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "AnneeEnregistrement": {
           "cssClass": "text"
         }
       },

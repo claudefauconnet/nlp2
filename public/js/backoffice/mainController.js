@@ -9,20 +9,52 @@ var mainController = (function () {
 
 
     self.init0 = function () {
-        indexes.loadIndexConfigs(["*"], function (err, result) {
+        async.series([
 
+            // load templatess
+            function(callbackSeries) {
+                configEditor.loadTemplates(function(err, result){
+                    if( err)
+                       return callbackSeries(err);
+                    context.jsonSchemas=result.jsonSchemas;
+                    context.analyzers=result.analyzers;
+
+                    callbackSeries();
+                })
+
+            }
+
+            // load indexConfigs
+            ,  function(callbackSeries){
+                indexes.loadIndexConfigs(["*"], function (err, result) {
+
+                    if (err)
+                       return callbackSeries("indexes non chargés" + err);
+                    context.indexConfigs = result;
+                    callbackSeries();
+
+
+                })
+            },
+            function(callbackSeries){
+                ui.initSourcesList();
+                callbackSeries();
+            },
+            function(callbackSeries){
+                self.initSocket();
+                callbackSeries();
+            }
+
+
+    ],function(err){
             if (err)
                 $("#messageDiv").html("indexes non chargés" + err);
-            context.indexConfigs = result;
-            ui.showIndexList();
-
         })
-        self.initSocket();
 
 
     }
 
-    self.initSocket=function(){
+    self.initSocket = function () {
         var socket = io();
         socket.on('connect', function (data) {
             socket.emit('join', 'Hello World from client');
@@ -62,18 +94,40 @@ var mainController = (function () {
 
     }
 
-    self.saveIndexConfig = function (indexName,callback) {
+self.post=function(url,payload,callback){
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: payload,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                context.templates = data;
+                callback(null, data);
+
+            }
+            , error: function (err) {
+                console.log(err.responseText)
+                return callback(err)
+            }
+
+        });
+    }
+
+
+
+
+    self.saveIndexConfig = function (indexName, callback) {
         if (!indexName)
             indexName = context.currentIndexName;
         try {
             var jsonStr = JSON.stringify(ui.jsonEditor.get(), null, 2);
-            jsonStr= jsonStr.replace(/\\\\\\/g,"\\\\");
+            jsonStr = jsonStr.replace(/\\\\\\/g, "\\\\");
             indexes.saveIndexConfig(indexName, jsonStr, function (err, result) {
                 if (err)
                     return $("#messageDiv").html(err);
                 $("#messageDiv").html(result.result);
-                if(callback)
-                    return callback(null,result)
+                if (callback)
+                    return callback(null, result)
             })
         } catch (e) {
             return alert(e.toString());
@@ -91,10 +145,10 @@ var mainController = (function () {
             indexes.deleteIndexConfig(context.currentIndexName, function (err, result) {
                 if (err)
                     return $("#messageDiv").html(err);
-               $("#messageDiv").html(result.result);
-                    indexes.loadIndexConfigs(["*"], function (err, result) {
-                        ui.showIndexList();
-                    })
+                $("#messageDiv").html(result.result);
+                indexes.loadIndexConfigs(["*"], function (err, result) {
+                    ui.initSourcesList();
+                })
 
             })
         }
@@ -104,21 +158,44 @@ var mainController = (function () {
     self.duplicateCurrentIndexConfig = function () {
         var newIndexName = prompt("enter new index name");
         if (newIndexName && newIndexName != "")
-            self.saveIndexConfig(newIndexName,function(err,result){
-            if(!err)
-                indexes.loadIndexConfigs(["*"], function (err, result) {
-                    ui.showIndexList();
-                })
+            self.saveIndexConfig(newIndexName, function (err, result) {
+                if (!err)
+                    indexes.loadIndexConfigs(["*"], function (err, result) {
+                        ui.initSourcesList();
+                    })
 
-        });
+            });
 
 
     }
 
-self.indexCurrentSource=function() {
-    var config = context.indexConfigs[context.currentIndexName];
+    self.runIndexation = function () {
+        var config = context.indexConfigs[context.currentIndexName];
 
-}
+    }
+
+    self.fillSelectOptions = function (selectId, data, withBlanckOption, textfield, valueField) {
+
+
+        $("#" + selectId).find('option').remove().end()
+        if (withBlanckOption) {
+            $("#" + selectId).append($('<option>', {
+                text: "",
+                value: ""
+            }));
+        }
+
+        data.forEach(function (item, index) {
+            $("#" + selectId).append($('<option>', {
+                text: item[textfield] || item,
+                value: item[valueField] || item
+            }));
+        });
+
+    }
+
+
+
 
     return self;
 

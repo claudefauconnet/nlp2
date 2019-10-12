@@ -1,7 +1,8 @@
 {
   "general": {
-    "description": "index de la videotheque de Baillet",
-    "label": "Videos"
+    "description": "index de test sql",
+    "label": "testsql",
+    "indexName": "testsql"
   },
   "connector": {
     "type": "sql",
@@ -10,106 +11,87 @@
       "host": "localhost",
       "user": "root",
       "password": "vi0lon",
-      "database": "videotheque"
+      "database": "artotheque",
+      "table": "artotheque"
     },
-    "sqlQuery": "select * from videotheque"
+    "sqlQuery": "select * from artotheque ",
+    "fetchSize": 300
   },
   "indexation": {
     "deleteOldIndex": true,
     "elasticUrl": "http://localhost:9200/"
   },
   "schema": {
-    "settings": {},
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+
     "mappings": {
-      "videotheque": {
         "properties": {
           "id": {
-            "isId": true,
             "type": "integer"
           },
           "indexCIJW": {
-            "type": "keyword",
-            "inCSV": true,
-            "isTitle": true
-          },
-          "projet": {
             "type": "keyword"
           },
           "lien": {
             "type": "keyword"
           },
-          "cote": {
+          "fonds": {
+            "type": "keyword"
+          },
+          "collection": {
             "type": "keyword"
           },
           "document": {
             "type": "keyword"
           },
-          "date_creation": {
+          "type": {
+            "type": "keyword"
+          },
+          "createur": {
             "type": "keyword"
           },
           "titre": {
-            "type": "text",
-            "inCSV": true
-          },
-          "fonds": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "depot": {
             "type": "keyword"
           },
-          "droits": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "local": {
+          "epoque": {
             "type": "keyword"
           },
-          "standard": {
+          "materiaux": {
             "type": "keyword"
           },
-          "observations": {
+          "dimensions": {
+            "type": "keyword"
+          },
+          "provenance": {
+            "type": "keyword"
+          },
+          "description": {
             "type": "text"
           },
-          "edition": {
-            "type": "text",
-            "inCSV": true
-          },
-          "langue": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "qualification": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "exploitation": {
+          "localisation": {
             "type": "keyword"
           },
-          "notes_conjoncture": {
-            "type": "text"
+          "temoin_ref": {
+            "type": "keyword"
+          },
+          "liens": {
+            "type": "keyword"
+          },
+          "mots_cles": {
+            "type": "keyword"
+          },
+          "divers": {
+            "type": "keyword"
           },
           "dateMaj": {
             "type": "date"
           },
           "redacteur": {
-            "type": "keyword",
-            "inCSV": true
-          },
-          "content": {
-            "type": "text",
-            "index_options": "offsets",
-            "analyzer": "ATD",
-            "fielddata": true,
-            "fields": {
-              "contentKeyWords": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
+            "type": "keyword"
           }
         }
-      }
+
     }
   },
   "display": {
@@ -120,12 +102,12 @@
         }
       },
       {
-        "projet": {
+        "fonds": {
           "cssClass": "text"
         }
       },
       {
-        "cote": {
+        "collection": {
           "cssClass": "text"
         }
       },
@@ -135,7 +117,12 @@
         }
       },
       {
-        "date_creation": {
+        "type": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "createur": {
           "cssClass": "text"
         }
       },
@@ -145,17 +132,12 @@
         }
       },
       {
-        "fonds": {
+        "epoque": {
           "cssClass": "text"
         }
       },
       {
-        "depot": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "droits": {
+        "materiaux": {
           "cssClass": "text"
         }
       },
@@ -177,32 +159,7 @@
         }
       },
       {
-        "projet": {
-          "cssClass": "text"
-        }
-      },
-      {
         "lien": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "cote": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "document": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "date_creation": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "titre": {
           "cssClass": "text"
         }
       },
@@ -212,52 +169,77 @@
         }
       },
       {
-        "depot": {
+        "collection": {
           "cssClass": "text"
         }
       },
       {
-        "droits": {
+        "document": {
           "cssClass": "text"
         }
       },
       {
-        "local": {
+        "type": {
           "cssClass": "text"
         }
       },
       {
-        "standard": {
+        "createur": {
           "cssClass": "text"
         }
       },
       {
-        "observations": {
+        "titre": {
           "cssClass": "text"
         }
       },
       {
-        "edition": {
+        "epoque": {
           "cssClass": "text"
         }
       },
       {
-        "langue": {
+        "materiaux": {
           "cssClass": "text"
         }
       },
       {
-        "qualification": {
+        "dimensions": {
           "cssClass": "text"
         }
       },
       {
-        "exploitation": {
+        "provenance": {
           "cssClass": "text"
         }
       },
       {
-        "notes_conjoncture": {
+        "description": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "localisation": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "temoin_ref": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "liens": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "mots_cles": {
+          "cssClass": "text"
+        }
+      },
+      {
+        "divers": {
           "cssClass": "text"
         }
       },

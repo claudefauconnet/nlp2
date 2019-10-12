@@ -3,7 +3,7 @@ var authentication = (function () {
     var self = {}
 // pb avec l'url sur serveur a cause d'nginx qui n'adment pas authentication ??? voir config version antérieure déployéee
     self.authenticationUrl = "../bailletarchives-authentication";
-    var authenticationDBUrl = "../authDB";
+    self.authenticationDBUrl = "../authDB";
     self.userIndexes = [];
     self.currentUser={};
 
@@ -120,7 +120,7 @@ var authentication = (function () {
 
         $.ajax({
             type: "POST",
-            url: authenticationDBUrl,
+            url: self.authenticationDBUrl,
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
@@ -222,7 +222,7 @@ var authentication = (function () {
 
         $.ajax({
             type: "POST",
-            url: authenticationUrl,
+            url: self.authenticationDBUrl,
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
@@ -247,7 +247,7 @@ var authentication = (function () {
             options.currentRecord[key]=options.changes[key];
         }
 
-        var authenticationUrl = "../authDB";
+
         var payload = {
             enrole: 1,
            users:JSON.stringify(options.currentRecord)
@@ -257,7 +257,7 @@ var authentication = (function () {
 
         $.ajax({
             type: "POST",
-            url: authenticationDBUrl,
+            url: self.authenticationDBUrl,
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {

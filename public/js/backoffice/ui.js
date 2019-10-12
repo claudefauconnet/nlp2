@@ -3,25 +3,21 @@ var ui = (function () {
     self.jsonEditor=null;
 
 
-    self.showIndexList=function(){
+    self.initSourcesList=function(){
         var indexNames=Object.keys(context.indexConfigs);
-        var htmlSources="<ul>";
-        var htmlIndexation="<ul>";
+        indexNames.sort();
 
-        indexNames.forEach(function(index){
-            htmlSources+="<li onclick=ui.showIndexConfig('"+index+"')>"+index+"</li>";
-            htmlIndexation+="<li onclick=ui.showIndexationForm('"+index+"')>"+index+"</li>"
+        mainController.fillSelectOptions("sourcesSelect",indexNames);
 
-        })
-        htmlSources+="</ul>";
-        $("#sourcesDiv").html(htmlSources);
-        $("#indexationDiv").html(htmlIndexation);
+
+
 
     }
 
-    self.showIndexConfig=function(indexName){
-        var config=context.indexConfigs[indexName];
-        context.currentIndexName=indexName;
+    self.showIndexConfig=function(){
+
+        var config=context.indexConfigs[context.currentIndexName];
+
 
         $("#mainDiv").html("<div>" +
             "<span class='title'>index : "+indexName+"</span>&nbsp;&nbsp;"+
@@ -40,6 +36,11 @@ var ui = (function () {
         context.currentIndexName=indexName;
         $("#mainDiv").load("htmlSnippets/indexation.html")
 
+
+    }
+
+    self.selectIndexConfig=function(indexName){
+        context.currentIndexName=indexName;
 
     }
 

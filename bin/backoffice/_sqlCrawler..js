@@ -6,7 +6,63 @@ const request = require('request');
 const mySQLproxy = require("../mySQLproxy.");
 
 
+
+
 var sqlCrawler = {
+
+
+    generateDefaultMappingFields: function (connector, callback) {
+        mySQLproxy.datamodel(connector.connOptions, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+
+            var table = connector.connOptions.table;
+            var sqlTableModel = result[table];
+            if (!sqlTableModel)
+                return callback("table does not exists" + table)
+
+            var elasticMappingFields = {};
+           // elasticMappingFields["mappings"][table]= {"properties": {}}
+
+
+            sqlTableModel.forEach(function(field){
+
+                var rawType=field.dataType;
+                var  type;
+               var p=mySQLproxy.numberTypes.indexOf(rawType)
+                if(p>-1)
+                    type="integer";
+                var q=mySQLproxy.stringTypes.indexOf(rawType)
+                if(q>-1) {
+
+                    var stringLength = field.maxLength;
+                    if (stringLength > 20)
+                        type = "text";
+                    else
+                        type = "keyword";
+                }
+
+            if(rawType=="date")
+
+                type="date";
+
+                var nullable=field.dataType;
+                var obj={type:type}
+
+
+                elasticMappingFields[field.name]=obj;
+            })
+
+
+            return callback(null, elasticMappingFields);
+
+
+        })
+
+
+    },
+
 
     indexSource: function (config, callback) {
 
@@ -22,13 +78,13 @@ var sqlCrawler = {
 
         var defaultFetchSize = 300;
         var fetchSize = config.connector.fetchSize || defaultFetchSize;
-        var schemaProperties = config.schema.mappings[index].properties;
+        var schemaProperties = config.schema.mappings.properties;
         var fields = Object.keys(schemaProperties);
 
 
         var bulkStr = "";
         var totalSqlRecords = 0
-        var indexedFiles=0;
+        var indexedFiles = 0;
         var offset = 0;
         var resultSize = 1;
         var t0 = new Date().getTime();
@@ -58,7 +114,7 @@ var sqlCrawler = {
                     var bulkStr = "";
 
                     // contcat all fields values in content field
-                
+
                     result.forEach(function (line) {
                         var record = {};
                         var content = "";
@@ -73,7 +129,7 @@ var sqlCrawler = {
                             record[field] = value;
 
                         })
-                        record["attachment.content"] = content;
+                        record[config.schema.contentField] = content;
                         var incrementRecordId = util.getStringHash(content);
                         record.incrementRecordId = incrementRecordId;
                         var id = "R" + incrementRecordId;
@@ -83,7 +139,7 @@ var sqlCrawler = {
 
                             bulkStr += JSON.stringify({index: {_index: index, _type: index, _id: id}}) + "\r\n"
                             bulkStr += JSON.stringify(record) + "\r\n";
-                         indexedFiles+=1;
+                            indexedFiles += 1;
                         }
 
                     })
@@ -114,7 +170,7 @@ var sqlCrawler = {
                         }
 
 
-                        var message = "indexed " + indexedFiles+"/"+totalSqlRecords + " records ";
+                        var message = "indexed " + indexedFiles + "/" + totalSqlRecords + " records ";
                         socket.message(message)
                         return callbackWhilst()
                     })
@@ -143,3 +199,15 @@ var sqlCrawler = {
 
 }
 module.exports = sqlCrawler;
+
+
+if (false) {
+    var fs = require('fs');
+    var path = "D:\\GitHub\\nlp2\\config\\elastic\\sources\\testsql.json";
+    var config = "" + fs.readFileSync(path);
+    config = JSON.parse(config);
+    config.contentField="attachment.content";
+    sqlCrawler.generateDefaultMappings(config, function (err, result) {
+        var x = result;
+    })
+}

@@ -1,8 +1,7 @@
 {
   "general": {
-    "description": "index de test sql",
-    "label": "testsql",
-    "indexName": "testsql"
+    "description": "index de l'artoheque de Baillet",
+    "label": "Oeuvres d'art"
   },
   "connector": {
     "type": "sql",
@@ -11,116 +10,94 @@
       "host": "localhost",
       "user": "root",
       "password": "vi0lon",
-      "database": "artotheque"
+      "database": "artotheque",
+      "table": "artotheque"
     },
-    "sqlQuery": "select * from artotheque ",
-    "fetchSize": 300
+    "sqlQuery": "select * from artotheque"
   },
   "indexation": {
     "deleteOldIndex": true,
     "elasticUrl": "http://localhost:9200/"
   },
   "schema": {
-    "settings": {
-        "analysis": {
-          "filter": {
-            "stemmer_filter": {
-              "type": "stemmer",
-              "language": "french"
-            }
-          },
-          "analyzer": {
-            "ATD": {
-              "tokenizer": "standard",
-              "filter": [
-                "lowercase",
-                "asciifolding"
-
-              ]
-            }
-        }
-      }
-    },
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
     "mappings": {
-      "testsql": {
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "indexCIJW": {
-            "type": "keyword"
-          },
-          "lien": {
-            "type": "keyword"
-          },
-          "fonds": {
-            "type": "keyword"
-          },
-          "collection": {
-            "type": "keyword"
-          },
-          "document": {
-            "type": "keyword"
-          },
-          "type": {
-            "type": "keyword"
-          },
-          "createur": {
-            "type": "keyword"
-          },
-          "titre": {
-            "type": "keyword"
-          },
-          "epoque": {
-            "type": "keyword"
-          },
-          "materiaux": {
-            "type": "keyword"
-          },
-          "dimensions": {
-            "type": "keyword"
-          },
-          "provenance": {
-            "type": "keyword"
-          },
-          "description": {
-            "type": "text"
-          },
-          "localisation": {
-            "type": "keyword"
-          },
-          "temoin_ref": {
-            "type": "keyword"
-          },
-          "liens": {
-            "type": "keyword"
-          },
-          "mots_cles": {
-            "type": "keyword"
-          },
-          "divers": {
-            "type": "keyword"
-          },
-          "dateMaj": {
-            "type": "date"
-          },
-          "redacteur": {
-            "type": "keyword"
-          },
-          "attachment.content": {
-            "type": "text",
-            "index_options": "offsets",
-            "analyzer": "ATD",
-            "fielddata": true,
-            "fields": {
-              "contentKeyWords": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
+
+          "properties": {
+            "id": {
+              "isId": true,
+              "type": "integer"
+            },
+            "indexCIJW": {
+              "type": "keyword",
+              "isTitle": true,
+              "inCSV": true
+            },
+            "lien": {
+              "type": "keyword"
+            },
+            "fonds": {
+              "type": "keyword"
+            },
+            "collection": {
+              "type": "keyword"
+            },
+            "document": {
+              "type": "keyword"
+            },
+            "type": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "createur": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "titre": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "epoque": {
+              "type": "keyword"
+            },
+            "materiaux": {
+              "type": "keyword",
+              "inCSV": true
+            },
+            "dimensions": {
+              "type": "keyword"
+            },
+            "provenance": {
+              "type": "keyword"
+            },
+            "description": {
+              "type": "text"
+            },
+            "localisation": {
+              "type": "keyword"
+            },
+            "temoin_ref": {
+              "type": "keyword"
+            },
+            "liens": {
+              "type": "keyword"
+            },
+            "mots_cles": {
+              "type": "keyword"
+            },
+            "divers": {
+              "type": "keyword"
+            },
+            "dateMaj": {
+              "type": "date"
+            },
+            "redacteur": {
+              "type": "keyword"
             }
           }
-        }
-      }
+
+
     }
   },
   "display": {

@@ -10,7 +10,8 @@
       "host": "localhost",
       "user": "root",
       "password": "vi0lon",
-      "database": "phototheque"
+      "database": "phototheque",
+      "table": "phototheque"
     },
     "sqlQuery": "select * from phototheque"
   },
@@ -19,9 +20,10 @@
     "elasticUrl": "http://localhost:9200/"
   },
   "schema": {
-    "settings": {},
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
     "mappings": {
-        "phototheque": {
+
           "properties": {
             "id": {
               "type": "keyword",
@@ -91,22 +93,11 @@
             },
             "redacteur": {
               "type": "keyword"
-            },
-            "content": {
-              "type": "text",
-              "index_options": "offsets",
-              "analyzer": "ATD",
-              "fielddata": true,
-              "fields": {
-                "contentKeyWords": {
-                  "type": "keyword",
-                  "ignore_above": 256
-                }
-              }
             }
+
         }
       }
-    }
+
   },
   "display": {
     "list": [

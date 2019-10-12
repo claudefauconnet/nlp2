@@ -13,44 +13,14 @@
     "dir": "D:\\ATD_Baillet\\testIndexation"
 
   },
-  "settings": {
-    "analysis": {
-      "filter": {
-        "stemmer_filter": {
-          "type": "stemmer",
-          "language": "french"
-        }
-      },
-      "analyzer": {
-        "ATD": {
-          "tokenizer": "standard",
-          "filter": [
-            "lowercase",
-            "asciifolding",
-            "stemmer_filter"
-          ]
-        }
-      }
-    }
-  },
+
   "schema": {
-    "settings": {},
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
     "mappings": {
-      "testdocs": {
         "properties": {
           "author": {
             "type": "text"
-          },
-          "attachment.content": {
-            "type": "text",
-            "index_options": "offsets",
-            "fields": {
-              "contentKeyWords": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            },
-            "fielddata": true
           },
           "date": {
             "type": "text"
@@ -61,7 +31,7 @@
           "title": {
             "type": "text"
           }
-        }
+
       }
     }
   },
