@@ -1,4 +1,4 @@
-var config = {
+var appConfig = {
     appName:"search",
    loginMode:"database",  //database or none
     locale:"Fr",

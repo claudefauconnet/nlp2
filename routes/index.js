@@ -4,9 +4,10 @@ var serverParams = {routesRootUrl: ""}
 
 
 var elasticProxy = require('../bin/elasticProxy');
-var authentication=require('../bin/authentication..js');
-var configLoader=require('../bin/configLoader..js');
+var authentication = require('../bin/authentication..js');
+var configLoader = require('../bin/configLoader..js');
 var logger = require("../bin/logger..js");
+var indexer = require("../bin/backoffice/indexer..js")
 
 
 /* GET home page. */
@@ -17,9 +18,9 @@ router.get('/', function (req, res, next) {
 router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
     if (req.body.executeQuery) {
-        var queryObj=JSON.parse(req.body.executeQuery);
+        var queryObj = JSON.parse(req.body.executeQuery);
         elasticProxy.executeQuery(queryObj, JSON.parse(req.body.indexes), function (error, result) {
-            logger.info("QUERY :"+JSON.stringify(queryObj.query.bool)+ "\n indexes :"+req.body.indexes)
+            logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
             processResponse(response, error, result);
 
         });
@@ -27,21 +28,21 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
     }
 
     if (req.body.getIndexConfigs) {
-        configLoader.getIndexConfigs(JSON.parse(req.body.indexes),function(error, result){
+        configLoader.getIndexConfigs(JSON.parse(req.body.indexes), function (error, result) {
             processResponse(response, error, result)
         });
 
     }
 
     if (req.body.saveIndexConfig) {
-        configLoader.saveIndexConfig(req.body.index,req.body.jsonStr,function(error, result){
+        configLoader.saveIndexConfig(req.body.index, req.body.jsonStr, function (error, result) {
             processResponse(response, error, result)
         });
 
     }
 
     if (req.body.deleteIndexConfig) {
-        configLoader.deleteIndexConfig(req.body.index,function(error, result){
+        configLoader.deleteIndexConfig(req.body.index, function (error, result) {
             processResponse(response, error, result)
         });
 
@@ -56,13 +57,21 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
     }
 
     if (req.body && req.body.getTemplates) {
-        configLoader.getTemplates( function (error, result) {
+        configLoader.getTemplates(function (error, result) {
             processResponse(response, error, result)
         });
     }
-    if(req.body && req.body.generateDefaultMappingFields){
+    if (req.body && req.body.generateDefaultMappingFields) {
 
-        configLoader.generateDefaultMappingFields(JSON.parse(req.body.connector),function(error,result){
+        configLoader.generateDefaultMappingFields(JSON.parse(req.body.connector), function (error, result) {
+            processResponse(response, error, result);
+
+        })
+
+    }
+    if (req.body && req.body.runIndexation) {
+
+        indexer.runIndexation(JSON.parse(req.body.config), function (error, result) {
             processResponse(response, error, result);
 
         })
@@ -70,13 +79,11 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
     }
 
 
-
 })
 
 
-
 router.post('/authDB', function (req, res, next) {
-   // console.log(JSON.stringify(req.body))
+    // console.log(JSON.stringify(req.body))
     if (req.body.tryLogin) {
         authentication.loginInDB(req.body.login, req.body.password, function (err, result) {
             processResponse(res, err, result)
@@ -113,27 +120,31 @@ router.post('/bailletarchives-authentication', function (req, response) {
 
 function processResponse(response, error, result) {
     if (response && !response.finished) {
-     /*   res.setHeader('Access-Control-Allow-Origin', '*');
-         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
-         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype'); // If needed
-         res.setHeader('Access-Control-Allow-Credentials', true); // If needed.setHeader('Content-Type', 'application/json');*/
+        /*   res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+            res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype'); // If needed
+            res.setHeader('Access-Control-Allow-Credentials', true); // If needed.setHeader('Content-Type', 'application/json');*/
 
-     response.setHeader('Access-Control-Allow-Origin', '*');
+        response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
         response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype'); // If needed
         response.setHeader('Access-Control-Allow-Credentials', true); // If needed*/
 
 
         if (error) {
+
             if (typeof error == "object") {
-                error = JSON.stringify(error, null, 2);
+                if (error.message)
+                    error = error.message
+                else
+                    error = JSON.stringify(error, null, 2);
             }
             console.log("ERROR !!" + error);
             //   socket.message("ERROR !!" + error);
-           return response.status(404).send({ERROR: error});
+            return response.status(404).send({ERROR: error});
 
         } else if (!result) {
-           return  response.send({done: true});
+            return response.send({done: true});
         } else {
 
             if (typeof result == "string") {

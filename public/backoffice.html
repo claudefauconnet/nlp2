@@ -342,21 +342,20 @@
 <div id="main">
 
     <div id="left">
-
-        <div id="leftAccordion">
-            <h1>Accueil</h1>
-            <div id="acceuilDiv" class="accordionInnerDiv" style="display: flex;flex-direction:column;align-content: center;align-items: center">
-                <B>Recherche fédérée Baillet</B>
-                <img src="images/logoATD.png" width="50px">
-                <br>
-                <div id="magasinD3MessageDiv"></div>
-                <select id="sourcesSelect" size="10" onchange="ui.selectIndexConfig($(this).val())"></select>
+        <div id="acceuilDiv" class="accordionInnerDiv" style="display: flex;flex-direction:column;align-content: center;align-items: center">
+            <B>Recherche fédérée Baillet</B>
+            <img src="images/logoATD.png" width="50px">
+            <br>
+            <select id="sourcesSelect" size="10" onchange="ui.selectIndexConfig($(this).val())"></select>
+        </div>
+        <div id="leftAccordion"  class="accordionInnerDiv">
+            <h1>Configuration</h1>
+            <div id="configurationWrapperDiv" class="accordionInnerDiv">
                 <div>
-                    <button onclick="configEditor.editConfig()">editConfig</button>
-                    <button onclick="mainController.runIndexation()">run indexation</button>
+                    <button onclick="configEditor.editConfig()">edit source</button>
+
                     <button onclick="configEditor.createNewConfig()">new source</button>
                 </div>
-
 
             </div>
 
@@ -369,16 +368,26 @@
                </div>
    -->
 
-            <h1>Sources</h1>
-            <div id="sourcesWrapperDiv" class="accordionInnerDiv">
 
-
-            </div>
 
 
             <h1>Indexation</h1>
             <div id="indexationWrapperDiv" class="accordionInnerDiv">
-                <div id="indexationDiv"></div>
+                <div id="indexationDiv">
+                    <button onclick="ui.showIndexationForm()">Run indexation</button>
+                </div>
+
+            </div>
+
+
+            <h1>Jobs</h1>
+            <div id="jobsWrapperDiv" class="accordionInnerDiv">
+
+
+            </div>
+            <h1>Scheduler</h1>
+            <div id="schedulerWrapperDiv" class="accordionInnerDiv">
+
 
             </div>
 

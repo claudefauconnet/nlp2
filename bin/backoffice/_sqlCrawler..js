@@ -78,7 +78,7 @@ var sqlCrawler = {
 
         var defaultFetchSize = 300;
         var fetchSize = config.connector.fetchSize || defaultFetchSize;
-        var schemaProperties = config.schema.mappings.properties;
+        var schemaProperties = config.schema.mappings[index].properties;
         var fields = Object.keys(schemaProperties);
 
 
@@ -94,6 +94,10 @@ var sqlCrawler = {
             },
             function (callbackWhilst) {//iterate
                 resultSize = 0;
+
+                if(!config.connector.sqlQuery || config.connector.sqlQuery=="")
+                    config.connector.sqlQuery="select * from "+ config.connector.connOptions.table;
+
                 var sqlFetch = config.connector.sqlQuery + " limit " + fetchSize + " offset " + offset;
 
 
@@ -185,9 +189,9 @@ var sqlCrawler = {
                 if (err)
                     return callback(err);
 
-
                 var duration = new Date().getTime() - t0;
                 var message = "*** indexation done : " + indexedFiles + "/" + totalSqlRecords + " records  in " + duration + " msec.";
+                socket.message(message)
                 callback(null, "done");
 
 

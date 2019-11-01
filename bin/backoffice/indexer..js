@@ -14,7 +14,7 @@ var csvCrawler = require("./_csvCrawler.");
 var imapCrawler = require("./_imapCrawler.");
 var indexer = {
 
-    index: function (config, callback) {
+    runIndexation: function (config, callback) {
         var index = config.general.indexName;
         var elasticUrl = config.indexation.elasticUrl;
         var connector = config.connector;
@@ -124,7 +124,7 @@ var indexer = {
 
                         //mappings
                         if (indexSchema.mappings)
-                            json.mappings = {[index]: {properties: indexSchema.mappings.properties}};
+                            json.mappings = {[index]: {properties: indexSchema.mappings}};
 
                         if (indexSchema.contentField) {
 
@@ -269,7 +269,7 @@ var indexer = {
 
 }
 
-module.exports = exports;
+module.exports = indexer;
 
 if (false) {
     var path = "D:\\GitHub\\nlp2\\config\\elastic\\sources\\testdocs.json";
@@ -283,12 +283,16 @@ if (false) {
     });
 }
 
-if (true) {
-    var path = "D:\\GitHub\\nlp2\\config\\elastic\\sources\\testsql.json";
+if (false) {
+    var path = "D:\\GitHub\\nlp2\\config\\elastic\\sources\\testsql4.json";
     var config = "" + fs.readFileSync(path);
     config = JSON.parse(config);
+    config.indexation= {
+        "deleteOldIndex": true,
+            "elasticUrl": "http://localhost:9200/"
+    }
     //config.indexation = {elasticUrl: "http://localhost:9200/"}
-    indexer.index(config, function (err, result) {
+    indexer.runIndexation(config, function (err, result) {
         if (err)
             return console.log(err);
         return console.log("DONE");

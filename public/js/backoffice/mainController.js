@@ -29,7 +29,7 @@ var mainController = (function () {
                 indexes.loadIndexConfigs(["*"], function (err, result) {
 
                     if (err)
-                       return callbackSeries("indexes non chargés" + err);
+                       return callbackSeries("index configurations non chargés" + err);
                     context.indexConfigs = result;
                     callbackSeries();
 
@@ -61,8 +61,9 @@ var mainController = (function () {
         });
         socket.on('messages', function (message) {
 
-            if (!message || message.length == 0)
+            if (message || message.length > 0)
                 return $("#socketDiv").html("<i>" + message.substring(2) + "<i>");
+
 
         })
     }
@@ -147,6 +148,8 @@ self.post=function(url,payload,callback){
                     return $("#messageDiv").html(err);
                 $("#messageDiv").html(result.result);
                 indexes.loadIndexConfigs(["*"], function (err, result) {
+                    if(err)
+                        return  $("#messageDiv").html("indexes non chargés" + err);
                     ui.initSourcesList();
                 })
 
@@ -159,8 +162,11 @@ self.post=function(url,payload,callback){
         var newIndexName = prompt("enter new index name");
         if (newIndexName && newIndexName != "")
             self.saveIndexConfig(newIndexName, function (err, result) {
-                if (!err)
+                if (err)
+                   return  $("#messageDiv").html("indexes non chargés" + err);
                     indexes.loadIndexConfigs(["*"], function (err, result) {
+                        if(err)
+                        return  $("#messageDiv").html("index configurations non chargés" + err);
                         ui.initSourcesList();
                     })
 
@@ -169,10 +175,7 @@ self.post=function(url,payload,callback){
 
     }
 
-    self.runIndexation = function () {
-        var config = context.indexConfigs[context.currentIndexName];
 
-    }
 
     self.fillSelectOptions = function (selectId, data, withBlanckOption, textfield, valueField) {
 

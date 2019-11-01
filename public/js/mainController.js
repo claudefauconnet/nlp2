@@ -9,7 +9,7 @@ var mainController = (function () {
     self.init0= function () {
         context = config;
         mainController.bindControls();
-        self.hideUsageDiv();
+       // self.hideUsageDiv();
         $("#questionInput").focus()
         indexes.loadIndexConfigs(config.indexes,function(err,result){
             if(err)

@@ -76,7 +76,7 @@ var configLoader = {
     },
     getIndexConfig: function (index, callback) {
 
-        if (configs[index]) {
+        if (false && configs[index]) {
             return callback(null, configs[index])
         } else {
             configLoader.loadIndexConfig(index, function (err, config) {
