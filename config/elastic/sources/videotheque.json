@@ -1,37 +1,36 @@
 {
   "general": {
     "description": "index de la videotheque de Baillet",
-    "label": "Videos"
+    "label": "Videos",
+    "indexName": "videotheque"
   },
   "connector": {
     "type": "sql",
-    "subType": "mySQL",
+    "subType": "mysql",
+    "sqlQuery": "select * from videotheque",
     "connOptions": {
       "host": "localhost",
       "user": "root",
       "password": "vi0lon",
       "database": "videotheque",
       "table": "videotheque"
-    },
-    "sqlQuery": "select * from videotheque"
+    }
   },
   "indexation": {
-    "deleteOldIndex": true,
-    "elasticUrl": "http://localhost:9200/"
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes"
   },
   "schema": {
     "contentField": "attachment.content",
     "analyzer": "lowercase_asciifolding",
     "mappings": {
+      "videotheque": {
         "properties": {
           "id": {
-            "isId": true,
             "type": "integer"
           },
           "indexCIJW": {
-            "type": "keyword",
-            "inCSV": true,
-            "isTitle": true
+            "type": "keyword"
           },
           "projet": {
             "type": "keyword"
@@ -49,19 +48,16 @@
             "type": "keyword"
           },
           "titre": {
-            "type": "text",
-            "inCSV": true
+            "type": "text"
           },
           "fonds": {
-            "type": "keyword",
-            "inCSV": true
+            "type": "keyword"
           },
           "depot": {
             "type": "keyword"
           },
           "droits": {
-            "type": "keyword",
-            "inCSV": true
+            "type": "keyword"
           },
           "local": {
             "type": "keyword"
@@ -73,16 +69,13 @@
             "type": "text"
           },
           "edition": {
-            "type": "text",
-            "inCSV": true
+            "type": "text"
           },
           "langue": {
-            "type": "keyword",
-            "inCSV": true
+            "type": "keyword"
           },
           "qualification": {
-            "type": "keyword",
-            "inCSV": true
+            "type": "keyword"
           },
           "exploitation": {
             "type": "keyword"
@@ -94,174 +87,10 @@
             "type": "date"
           },
           "redacteur": {
-            "type": "keyword",
-            "inCSV": true
+            "type": "keyword"
           }
         }
-
+      }
     }
-  },
-  "display": {
-    "list": [
-      {
-        "indexCIJW": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "projet": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "cote": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "document": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "date_creation": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "titre": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "fonds": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "depot": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "droits": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "excerpt": {
-          "cssClass": "excerpt"
-        }
-      }
-    ],
-    "details": [
-      {
-        "id": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "indexCIJW": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "projet": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "lien": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "cote": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "document": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "date_creation": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "titre": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "fonds": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "depot": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "droits": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "local": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "standard": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "observations": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "edition": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "langue": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "qualification": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "exploitation": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "notes_conjoncture": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "dateMaj": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "redacteur": {
-          "cssClass": "text"
-        }
-      }
-    ],
-    "csv": [
-    ]
   }
 }

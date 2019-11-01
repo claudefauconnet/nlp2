@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "async": "^3.1.0",
+    "bcrypt": "^3.0.6",
     "constantinople": "^3.1.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -17,11 +18,12 @@
     "logger": "0.0.1",
     "mime": "^2.4.4",
     "morgan": "~1.9.1",
+    "mysql": "^2.16.0",
     "ndjson": "^1.5.0",
     "request": "^2.88.0",
-    "bcrypt": "^3.0.6",
-    "mysql": "^2.16.0",
+    "socket.io": "^2.3.0",
     "winston": "^3.2.1",
     "xlsx": "^0.14.3"
+
   }
 }

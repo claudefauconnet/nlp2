@@ -18,7 +18,7 @@ var ui = (function () {
 
 
         $("#mainDiv").html("<div>" +
-            "<span class='title'>index : " + indexName + "</span>&nbsp;&nbsp;" +
+            "<span class='title'>index : " + context.currentIndexName + "</span>&nbsp;&nbsp;" +
             "<button onclick='mainController.saveIndexConfig()'>Save</button>" +
             " <button onclick='mainController.deleteIndexConfig()'>Delete</button>" +
             " <button onclick='mainController.duplicateCurrentIndexConfig()'>Duplicate</button>" +

@@ -25,6 +25,7 @@ var configEditor = (function () {
             self.editJsonForm(schemaformId, schema, json, function (errors, data) {
                 var config=data;
                 config.schema.mappings=json.schema.mappings// non pris en compte dans l'édition
+                context.indexConfigs[context.currentIndexName]=config
                 indexes.saveIndexConfig(context.currentIndexName, JSON.stringify(data, null, 2), function (err, result) {
                     $("#messageDiv").html("configuration saved");
                 })
@@ -36,6 +37,7 @@ var configEditor = (function () {
 
             var config = {};
             var connectorType;
+            var selectedMappingFields = {}
             var formStr = "<div style='width: 500px'><form id='shemaForm'></form></div>"
 
             async.series([
@@ -107,7 +109,7 @@ var configEditor = (function () {
                             html += "</ul>"
                             asyncDialog.show("mainDiv", html, function (ok) {
                                 if (ok) {
-                                    var selectedMappingFields = {}
+                                    selectedMappingFields = {}
                                     $(".mappingFieldCbx").each(function (index, value) {
                                         if ($(this).prop("checked")) {
                                             var name = $(this).val();
@@ -125,6 +127,36 @@ var configEditor = (function () {
                             });
                         });
                     },
+
+                //display excst
+                function(callbackSeries){
+
+                var html="list display fields<ul>";
+                    selectedMappingFields.forEach(function (field) {
+                        html += "<li><input type='checkBox' checked='checked' class='displayFieldCbx' value='" + field + "'>" + field + "</li>"
+
+                    })
+
+                    html += "</ul>"
+                    asyncDialog.show("mainDiv", html, function (ok) {
+                        if (ok) {
+                            var selectedMappingFields = {}
+                            $(".displayFieldCbx").each(function (index, value) {
+                                if ($(this).prop("checked")) {
+                                    var name = $(this).val();
+                                    selectedMappingFields[name] = result[name]
+
+                                }
+                            })
+                            var type = config.general.indexName;
+                            var mappings = {[type]: {["properties"]: selectedMappingFields}};
+                            config.schema.mappings = mappings;
+                            callbackSeries();
+                        } else {
+                            callbackSeries(err);
+                        }
+                    });
+                }
 
 
                 ],
@@ -204,7 +236,8 @@ var configEditor = (function () {
             })
         }
 
-        self.editConfigXX = function (json) {
+        self.editConfigXXX = function () {
+            var json=context.indexConfigs[context.currentIndexName]
 
             var html = "<div id='configEditorDiv'>";
 

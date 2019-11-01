@@ -167,6 +167,7 @@ var indexes = (function () {
 
 
     self.runIndexation = function () {
+        $("#messageDiv").html("")
         var config = context.indexConfigs[context.currentIndexName];
         var indexationConfig = context.currentIndexationConfig;
         config.indexation = indexationConfig;
