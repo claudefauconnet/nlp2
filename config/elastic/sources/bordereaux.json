@@ -4,90 +4,70 @@
     "label": "Bordereaux",
     "indexName": "bordereaux"
   },
- "indexation": {
-    "deleteOldIndex": true,
-   "elasticUrl": "http://localhost:9200/"
-  },
   "connector": {
     "type": "fs",
     "dir": "D:\\ATD_Baillet\\versements2018"
-
   },
-
   "schema": {
     "contentField": "attachment.content",
     "analyzer": "lowercase_asciifolding",
     "mappings": {
-
+      "bordereaux": {
         "properties": {
-          "author": {
-            "type": "text"
+          "attachment.author": {
+            "type": "text",
+            "index": false
           },
-
-          "date": {
-            "type": "text"
+          "attachment.title": {
+            "type": "text",
+            "index": false
           },
-          "path": {
-            "type": "text"
+          "attachment.date": {
+            "type": "date",
+            "index": false
+          },
+          "attachment.language": {
+            "type": "keyword",
+            "index": false
           },
           "title": {
-            "type": "text"
+            "type": "text",
+            "index": false
           }
-
+        }
       }
     }
   },
-  "display": {
-    "list": [
-      {
-        "title": {
-          "cssClass": "titleList"
-        }
-      },
-      {
-        "date": {
-          "cssClass": "date"
-        }
-      },
-      {
-        "author": {
-          "cssClass": "list"
-        }
-      },
-      {
-        "excerpt": {
-          "cssClass": "excerpt"
-        }
+  "display": [
+    {
+      "attachment.author": {
+        "cssClass": "excerpt"
       }
-    ],
-    "details": [
-      {
-        "title": {
-          "cssClass": "title",
-          "labelFr": "Titre"
-        }
-      },
-      {
-        "date": {
-          "cssClass": "date",
-          "labelFr": "Date"
-        }
-      },
-      {
-        "author": {
-          "cssClass": "details",
-          "labelFr": "Auteur"
-        }
-      },
-      {
-        "content": {
-          "cssClass": "text",
-          "labelFr": "Contenu",
-          "highlightWords": 1
-        }
+    },
+    {
+      "attachment.title": {
+        "cssClass": "excerpt"
       }
-    ],
-    "csv": [
-    ]
-  }
+    },
+    {
+      "attachment.date": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.language": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.content": {
+        "cssClass": "text"
+      }
+    }
+  ]
 }

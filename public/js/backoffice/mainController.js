@@ -87,7 +87,7 @@ var mainController = (function () {
         mainController.totalDims.w = $(window).width();
         mainController.totalDims.h = $(window).height();
         var dataTableWidth = mainController.totalDims.w - (self.leftPanelWidth);
-        $("#mainDiv").width(mainController.totalDims.w - (self.leftPanelWidth + 20)).height(mainController.totalDims.h - 20);
+        $("#mainDiv").width(mainController.totalDims.w - (self.leftPanelWidth +100)).height(mainController.totalDims.h - 100);
         $("#graphWrapperDiv").width(mainController.totalDims.w - (self.leftPanelWidth + 20)).height(mainController.totalDims.h - 20);
         $("#listWrapperDiv").width(mainController.totalDims.w - (self.leftPanelWidth + 20)).height(mainController.totalDims.h - 20);
         //  $("#dataTableDiv").width(dataTableWidth).height(500);

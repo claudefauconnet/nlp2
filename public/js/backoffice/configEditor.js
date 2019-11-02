@@ -8,48 +8,48 @@ var configEditor = (function () {
             var json = context.indexConfigs[context.currentIndexName];
             return self.createNewConfig(json)
 
-            var formStr = "<div style='width: 500px'><form id='shemaForm'></form></div>"
-            $("#mainDiv").html(formStr);
-            var json = context.indexConfigs[context.currentIndexName];
-            var parts = Object.keys(json);
-            //  parts=["general","connector","schema","display"]
-            var schema = {}
-            parts.forEach(function (part) {
-                var subPart = part;
-                if (part == "connector") {
-                    part += "_" + json["connector"].type;
-                }
-                if (context.jsonSchemas[part]) {
-                    var subSchema = context.jsonSchemas[part][subPart];
-                    schema[subPart] = subSchema;
-                }
+            /*   var formStr = "<div style='width: 500px'><form id='shemaForm'></form></div>"
+               $("#mainDiv").html(formStr);
+               var json = context.indexConfigs[context.currentIndexName];
+               var parts = Object.keys(json);
+               //  parts=["general","connector","schema","display"]
+               var schema = {}
+               parts.forEach(function (part) {
+                   var subPart = part;
+                   if (part == "connector") {
+                       part += "_" + json["connector"].type;
+                   }
+                   if (context.jsonSchemas[part]) {
+                       var subSchema = context.jsonSchemas[part][subPart];
+                       schema[subPart] = subSchema;
+                   }
 
-            })
-            var buttons = [
+               })
+               var buttons = [
 
-                {
-                    title: "editMappings", onClick: (function (evt) {
-                        evt.preventDefault();
-                        asyncDialog.show("mainDiv", html, function (ok) {
-                            alert("aaa")
-                        })
-
-
-                    })
-                }
+                   {
+                       title: "editMappings", onClick: (function (evt) {
+                           evt.preventDefault();
+                           asyncDialog.show("mainDiv", html, function (ok) {
+                               alert("aaa")
+                           })
 
 
-            ]
+                       })
+                   }
 
 
-            self.editJsonForm(schemaformId, schema, json, buttons, function (errors, data) {
-                var config = data;
-                config.schema.mappings = json.schema.mappings// non pris en compte dans l'édition
-                context.indexConfigs[context.currentIndexName] = config
-                indexes.saveIndexConfig(context.currentIndexName, JSON.stringify(data, null, 2), function (err, result) {
-                    $("#messageDiv").html("configuration saved");
-                })
-            })
+               ]
+
+
+               self.editJsonForm(schemaformId, schema, json, buttons, function (errors, data) {
+                   var config = data;
+                   config.schema.mappings = json.schema.mappings// non pris en compte dans l'édition
+                   context.indexConfigs[context.currentIndexName] = config
+                   indexes.saveIndexConfig(context.currentIndexName, JSON.stringify(data, null, 2), function (err, result) {
+                       $("#messageDiv").html("configuration saved");
+                   })
+               })*/
         }
 
 
@@ -58,6 +58,7 @@ var configEditor = (function () {
             var config = {};
             var connectorType;
             var selectedMappingFields = {}
+            var type;
             var formStr = "<div style='width: 500px'><form id='shemaForm'></form></div>"
 
             async.series([
@@ -70,16 +71,17 @@ var configEditor = (function () {
                             if (!data.general.indexName.match(/[a-z0-9].*/))
                                 return callbackSeries("index name only accept lowercase and numbers")
                             config.general = data.general;
+                            type = config.general.indexName;
                             callbackSeries()
                         })
                     }
                     ,
                     //choose connector type
                     function (callbackSeries) {
-                if(json) {
-                    connectorType =json.connector.type;
-                    return   callbackSeries();
-                }
+                        if (json) {
+                            connectorType = json.connector.type;
+                            return callbackSeries();
+                        }
 
                         $("#mainDiv").html(formStr);
                         self.editJsonForm(schemaformId, context.jsonSchemas.connectorTypes, json, null, function (errors, data) {
@@ -101,6 +103,8 @@ var configEditor = (function () {
                             connectorSchema = context.jsonSchemas.connector_csv;
                         else if (connectorType == "book")
                             connectorSchema = context.jsonSchemas.connector_book;
+                        else if (connectorType == "json")
+                            connectorSchema = context.jsonSchemas.connector_json;
 
 
                         $("#mainDiv").html(formStr);
@@ -119,24 +123,89 @@ var configEditor = (function () {
                         })
                     },
 
-                    //connector config defaultMappings (depending on connector)
+                    //Mappings SQL
                     function (callbackSeries) {
+                        if (connectorType != "sql")
+                            return callbackSeries();
                         self.generateDefaultMappingFields(config.connector, function (err, result) {
-                            self.editMappings("index mappings", result, true,function (err, fields) {
+                            self.editMappings("index mappings", result, true, function (err, fields) {
                                 if (err)
                                     callbackSeries(err);
                                 if (!fields)
                                     return callbackSeries();
-                                var type = config.general.indexName;
-                                var mappings = {[type]: {["properties"]:fields }};
+
+                                var mappings = {[type]: {["properties"]: fields}};
                                 config.schema.mappings = mappings;
-                                selectedMappingFields= fields;
+                                selectedMappingFields = fields;
                                 callbackSeries();
                             })
 
                         })
 
                     },
+                    //Mappings json
+                    function (callbackSeries) {
+                        if (connectorType != "json")
+                            return callbackSeries();
+
+                        return callbackSeries();
+                    },
+
+                    //Mappings csv
+                    function (callbackSeries) {
+                        if (connectorType != "csv")
+                            return callbackSeries();
+
+                        return callbackSeries();
+                    },
+                    //Mappings imap
+                    function (callbackSeries) {
+                        if (connectorType != "imap")
+                            return callbackSeries();
+
+                        return callbackSeries();
+                    },
+                    //Mappings book
+                    function (callbackSeries) {
+                        if (connectorType != "book")
+                            return callbackSeries();
+
+                        return callbackSeries();
+                    },
+                    //Mappings json
+                    function (callbackSeries) {
+                        if (connectorType != "fs")
+                            return callbackSeries();
+
+                        $("#mainDiv").html(formStr);
+                        var jsonMapping = json;
+                        if (jsonMapping)
+                            jsonMapping = {mappings:[
+                                {field:"attachment.author",type: "text"},
+                                    {field:"attachment.title",type: "text"},
+                                    {field:"attachment.date",type: "date"},
+                                    {field:"attachment.language",type: "keyword"},
+                                    {field:"title",type: "text"},
+                                ]}
+                        self.editJsonForm(schemaformId, context.jsonSchemas.mappings_fs, jsonMapping, null, function (errors, data) {
+                            var fields={}
+                            data.mappings.forEach(function(line){
+                                fields[line.field]={
+                                    type:line.type,
+                                    index:line.index,
+                                    analyze:line.analyzer
+                                }
+                            })
+
+                            var mappings = {[type]: {["properties"]: fields}};
+                            config.schema.mappings = mappings;
+                            selectedMappingFields = fields;
+                            callbackSeries();
+                        })
+
+
+                    },
+
 
                     //display excerpt
                     function (callbackSeries) {
@@ -146,10 +215,10 @@ var configEditor = (function () {
                             if (!fields)
                                 return callbackSeries();
 
-                            var excerptFields=Object.keys(fields);
-                            var display=[]
-                            for(var key in selectedMappingFields){
-                                if(excerptFields.indexOf(key )>-1)
+                            var excerptFields = Object.keys(fields);
+                            var display = []
+                            for (var key in selectedMappingFields) {
+                                if (excerptFields.indexOf(key) > -1)
                                     display.push({[key]: {"cssClass": "excerpt"}});
                                 else
                                     display.push({[key]: {"cssClass": "text"}});
@@ -158,10 +227,15 @@ var configEditor = (function () {
                             callbackSeries();
                         })
 
-                    }
+                    },
 
+                // add contentField to display when necessary
+                function (callbackSeries) {
+                    if (connectorType == "book" || connectorType == "fs" )
+                    config.display.push({[config.schema.contentField]: {"cssClass": "text"}});
+                    return callbackSeries();
 
-
+                }
 
                 ],
 
@@ -247,7 +321,7 @@ var configEditor = (function () {
 
 
         self.editMappings = function (title, json, checked, callback) {
-var callbackFn=callback;
+            var callbackFn = callback;
             var fieldNames = Object.keys(json);
             var html = "<div><b>" + title + "</b><ul>"
             var checkedStr = "";
@@ -269,7 +343,7 @@ var callbackFn=callback;
                         }
                     })
 
-                   callbackFn(null, selectedFields)
+                    callbackFn(null, selectedFields)
 
                 } else {
                     callback();

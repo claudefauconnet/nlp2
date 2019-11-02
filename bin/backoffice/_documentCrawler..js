@@ -16,7 +16,7 @@ var _documentCrawler = {
         var base64Extensions = ["doc", "docx", "xls", "xslx", "pdf", "ppt", "pptx", "ods", "odt"];
 
         var filesToIndex = [];
-        var indexedFiles = [];
+        var indexedFilesCount = 0;
         var t0alldocs = new Date().getTime();
         var t0doc;
 
@@ -66,7 +66,7 @@ var _documentCrawler = {
             function (callbackSeries) {
                 var requestOptions = {
                     method: 'PUT',
-                    url: config.run.elasticUrl + "_ingest/pipeline/attachment",
+                    url: config.indexation.elasticUrl + "_ingest/pipeline/attachment",
                     json: {
                         "description": "Extract attachment information",
                         "processors": [
@@ -125,12 +125,15 @@ var _documentCrawler = {
                         _documentCrawler.indexDocumentFile(options, function (err, result) {
                             if (err)
                                 return callbackSeries(err);
+                            if (result.indexed) {
+                                indexedFilesCount += 1;
+                            }
+                          if(indexedFilesCount%5==0) {
+                              var duration = new Date().getTime() - t0alldocs;
+                              var message = "indexed "+ indexedFilesCount+" documents in " + duration + " msec.";
+                              socket.message(message);
+                          }
 
-                            var duration = new Date().getTime() - t0doc;
-                            var message = "file " + options.fileName + "+indexed  in " + duration + " msec.";
-                            socket.message(message);
-                            if (result.indexed)
-                                indexedFiles += 1;
                             return callbackEach();
 
                         });
@@ -140,7 +143,7 @@ var _documentCrawler = {
                         if (err)
                             return callbackSeries(err);
                         var duration = new Date().getTime() - t0alldocs;
-                        var message = "indexation done " + indexedFiles.length + "/" + filesToIndex.length + " documents  in " + duration + " msec.";
+                        var message = "indexation done " + indexedFilesCount + "/" + filesToIndex.length + " documents  in " + duration + " msec.";
                         socket.message(message)
                         return callbackSeries();
 
