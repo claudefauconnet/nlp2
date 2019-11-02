@@ -28,7 +28,7 @@
 <script>
     $(function () {
 
-        if (config.loginMode!='none') {
+        if (appConfig.loginMode!='none') {
             authentication.init(true, function (err, result) {
                 mainController.init0();
             })

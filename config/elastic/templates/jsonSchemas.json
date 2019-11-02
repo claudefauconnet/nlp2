@@ -100,7 +100,7 @@
               "default": "root"
             },
             "password": {
-              "type": "string",
+              "type": "password",
               "title": "password",
               "required": true,
               "default": "vi0lon"
@@ -208,6 +208,10 @@
       }
     }
   },
+
+
+
+
   "indexation": {
     "indexation": {
       "type": "object",

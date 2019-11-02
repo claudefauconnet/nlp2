@@ -5,11 +5,14 @@ var configEditor = (function () {
 
 
         self.editConfig = function () {
+            var json = context.indexConfigs[context.currentIndexName];
+            return self.createNewConfig(json)
+
             var formStr = "<div style='width: 500px'><form id='shemaForm'></form></div>"
             $("#mainDiv").html(formStr);
             var json = context.indexConfigs[context.currentIndexName];
             var parts = Object.keys(json);
-          //  parts=["general","connector","schema","display"]
+            //  parts=["general","connector","schema","display"]
             var schema = {}
             parts.forEach(function (part) {
                 var subPart = part;
@@ -22,10 +25,27 @@ var configEditor = (function () {
                 }
 
             })
-            self.editJsonForm(schemaformId, schema, json, function (errors, data) {
-                var config=data;
-                config.schema.mappings=json.schema.mappings// non pris en compte dans l'édition
-                context.indexConfigs[context.currentIndexName]=config
+            var buttons = [
+
+                {
+                    title: "editMappings", onClick: (function (evt) {
+                        evt.preventDefault();
+                        asyncDialog.show("mainDiv", html, function (ok) {
+                            alert("aaa")
+                        })
+
+
+                    })
+                }
+
+
+            ]
+
+
+            self.editJsonForm(schemaformId, schema, json, buttons, function (errors, data) {
+                var config = data;
+                config.schema.mappings = json.schema.mappings// non pris en compte dans l'édition
+                context.indexConfigs[context.currentIndexName] = config
                 indexes.saveIndexConfig(context.currentIndexName, JSON.stringify(data, null, 2), function (err, result) {
                     $("#messageDiv").html("configuration saved");
                 })
@@ -33,7 +53,7 @@ var configEditor = (function () {
         }
 
 
-        self.createNewConfig = function () {
+        self.createNewConfig = function (json) {
 
             var config = {};
             var connectorType;
@@ -46,8 +66,8 @@ var configEditor = (function () {
                     //general
                     function (callbackSeries) {
                         $("#mainDiv").html(formStr);
-                        self.editJsonForm(schemaformId, context.jsonSchemas.general, null, function (errors, data) {
-                            if(!data.general.indexName.match(/[a-z0-9].*/))
+                        self.editJsonForm(schemaformId, context.jsonSchemas.general, json, null, function (errors, data) {
+                            if (!data.general.indexName.match(/[a-z0-9].*/))
                                 return callbackSeries("index name only accept lowercase and numbers")
                             config.general = data.general;
                             callbackSeries()
@@ -56,8 +76,13 @@ var configEditor = (function () {
                     ,
                     //choose connector type
                     function (callbackSeries) {
+                if(json) {
+                    connectorType =json.connector.type;
+                    return   callbackSeries();
+                }
+
                         $("#mainDiv").html(formStr);
-                        self.editJsonForm(schemaformId, context.jsonSchemas.connectorTypes, null, function (errors, data) {
+                        self.editJsonForm(schemaformId, context.jsonSchemas.connectorTypes, json, null, function (errors, data) {
                             connectorType = data.connector;
                             callbackSeries()
                         })
@@ -79,7 +104,7 @@ var configEditor = (function () {
 
 
                         $("#mainDiv").html(formStr);
-                        self.editJsonForm(schemaformId, connectorSchema, null, function (errors, data) {
+                        self.editJsonForm(schemaformId, connectorSchema, json, null, function (errors, data) {
                             config.connector = data.connector;
                             callbackSeries()
                         })
@@ -88,7 +113,7 @@ var configEditor = (function () {
                     // dialog contentField and analyzer
                     function (callbackSeries) {
                         $("#mainDiv").html(formStr);
-                        self.editJsonForm(schemaformId, context.jsonSchemas.schema, null, function (errors, data) {
+                        self.editJsonForm(schemaformId, context.jsonSchemas.schema, json, null, function (errors, data) {
                             config.schema = data.schema;
                             callbackSeries();
                         })
@@ -96,67 +121,46 @@ var configEditor = (function () {
 
                     //connector config defaultMappings (depending on connector)
                     function (callbackSeries) {
-
                         self.generateDefaultMappingFields(config.connector, function (err, result) {
-                            var defaultMappingFields = result;
-                            var fieldNames = Object.keys(result);
-                            var html = "<div><ul>"
-                            fieldNames.forEach(function (field) {
-                                html += "<li><input type='checkBox' checked='checked' class='mappingFieldCbx' value='" + field + "'>" + field + "</li>"
-
+                            self.editMappings("index mappings", result, true,function (err, fields) {
+                                if (err)
+                                    callbackSeries(err);
+                                if (!fields)
+                                    return callbackSeries();
+                                var type = config.general.indexName;
+                                var mappings = {[type]: {["properties"]:fields }};
+                                config.schema.mappings = mappings;
+                                selectedMappingFields= fields;
+                                callbackSeries();
                             })
 
-                            html += "</ul>"
-                            asyncDialog.show("mainDiv", html, function (ok) {
-                                if (ok) {
-                                    selectedMappingFields = {}
-                                    $(".mappingFieldCbx").each(function (index, value) {
-                                        if ($(this).prop("checked")) {
-                                            var name = $(this).val();
-                                            selectedMappingFields[name] = result[name]
+                        })
 
-                                        }
-                                    })
-                                    var type = config.general.indexName;
-                                    var mappings = {[type]: {["properties"]: selectedMappingFields}};
-                                    config.schema.mappings = mappings;
-                                    callbackSeries();
-                                } else {
-                                    callbackSeries(err);
-                                }
-                            });
-                        });
                     },
 
-                //display excst
-                function(callbackSeries){
+                    //display excerpt
+                    function (callbackSeries) {
+                        self.editMappings("display mappings", selectedMappingFields, false, function (err, fields) {
+                            if (err)
+                                callbackSeries(err);
+                            if (!fields)
+                                return callbackSeries();
 
-                var html="list display fields<ul>";
-                    selectedMappingFields.forEach(function (field) {
-                        html += "<li><input type='checkBox' checked='checked' class='displayFieldCbx' value='" + field + "'>" + field + "</li>"
-
-                    })
-
-                    html += "</ul>"
-                    asyncDialog.show("mainDiv", html, function (ok) {
-                        if (ok) {
-                            var selectedMappingFields = {}
-                            $(".displayFieldCbx").each(function (index, value) {
-                                if ($(this).prop("checked")) {
-                                    var name = $(this).val();
-                                    selectedMappingFields[name] = result[name]
-
-                                }
-                            })
-                            var type = config.general.indexName;
-                            var mappings = {[type]: {["properties"]: selectedMappingFields}};
-                            config.schema.mappings = mappings;
+                            var excerptFields=Object.keys(fields);
+                            var display=[]
+                            for(var key in selectedMappingFields){
+                                if(excerptFields.indexOf(key )>-1)
+                                    display.push({[key]: {"cssClass": "excerpt"}});
+                                else
+                                    display.push({[key]: {"cssClass": "text"}});
+                            }
+                            config.display = display;
                             callbackSeries();
-                        } else {
-                            callbackSeries(err);
-                        }
-                    });
-                }
+                        })
+
+                    }
+
+
 
 
                 ],
@@ -164,22 +168,21 @@ var configEditor = (function () {
 
                 function (err) {
 
-                if( err)
-                    return  $("#mainDiv").html(err);
+                    if (err)
+                        return $("#mainDiv").html(err);
                     var xx = config;
 
 
-                   $("#mainDiv").html("configuration ready");
+                    $("#mainDiv").html("configuration ready");
                     if (confirm("save index configuration?")) {
 
-                        indexes.saveIndexConfig(config.general.indexName, JSON.stringify(config,null,2), function (err, result) {
+                        indexes.saveIndexConfig(config.general.indexName, JSON.stringify(config, null, 2), function (err, result) {
                             indexes.loadIndexConfigs(["*"], function (err, result) {
-                                if(err) {
+                                if (err) {
                                     $("#messageDiv").html("indexes non chargés" + err);
                                 }
                                 context.indexConfigs = result;
                                 ui.initSourcesList();
-
 
 
                             })
@@ -191,16 +194,22 @@ var configEditor = (function () {
         }
 
 
-        self.editJsonForm = function (formId, jsonSchema, json, onSubmit) {
-
-            $("#" + formId).jsonForm({
-
+        self.editJsonForm = function (formId, jsonSchema, json, buttons, onSubmit) {
+            var options = {
                 "schema": jsonSchema,
                 "onSubmit": onSubmit,
                 "value": json,
-            });
+            }
+            if (buttons) {
+                options.form = ["*"];
+                buttons.forEach(function (button) {
+                    options.form.push({"type": "button", "title": button.title, onClick: button.onClick});
+                })
 
-
+            }
+            $("#" + formId).jsonForm(options);
+            var xx = $(".btnDefault");
+            $(".btn-default").addClass("btn-primary ")
         }
 
 
@@ -236,8 +245,41 @@ var configEditor = (function () {
             })
         }
 
+
+        self.editMappings = function (title, json, checked, callback) {
+var callbackFn=callback;
+            var fieldNames = Object.keys(json);
+            var html = "<div><b>" + title + "</b><ul>"
+            var checkedStr = "";
+            if (checked)
+                checkedStr = "checked='checked'";
+            fieldNames.forEach(function (field) {
+                html += "<li><input type='checkBox' " + checkedStr + " class='mappingFieldCbx' value='" + field + "'>" + field + "</li>"
+
+            })
+            html += "</ul>"
+            asyncDialog.show("mainDiv", html, function (ok) {
+                if (ok) {
+                    var selectedFields = {}
+                    $(".mappingFieldCbx").each(function (index, value) {
+                        if ($(this).prop("checked")) {
+                            var name = $(this).val();
+                            selectedFields[name] = json[name]
+
+                        }
+                    })
+
+                   callbackFn(null, selectedFields)
+
+                } else {
+                    callback();
+                }
+            });
+
+        }
+
         self.editConfigXXX = function () {
-            var json=context.indexConfigs[context.currentIndexName]
+            var json = context.indexConfigs[context.currentIndexName]
 
             var html = "<div id='configEditorDiv'>";
 

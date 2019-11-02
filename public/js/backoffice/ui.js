@@ -38,7 +38,7 @@ var ui = (function () {
 
         var json = context.indexConfigs[indexName].indexation;
         $("#mainDiv").html(formStr);
-        configEditor.editJsonForm('shemaForm', context.jsonSchemas.indexation, null, function (errors, data) {
+        configEditor.editJsonForm('shemaForm', context.jsonSchemas.indexation, null, null,function (errors, data) {
            context.currentIndexationConfig=data.indexation;
             $("#mainDiv").html(
                 "<div><button onclick='configEditor.saveIndexationConfig()'>save indexation config</button> "

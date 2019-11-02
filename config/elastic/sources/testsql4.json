@@ -7,7 +7,6 @@
   "connector": {
     "type": "sql",
     "subType": "mysql",
-    "sqlQuery": "select * from phototheque",
     "connOptions": {
       "host": "localhost",
       "user": "root",
@@ -86,5 +85,107 @@
         }
       }
     }
-  }
+  },
+  "display": [
+    {
+      "id": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "indexCIJW": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "dossier": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "sousdossier": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "document": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "versement": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "lien": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "photographe": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "agence": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "droit_auteur": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "droit_image": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "contenu": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "temoin_ref": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "date": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "lieu": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "description": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "local": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "support": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "dateMaj": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "redacteur": {
+        "cssClass": "text"
+      }
+    }
+  ]
 }

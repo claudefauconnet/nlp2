@@ -14,11 +14,8 @@
       "password": "vi0lon",
       "database": "videotheque",
       "table": "videotheque"
-    }
-  },
-  "indexation": {
-    "elasticUrl": "http://localhost:9200/",
-    "deleteOldIndex": "yes"
+    },
+    "contentField": "attachment.content"
   },
   "schema": {
     "contentField": "attachment.content",
@@ -51,19 +48,19 @@
             "type": "text"
           },
           "fonds": {
-            "type": "keyword"
+            "type": "text"
           },
           "depot": {
-            "type": "keyword"
+            "type": "text"
           },
           "droits": {
             "type": "keyword"
           },
           "local": {
-            "type": "keyword"
+            "type": "text"
           },
           "standard": {
-            "type": "keyword"
+            "type": "text"
           },
           "observations": {
             "type": "text"
@@ -92,5 +89,112 @@
         }
       }
     }
-  }
+  },
+  "display": [
+    {
+      "id": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "indexCIJW": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "projet": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "lien": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "cote": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "document": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "date_creation": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "titre": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "fonds": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "depot": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "droits": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "local": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "standard": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "observations": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "edition": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "langue": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "qualification": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "exploitation": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "notes_conjoncture": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "dateMaj": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "redacteur": {
+        "cssClass": "text"
+      }
+    }
+  ]
 }

@@ -4,7 +4,7 @@ var Search = (function () {
     self.queryElastic = function (query, indexes, callback) {
 
         if (!indexes)
-            indexes = context.indexes;
+            indexes = context.curentSearchIndexes;
 
 
         console.log(JSON.stringify(indexes, null, 2))
@@ -19,7 +19,7 @@ var Search = (function () {
         }
         $.ajax({
             type: "POST",
-            url: config.elasticUrl,
+            url: appConfig.elasticUrl,
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
@@ -49,7 +49,7 @@ var Search = (function () {
         }
         $.ajax({
             type: "POST",
-            url: config.elasticUrl,
+            url: appConfig.elasticUrl,
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
@@ -93,7 +93,7 @@ var Search = (function () {
         if (!question || question.length < 3)
             return $("#resultDiv").html("entrer une question (au moins 3 lettres)");
 
-        if (context.indexes.length == 0)
+        if (context.curentSearchIndexes.length == 0)
             return $("#resultDiv").html("selectionner au moins une source");
 
         self.analyzeQuestion(question, function (err, query) {
@@ -109,7 +109,7 @@ var Search = (function () {
                     "associatedWords": {
                         "significant_terms": {
                             "size": 30,
-                            "field": config.contentField
+                            "field": appConfig.contentField
                         }
                     },
                     /*   "associatedWords1":
@@ -119,7 +119,7 @@ var Search = (function () {
                                    {
                                        "size": 20,
                                        "field":
-                                          config.contentField
+                                          appConfig.contentField
                                    }
                            },*/
 
@@ -189,7 +189,7 @@ var Search = (function () {
                         tags_schema: "styled",
                         fragment_size: 1,
                         number_of_fragments: 0,
-                        fields: {[config.contentField]:{}}
+                        fields: {[appConfig.contentField]:{}}
                          //   "attachment.content": {},
 
                        // }
@@ -225,7 +225,7 @@ var Search = (function () {
 
                 "simple_query_string": {
                     "query": question,
-                    "fields": [config.contentField],
+                    "fields": [appConfig.contentField],
                     "default_operator": "and"
 
                 }
@@ -263,7 +263,7 @@ var Search = (function () {
           if( false) {
               query = {
                   "match_phrase": {
-                      [config.contentField]: {
+                      [appConfig.contentField]: {
                           "query": array[1],
                           "slop": slop
                       }
@@ -294,7 +294,7 @@ var Search = (function () {
             if (word.indexOf("%") > 0) {// wildcard * does not split correctly
                 return {
                     "wildcard": {
-                       [config.contentField]: {
+                       [appConfig.contentField]: {
                             "value": word.replace(/%/g, "*"),
                         }
                     }
@@ -302,7 +302,7 @@ var Search = (function () {
             } else {
                 return {
                     "match": {
-                       [config.contentField]: word
+                       [appConfig.contentField]: word
                     }
                 }
             }

@@ -1,10 +1,11 @@
-var config = {
+var appConfig = {
     appName:"search",
    loginMode:"none",  //database or none
     contentField:"attachment.content",
     locale:"Fr",
     elasticUrl : "../elastic",
-    indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr","testdocs","testsql"],
+  //  indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr","testdocs","testsql"],
+    indexes:["*"],
   // indexes:["bordereaux", "phototheque","artotheque","videotheque","audiotheque","ocr"],
   //  indexes:["gmail_cf"],
  //  indexes:["testpdfquantum"],
@@ -25,17 +26,17 @@ var config = {
 
 }
 
-config.elasticQuery={
+appConfig.elasticQuery={
     from: 0,
         size: 25,
         indexes: [],
-        source: {"excludes": [config.contentField]},
+        source: {"excludes": [appConfig.contentField]},
     highlight: {
         tags_schema: "styled",
             number_of_fragments: 3,
             fragment_size: 150,
             fields: {
-            [config.contentField]: {},
+            [appConfig.contentField]: {},
 
         }
     }

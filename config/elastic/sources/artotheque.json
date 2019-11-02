@@ -1,11 +1,13 @@
 {
   "general": {
     "description": "index de l'artoheque de Baillet",
-    "label": "Oeuvres d'art"
+    "label": "Oeuvres d'art",
+    "indexName": "artotheque"
   },
   "connector": {
     "type": "sql",
-    "subType": "mySQL",
+    "subType": "mysql",
+    "sqlQuery": "select * from artotheque",
     "connOptions": {
       "host": "localhost",
       "user": "root",
@@ -13,254 +15,186 @@
       "database": "artotheque",
       "table": "artotheque"
     },
-    "sqlQuery": "select * from artotheque"
-  },
-  "indexation": {
-    "deleteOldIndex": true,
-    "elasticUrl": "http://localhost:9200/"
+    "contentField": "attachment.content"
   },
   "schema": {
     "contentField": "attachment.content",
     "analyzer": "lowercase_asciifolding",
     "mappings": {
-
-          "properties": {
-            "id": {
-              "isId": true,
-              "type": "integer"
-            },
-            "indexCIJW": {
-              "type": "keyword",
-              "isTitle": true,
-              "inCSV": true
-            },
-            "lien": {
-              "type": "keyword"
-            },
-            "fonds": {
-              "type": "keyword"
-            },
-            "collection": {
-              "type": "keyword"
-            },
-            "document": {
-              "type": "keyword"
-            },
-            "type": {
-              "type": "keyword",
-              "inCSV": true
-            },
-            "createur": {
-              "type": "keyword",
-              "inCSV": true
-            },
-            "titre": {
-              "type": "keyword",
-              "inCSV": true
-            },
-            "epoque": {
-              "type": "keyword"
-            },
-            "materiaux": {
-              "type": "keyword",
-              "inCSV": true
-            },
-            "dimensions": {
-              "type": "keyword"
-            },
-            "provenance": {
-              "type": "keyword"
-            },
-            "description": {
-              "type": "text"
-            },
-            "localisation": {
-              "type": "keyword"
-            },
-            "temoin_ref": {
-              "type": "keyword"
-            },
-            "liens": {
-              "type": "keyword"
-            },
-            "mots_cles": {
-              "type": "keyword"
-            },
-            "divers": {
-              "type": "keyword"
-            },
-            "dateMaj": {
-              "type": "date"
-            },
-            "redacteur": {
-              "type": "keyword"
-            }
+      "artotheque": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "indexCIJW": {
+            "type": "keyword"
+          },
+          "lien": {
+            "type": "keyword"
+          },
+          "fonds": {
+            "type": "keyword"
+          },
+          "collection": {
+            "type": "keyword"
+          },
+          "document": {
+            "type": "keyword"
+          },
+          "type": {
+            "type": "text"
+          },
+          "createur": {
+            "type": "text"
+          },
+          "titre": {
+            "type": "text"
+          },
+          "epoque": {
+            "type": "text"
+          },
+          "materiaux": {
+            "type": "text"
+          },
+          "dimensions": {
+            "type": "text"
+          },
+          "provenance": {
+            "type": "text"
+          },
+          "description": {
+            "type": "text"
+          },
+          "localisation": {
+            "type": "text"
+          },
+          "temoin_ref": {
+            "type": "text"
+          },
+          "liens": {
+            "type": "text"
+          },
+          "mots_cles": {
+            "type": "text"
+          },
+          "divers": {
+            "type": "text"
+          },
+          "dateMaj": {
+            "type": "date"
+          },
+          "redacteur": {
+            "type": "keyword"
           }
-
-
+        }
+      }
     }
   },
-  "display": {
-    "list": [
-      {
-        "indexCIJW": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "fonds": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "collection": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "document": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "type": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "createur": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "titre": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "epoque": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "materiaux": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "excerpt": {
-          "cssClass": "excerpt"
-        }
+  "display": [
+    {
+      "id": {
+        "cssClass": "text"
       }
-    ],
-    "details": [
-      {
-        "id": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "indexCIJW": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "lien": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "fonds": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "collection": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "document": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "type": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "createur": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "titre": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "epoque": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "materiaux": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "dimensions": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "provenance": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "description": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "localisation": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "temoin_ref": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "liens": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "mots_cles": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "divers": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "dateMaj": {
-          "cssClass": "text"
-        }
-      },
-      {
-        "redacteur": {
-          "cssClass": "text"
-        }
+    },
+    {
+      "indexCIJW": {
+        "cssClass": "text"
       }
-    ],
-    "csv": [
-    ]
-  }
+    },
+    {
+      "lien": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "fonds": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "collection": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "document": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "type": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "createur": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "titre": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "epoque": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "materiaux": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "dimensions": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "provenance": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "description": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "localisation": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "temoin_ref": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "liens": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "mots_cles": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "divers": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "dateMaj": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "redacteur": {
+        "cssClass": "text"
+      }
+    }
+  ]
 }

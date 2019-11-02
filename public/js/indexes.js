@@ -110,7 +110,7 @@ var indexes = (function () {
                 indexes.push(id);
 
         })
-        context.indexes = indexes;
+        context.curentSearchIndexes = indexes;
         context.question = $('#questionInput').val();
 
     }
@@ -144,19 +144,19 @@ var indexes = (function () {
 
 
     self.initIndexesDiv = function (checked) {
-        var indexes = context.indexes;
-        indexesCxbs = "<ul>";
+        var indexes = context.indexConfigs;
+        var indexesCxbs = "<ul>";
 
         indexesCxbs += "<span class='ui_title'>Sources</span>";
         indexesCxbs += "<li><input type='checkbox' checked='checked'  id='indexesCbxes_all' onchange='indexes.onIndexAllCBXchange()'>" +
             "Toutes <index> <span class='indexDocCount' id='indexDocCount_all'/></li><li>&nbsp;</li>"
         indexesCxbs += ""
-        indexes.forEach(function (index) {
 
-            indexesCxbs += "<li><input type='checkbox' checked='checked' onchange='indexes.onIndexCBXchange(this)' class='indexesCbxes' id='" + index + "'>" +
-                //  index+"<index> </li>"
-                "<span onclick=indexes.onIndexSelect('" + index + "') >" + context.indexConfigs[index].general.label + "</span><span class='indexDocCount' id='indexDocCount_" + index + "'/></li>"
-        })
+        for (var key in context.indexConfigs) {
+            var index = context.indexConfigs[key]
+            indexesCxbs += "<li><input type='checkbox' checked='checked' onchange='indexes.onIndexCBXchange(this)' class='indexesCbxes' id='" + key + "'>" +
+                "<span onclick=indexes.onIndexSelect('" + key + "') >" + index.general.label + "</span><span class='indexDocCount' id='indexDocCount_" + key + "'/></li>"
+        }
         indexesCxbs += "<ul>";
         $("#indexesDiv").html(indexesCxbs);
 
@@ -182,11 +182,11 @@ var indexes = (function () {
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
 
-              $("#messageDiv").html("done")
+                $("#messageDiv").html("done")
 
             }
             , error: function (err) {
-                $("#messageDiv").html("error"+err.responseText)
+                $("#messageDiv").html("error" + err.responseText)
                 console.log(err.responseText)
 
             }

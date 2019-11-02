@@ -16,7 +16,7 @@ var ui = (function () {
     self.showResultList = function (hits, displayConfigs) {
         var html = "";
         hits.forEach(function (hit, index) {
-         var displayConfig = context.indexConfigs[hit._index].display.list
+         var displayConfig = context.indexConfigs[hit._index].display
             html += self.getHitDiv(hit, displayConfig)
         })
 
@@ -28,7 +28,7 @@ var ui = (function () {
 
 
     self.showHitDetails = function (hit) {
-        var displayConfig = context.indexConfigs[hit._index].display.details;
+        var displayConfig = context.indexConfigs[hit._index].display;
         var indexLabel=context.indexConfigs[hit._index].general.label
         var html ="<b> Source : </b><span class='title'>"+ indexLabel+"</span><hr> "+self.getHitHtml(hit, displayConfig, "details");
 
@@ -69,7 +69,7 @@ var ui = (function () {
 
 
             var fieldName = Object.keys(line)[0];
-            var fieldLabel = line[fieldName]["label" + config.locale] || fieldName;
+            var fieldLabel = line[fieldName]["label" + appConfig.locale] || fieldName;
 
             var fieldValue = hit._source[fieldName];
             fieldValue = fieldValue || "";
@@ -85,9 +85,9 @@ var ui = (function () {
 
             var cssClass = line[fieldName].cssClass;
 
-            if (cssClass == "excerpt") {// traitement special
+            if (   hit.highlight && cssClass == "excerpt") {// traitement special
                 html += "<span class='excerpt'>";
-                hit.highlight[config.contentField].forEach(function (highlight, index) {
+                hit.highlight[appConfig.contentField].forEach(function (highlight, index) {
                     if (index > 0)
                         html += "  ...  "
                     html += highlight

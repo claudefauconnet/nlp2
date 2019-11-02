@@ -14,11 +14,8 @@
       "password": "vi0lon",
       "database": "audiotheque",
       "table": "audiotheque"
-    }
-  },
-  "indexation": {
-    "elasticUrl": "http://localhost:9200/",
-    "deleteOldIndex": "yes"
+    },
+    "contentField": "attachment.content"
   },
   "schema": {
     "contentField": "attachment.content",
@@ -33,22 +30,22 @@
             "type": "keyword"
           },
           "Cote": {
-            "type": "keyword"
+            "type": "text"
           },
           "Type": {
-            "type": "keyword"
+            "type": "text"
           },
           "NDA": {
             "type": "keyword"
           },
           "Comptage": {
-            "type": "keyword"
-          },
-          "DateNumerisation": {
             "type": "text"
           },
-          "Operateur": {
+          "DateNumerisation": {
             "type": "keyword"
+          },
+          "Operateur": {
+            "type": "text"
           },
           "Titre1": {
             "type": "text"
@@ -60,43 +57,43 @@
             "type": "text"
           },
           "QualiteEcoute": {
-            "type": "keyword"
+            "type": "text"
           },
           "RDB": {
             "type": "keyword"
           },
           "RMDA": {
-            "type": "keyword"
+            "type": "text"
           },
           "DocumentsAssocies": {
-            "type": "keyword"
+            "type": "text"
           },
           "DateConformation": {
-            "type": "text"
+            "type": "keyword"
           },
           "Conformation": {
             "type": "text"
           },
           "DH": {
-            "type": "keyword"
-          },
-          "DM": {
-            "type": "keyword"
-          },
-          "DS": {
-            "type": "keyword"
-          },
-          "DS10_3": {
-            "type": "keyword"
-          },
-          "DateEnregistrement": {
             "type": "text"
           },
+          "DM": {
+            "type": "text"
+          },
+          "DS": {
+            "type": "text"
+          },
+          "DS10_3": {
+            "type": "text"
+          },
+          "DateEnregistrement": {
+            "type": "keyword"
+          },
           "MoisEnregistrement": {
-            "type": "integer"
+            "type": "text"
           },
           "AnneeEnregistrement": {
-            "type": "integer"
+            "type": "text"
           },
           "dateMaj": {
             "type": "date"
@@ -107,5 +104,137 @@
         }
       }
     }
-  }
+  },
+  "display": [
+    {
+      "id": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "indexCIJW": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "Cote": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "Type": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "NDA": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "Comptage": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "DateNumerisation": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "Operateur": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "Titre1": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "Titre2": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "TitreCatalogue": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "QualiteEcoute": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "RDB": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "RMDA": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "DocumentsAssocies": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "DateConformation": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "Conformation": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "DH": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "DM": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "DS": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "DS10_3": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "DateEnregistrement": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "MoisEnregistrement": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "AnneeEnregistrement": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "dateMaj": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "redacteur": {
+        "cssClass": "text"
+      }
+    }
+  ]
 }
