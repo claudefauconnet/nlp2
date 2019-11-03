@@ -28,7 +28,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
     }
 
     if (req.body.getIndexConfigs) {
-        configLoader.getIndexConfigs(JSON.parse(req.body.indexes), function (error, result) {
+        configLoader.getIndexConfigs(JSON.parse(req.body.userGroups), function (error, result) {
             processResponse(response, error, result)
         });
 

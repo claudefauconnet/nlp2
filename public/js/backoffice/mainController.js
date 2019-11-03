@@ -9,6 +9,11 @@ var mainController = (function () {
 
 
     self.init0 = function () {
+        context.currentUser = {
+            identifiant: "admin",
+            login: "none",
+            groups: "ADMIN"
+        }
         async.series([
 
             // load templatess
@@ -26,7 +31,7 @@ var mainController = (function () {
 
             // load indexConfigs
             ,  function(callbackSeries){
-                indexes.loadIndexConfigs(["*"], function (err, result) {
+                indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
 
                     if (err)
                        return callbackSeries("index configurations non chargés" + err);
@@ -147,7 +152,7 @@ self.post=function(url,payload,callback){
                 if (err)
                     return $("#messageDiv").html(err);
                 $("#messageDiv").html(result.result);
-                indexes.loadIndexConfigs(["*"], function (err, result) {
+                indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
                     if(err)
                         return  $("#messageDiv").html("indexes non chargés" + err);
                     ui.initSourcesList();
@@ -164,7 +169,7 @@ self.post=function(url,payload,callback){
             self.saveIndexConfig(newIndexName, function (err, result) {
                 if (err)
                    return  $("#messageDiv").html("indexes non chargés" + err);
-                    indexes.loadIndexConfigs(["*"], function (err, result) {
+                    indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
                         if(err)
                         return  $("#messageDiv").html("index configurations non chargés" + err);
                         ui.initSourcesList();

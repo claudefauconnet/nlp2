@@ -251,7 +251,7 @@ var configEditor = (function () {
                     if (confirm("save index configuration?")) {
 
                         indexes.saveIndexConfig(config.general.indexName, JSON.stringify(config, null, 2), function (err, result) {
-                            indexes.loadIndexConfigs(["*"], function (err, result) {
+                            indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
                                 if (err) {
                                     $("#messageDiv").html("indexes non chargés" + err);
                                 }

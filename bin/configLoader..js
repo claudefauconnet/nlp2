@@ -31,6 +31,19 @@ var configLoader = {
         }
         return callback(null, indexNames);
     },
+    getAllProfiles: function (callback) {
+        try {
+            var profiles = [];
+            var pathStr = path.join(__dirname, configDir + "profiles/");
+            fs.readdirSync(pathStr).forEach(file => {
+                var str = ""+fs.readFileSync(pathStr+file);
+                profiles.push(JSON.parse(str,null,2))
+            });
+        } catch (e) {
+            return callback(e);
+        }
+        return callback(null, profiles);
+    },
 
     loadIndexConfig: function (index, callback) {
         var config = null;
@@ -96,19 +109,34 @@ var configLoader = {
     ,
 
 
-    getIndexConfigs: function (indexes, callback) {
-
-        if (!Array.isArray(indexes)) {
-            indexes = [indexes];
+    getIndexConfigs: function (userGroups, callback) {
+        if (!Array.isArray(userGroups)) {
+            userGroups = [userGroups];
         }
+        var indexes=[];
 
 
         var configs = {}
         async.series([
             function (callbackSeries) {
-                if (indexes != "*") {
+
+                configLoader.getAllProfiles(function (err, result) {
+                    result.forEach(function(profile){
+                    for (var group in profile) {
+                        if (userGroups.indexOf(group) > -1) {
+                            indexes=indexes.concat(profile[group].indexes);
+                        }
+
+                    }
+                    })
                     return callbackSeries();
-                }
+                })
+
+            },
+            function (callbackSeries) {
+                if (indexes[0] != "*")
+                    return callbackSeries();
+
                 configLoader.getAllIndexNames(function (err, result) {
                     indexes = result;
                     return callbackSeries();
@@ -182,7 +210,7 @@ var configLoader = {
 module.exports = configLoader;
 
 if (false) {
-    configLoader.getIndexConfigs("bordereaux", function (err, result) {
+    configLoader.getIndexConfigs("archives", function (err, result) {
         var xx = err;
     })
 }

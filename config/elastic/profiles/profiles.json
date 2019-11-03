@@ -1,0 +1,14 @@
+{
+  "ADMIN": {
+    "indexes": "*"
+  },
+  "archives": {
+    "indexes": [
+      "phototheque",
+      "artotheque"
+    ]
+  }
+
+
+
+}

@@ -27,20 +27,7 @@
 <script src="data/stopwords-fr..js"></script>
 <script>
     $(function () {
-
-        if (appConfig.loginMode!='none') {
-            authentication.init(true, function (err, result) {
-                mainController.init0();
-            })
-            /* $("#searchTableInput").attr("disabled", true)
-             $("#leftAccordion").css("opacity", 0.2);
-             $("#loginDialogDiv").dialog("open");*/
-        }
-        else {
-            mainController.init0();
-        }
-
-
+            authentication.init(true)
     })
 </script>
 <style>

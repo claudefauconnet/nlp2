@@ -2,10 +2,10 @@ var indexes = (function () {
 
     var self = {};
 
-    self.loadIndexConfigs = function (indexes, callback) {
+    self.loadIndexConfigs = function (userGroups, callback) {
         var payload = {
             getIndexConfigs: 1,
-            indexes: JSON.stringify(indexes)
+            userGroups: JSON.stringify(userGroups)
         }
         $.ajax({
             type: "POST",
