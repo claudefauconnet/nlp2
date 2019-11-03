@@ -2,16 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2aed3304-3bbc-4755-9793-0734f56799f9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/config/elastic/profiles/profiles.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/backoffice/imapMailExtractor..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/configLoader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/configLoader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/authentification.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/authentification.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/configEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/backoffice/configEditor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/backoffice/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/indexes.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/indexes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/_bookCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_bookCrawler..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/_imapCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_imapCrawler..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,6 +22,12 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/backoffice" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\bin\backoffice" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -49,7 +51,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1572800273545</updated>
-      <workItem from="1572800278089" duration="1086000" />
+      <workItem from="1572800278089" duration="4404000" />
     </task>
     <servers />
   </component>
