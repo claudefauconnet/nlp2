@@ -39,6 +39,8 @@ var ui = (function () {
     }
 
     self.setHighlight = function (text, highlightedWords) {
+        if(highlightedWords.length>2)
+            return text;
         highlightedWords.forEach(function (word) {
             word = word.replace(/\*/g, "")
             var regex = new RegExp(word, "igm");

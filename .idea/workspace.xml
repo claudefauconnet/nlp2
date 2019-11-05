@@ -2,46 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2aed3304-3bbc-4755-9793-0734f56799f9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/public/js/backoffice/imapUI.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/backoffice/jobScheduler.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/backoffice/profiles.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/jstree.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default-dark/32px.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default-dark/40px.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default-dark/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default-dark/style.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default-dark/throbber.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default/32px.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default/40px.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default/style.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/themes/default/throbber.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/others/jsTree/treeController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/backoffice/jobScheduler..js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/annotations.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/_bookCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_bookCrawler..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/imapMailExtractor..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/imapMailExtractor..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/indexer..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/indexer..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/configLoader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/configLoader..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/elastic/profiles/profiles.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/profiles/profiles.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/elastic/sources/bordereaux.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/bordereaux.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/sources/ocr.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/ocr.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/sources/testdocs.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/testdocs.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/sources/testfs.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/testfs.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/templates/jsonSchemas.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/templates/jsonSchemas.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/backoffice.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/backoffice.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/default.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/default.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/_search.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/_search.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/backoffice/config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/backoffice/configEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/backoffice/configEditor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jsonSchemas.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/backoffice/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/test.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/indexes.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/indexes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/backoffice/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/backoffice/ui.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -54,6 +24,7 @@
       <list>
         <option value="HTML File" />
         <option value="JavaScript File" />
+        <option value="JS module" />
       </list>
     </option>
   </component>
@@ -65,7 +36,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/js/others" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../docxSplitter" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -88,6 +59,16 @@
       </list>
     </option>
   </component>
+  <component name="RunManager" selected="Node.js.bin\www">
+    <configuration name="jobScheduler..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="jobScheduler..js" working-dir="$PROJECT_DIR$/bin/backoffice">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.jobScheduler..js" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -98,7 +79,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1572800273545</updated>
-      <workItem from="1572800278089" duration="31495000" />
+      <workItem from="1572800278089" duration="37482000" />
     </task>
     <servers />
   </component>
@@ -150,10 +131,10 @@
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/elasticProxy.js</url>
-          <line>412</line>
+          <url>file://$PROJECT_DIR$/bin/backoffice/imapMailExtractor..js</url>
+          <line>84</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="17" />
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

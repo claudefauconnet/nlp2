@@ -5,7 +5,7 @@
     "indexName": "bordereaux"
   },
   "connector": {
-    "type": "cocument",
+    "type": "document",
     "dir": "D:\\ATD_Baillet\\versements2018"
   },
   "schema": {
@@ -46,7 +46,7 @@
     },
     {
       "attachment.title": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {

@@ -13,7 +13,8 @@ var ui = (function () {
     }
 
     self.showIndexConfig = function () {
-
+        if(!context.currentIndexName)
+        return alert("select an index ")
         var config = context.indexConfigs[context.currentIndexName];
 
 
@@ -31,6 +32,8 @@ var ui = (function () {
 
 
     self.showIndexationForm = function () {
+        if(!context.currentIndexName)
+            return alert("select an index ")
         var indexName = context.currentIndexName;
 
 

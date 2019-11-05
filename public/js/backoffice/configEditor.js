@@ -5,6 +5,8 @@ var configEditor = (function () {
 
 
         self.editConfig = function () {
+            if(!context.currentIndexName)
+                return alert("select an index ")
             var json = context.indexConfigs[context.currentIndexName];
             return self.createNewConfig(json)
 

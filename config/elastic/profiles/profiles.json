@@ -12,6 +12,6 @@
     ]
   },
   "ADMIN": {
-    "indexes": ["bordereaux"]
+    "indexes":"*"
   }
 }
