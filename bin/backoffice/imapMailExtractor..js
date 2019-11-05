@@ -4,18 +4,18 @@ var async = require('async');
 var fs = require('fs');
 var path = require('path');
 
-var elasticIndexer = require('./elasticIndexer.')
+var elasticIndexer = require('./indexer..js')
 
 
-var common = require('./common.js')
+//var common = require('./common.js')
+var socket = require('../../routes/socket.js');
 
-var socket = require('../routes/socket.js');
 var chardet = require('chardet');
 var iconv = require('iconv-lite');
 var libmime = require('libmime');
 var base64Stream = require('base64-stream');
-var base64 = require('base-64');
-var utf8 = require('utf8');
+//var base64 = require('base-64');
+//var utf8 = require('utf8');
 var streams = require('memory-streams');
 var AllHtmlEntities = require('html-entities').AllHtmlEntities;
 

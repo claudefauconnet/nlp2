@@ -8,7 +8,7 @@ var authentication = require('../bin/authentication..js');
 var configLoader = require('../bin/configLoader..js');
 var logger = require("../bin/logger..js");
 var indexer = require("../bin/backoffice/indexer..js")
-
+var imapMailExtractor=require("../bin/backoffice/imapMailExtractor.")
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -77,6 +77,18 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         })
 
     }
+    if (req.body && req.body.getAllProfiles) {
+        configLoader.getAllProfiles (function (error, result) {
+            processResponse(response, error, result);
+        })
+    }
+    if (req.body && req.body.writeAllProfiles) {
+        configLoader.writeAllProfiles (req.body.profiles,function (error, result) {
+            processResponse(response, error, result);
+        })
+    }
+
+
 
 
 })
@@ -109,6 +121,11 @@ router.post('/authDB', function (req, res, next) {
             })
         }
     }
+
+
+
+
+
 })
 router.post('/bailletarchives-authentication', function (req, response) {
     if (req.body.authentify)
@@ -116,6 +133,14 @@ router.post('/bailletarchives-authentication', function (req, response) {
             processResponse(response, error, result)
         });
 
+});
+
+router.post('/imap', function (req, response) {
+    //  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!" + JSON.stringify(req.body));
+    if (req.body.getFolderHierarchy)
+        imapMailExtractor.getFolderHierarchy(req.body.imapServer, req.body.mailAdress, req.body.password, req.body.rootFolder, req.body.folderId, function (error, result) {
+            processResponse(response, error, result)
+        });
 });
 
 function processResponse(response, error, result) {

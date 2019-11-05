@@ -160,7 +160,7 @@ var indexes = (function () {
         indexesCxbs += "<ul>";
         $("#indexesDiv").html(indexesCxbs);
 
-        if (!checked)
+        if (!checked  && Object.keys(context.indexConfigs)>1  )
             self.uncheckAllIndexes();
         self.setContextIndexes()
     }

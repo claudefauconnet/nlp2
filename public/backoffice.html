@@ -13,6 +13,8 @@
     <script src="js/others/async.js"></script>
     <script src="js/others/socket.io.js"></script>
 
+    <script src="./js/others/jsTree/jstree.min.js"></script><!-- pour imap-->
+
   <script src="js/backoffice/jquery.json-editor.min.js"></script>
 
 
@@ -31,9 +33,13 @@
     <script src="js/backoffice/ui.js"></script>
     <script src="js/backoffice/configEditor.js"></script>
     <script src="js/backoffice/asyncDialog.js"></script>
+    <script src="js/backoffice/imapUI.js"></script>
+    <script src="js/backoffice/profiles.js"></script>
+    <script src="js/backoffice/jobScheduler.js"></script>
 
 
-    <script src="js/backoffice/jsonSchemas.js"></script>
+   <!-- <script src="js/backoffice/jsonSchemas.js"></script>-->
+
 
 
     <script src="js/indexes.js"></script>
@@ -271,9 +277,20 @@
             width:90%;
 
         }
+
+
         label{
             margin-bottom: 0;
         }
+
+        .btn-default {
+          background-color: #6a7179;
+        }
+            .glyphicon{
+                font-size: 12px;
+                color:blue;
+            }
+
     </style>
 
     <script>
@@ -285,7 +302,8 @@
 
                 activate: function (event, ui) {
                     var content = ui;
-                    var tabName = ui.newHeader.text()
+                    var tabName = ui.newHeader.text();
+                    mainController.onAccordionTabChange(tabName);
 
 
                 }
@@ -389,9 +407,9 @@
 
             <h1>Indexation</h1>
             <div id="indexationWrapperDiv" class="accordionInnerDiv">
-                <div id="indexationDiv">
+               <!-- <div id="indexationDiv">
                     <button onclick="ui.showIndexationForm()">Run indexation</button>
-                </div>
+                </div>-->
 
             </div>
 
@@ -403,6 +421,11 @@
             </div>
             <h1>Scheduler</h1>
             <div id="schedulerWrapperDiv" class="accordionInnerDiv">
+
+            </div>
+            <h1>Profiles</h1>
+            <div id="profilesWrapperDiv" class="accordionInnerDiv">
+
 
 
             </div>

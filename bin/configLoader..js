@@ -36,15 +36,23 @@ var configLoader = {
             var profiles = [];
             var pathStr = path.join(__dirname, configDir + "profiles/");
             fs.readdirSync(pathStr).forEach(file => {
-                var str = ""+fs.readFileSync(pathStr+file);
-                profiles.push(JSON.parse(str,null,2))
+                var str = "" + fs.readFileSync(pathStr + file);
+                profiles.push(JSON.parse(str, null, 2))
             });
         } catch (e) {
             return callback(e);
         }
         return callback(null, profiles);
-    },
+    }
+    , writeAllProfiles: function (profiles, callback) {
+        var pathStr = path.join(__dirname, configDir + "profiles/profiles.json");
+        fs.writeFile(pathStr, profiles, function (err, result) {
+            if (err)
+                return callback(err);
+            return callback(null, "profiles saved : ");
+        });
 
+    },
     loadIndexConfig: function (index, callback) {
         var config = null;
         var str = null;
@@ -113,7 +121,7 @@ var configLoader = {
         if (!Array.isArray(userGroups)) {
             userGroups = [userGroups];
         }
-        var indexes=[];
+        var indexes = [];
 
 
         var configs = {}
@@ -121,13 +129,13 @@ var configLoader = {
             function (callbackSeries) {
 
                 configLoader.getAllProfiles(function (err, result) {
-                    result.forEach(function(profile){
-                    for (var group in profile) {
-                        if (userGroups.indexOf(group) > -1) {
-                            indexes=indexes.concat(profile[group].indexes);
-                        }
+                    result.forEach(function (profile) {
+                        for (var group in profile) {
+                            if (userGroups.indexOf(group) > -1) {
+                                indexes = indexes.concat(profile[group].indexes);
+                            }
 
-                    }
+                        }
                     })
                     return callbackSeries();
                 })
@@ -193,7 +201,7 @@ var configLoader = {
         var fn = function (err, result) {
             callback(err, result)
         }
-        if (connectorType == "fs")
+        if (connectorType == "document")
             documentCrawler.generateDefaultMappingFields(connector, fn)
         else if (connectorType == "sql")
             sqlCrawler.generateDefaultMappingFields(connector, fn)
@@ -204,6 +212,8 @@ var configLoader = {
         else if (connectorType == "book")
             bookCrawler.generateDefaultMappingFields(connector, fn)
     }
+
+
 }
 
 

@@ -67,7 +67,7 @@ var mainController = (function () {
         socket.on('messages', function (message) {
 
             if (message || message.length > 0)
-                return $("#socketDiv").html("<i>" + message.substring(2) + "<i>");
+                return $("#socketDiv").html("<i>" + message + "<i>");
 
 
         })
@@ -199,6 +199,25 @@ self.post=function(url,payload,callback){
                 value: item[valueField] || item
             }));
         });
+
+    }
+
+    self.onAccordionTabChange=function(tabName){
+        if( tabName=="Indexation")
+            ui.showIndexationForm()
+       else if( tabName=="Profiles")
+         profiles.editProfiles();
+        else if( tabName=="Jobs")
+            jobScheduler.editJobs();
+
+        else if( tabName=="Scheduler")
+            jobScheduler.editScheduler();
+
+
+
+
+
+
 
     }
 

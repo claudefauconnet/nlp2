@@ -1,14 +1,17 @@
 {
-  "ADMIN": {
-    "indexes": "*"
-  },
-  "archives": {
+  "test1": {
     "indexes": [
-      "phototheque",
+      "artotheque",
+      "jeanpaul"
+    ]
+  },
+  "test2": {
+    "indexes": [
+      "testbook",
       "artotheque"
     ]
+  },
+  "ADMIN": {
+    "indexes": ["bordereaux"]
   }
-
-
-
 }

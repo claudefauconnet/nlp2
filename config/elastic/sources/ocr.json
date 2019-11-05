@@ -4,7 +4,7 @@
     "label": "Rapports moraux"
   },
   "connector": {
-    "type": "fs",
+    "type": "document",
     "dir": "H:\\ATD\\ATD_QUART_MONDE_Cde2017_2128_Cde01_BP10_PDF"
   },
 

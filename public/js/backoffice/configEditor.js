@@ -93,8 +93,8 @@ var configEditor = (function () {
                     //connector config (depending on connector)
                     function (callbackSeries) {
                         var connectorSchema;
-                        if (connectorType == "fs")
-                            connectorSchema = context.jsonSchemas.connector_fs;
+                        if (connectorType == "document")
+                            connectorSchema = context.jsonSchemas.connector_document;
                         else if (connectorType == "sql")
                             connectorSchema = context.jsonSchemas.connector_sql;
                         else if (connectorType == "imap")
@@ -102,15 +102,24 @@ var configEditor = (function () {
                         else if (connectorType == "csv")
                             connectorSchema = context.jsonSchemas.connector_csv;
                         else if (connectorType == "book")
-                            connectorSchema = context.jsonSchemas.connector_book;
+                            connectorSchema = context.jsonSchemas.connector_pdfBook;
                         else if (connectorType == "json")
                             connectorSchema = context.jsonSchemas.connector_json;
 
 
                         $("#mainDiv").html(formStr);
                         self.editJsonForm(schemaformId, connectorSchema, json, null, function (errors, data) {
-                            config.connector = data.connector;
-                            callbackSeries()
+                            if (connectorType == "imap") {
+                                imapUI.showFoldersDialog(data.connector.imapServerUrl, data.connector.emailAdress, data.connector.emailpassword, data.connector.rootDir, function (err, result) {
+                                    var xx = result;
+                                    callbackSeries();
+                                })
+
+
+                            } else {
+                                config.connector = data.connector;
+                                callbackSeries()
+                            }
                         })
                     }
                     ,
@@ -162,8 +171,7 @@ var configEditor = (function () {
                     function (callbackSeries) {
                         if (connectorType != "imap")
                             return callbackSeries();
-
-                        return callbackSeries();
+                        return callbackSeries()
                     },
                     //Mappings book
                     function (callbackSeries) {
@@ -174,30 +182,36 @@ var configEditor = (function () {
                     },
                     //Mappings json
                     function (callbackSeries) {
-                        if (connectorType != "fs")
+                        if (connectorType != "document" && connectorType != "book")
                             return callbackSeries();
 
                         $("#mainDiv").html(formStr);
                         var jsonMapping = json;
                         if (jsonMapping)
-                            jsonMapping = {mappings:[
-                                {field:"attachment.author",type: "text"},
-                                    {field:"attachment.title",type: "text"},
-                                    {field:"attachment.date",type: "date"},
-                                    {field:"attachment.language",type: "keyword"},
-                                    {field:"title",type: "text"},
-                                ]}
-                        self.editJsonForm(schemaformId, context.jsonSchemas.mappings_fs, jsonMapping, null, function (errors, data) {
-                            var fields={}
-                            data.mappings.forEach(function(line){
-                                fields[line.field]={
-                                    type:line.type,
-                                    index:line.index,
-                                    analyze:line.analyzer
+                            jsonMapping = {
+                                mappings: [
+                                    {field: "attachment.author", type: "text"},
+                                    {field: "attachment.title", type: "text"},
+                                    {field: "attachment.date", type: "date"},
+                                    {field: "attachment.language", type: "keyword"},
+                                    {field: "title", type: "text"},
+                                ]
+                            }
+
+                        self.editJsonForm(schemaformId, context.jsonSchemas.mappings_document, jsonMapping, null, function (errors, data) {
+                            var fields = {}
+                            data.mappings.forEach(function (line) {
+                                fields[line.field] = {
+                                    type: line.type,
+                                    index: line.index,
+                                    analyze: line.analyzer
                                 }
                             })
-
+                            if(connectorType == "book") {
+                                fields.page={ type: "text"};
+                            }
                             var mappings = {[type]: {["properties"]: fields}};
+
                             config.schema.mappings = mappings;
                             selectedMappingFields = fields;
                             callbackSeries();
@@ -229,13 +243,13 @@ var configEditor = (function () {
 
                     },
 
-                // add contentField to display when necessary
-                function (callbackSeries) {
-                    if (connectorType == "book" || connectorType == "fs" )
-                    config.display.push({[config.schema.contentField]: {"cssClass": "text"}});
-                    return callbackSeries();
+                    // add contentField to display when necessary
+                    function (callbackSeries) {
+                        if (connectorType == "book" || connectorType == "document")
+                            config.display.push({[config.schema.contentField]: {"cssClass": "text"}});
+                        return callbackSeries();
 
-                }
+                    }
 
                 ],
 

@@ -5,7 +5,7 @@
     "indexName": "testfs"
   },
   "connector": {
-    "type": "fs",
+    "type": "document",
     "dir": "D:\\ATD_Baillet\\versements2018\\tests"
   },
   "schema": {

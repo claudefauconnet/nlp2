@@ -232,7 +232,7 @@ var indexer = {
                 function (callbackSeries) {
 
 
-                    if (connector.type == "fs") {
+                    if (connector.type == "document") {
                         documentCrawler.indexSource(config, function (err, result) {
                             return callbackSeries(err, result);
                         })

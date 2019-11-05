@@ -30,7 +30,7 @@
       "required": true,
       "enum": [
         "",
-        "fs",
+        "document",
         "sql",
         "imap",
         "book",
@@ -78,10 +78,10 @@
             "mysql",
             "oracle"
           ]
-        }, "sqlQuery": {
+        },
+        "sqlQuery": {
           "type": "string",
           "title": "sql query"
-
         },
         "connOptions": {
           "type": "object",
@@ -123,7 +123,7 @@
       }
     }
   },
-  "connector_fs": {
+  "connector_document": {
     "connector": {
       "type": "object",
       "name": "connector",
@@ -132,7 +132,7 @@
         "type": {
           "type": "string",
           "title": "type",
-          "default": "fs"
+          "default": "document"
         },
         "dir": {
           "type": "string",
@@ -148,20 +148,23 @@
       "name": "connector",
       "title": "connector IMAP",
       "properties": {
-        "type": {
-          "type": "string",
-          "title": "type",
-          "default": "imap"
-        },
         "imapServerUrl": {
           "type": "string",
           "title": "imapServerUrl",
-          "required": true
+          "required": true,
+          "default": "imap.atd-quartmonde.org"
         },
         "emailAdress": {
           "type": "string",
           "title": "emailAdress",
-          "required": true
+          "required": true,
+          "default": "claude.fauconnet@atd-quartmonde.org"
+        },
+        "emailpassword": {
+          "type": "password",
+          "title": "emailpassword",
+          "required": true,
+          "default": "fc6kDgD8"
         },
         "rootDir": {
           "type": "string",
@@ -171,7 +174,7 @@
       }
     }
   },
-  "connector_book": {
+  "connector_pdfBook": {
     "connector": {
       "type": "object",
       "name": "connector",
@@ -182,9 +185,9 @@
           "title": "type",
           "default": "book"
         },
-        "filePath": {
+        "dirPath": {
           "type": "string",
-          "title": "filePath",
+          "title": "dirPath",
           "required": true
         }
       }
@@ -223,7 +226,7 @@
       }
     }
   },
-  "mappings_fs": {
+  "mappings_document": {
     "mappings": {
       "type": "array",
       "items": {
@@ -259,11 +262,7 @@
         }
       }
     }
-  }
-,
-
-
-
+  },
   "indexation": {
     "indexation": {
       "type": "object",
@@ -282,29 +281,64 @@
             "",
             "yes",
             "no"
-            ],
+          ],
           "required": true
         }
       }
     }
-},
-  "friends":  {
-    "friends": {
+  },
+  "profiles": {
+    "profiles": {
       "type": "array",
       "items": {
         "type": "object",
-        "title": "Friend",
+        "title": "profile",
         "properties": {
-          "nick": {
+          "group": {
             "type": "string",
-            "title": "Nickname"
+            "title": "group",
+            "required": true
           },
-          "animals": {
+          "indexes": {
             "type": "array",
             "items": {
               "type": "string",
-              "title": "Animal name"
+              "title": "index",
+              "required": true
             }
+          }
+        }
+      }
+    }
+  },
+  "jobs": {
+    "jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "job",
+        "properties": {
+          "indexName": {
+            "type": "string",
+            "title": "indexName",
+            "required": true
+          },
+          "runEvery": {
+            "type": "string",
+            "title": "run every",
+            "required": true,
+            "enum": [
+              "",
+              "hour",
+              "day",
+              "week",
+              "month"
+            ]
+          },
+          "runTime": {
+            "type": "string",
+            "title": "run time (hh:min:sec)",
+            "required": true
           }
         }
       }

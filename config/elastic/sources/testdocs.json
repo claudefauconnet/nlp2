@@ -9,7 +9,7 @@
    "elasticUrl": "http://localhost:9200/"
   },
   "connector": {
-    "type": "fs",
+    "type": "document",
     "dir": "D:\\ATD_Baillet\\testIndexation"
 
   },

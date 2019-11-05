@@ -1,18 +1,18 @@
 {
   "general": {
-    "description": "index des bordereaux de versement de Baillet",
-    "label": "Bordereaux",
-    "indexName": "bordereaux"
+    "description": "testbook",
+    "label": "testbook",
+    "indexName": "testbook"
   },
   "connector": {
-    "type": "cocument",
-    "dir": "D:\\ATD_Baillet\\versements2018"
+    "type": "book",
+    "dirPath": "D:\\ATD_Baillet\\livres\\test"
   },
   "schema": {
     "contentField": "attachment.content",
     "analyzer": "lowercase_asciifolding",
     "mappings": {
-      "bordereaux": {
+      "testbook": {
         "properties": {
           "attachment.author": {
             "type": "text",
@@ -33,6 +33,9 @@
           "title": {
             "type": "text",
             "index": false
+          },
+          "page": {
+            "type": "text"
           }
         }
       }
@@ -61,6 +64,11 @@
     },
     {
       "title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "page": {
         "cssClass": "excerpt"
       }
     },
