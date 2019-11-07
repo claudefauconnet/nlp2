@@ -6,7 +6,7 @@
   },
   "connector": {
     "type": "book",
-    "dirPath": "D:\\ATD_Baillet\\livres\\test"
+    "dirPath": "D:\\ATD_Baillet\\livres"
   },
   "schema": {
     "contentField": "attachment.content",
@@ -44,22 +44,22 @@
   "display": [
     {
       "attachment.author": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "attachment.title": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "attachment.date": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "attachment.language": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {

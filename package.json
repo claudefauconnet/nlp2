@@ -28,7 +28,7 @@
     "mysql": "^2.16.0",
     "ndjson": "^1.5.0",
     "node-schedule": "^1.3.2",
-    "pdf2json": "^1.1.8",
+    "pdfjs-dist": "^2.2.228",
     "request": "^2.88.0",
     "socket.io": "^2.3.0",
     "streams": "^0.1.0",

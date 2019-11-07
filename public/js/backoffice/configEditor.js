@@ -5,7 +5,7 @@ var configEditor = (function () {
 
 
         self.editConfig = function () {
-            if(!context.currentIndexName)
+            if (!context.currentIndexName)
                 return alert("select an index ")
             var json = context.indexConfigs[context.currentIndexName];
             return self.createNewConfig(json)
@@ -139,6 +139,9 @@ var configEditor = (function () {
                         if (connectorType != "sql")
                             return callbackSeries();
                         self.generateDefaultMappingFields(config.connector, function (err, result) {
+                            if (err) {
+                                return callbackSeries(err)
+                            }
                             self.editMappings("index mappings", result, true, function (err, fields) {
                                 if (err)
                                     callbackSeries(err);
@@ -189,7 +192,17 @@ var configEditor = (function () {
 
                         $("#mainDiv").html(formStr);
                         var jsonMapping = json;
-                        if (jsonMapping)
+                        if (json && json.schema && json.schema.mappings) {
+                            var fieldsArray=[];
+                           for(var key in json.schema.mappings[type].properties){
+                               var obj=json.schema.mappings[type].properties[key];
+                               obj.field=key;
+                               fieldsArray.push(obj)
+                           }
+                            jsonMapping = {
+                                mappings: fieldsArray
+                            }
+                        } else {
                             jsonMapping = {
                                 mappings: [
                                     {field: "attachment.author", type: "text"},
@@ -199,6 +212,7 @@ var configEditor = (function () {
                                     {field: "title", type: "text"},
                                 ]
                             }
+                        }
 
                         self.editJsonForm(schemaformId, context.jsonSchemas.mappings_document, jsonMapping, null, function (errors, data) {
                             var fields = {}
@@ -209,8 +223,8 @@ var configEditor = (function () {
                                     analyze: line.analyzer
                                 }
                             })
-                            if(connectorType == "book") {
-                                fields.page={ type: "text"};
+                            if (connectorType == "book") {
+                                fields.page = {type: "text"};
                             }
                             var mappings = {[type]: {["properties"]: fields}};
 
@@ -258,9 +272,11 @@ var configEditor = (function () {
 
                 function (err) {
 
-                    if (err)
+                    if (err) {
+                        return alert(err.responseText);
                         return $("#mainDiv").html(err);
-                    var xx = config;
+
+                    }
 
 
                     $("#mainDiv").html("configuration ready");

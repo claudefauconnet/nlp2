@@ -2,7 +2,7 @@ const async = require("async");
 const util = require("./util.");
 const socket = require('../../routes/socket.js');
 const request = require('request');
-const PDFParser = require("pdf2json");
+var pdfjsLib = require('pdfjs-dist');
 const ndjson = require('ndjson');
 const path = require('path');
 const fs = require('fs');
@@ -81,7 +81,6 @@ var bookCrawler = {
     indexBook: function (config, pdfObj, callback) {
         var elasticUrl = config.indexation.elasticUrl;
         var index = config.general.indexName;
-        var pdfText = "";
         var docTitle = "";
         var pdfPages = [];
         var t0 = new Date();
@@ -108,21 +107,7 @@ var bookCrawler = {
                     if (err)
                         return callbackSeries(err);
 
-                    pdfText = result;
-                    return callbackSeries();
-                })
-
-            },
-
-            //split text in pages
-            function (callbackSeries) {
-                var message = "splitting  pages ";
-                socket.message(message);
-                bookCrawler.splitPdfTextInPages(pdfText, function (err, result) {
-                    if (err)
-                        return callbackSeries(err);
                     pdfPages = result;
-
                     return callbackSeries();
                 })
 
@@ -147,8 +132,8 @@ var bookCrawler = {
                     var obj = {title: title, page: "page " + (pageIndex + 1)}
                     if (config.schema.contentField.indexOf(".") < 0)
                         obj[config.schema.contentField] = page;
-                    else{// attention pas générique
-                        obj.attachment={content:page}
+                    else {// attention pas générique
+                        obj.attachment = {content: page}
                     }
 
 
@@ -192,28 +177,43 @@ var bookCrawler = {
 
 
     },
-    parsePdf:
+    parsePdf: function (pdfPath, callback) {
+        var rawData = new Uint8Array(fs.readFileSync(pdfPath));
+        var loadingTask = pdfjsLib.getDocument(rawData);
+        loadingTask.promise.then(function (pdfDocument) {
+            console.log('# PDF document loaded.' + pdfPath);
+            var totalPagesCount = pdfDocument.numPages;
 
-        function (pdfPath, callback) {
-            let pdfParser = new PDFParser(this, 1);
 
-            pdfParser.on("pdfParser_dataError", errData => callback(errData.parserError));
-            pdfParser.on("pdfParser_dataReady", pdfData => {
-                var text = pdfParser.getRawTextContent();
-                callback(null, text)
+            var pageIndexes = [];
+            for (var i = 0; i < totalPagesCount; i++) {
+                pageIndexes.push(i + 1)
 
-            });
-            pdfParser.loadPDF(pdfPath);
-        }
+            }
+            var textPages = []
+            async.eachSeries(pageIndexes, function (pageIndex, callbackEachPage) {
+                pdfDocument.getPage(pageIndex).then(function (page) {
+                    var textContents = [];
+                    var str = ""
+                    page.getTextContent({normalizeWhitespace: true}).then(function (textContent) {
+                        textContents = textContent;
+                        textContent.items.forEach(function (textItem) {
+                            str += textItem.str
+                            //	console.log(textItem.str);
+                        });
+                        textPages.push(str);
+                        callbackEachPage();
 
-    ,
-    splitPdfTextInPages: function (pdfText, callback) {
-        var pages = [];
-        var regex = /----------------Page \([0-9]+\) Break----------------/
-        pages = pdfText.split(regex);
-        callback(null, pages)
-
+                    });
+                })
+            }, function (err) {
+                if (err)
+                    return callback(err);
+                return callback(null,textPages);
+            })
+        })
     }
+
     ,
 
 

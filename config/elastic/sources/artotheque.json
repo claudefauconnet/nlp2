@@ -98,7 +98,7 @@
     },
     {
       "indexCIJW": {
-        "cssClass": "text"
+        "cssClass": "excerpt"
       }
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "fonds": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
@@ -128,17 +128,17 @@
     },
     {
       "createur": {
-        "cssClass": "excerpt"
-      }
-    },
-    {
-      "titre": {
         "cssClass": "text"
       }
     },
     {
-      "epoque": {
+      "titre": {
         "cssClass": "excerpt"
+      }
+    },
+    {
+      "epoque": {
+        "cssClass": "text"
       }
     },
     {
@@ -148,7 +148,7 @@
     },
     {
       "dimensions": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
@@ -158,7 +158,7 @@
     },
     {
       "description": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
