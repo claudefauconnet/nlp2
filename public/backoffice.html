@@ -379,7 +379,8 @@
             <B>Recherche fédérée Baillet</B>
             <img src="images/logoATD.png" width="50px">
             <br>
-            <select id="sourcesSelect" size="10" onchange="ui.selectIndexConfig($(this).val())"></select>
+            <B>Index configurations</B>
+            <select id="sourcesSelect" size="15" onchange="ui.selectIndexConfig($(this).val())"></select>
         </div>
         <div id="leftAccordion"  class="accordionInnerDiv">
             <h1>Configuration</h1>
@@ -389,6 +390,7 @@
                     <button onclick="ui.showIndexConfig()">edit source json</button>
 
                     <button onclick="configEditor.createNewConfig()">new source</button>
+                    <button onclick="configEditor.deleteIndxConfig()">delete source</button>
                 </div>
 
             </div>

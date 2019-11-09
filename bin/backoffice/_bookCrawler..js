@@ -215,6 +215,16 @@ var bookCrawler = {
     }
 
     ,
+     generateDefaultMappingFields: function (connector, callback) {
+    var fields=
+        {
+
+            "title": {type: "text"},
+            "page": {type: "keyword"},
+        }
+    callback(null, fields)
+
+}
 
 
 }

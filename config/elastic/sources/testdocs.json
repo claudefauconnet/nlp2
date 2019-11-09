@@ -4,88 +4,66 @@
     "label": "testdocs",
     "indexName": "testdocs"
   },
- "indexation": {
-    "deleteOldIndex": true,
-   "elasticUrl": "http://localhost:9200/"
-  },
   "connector": {
     "type": "document",
-    "dir": "D:\\ATD_Baillet\\testIndexation"
-
+    "dir": "D:\\ATD_Baillet\\testIndexation",
+    "contentField": "attachment.content"
   },
-
   "schema": {
     "contentField": "attachment.content",
     "analyzer": "lowercase_asciifolding",
     "mappings": {
+      "testdocs": {
         "properties": {
-          "author": {
+          "attachment.author": {
             "type": "text"
           },
-          "date": {
+          "attachment.title": {
             "type": "text"
           },
-          "path": {
-            "type": "text"
+          "attachment.date": {
+            "type": "date"
+          },
+          "attachment.language": {
+            "type": "keyword"
           },
           "title": {
             "type": "text"
           }
-
+        }
       }
     }
   },
-  "display": {
-    "list": [
-      {
-        "title": {
-          "cssClass": "titleList"
-        }
-      },
-      {
-        "date": {
-          "cssClass": "date"
-        }
-      },
-      {
-        "author": {
-          "cssClass": "list"
-        }
-      },
-      {
-        "excerpt": {
-          "cssClass": "excerpt"
-        }
+  "display": [
+    {
+      "attachment.author": {
+        "cssClass": "text"
       }
-    ],
-    "details": [
-      {
-        "title": {
-          "cssClass": "title",
-          "labelFr": "Titre"
-        }
-      },
-      {
-        "date": {
-          "cssClass": "date",
-          "labelFr": "Date"
-        }
-      },
-      {
-        "author": {
-          "cssClass": "details",
-          "labelFr": "Auteur"
-        }
-      },
-      {
-        "content": {
-          "cssClass": "text",
-          "labelFr": "Contenu",
-          "highlightWords": 1
-        }
+    },
+    {
+      "attachment.title": {
+        "cssClass": "text"
       }
-    ],
-    "csv": [
-    ]
-  }
+    },
+    {
+      "attachment.date": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.language": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.content": {
+        "cssClass": "text"
+      }
+    }
+  ]
 }

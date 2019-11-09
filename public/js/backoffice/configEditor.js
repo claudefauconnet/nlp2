@@ -10,48 +10,7 @@ var configEditor = (function () {
             var json = context.indexConfigs[context.currentIndexName];
             return self.createNewConfig(json)
 
-            /*   var formStr = "<div style='width: 500px'><form id='shemaForm'></form></div>"
-               $("#mainDiv").html(formStr);
-               var json = context.indexConfigs[context.currentIndexName];
-               var parts = Object.keys(json);
-               //  parts=["general","connector","schema","display"]
-               var schema = {}
-               parts.forEach(function (part) {
-                   var subPart = part;
-                   if (part == "connector") {
-                       part += "_" + json["connector"].type;
-                   }
-                   if (context.jsonSchemas[part]) {
-                       var subSchema = context.jsonSchemas[part][subPart];
-                       schema[subPart] = subSchema;
-                   }
 
-               })
-               var buttons = [
-
-                   {
-                       title: "editMappings", onClick: (function (evt) {
-                           evt.preventDefault();
-                           asyncDialog.show("mainDiv", html, function (ok) {
-                               alert("aaa")
-                           })
-
-
-                       })
-                   }
-
-
-               ]
-
-
-               self.editJsonForm(schemaformId, schema, json, buttons, function (errors, data) {
-                   var config = data;
-                   config.schema.mappings = json.schema.mappings// non pris en compte dans l'édition
-                   context.indexConfigs[context.currentIndexName] = config
-                   indexes.saveIndexConfig(context.currentIndexName, JSON.stringify(data, null, 2), function (err, result) {
-                       $("#messageDiv").html("configuration saved");
-                   })
-               })*/
         }
 
 
@@ -141,8 +100,7 @@ var configEditor = (function () {
 
                     //Mappings SQL
                     function (callbackSeries) {
-                        if (connectorType != "sql")
-                            return callbackSeries();
+
                         self.generateDefaultMappingFields(config.connector, function (err, result) {
                             if (err) {
                                 return callbackSeries(err)
@@ -160,101 +118,6 @@ var configEditor = (function () {
                             })
 
                         })
-
-                    },
-                    //Mappings json
-                    function (callbackSeries) {
-                        if (connectorType != "json")
-                            return callbackSeries();
-
-                        return callbackSeries();
-                    },
-
-                    //Mappings csv
-                    function (callbackSeries) {
-                        if (connectorType != "csv")
-                            return callbackSeries();
-
-                        return callbackSeries();
-                    },
-                    //Mappings imap
-                    function (callbackSeries) {
-                        if (connectorType != "imap")
-                            return callbackSeries();
-                        selectedMappingFields = {
-                            "attachment.To": {type: "text"},
-                            "attachment.Subject": {type: "text"},
-                            "attachment.From": {type: "text"},
-                            "attachment.Reply": {type: "text"},
-                            "attachment.Cc": {type: "text"},
-                            "attachment.Date": {type: "date"},
-                            "attachment.text": {type: "text"}
-                        }
-                        var jsonMapping = []
-                        for (var key in selectedMappingFields) {
-                            jsonMapping.push({field: key, type: selectedMappingFields[key]})
-                        }
-                        jsonMapping = {mappings: jsonMapping}
-                        var mappings = {[type]: {["properties"]: selectedMappingFields}};
-                        config.schema.mappings = mappings;
-                        return callbackSeries();
-
-                    },
-                    //Mappings book
-                    function (callbackSeries) {
-                        if (connectorType != "book")
-                            return callbackSeries();
-
-                        return callbackSeries();
-                    },
-                    //Mappings json
-                    function (callbackSeries) {
-                        if (connectorType != "document" && connectorType != "book")
-                            return callbackSeries();
-
-                        $("#mainDiv").html(formStr);
-                        var jsonMapping = json;
-                        if (json && json.schema && json.schema.mappings) {
-                            var fieldsArray = [];
-                            for (var key in json.schema.mappings[type].properties) {
-                                var obj = json.schema.mappings[type].properties[key];
-                                obj.field = key;
-                                fieldsArray.push(obj)
-                            }
-                            jsonMapping = {
-                                mappings: fieldsArray
-                            }
-                        } else {
-                            jsonMapping = {
-                                mappings: [
-                                    {field: "attachment.author", type: "text"},
-                                    {field: "attachment.title", type: "text"},
-                                    {field: "attachment.date", type: "date"},
-                                    {field: "attachment.language", type: "keyword"},
-                                    {field: "title", type: "text"},
-                                ]
-                            }
-                        }
-
-                        self.editJsonForm(schemaformId, context.jsonSchemas.mappings_document, jsonMapping, null, function (errors, data) {
-                            var fields = {}
-                            data.mappings.forEach(function (line) {
-                                fields[line.field] = {
-                                    type: line.type,
-                                    index: line.index,
-                                    analyze: line.analyzer
-                                }
-                            })
-                            if (connectorType == "book") {
-                                fields.page = {type: "text"};
-                            }
-                            var mappings = {[type]: {["properties"]: fields}};
-
-                            config.schema.mappings = mappings;
-                            selectedMappingFields = fields;
-                            callbackSeries();
-                        })
-
 
                     },
 
@@ -305,15 +168,11 @@ var configEditor = (function () {
                     if (confirm("save index configuration?")) {
 
                         indexes.saveIndexConfig(config.general.indexName, JSON.stringify(config, null, 2), function (err, result) {
-                            indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
-                                if (err) {
-                                    $("#messageDiv").html("indexes non chargés" + err);
-                                }
-                                context.indexConfigs = result;
-                                ui.initSourcesList();
+
+                                ui.initSourcesList(true);
 
 
-                            })
+
                         })
                     }
                 }
@@ -406,43 +265,7 @@ var configEditor = (function () {
 
         }
 
-        self.editConfigXXX = function () {
-            var json = context.indexConfigs[context.currentIndexName]
 
-            var html = "<div id='configEditorDiv'>";
-
-            function isString(s) {
-                return typeof (s) === 'string' || s instanceof String;
-            }
-
-
-            var recurse = function (json) {
-                for (var key in json) {
-                    if (Object.keys(json).length == 0)
-                        return;
-                    if (json[key] == true)
-                        json[key] = "true"
-                    if (isString(json[key])) {
-
-                        html += "<div><span style=' font-weight: bold' id='" + key + "'>" + key + "</span>";
-                        html += "<input id='" + key + "' value='" + json[key] + "'>" + "</div>"
-
-                    } else {
-                        html += "<div><span style=' font-weight: bold;font-size: larger' >" + key + "</span></div>";
-                        html += "<div>"
-                        recurse(json[key])
-                        html += "</div>"
-                    }
-
-                }
-            }
-
-            var json = context.indexConfigs[context.currentIndexName];
-            recurse(json)
-            // }
-            html += "</div>";
-            $("#mainDiv").html(html)
-        }
 
         self.saveIndexationConfig = function () {
             var config = context.indexConfigs[context.currentIndexName];
@@ -451,6 +274,30 @@ var configEditor = (function () {
             indexes.saveIndexConfig(config.general.indexName, JSON.stringify(config, null, 2), function (err, result) {
                 $("#messageDiv").html("configuration saved");
             })
+        }
+
+
+        self.deleteIndxConfig=function(){
+            if (!context.currentIndexName)
+                return alert("select an index ")
+
+            if(confirm("delete source config :"+context.currentIndexName)){
+                var payload = {
+                    deleteIndexConfig: 1,
+                    index:context.currentIndexName
+                }
+                mainController.post(appConfig.elasticUrl, payload, function (err, result) {
+                    if (err)
+                        return callback(err);
+                    $("#messageDiv").html("configuration deleted :"+context.currentIndexName);
+                    ui.initSourcesList(true);
+                })
+
+
+            }
+
+
+
         }
 
 

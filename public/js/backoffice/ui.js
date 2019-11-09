@@ -3,11 +3,25 @@ var ui = (function () {
     self.jsonEditor = null;
 
 
-    self.initSourcesList = function () {
-        var indexNames = Object.keys(context.indexConfigs);
-        indexNames.sort();
+    self.initSourcesList = function (reloadFromServer) {
+        function load(){
+            var indexNames = Object.keys(context.indexConfigs);
+            indexNames.sort();
 
-        mainController.fillSelectOptions("sourcesSelect", indexNames);
+            mainController.fillSelectOptions("sourcesSelect", indexNames);
+        }
+
+        if(reloadFromServer){
+            indexes.loadIndexConfigs (context.currentUser.groups, function(err,result) {
+                if(err)
+                   return  $("#messageDiv").html(err)
+                load();
+            })
+        }
+        else{
+            load();
+        }
+
 
 
     }

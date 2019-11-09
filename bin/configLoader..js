@@ -206,7 +206,7 @@ var configLoader = {
         else if (connectorType == "sql")
             sqlCrawler.generateDefaultMappingFields(connector, fn)
         else if (connectorType == "imap")
-            imapCrawler.generateDefaultMappingFields(connector, fn)
+           imapCrawler.generateDefaultMappingFields(connector, fn)
         else if (connectorType == "csv")
             csvCrawler.generateDefaultMappingFields(connector, fn)
         else if (connectorType == "book")

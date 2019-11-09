@@ -1,0 +1,134 @@
+{
+  "general": {
+    "description": "testcsv",
+    "label": "testcsv",
+    "indexName": "testcsv"
+  },
+  "connector": {
+    "type": "csv",
+    "filePath": "d:\\notices.csv",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "testcsv": {
+        "properties": {
+          "controlField": {
+            "type": "text"
+          },
+          "label": {
+            "type": "text"
+          },
+          "nom": {
+            "type": "text"
+          },
+          "role": {
+            "type": "text"
+          },
+          "periode": {
+            "type": "text"
+          },
+          "prenom": {
+            "type": "text"
+          },
+          "domaine": {
+            "type": "text"
+          },
+          "annee": {
+            "type": "text"
+          },
+          "langue": {
+            "type": "text"
+          },
+          "refBiblique": {
+            "type": "text"
+          },
+          "lieu": {
+            "type": "text"
+          },
+          "xt": {
+            "type": "text"
+          },
+          "qualificatif": {
+            "type": "text"
+          }
+
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "controlField": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "label": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "nom": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "role": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "periode": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "prenom": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "domaine": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "annee": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "langue": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "refBiblique": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "lieu": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "xt": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "qualificatif": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "": {
+        "cssClass": "text"
+      }
+    }
+  ]
+}

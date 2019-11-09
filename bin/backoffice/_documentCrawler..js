@@ -237,5 +237,17 @@ var _documentCrawler = {
         });
     }
 
+    , generateDefaultMappingFields: function (connector, callback) {
+        var fields=
+            {
+                "attachment.author": {type: "text"},
+                "attachment.title": {type: "text"},
+                "attachment.date": {type: "date"},
+                "attachment.language": {type: "keyword"},
+                "title": {type: "text"}
+            }
+            callback(null, fields)
+
+    }
 }
 module.exports = _documentCrawler;

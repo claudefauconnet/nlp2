@@ -6,7 +6,8 @@
   },
   "connector": {
     "type": "book",
-    "dirPath": "D:\\ATD_Baillet\\livres"
+    "dirPath": "D:\\ATD_Baillet\\livres",
+    "contentField": "attachment.content"
   },
   "schema": {
     "contentField": "attachment.content",
@@ -14,54 +15,17 @@
     "mappings": {
       "testbook": {
         "properties": {
-          "attachment.author": {
-            "type": "text",
-            "index": false
-          },
-          "attachment.title": {
-            "type": "text",
-            "index": false
-          },
-          "attachment.date": {
-            "type": "date",
-            "index": false
-          },
-          "attachment.language": {
-            "type": "keyword",
-            "index": false
-          },
           "title": {
-            "type": "text",
-            "index": false
+            "type": "text"
           },
           "page": {
-            "type": "text"
+            "type": "keyword"
           }
         }
       }
     }
   },
   "display": [
-    {
-      "attachment.author": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "attachment.title": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "attachment.date": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "attachment.language": {
-        "cssClass": "text"
-      }
-    },
     {
       "title": {
         "cssClass": "excerpt"

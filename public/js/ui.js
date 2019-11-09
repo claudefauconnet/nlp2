@@ -112,7 +112,7 @@ var ui = (function () {
                     html += fieldValue + "  "
                     return
                 }else{return}
-               
+
             } else if (cssClass) {
                 if (cssClass == "date" && fieldValue != "") {
                     var date = new Date(fieldValue)

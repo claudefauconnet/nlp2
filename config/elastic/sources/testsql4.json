@@ -99,7 +99,7 @@
     },
     {
       "dossier": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
@@ -109,7 +109,7 @@
     },
     {
       "document": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
@@ -129,7 +129,7 @@
     },
     {
       "agence": {
-        "cssClass": "text"
+        "cssClass": "excerpt"
       }
     },
     {
@@ -144,7 +144,7 @@
     },
     {
       "contenu": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
@@ -159,12 +159,12 @@
     },
     {
       "lieu": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "description": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {

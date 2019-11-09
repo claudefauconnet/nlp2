@@ -54,6 +54,21 @@ var imapCrawler = {
     }
 
 
+    , generateDefaultMappingFields: function (connector, callback) {
+        var fields= {
+                "attachment.To": {type: "text"},
+                "attachment.Subject": {type: "text"},
+                "attachment.From": {type: "text"},
+                "attachment.Reply": {type: "text"},
+                "attachment.Cc": {type: "text"},
+                "attachment.Date": {type: "date"},
+                "attachment.text": {type: "text"}
+            }
+            return callback(null,fields)
+        callback(null, fields)
+
+    }
+
 
 
 }

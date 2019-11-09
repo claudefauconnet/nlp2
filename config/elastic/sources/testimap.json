@@ -9,7 +9,8 @@
     "imapServerUrl": "imap.atd-quartmonde.org",
     "emailAdress": "claude.fauconnet@atd-quartmonde.org",
     "emailpassword": "fc6kDgD8",
-    "rootBox": "INBOX"
+    "rootBox": "INBOX",
+    "contentField": "attachment.content"
   },
   "schema": {
     "contentField": "attachment.content",
@@ -70,7 +71,7 @@
     },
     {
       "attachment.Date": {
-        "cssClass": "text"
+        "cssClass": "excerpt"
       }
     },
     {

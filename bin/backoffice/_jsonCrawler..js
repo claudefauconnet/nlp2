@@ -3,11 +3,12 @@ const util = require("./util.");
 const socket = require('../../routes/socket.js');
 const request = require('request');
 const fs = require('fs');
-const csv = require('csv-parser')
 
 var csvCrawler = {
 
     indexSource: function (config, callback) {
+
+
         var data = [];
         var headers = [];
         var bulkStr = "";
@@ -17,13 +18,13 @@ var csvCrawler = {
 
             // read csv
             function (callbackseries) {
-                csvCrawler.readCsv(config.connector,null, function (err, result) {
+                csvCrawler.readJson(config.connector, function (err, result) {
                     if (err)
                         return callbackseries(err);
                     data = result.data;
                     headers = result.headers;
-                    return callbackseries();
 
+                    return callbackseries();
 
                 })
 
@@ -33,12 +34,12 @@ var csvCrawler = {
             function (callbackseries) {
 
 
-                data.forEach(function (line, indexedLine) {
+                data.forEach(function (record, indexedLine) {
                     var lineContent = "";
-                    var record = {}
+
                     headers.forEach(function (header) {
                         var key = header;
-                        var value =line[header];
+                        var value = record[header];
                         if (!value)
                             return;
                         if (value == "0000-00-00")
@@ -109,67 +110,47 @@ var csvCrawler = {
 
 
     , generateDefaultMappingFields: function (connector, callback) {
-        csvCrawler.readCsv(connector, 10, function (err, result) {
-            if (err)
-                return callback(err);
-            var fields = {}
-            result.headers.forEach(function (header) {
-                if (header != "")
-                    if (!fields[key]) {
-                        result.data.forEach(function(line){
-                            if (util.isFloat(line[header]))
-                                fields[header] = {type: "float"};
-                            else if (util.isInt(line[header]))
-                                fields[header] = {type: "integer"};
-                            else
-                                fields[header] = {type: "text"};
+        var data = fs.readFileSync(config.connector.filePath);
+        data = JSON.parse("" + data);
+        var fields = {};
+        data.forEach(function (line) {
+            Object.keys(line).forEach(function (key) {
+                if (!fields[key]) {
+                    if (util.isFloat(line[key]))
+                        fields[key] = {type: "float"};
+                    else if (util.isInt(line[key]))
+                        fields[key] = {type: "integer"};
+                    else
+                        fields[key] = {type: "text"};
 
-                        })
-                    }
+                }
+
             })
 
-            return callback(null, fields);
-
         })
 
+        return callback(null, fields);
 
     },
+    readJson: function (connector, lines, callback) {
 
-    readCsv: function (connector, lines, callback) {
-        util.getCsvFileSeparator(connector.filePath, function (separator) {
-            var headers = [];
-            var jsonData = [];
-            var startId = 100000
-            fs.createReadStream(connector.filePath)
-                .pipe(csv(
-                    {
-                        separator: separator,
-                        mapHeaders: ({header, index}) =>
-                            util.normalizeHeader(headers, header)
-                        ,
+        var headers = [];
+        var dataArray = [];
+        try {
+            var str = "" + fs.readFileSync(config.connector.filePath);
+            dataArray = JSON.parse(str);
+        } catch (e) {
+            return callback(e);
+        }
+        dataArray.forEach(function (line) {
 
+            Object.keys(line).forEach(function (key) {
+                if (headers.indexOf(key) < 0)
+                    headers.push(key)
 
-                    })
-                    .on('header', function (header) {
-                        headers.push(header);
-
-                    })
-
-                    .on('data', function (data) {
-
-
-                        jsonData.push(data)
-                        if (lines && jsonData.length>=lines)
-                            return callback(null, {hearders: headers, data: jsonData})
-
-                    })
-                    .on('end', function () {
-                        return callback(null, {headers: headers, data: jsonData})
-                    })
-                );
-
+            })
+            return callback(null, {headers: headers, data: dataArray})
         })
-
     }
 
 

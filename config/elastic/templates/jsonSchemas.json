@@ -242,43 +242,7 @@
       }
     }
   },
-  "mappings_document": {
-    "mappings": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "title": "mapping",
-        "properties": {
-          "field": {
-            "type": "string",
-            "title": "field",
-            "required": true
-          },
-          "type": {
-            "type": "string",
-            "title": "type",
-            "enum": [
-              "text",
-              "keyword",
-              "date",
-              "integer",
-              "float"
-            ],
-            "required": true
-          },
-          "index": {
-            "type": "boolean",
-            "title": "index",
-            "default": true
-          },
-          "analyzer": {
-            "type": "string",
-            "title": "analyzer"
-          }
-        }
-      }
-    }
-  },
+
   "indexation": {
     "indexation": {
       "type": "object",

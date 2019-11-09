@@ -36,6 +36,7 @@ var mainController = (function () {
                     if (err)
                        return callbackSeries("index configurations non chargés" + err);
                     context.indexConfigs = result;
+                    ui.initSourcesList()
                     callbackSeries();
 
 
