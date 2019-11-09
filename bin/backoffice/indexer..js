@@ -4,7 +4,7 @@ var request = require('request');
 var path = require('path');
 var socket = require('../../routes/socket.js');
 var fs = require('fs');
-var configLoader = require('../configLoader.')
+
 
 
 var documentCrawler = require("./_documentCrawler.");
@@ -89,7 +89,7 @@ var indexer = {
                 function (callbackSeries) {
                     if (!config.schema || !config.schema.mappings)
                         return callbackSeries();
-
+                    var configLoader = require('../configLoader.')
                     configLoader.getTemplates(function (err, models) {
                         if (err)
                             return callbackSeries(err);
@@ -245,6 +245,7 @@ var indexer = {
                             return callbackSeries(err, result);
                         })
                     } else if (connector.type == "imap") {
+                        imapCrawler = require("./_imapCrawler.");
                         imapCrawler.indexSource(config, function (err, result) {
                             return callbackSeries(err, result);
                         })

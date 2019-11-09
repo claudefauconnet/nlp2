@@ -2,8 +2,10 @@ var asyncDialog=(function(){
     var self={}
     self.dialogValidated=false
     self.dialogTimer;
-    self.validate = function (state) {
+    var callbackData=null
+    self.validate = function (state,data) {
         self.dialogValidated=state;
+        self.callbackData=data;
 
     }
 
@@ -20,7 +22,7 @@ var asyncDialog=(function(){
         self.dialogTimer = setInterval(function () {
             if (self.dialogValidated !="wait") {
                 clearInterval(self.dialogTimer)
-                    callbackFn(self.dialogValidated);
+                    callbackFn(self.dialogValidated,  self.callbackData);
 
             }
         }, 500);

@@ -4,7 +4,8 @@ var async = require('async');
 var fs = require('fs');
 var path = require('path');
 
-var elasticIndexer = require('./indexer..js')
+var  common = require('./common..js');
+var imapCrawler=require("./_imapCrawler..js")
 
 
 //var common = require('./common.js')
@@ -719,23 +720,38 @@ var imapMailExtractor = {
 
 //generateFolderHierarchyMessages: function (imapServer, mailAdress, password, rootFolder, folderId, withAttachments, scanOnly, callback) {
 
-    generateMultiFoldersHierarchyMessages: function (imapServer, mailAdress, password, rootFolders, folderIds, withAttachments, scanOnly, indexElastic, callback) {
+    generateMultiFoldersHierarchyMessages: function (config, callback) {
+
+
+
+        var imapServer= config.connector.imapServerUrl;
+        var mailAdress=config.connector.emailAdress;
+        var password=config.connector.emailpassword
+        var rootFolders= config.connector.rootBox;
+        var folderIds=[config.connector.rootBox];
+        var withAttachments=false;
+        var scanOnly=false;
+        var indexElastic=config.general.indexName;
+
+
+
+
         if (!Array.isArray(folderIds))
             folderIds = [folderIds];
         if (!Array.isArray(rootFolders))
             rootFolders = [rootFolders];
 
         //set pdf files root path
-        var pdfArchiveRootPath = imapMailExtractor.pdfArchiveDir + "/" + imapMailExtractor.archivePrefix + "_" + mailAdress.replace("@", "-At-") + "_" + Math.round(Math.random() * 100000);
+     /*   var pdfArchiveRootPath = imapMailExtractor.pdfArchiveDir + "/" + imapMailExtractor.archivePrefix + "_" + mailAdress.replace("@", "-At-") + "_" + Math.round(Math.random() * 100000);
         pdfArchiveRootPath = path.resolve(pdfArchiveRootPath);
         if (!fs.existsSync(pdfArchiveRootPath)) {
             fs.mkdirSync(pdfArchiveRootPath);
-        }
+        }*/
         var index = 0;
         var allResults = [];
         async.eachSeries(folderIds, function (folderId, callbackEach) {
                 var rootFolder = rootFolders[index++];
-                imapMailExtractor.generateFolderHierarchyMessages(imapServer, mailAdress, password, rootFolder, folderId, withAttachments, scanOnly, pdfArchiveRootPath, indexElastic, function (err, result) {
+                imapMailExtractor.generateFolderHierarchyMessages(config, function (err, result) {
                     if (err) {
                         return callbackEach(err);
                     }
@@ -808,7 +824,21 @@ var imapMailExtractor = {
 
     ,
 
-    generateFolderHierarchyMessages: function (imapServer, mailAdress, password, rootFolder, folderId, withAttachments, scanOnly, pdfArchiveRootPath, indexElastic, callback) {
+    generateFolderHierarchyMessages: function (config, callback) {
+
+        var imapServer= config.connector.imapServerUrl;
+        var mailAdress=config.connector.emailAdress;
+        var password=config.connector.emailpassword
+        var rootFolder= config.connector.rootBox;
+        var folderId=config.connector.rootBox;
+        var withAttachments=false;
+        var scanOnly=false;
+        var indexElastic=config.general.indexName;
+
+
+
+
+
 
 
         var listMails = imapMailExtractor.listMails;
@@ -832,11 +862,11 @@ var imapMailExtractor = {
 
 
         //set pdf files root path
-        var pdfArchiveRootPath = imapMailExtractor.pdfArchiveDir + "/" + imapMailExtractor.archivePrefix + "_" + mailAdress + "_" + Math.round(Math.random() * 100000);
-        pdfArchiveRootPath = path.resolve(pdfArchiveRootPath);
-        if (!fs.existsSync(pdfArchiveRootPath)) {
-            fs.mkdirSync(pdfArchiveRootPath);
-        }
+        /*  var pdfArchiveRootPath = imapMailExtractor.pdfArchiveDir + "/" + imapMailExtractor.archivePrefix + "_" + mailAdress + "_" + Math.round(Math.random() * 100000);
+          pdfArchiveRootPath = path.resolve(pdfArchiveRootPath);
+          if (!fs.existsSync(pdfArchiveRootPath)) {
+              fs.mkdirSync(pdfArchiveRootPath);
+          }*/
 
 
         imapMailExtractor.getFolderHierarchy(imapServer, mailAdress, password, rootFolder, folderId, function (err, folders) {
@@ -880,12 +910,9 @@ var imapMailExtractor = {
                             if (err) {
                                 return callbackSerie(err);
                             }
-
-
                             archiveAttachmentsSize += messages._globalInfo.attachmentsSize;
                             archiveTotalSize += messages._globalInfo.totalSize;
                             archiveTotalValidMails += messages._globalInfo.validMailsCount;
-
 
                             if (true || scanOnly) {
                                 var text = "<hr><B>" + folder.text +
@@ -900,7 +927,6 @@ var imapMailExtractor = {
                                 }
                                 imapMailExtractor.sendSocketMessage(mailAdress, text);
                             }
-
 
                             var totalSize = messages._globalInfo.totalSize;
                             if (withAttachments)
@@ -922,10 +948,7 @@ var imapMailExtractor = {
 
 
                     function (callbackSerie2) {//extraction des mails bruts
-
-
                         if (scanOnly) {
-
                             return callbackSerie2(null);
 
                         }
@@ -935,16 +958,19 @@ var imapMailExtractor = {
                         if (start < 0)
                             return callbackSerie2(null);
 
-                        var pdfArchiveFolderPath = pdfArchiveRootPath;
-                        for (var i = start; i < folder.ancestors.length; i++) {
-                            pdfArchiveFolderPath += "/" + folder.ancestors[i];
-                            var dir = path.resolve(pdfArchiveFolderPath)
-                            if (!fs.existsSync(dir)) {
-                                fs.mkdirSync(dir);
-                            }
+                        var pdfArchiveFolderPath="";
+                        /*     var pdfArchiveFolderPath = pdfArchiveRootPath;
+                             for (var i = start; i < folder.ancestors.length; i++) {
+                                 pdfArchiveFolderPath += "/" + folder.ancestors[i];
+                                 var dir = path.resolve(pdfArchiveFolderPath)
+                                 if (!fs.existsSync(dir)) {
+                                     fs.mkdirSync(dir);
+                                 }
 
-                        }
-                        //  console.log(pdfArchiveFolderPath);
+                             }
+                             //  console.log(pdfArchiveFolderPath);*/
+
+
                         folderInfos.totalArchiveSize = archiveTotalSize;
                         folderInfos.totalArchiveCountMails = archiveTotalValidMails;
                         folderInfos.processedMails = processedMails;
@@ -952,7 +978,6 @@ var imapMailExtractor = {
 
                         imapMailExtractor.processFolderPdfs(imapServer, mailAdress, password, box, folderInfos, pdfArchiveFolderPath, withAttachments, startTime, indexElastic, function (err, messages) {
                             processedMails += messages.count;
-
                             if (err) {
                                 return callbackSerie2(err);
                             }
@@ -966,7 +991,8 @@ var imapMailExtractor = {
                         return callbackEachFolder(err)
                     }
                     if (indexElastic) {
-                        elasticIndexer.indexJsonArray(mailsToIndex, indexElastic, function (err, result) {
+                        imapCrawler=require("./_imapCrawler..js")
+                        imapCrawler.indexJsonArray(config,mailsToIndex, function (err, result) {
                             if (err) {
                                 return callbackEachFolder(err)
                             }

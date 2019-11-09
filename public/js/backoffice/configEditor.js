@@ -111,15 +111,20 @@ var configEditor = (function () {
 
                         $("#mainDiv").html(formStr);
                         self.editJsonForm(schemaformId, connectorSchema, json, null, function (errors, data) {
+                            config.connector = data.connector;
                             if (connectorType == "imap") {
                                 imapUI.showFoldersDialog(data.connector.imapServerUrl, data.connector.emailAdress, data.connector.emailpassword, data.connector.rootDir, function (err, result) {
-                                    var xx = result;
+                                    if (!result) {
+                                        return callbackSeries("a mail box has to be selected")
+                                    }
+                                    config.connector.rootBox = result
+                                    config.connector = data.connector;
                                     callbackSeries();
                                 })
 
 
                             } else {
-                                config.connector = data.connector;
+
                                 callbackSeries()
                             }
                         })
@@ -176,7 +181,24 @@ var configEditor = (function () {
                     function (callbackSeries) {
                         if (connectorType != "imap")
                             return callbackSeries();
-                        return callbackSeries()
+                        selectedMappingFields = {
+                            "attachment.To": {type: "text"},
+                            "attachment.Subject": {type: "text"},
+                            "attachment.From": {type: "text"},
+                            "attachment.Reply": {type: "text"},
+                            "attachment.Cc": {type: "text"},
+                            "attachment.Date": {type: "date"},
+                            "attachment.text": {type: "text"}
+                        }
+                        var jsonMapping = []
+                        for (var key in selectedMappingFields) {
+                            jsonMapping.push({field: key, type: selectedMappingFields[key]})
+                        }
+                        jsonMapping = {mappings: jsonMapping}
+                        var mappings = {[type]: {["properties"]: selectedMappingFields}};
+                        config.schema.mappings = mappings;
+                        return callbackSeries();
+
                     },
                     //Mappings book
                     function (callbackSeries) {
@@ -193,12 +215,12 @@ var configEditor = (function () {
                         $("#mainDiv").html(formStr);
                         var jsonMapping = json;
                         if (json && json.schema && json.schema.mappings) {
-                            var fieldsArray=[];
-                           for(var key in json.schema.mappings[type].properties){
-                               var obj=json.schema.mappings[type].properties[key];
-                               obj.field=key;
-                               fieldsArray.push(obj)
-                           }
+                            var fieldsArray = [];
+                            for (var key in json.schema.mappings[type].properties) {
+                                var obj = json.schema.mappings[type].properties[key];
+                                obj.field = key;
+                                fieldsArray.push(obj)
+                            }
                             jsonMapping = {
                                 mappings: fieldsArray
                             }

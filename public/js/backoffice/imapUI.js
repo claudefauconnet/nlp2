@@ -4,10 +4,10 @@ var self={};
 
     self.showFoldersDialog=function(imapServerUrl,emailAdress,emailpassword,rootDir,callback) {
 
-        var html = "  <div id=\"jstreeDiv\" style=\"font-weight: normal;color: saddlebrown;height: 450px; overflow: auto;\"></div>"
-        asyncDialog.show("mainDiv", html, function (ok) {
+        var html = "  <div id=\"jstreeDiv\" style=\"font-weight: normal;color: saddlebrown;height: 450px; overflow: auto;\"><input type='hidden' id='imapSelectdBox'></div>"
+        asyncDialog.show("mainDiv", html, function (ok,selectedBox) {
             if (ok) {
-
+                callback(null,selectedBox)
             }
             else{
                 return callback()
@@ -15,11 +15,11 @@ var self={};
 
         })
         setTimeout(function(){
-        imapUI.loadTreeHierarchy (imapServerUrl,emailAdress,emailpassword,rootDir)
+        imapUI.loadTreeHierarchy (imapServerUrl,emailAdress,emailpassword,rootDir,callback)
         },1000)
     }
 
-self.loadTreeHierarchy = function (imapServerUrl,emailAdress,emailpassword,rootDir) {
+self.loadTreeHierarchy = function (imapServerUrl,emailAdress,emailpassword,rootDir,callback){
 
 
     $("#waitImg").css("visibility", "visible")
@@ -62,22 +62,10 @@ self.loadTreeHierarchy = function (imapServerUrl,emailAdress,emailpassword,rootD
             }).on('changed.jstree', function (e, data) {
                 var i, j, r = [];
                 var str = ""
-                for (i = 0; i < data.node.parents.length; i++) {
+            if( confirm("index box :"+data.node.text +"and all subFolders"))
 
-                    var parentNode = $('#jstreeDiv').jstree(true).get_node("" + data.node.parents[i]);
-                    console.log(parentNode.text)
-                }
 
-                ;
-
-                $("#generateFolderPdfArchive").css("visibility", "hidden");
-                $("#generateFolderPdfArchiveButton").css("visibility", "hidden");
-                $("#scanFolderPdfArchiveButton").css("visibility", "visible");
-                $("#generateFolderPdfArchiveWithAttachmentButton").css("visibility", "hidden");
-                $("#downloadJournalButton").css("visibility", "hidden");
-
-                $("#messageDiv2").html("");
-                $("#messageDiv3").html("");
+                asyncDialog.validate(true,data.node.text)
                 $("#messageDiv").html(data.node.text + " selected");
 
 

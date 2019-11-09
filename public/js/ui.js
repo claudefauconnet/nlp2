@@ -106,10 +106,13 @@ var ui = (function () {
             var cssClass = line[fieldName].cssClass;
 
 
-            if (cssClass == "excerpt" && template == "list") {
-                html += "<span class='text'>";
-                html += fieldValue + "  "
-                return;
+            if (template == "list") {
+                if(cssClass == "excerpt") {
+                    html += "<span class='text'>";
+                    html += fieldValue + "  "
+                    return
+                }else{return}
+               
             } else if (cssClass) {
                 if (cssClass == "date" && fieldValue != "") {
                     var date = new Date(fieldValue)

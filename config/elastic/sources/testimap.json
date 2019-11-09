@@ -1,0 +1,82 @@
+{
+  "general": {
+    "description": "testimap",
+    "label": "testimap",
+    "indexName": "testimap"
+  },
+  "connector": {
+    "type": "imap",
+    "imapServerUrl": "imap.atd-quartmonde.org",
+    "emailAdress": "claude.fauconnet@atd-quartmonde.org",
+    "emailpassword": "fc6kDgD8",
+    "rootBox": "INBOX"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "testimap": {
+        "properties": {
+          "attachment.To": {
+            "type": "text"
+          },
+          "attachment.Subject": {
+            "type": "text"
+          },
+          "attachment.From": {
+            "type": "text"
+          },
+          "attachment.Reply": {
+            "type": "text"
+          },
+          "attachment.Cc": {
+            "type": "text"
+          },
+          "attachment.Date": {
+            "type": "date"
+          },
+          "attachment.text": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "attachment.To": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.Subject": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.From": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.Reply": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.Cc": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.Date": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.text": {
+        "cssClass": "text"
+      }
+    }
+  ]
+}

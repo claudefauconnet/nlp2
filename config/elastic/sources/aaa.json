@@ -1,0 +1,18 @@
+{
+  "general": {
+    "description": "aa",
+    "label": "aaa",
+    "indexName": "aaa"
+  },
+  "connector": {
+    "imapServerUrl": "imap.atd-quartmonde.org",
+    "emailAdress": "claude.fauconnet@atd-quartmonde.org",
+    "emailpassword": "fc6kDgD8",
+    "rootBox": "ATDlocal"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding"
+  },
+  "display": []
+}

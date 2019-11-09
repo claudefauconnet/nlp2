@@ -69,7 +69,8 @@
         "type": {
           "type": "string",
           "title": "type",
-          "default": "sql"
+          "default": "sql",
+          "readOnly ": true
         },
         "subType": {
           "type": "string",
@@ -132,7 +133,8 @@
         "type": {
           "type": "string",
           "title": "type",
-          "default": "document"
+          "default": "document",
+          "readOnly ": true
         },
         "dir": {
           "type": "string",
@@ -148,6 +150,12 @@
       "name": "connector",
       "title": "connector IMAP",
       "properties": {
+        "type": {
+          "type": "string",
+          "title": "type",
+          "default": "imap",
+          "readOnly ": true
+        },
         "imapServerUrl": {
           "type": "string",
           "title": "imapServerUrl",
@@ -166,9 +174,9 @@
           "required": true,
           "default": "fc6kDgD8"
         },
-        "rootDir": {
+        "rootBox": {
           "type": "string",
-          "title": "rootDir",
+          "title": "rootBox",
           "default": "inBox"
         }
       }
@@ -183,7 +191,8 @@
         "type": {
           "type": "string",
           "title": "type",
-          "default": "book"
+          "default": "book",
+          "readOnly ": true
         },
         "dirPath": {
           "type": "string",
@@ -202,7 +211,8 @@
         "type": {
           "type": "string",
           "title": "type",
-          "default": "csv"
+          "default": "csv",
+          "readOnly ": true
         },
         "filePath": {
           "type": "string",
@@ -218,6 +228,12 @@
       "name": "connector",
       "title": "connector",
       "properties": {
+        "type": {
+          "type": "string",
+          "title": "type",
+          "default": "document",
+          "readOnly ": true
+        },
         "filePath": {
           "type": "string",
           "title": "filePath",
