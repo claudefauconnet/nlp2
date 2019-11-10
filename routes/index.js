@@ -8,7 +8,8 @@ var authentication = require('../bin/authentication..js');
 var configLoader = require('../bin/configLoader..js');
 var logger = require("../bin/logger..js");
 var indexer = require("../bin/backoffice/indexer..js")
-var imapMailExtractor=require("../bin/backoffice/imapMailExtractor.")
+var imapMailExtractor=require("../bin/backoffice/imapMailExtractor.");
+var jobScheduler=require("../bin/backoffice/jobScheduler.")
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -86,6 +87,30 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         configLoader.writeAllProfiles (req.body.profiles,function (error, result) {
             processResponse(response, error, result);
         })
+    }
+
+    if (req.body && req.body.getAllJobs) {
+        configLoader.getAllJobs (function (error, result) {
+            processResponse(response, error, result);
+        })
+    }
+    if (req.body && req.body.saveAllJobs) {
+        configLoader.saveAllJobs (req.body.jobsStr,function (error, result) {
+            processResponse(response, error, result);
+        })
+    }
+
+    if (req.body && req.body.jobScheduler) {
+       if(req.body.run) {
+           jobScheduler.run (function (error, result) {
+               processResponse(response, error, result);
+           })
+       }
+        if(req.body.stop) {
+            jobScheduler.stop (function (error, result) {
+                processResponse(response, error, result);
+            })
+        }
     }
 
 

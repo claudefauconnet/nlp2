@@ -25,7 +25,7 @@ const logger = createLogger({
         // - Write all logs error (and below) to `error.log`.
         //
         new winston.transports.File({filename: 'error.log', level: 'error'}),
-        new winston.transports.File({filename: '../logs/search-connections.log', level: 'info'})
+        new winston.transports.File({filename: '../logs/bailletarchives-connections.log', level: 'info'})
     ]
 });
 

@@ -1,0 +1,49 @@
+{
+  "general": {
+    "description": "testjsonSimple",
+    "label": "testjsonSimple",
+    "indexName": "testjsonsimple"
+  },
+  "connector": {
+    "type": "json",
+    "subType": "simple",
+    "filePath": "D:\\Total\\docs\\nlp\\thesaurusRefTotal.json",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "testjsonsimple": {
+        "properties": {
+          "name": {
+            "type": "text"
+          },
+          "synonyms": {
+            "type": "text"
+          },
+          "ancestors": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "name": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "synonyms": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "ancestors": {
+        "cssClass": "text"
+      }
+    }
+  ]
+}

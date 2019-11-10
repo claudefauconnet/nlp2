@@ -29,7 +29,7 @@ var configEditor = (function () {
                     function (callbackSeries) {
                         $("#mainDiv").html(formStr);
                         self.editJsonForm(schemaformId, context.jsonSchemas.general, json, null, function (errors, data) {
-                            if (!data.general.indexName.match(/[a-z0-9].*/))
+                            if (!data.general.indexName.match(/^[a-z0-9_]+$/))
                                 return callbackSeries("index name only accept lowercase and numbers")
                             config.general = data.general;
                             type = config.general.indexName;
@@ -158,7 +158,10 @@ var configEditor = (function () {
                 function (err) {
 
                     if (err) {
-                        return alert(err.responseText);
+                        if(err.responseText)
+                        alert(err.responseText);
+                        else
+                            alert(err);
                         return $("#mainDiv").html(err);
 
                     }

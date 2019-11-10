@@ -4,7 +4,7 @@ const socket = require('../../routes/socket.js');
 const request = require('request');
 const fs = require('fs');
 
-var csvCrawler = {
+var jsonCrawler = {
 
     indexSource: function (config, callback) {
 
@@ -18,7 +18,7 @@ var csvCrawler = {
 
             // read csv
             function (callbackseries) {
-                csvCrawler.readJson(config.connector, function (err, result) {
+                jsonCrawler.readJson(config.connector, function (err, result) {
                     if (err)
                         return callbackseries(err);
                     data = result.data;
@@ -36,19 +36,32 @@ var csvCrawler = {
 
                 data.forEach(function (record, indexedLine) {
                     var lineContent = "";
+                  if(config.connector.subType=="simple") {
+                      headers.forEach(function (header) {
+                          var key = header;
+                          var value = record[header];
+                          if (!value)
+                              return;
+                          if (value == "0000-00-00")
+                              return;
+                          if(typeof value=="object")
+                              value=JSON.stringify(value,null,2)
 
-                    headers.forEach(function (header) {
-                        var key = header;
-                        var value = record[header];
-                        if (!value)
-                            return;
-                        if (value == "0000-00-00")
-                            return;
-                        lineContent += value + ";";
-                        record[key] = value;
+                          record[key] = value;
+                          lineContent+=value+";"
 
-                    })
-                    record[config.schema.contentField] = lineContent;
+                      })
+                  }
+                   else if(config.connector.subType=="object"){
+                      record=record;
+                      lineContent=JSON.stringify(record);
+                    }
+                    else  if(config.connector.subType=="nested") {
+                      record=record;
+                      lineContent=JSON.stringify(record);
+                    }
+
+                        record[config.schema.contentField] = lineContent;
                     var incrementRecordId = util.getStringHash(lineContent);
                     record.incrementRecordId = incrementRecordId;
                     var id = "R" + incrementRecordId;
@@ -110,34 +123,46 @@ var csvCrawler = {
 
 
     , generateDefaultMappingFields: function (connector, callback) {
-        var data = fs.readFileSync(config.connector.filePath);
-        data = JSON.parse("" + data);
-        var fields = {};
-        data.forEach(function (line) {
-            Object.keys(line).forEach(function (key) {
-                if (!fields[key]) {
-                    if (util.isFloat(line[key]))
-                        fields[key] = {type: "float"};
-                    else if (util.isInt(line[key]))
-                        fields[key] = {type: "integer"};
-                    else
-                        fields[key] = {type: "text"};
+        if(connector.subType=="object"){
+            var fields={}
+            return callback(null, fields);
+        }
+        else  if(connector.subType=="nested") {
+            var fields={}
+            return callback(null, fields);
+        }
+        else if(connector.subType=="simple") {
+            var data = fs.readFileSync(connector.filePath);
+            data = JSON.parse("" + data);
+            var fields = {};
+            data.forEach(function (line) {
+                Object.keys(line).forEach(function (key) {
+                    if (!fields[key]) {
+                        if (util.isFloat(line[key]))
+                            fields[key] = {type: "float"};
+                        else if (util.isInt(line[key]))
+                            fields[key] = {type: "integer"};
+                        else if(typeof line[key]=="object")
+                            fields[key] = {type: "object"};
+                        else
+                            fields[key] = {type: "text"};
 
-                }
+                    }
+
+                })
 
             })
 
-        })
-
-        return callback(null, fields);
+            return callback(null, fields);
+        }
 
     },
-    readJson: function (connector, lines, callback) {
+    readJson: function (connector, callback) {
 
         var headers = [];
         var dataArray = [];
         try {
-            var str = "" + fs.readFileSync(config.connector.filePath);
+            var str = "" + fs.readFileSync(connector.filePath);
             dataArray = JSON.parse(str);
         } catch (e) {
             return callback(e);
@@ -149,10 +174,11 @@ var csvCrawler = {
                     headers.push(key)
 
             })
-            return callback(null, {headers: headers, data: dataArray})
+
         })
+        return callback(null, {headers: headers, data: dataArray})
     }
 
 
 }
-module.exports = csvCrawler;
+module.exports = jsonCrawler;

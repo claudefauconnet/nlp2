@@ -1,0 +1,23 @@
+{
+  "general": {
+    "description": "testjsonobject",
+    "label": "testjsonobject",
+    "indexName": "testjsonobject"
+  },
+  "connector": {
+    "type": "json",
+    "subType": "object",
+    "filePath": "D:\\Total\\docs\\nlp\\thesaurusRefTotal.json",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "testjsonobject": {
+        "properties": {}
+      }
+    }
+  },
+  "display": []
+}

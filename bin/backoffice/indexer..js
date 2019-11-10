@@ -6,12 +6,12 @@ var socket = require('../../routes/socket.js');
 var fs = require('fs');
 
 
-
 var documentCrawler = require("./_documentCrawler.");
 var bookCrawler = require("./_bookCrawler.");
 var sqlCrawler = require("./_sqlCrawler.");
 var csvCrawler = require("./_csvCrawler.");
 var imapCrawler = require("./_imapCrawler.");
+var jsonCrawler = require("./_jsonCrawler.");
 var indexer = {
 
     runIndexation: function (config, callback) {
@@ -253,6 +253,10 @@ var indexer = {
                         bookCrawler.indexSource(config, function (err, result) {
                             return callbackSeries(err, result);
                         })
+                    } else if (connector.type == "json") {
+                        jsonCrawler.indexSource(config, function (err, result) {
+                            return callbackSeries(err, result);
+                        })
                     } else
                         return callbackSeries("no valid connector type declared");
 
@@ -288,9 +292,9 @@ if (false) {
     var path = "D:\\GitHub\\nlp2\\config\\elastic\\sources\\testsql4.json";
     var config = "" + fs.readFileSync(path);
     config = JSON.parse(config);
-    config.indexation= {
+    config.indexation = {
         "deleteOldIndex": true,
-            "elasticUrl": "http://localhost:9200/"
+        "elasticUrl": "http://localhost:9200/"
     }
     //config.indexation = {elasticUrl: "http://localhost:9200/"}
     indexer.runIndexation(config, function (err, result) {

@@ -231,8 +231,17 @@
         "type": {
           "type": "string",
           "title": "type",
-          "default": "document",
+          "default": "json",
           "readOnly ": true
+        },
+        "subType": {
+          "type": "string",
+          "title": "subType",
+          "enum": [
+            "simple",
+            "object",
+            "nested"
+          ]
         },
         "filePath": {
           "type": "string",
@@ -242,7 +251,6 @@
       }
     }
   },
-
   "indexation": {
     "indexation": {
       "type": "object",
@@ -291,35 +299,51 @@
       }
     }
   },
-  "jobs": {
-    "jobs": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "title": "job",
-        "properties": {
-          "indexName": {
-            "type": "string",
-            "title": "indexName",
-            "required": true
-          },
-          "runEvery": {
-            "type": "string",
-            "title": "run every",
-            "required": true,
-            "enum": [
-              "",
-              "hour",
-              "day",
-              "week",
-              "month"
-            ]
-          },
-          "runTime": {
-            "type": "string",
-            "title": "run time (hh:min:sec)",
-            "required": true
-          }
+  "job": {
+    "job": {
+      "type": "object",
+      "title": "job",
+      "properties": {
+        "indexName": {
+          "type": "string",
+          "title": "indexName",
+          "required": true
+        },
+        "runEvery": {
+          "type": "string",
+          "title": "run every",
+          "enum": [
+            "",
+            "minute",
+            "hour",
+            "day",
+            "week",
+            "month"
+          ]
+        },
+        "runTime": {
+          "type": "string",
+          "title": "run time (hh:min)"
+        },
+        "elasticUrl": {
+          "type": "string",
+          "title": "elasticSearch server url and port",
+          "default": "http://localhost:9200/"
+        },
+        "deleteOldIndex": {
+          "type": "bool",
+          "title": "deleteOldIndex",
+          "enum": [
+            "",
+            "yes",
+            "no"
+          ]
+        },
+        "active": {
+          "type": "boolean",
+          "title": "active",
+          "required": true
+
         }
       }
     }

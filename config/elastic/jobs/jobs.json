@@ -1,0 +1,16 @@
+{
+  "testbook": {
+    "indexName": "testbook",
+    "runEvery": "minute",
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes",
+    "active": true
+  },
+  "testcsv": {
+    "indexName": "testcsv",
+    "runEvery": "minute",
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes",
+    "active": true
+  }
+}

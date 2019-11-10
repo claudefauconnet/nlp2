@@ -3,17 +3,45 @@ var jobScheduler=(function(){
     var self={}
 
 
-   self.editJobs=function(){
+    self.loadJobs=function() {
 
-        var formStr = "<div style='width: 500px'><form id='shemaForm'></form></div>"
-        $("#mainDiv").html(formStr);
-       var allIndexesNames=Object.keys(context.indexConfigs);
-       allIndexesNames.splice(0,0,"")
-       var xx= context.jsonSchemas.jobs.jobs.items.properties.indexName.enum=allIndexesNames
+        var payload = {
+            getAllJobs: 1
+        }
+        mainController.post(appConfig.elasticUrl, payload, function (err, result) {
+            if (err)
+                $("#messageDiv").html(err)
+            context.jobs=result;
+        })
+    }
+
+
+    self.saveJobs=function(){
+        var payload = {
+            saveAllJobs: 1,
+            jobsStr:JSON.stringify(context.jobs,null,2)
+        }
+        mainController.post(appConfig.elasticUrl, payload, function (err, result) {
+            if (err)
+                $("#messageDiv").html(err)
+            $("#messageDiv").html(result)
+        })
+    }
+
+   self.editJob=function(){
+
+
+       var indexName=context.currentIndexName;
+       if(!indexName)
+           return alert ("select an index")
+    context.jsonSchemas.job.job.properties.indexName.default=indexName
         var json=null;
-        configEditor.editJsonForm('shemaForm', context.jsonSchemas.jobs, json,null,function (errors, data) {
-            if (errors)
-                return;
+       var formStr = "<div style='width: 500px'><form id='shemaForm'></form></div>"
+       $("#mainDiv").html(formStr);
+        configEditor.editJsonForm('shemaForm', context.jsonSchemas.job, json,null,function (errors, data) {
+           context.jobs[data.job.indexName]=data.job
+           self.saveJobs()
+
         })
 
 
@@ -26,12 +54,29 @@ var html="<button onclick='jobScheduler.startScheduler()'> start Schduler</butto
     }
 
     self.startScheduler=function(){
-
+        var payload = {
+            jobScheduler: 1,
+           run:1
+        }
+        mainController.post(appConfig.elasticUrl, payload, function (err, result) {
+            if (err)
+                $("#messageDiv").html(err)
+            $("#messageDiv").html(result)
+        })
 
     }
 
 
     self.stopScheduler=function(){
+        var payload = {
+            jobScheduler: 1,
+            stop:1
+        }
+        mainController.post(appConfig.elasticUrl, payload, function (err, result) {
+            if (err)
+                $("#messageDiv").html(err)
+            $("#messageDiv").html(result)
+        })
 
 
     }

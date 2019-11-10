@@ -9,6 +9,7 @@ var bookCrawler = require("./backoffice/_bookCrawler.");
 var sqlCrawler = require("./backoffice/_sqlCrawler.");
 var csvCrawler = require("./backoffice/_csvCrawler.");
 var imapCrawler = require("./backoffice/_imapCrawler.");
+var jsonCrawler = require("./backoffice/_jsonCrawler.");
 
 
 var configs = {};
@@ -53,6 +54,29 @@ var configLoader = {
         });
 
     },
+    getAllJobs: function (callback) {
+        try {
+            var profiles = [];
+            var pathStr = path.join(__dirname, configDir + "jobs/jobs.json");
+            var str = "" + fs.readFileSync(pathStr);
+            var jobs = JSON.parse(str, null, 2);
+
+        } catch (e) {
+            return callback(e);
+        }
+        return callback(null, jobs);
+    }
+    ,
+    saveAllJobs: function (jobsStr, callback) {
+        try {
+            var pathStr = path.join(__dirname, configDir + "jobs/jobs.json");
+            fs.writeFileSync(pathStr, jobsStr);
+        } catch (e) {
+            return callback(e);
+        }
+        return callback(null, "jobs saved");
+    },
+
     loadIndexConfig: function (index, callback) {
         var config = null;
         var str = null;
@@ -206,11 +230,13 @@ var configLoader = {
         else if (connectorType == "sql")
             sqlCrawler.generateDefaultMappingFields(connector, fn)
         else if (connectorType == "imap")
-           imapCrawler.generateDefaultMappingFields(connector, fn)
+            imapCrawler.generateDefaultMappingFields(connector, fn)
         else if (connectorType == "csv")
             csvCrawler.generateDefaultMappingFields(connector, fn)
         else if (connectorType == "book")
             bookCrawler.generateDefaultMappingFields(connector, fn)
+        else if (connectorType == "json")
+            jsonCrawler.generateDefaultMappingFields(connector, fn)
     }
 
 

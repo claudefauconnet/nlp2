@@ -41,6 +41,8 @@ var ui = (function () {
     self.setHighlight = function (text, highlightedWords) {
         if(highlightedWords.length>2)
             return text;
+        if(!text.replace)
+            return text;
         highlightedWords.forEach(function (word) {
             word = word.replace(/\*/g, "")
             var regex = new RegExp(word, "igm");
@@ -66,6 +68,10 @@ var ui = (function () {
     }
 
     self.getHitHtml = function (hit, displayConfig, template) {
+
+        if(!displayConfig)
+            return JSON.stringify(hit._source,null,2)
+
         var words = self.getQuestionWords(context.question);
         var html = "";
         displayConfig.forEach(function (line) {

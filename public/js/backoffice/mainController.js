@@ -208,8 +208,10 @@ self.post=function(url,payload,callback){
             ui.showIndexationForm()
        else if( tabName=="Profiles")
          profiles.editProfiles();
-        else if( tabName=="Jobs")
-            jobScheduler.editJobs();
+        else if( tabName=="Jobs") {
+            jobScheduler.loadJobs();
+            jobScheduler.editJob();
+        }
 
         else if( tabName=="Scheduler")
             jobScheduler.editScheduler();

@@ -8,6 +8,8 @@ var profiles=(function(){
             getAllProfiles:1
         }
         mainController.post(appConfig.elasticUrl,payload,function(err, result){
+            if(err)
+                $("#messageDiv").html(err)
             var array=[];
             result.forEach(function(line){
                 for(var key in line) {
