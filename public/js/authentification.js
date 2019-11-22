@@ -26,7 +26,7 @@ var authentication = (function () {
             context.currentUser = {
                 identifiant: "admin",
                 login: "none",
-                groups: "ADMIN"
+                groups: "ADMIN,search"
             }
             mainController.init0();
         }
@@ -43,14 +43,14 @@ var authentication = (function () {
         var user = null;
         async.series([
             function (callbackSeries) {
-                if (config.loginMode == "none") {
+                if (appConfig.loginMode == "none") {
                     user = {
                         identifiant: "none",
                         login: "none",
                         groups: "ADMIN"
                     }
                 }
-                if (config.loginMode != "database")
+                if (appConfig.loginMode != "database")
                     return callbackSeries();
                 self.doLoginDatabase(login, password, function (err, result) {
                     if (err)
@@ -61,7 +61,7 @@ var authentication = (function () {
 
             },
             function (callbackSeries) {
-                if (config.loginMode != "json")
+                if (appConfig.loginMode != "json")
                     return callbackSeries();
                 self.doLoginJson(login, password, function (err, result) {
                     if (err)
@@ -95,9 +95,9 @@ var authentication = (function () {
             if (!user)
                 return $("#loginMessage").html("invalid  login or password");
 
-            var userGroups = user.groupes.split(",");
-            if (userGroups.indexOf("admin") < 0 && userGroups.indexOf(config.appName) < 0)
-                return $("#loginMessage").html("user not allowed on this application  : " + config.appName);
+            var userGroups = user.groups.split(",");
+            if (userGroups.indexOf("admin") < 0 && userGroups.indexOf(appConfig.appName) < 0)
+                return $("#loginMessage").html("user not allowed on this application  : " + appConfig.appName);
 
             $("#loginDiv").css("visibility", "hidden");
             $("#main").css("visibility", "visible");
@@ -177,7 +177,7 @@ var authentication = (function () {
                 var user = {
                     identifiant: login,
                     nomComplet: login,
-                    groupes: data,
+                    groups: data,
                 };
                 return callback(null, user);
 

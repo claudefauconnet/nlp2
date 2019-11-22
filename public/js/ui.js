@@ -69,8 +69,10 @@ var ui = (function () {
 
     self.getHitHtml = function (hit, displayConfig, template) {
 
-        if(!displayConfig)
-            return JSON.stringify(hit._source,null,2)
+        if(!displayConfig || displayConfig.length==0 && template=="details") {
+          delete  hit._source["attachment.content"]
+            return JSON.stringify(hit._source, null, 2).replace(/\n/g,"<br>")
+        }
 
         var words = self.getQuestionWords(context.question);
         var html = "";

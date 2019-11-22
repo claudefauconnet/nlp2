@@ -8,8 +8,8 @@ var authentication = require('../bin/authentication..js');
 var configLoader = require('../bin/configLoader..js');
 var logger = require("../bin/logger..js");
 var indexer = require("../bin/backoffice/indexer..js")
-var imapMailExtractor=require("../bin/backoffice/imapMailExtractor.");
-var jobScheduler=require("../bin/backoffice/jobScheduler.")
+var imapMailExtractor = require("../bin/backoffice/imapMailExtractor.");
+var jobScheduler = require("../bin/backoffice/jobScheduler.")
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -18,105 +18,116 @@ router.get('/', function (req, res, next) {
 
 router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
-    if (req.body.executeQuery) {
-        var queryObj = JSON.parse(req.body.executeQuery);
-        elasticProxy.executeQuery(queryObj, JSON.parse(req.body.indexes), function (error, result) {
-            logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
-            processResponse(response, error, result);
+        if (req.body.executeQuery) {
+            var queryObj = JSON.parse(req.body.executeQuery);
+            elasticProxy.executeQuery(queryObj, JSON.parse(req.body.indexes), function (error, result) {
+                logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
+                processResponse(response, error, result);
 
-        });
+            });
 
-    }
+        }
 
-    if (req.body.getIndexConfigs) {
-        configLoader.getIndexConfigs(JSON.parse(req.body.userGroups), function (error, result) {
-            processResponse(response, error, result)
-        });
+        if (req.body.getIndexConfigs) {
+            configLoader.getIndexConfigs(JSON.parse(req.body.userGroups), function (error, result) {
+                processResponse(response, error, result)
+            });
 
-    }
+        }
 
-    if (req.body.saveIndexConfig) {
-        configLoader.saveIndexConfig(req.body.index, req.body.jsonStr, function (error, result) {
-            processResponse(response, error, result)
-        });
+        if (req.body.saveIndexConfig) {
+            configLoader.saveIndexConfig(req.body.index, req.body.jsonStr, function (error, result) {
+                processResponse(response, error, result)
+            });
 
-    }
+        }
 
-    if (req.body.deleteIndexConfig) {
-        configLoader.deleteIndexConfig(req.body.index, function (error, result) {
-            processResponse(response, error, result)
-        });
+        if (req.body.deleteIndexConfig) {
+            var config=JSON.parse(req.body.config);
+            if (req.body.deleteIndexContent) {
+                indexer.deleteIndex(config, function (err, result) {
+                    if (err)
+                        return processResponse(response, error, result)
 
-    }
+                    configLoader.deleteIndexConfig(config.general.indexName, function (error, result) {
+                        processResponse(response, error, result)
+                    });
+                })
+
+            } else {
+                configLoader.deleteIndexConfig(req.body.config.general.indexName, function (error, result) {
+                    processResponse(response, error, result)
+                });
+            }
+        }
 
 
-    if (req.body.executeMsearch) {
-        elasticProxy.executeMsearch(req.body.ndjson, function (error, result) {
-            processResponse(response, error, result)
-        });
+        if (req.body.executeMsearch) {
+            elasticProxy.executeMsearch(req.body.ndjson, function (error, result) {
+                processResponse(response, error, result)
+            });
 
-    }
+        }
 
-    if (req.body && req.body.getTemplates) {
-        configLoader.getTemplates(function (error, result) {
-            processResponse(response, error, result)
-        });
-    }
-    if (req.body && req.body.generateDefaultMappingFields) {
+        if (req.body && req.body.getTemplates) {
+            configLoader.getTemplates(function (error, result) {
+                processResponse(response, error, result)
+            });
+        }
+        if (req.body && req.body.generateDefaultMappingFields) {
 
-        configLoader.generateDefaultMappingFields(JSON.parse(req.body.connector), function (error, result) {
-            processResponse(response, error, result);
+            configLoader.generateDefaultMappingFields(JSON.parse(req.body.connector), function (error, result) {
+                processResponse(response, error, result);
 
-        })
+            })
 
-    }
-    if (req.body && req.body.runIndexation) {
+        }
+        if (req.body && req.body.runIndexation) {
 
-        indexer.runIndexation(JSON.parse(req.body.config), function (error, result) {
-            processResponse(response, error, result);
+            indexer.runIndexation(JSON.parse(req.body.config), function (error, result) {
+                processResponse(response, error, result);
 
-        })
+            })
 
-    }
-    if (req.body && req.body.getAllProfiles) {
-        configLoader.getAllProfiles (function (error, result) {
-            processResponse(response, error, result);
-        })
-    }
-    if (req.body && req.body.writeAllProfiles) {
-        configLoader.writeAllProfiles (req.body.profiles,function (error, result) {
-            processResponse(response, error, result);
-        })
-    }
-
-    if (req.body && req.body.getAllJobs) {
-        configLoader.getAllJobs (function (error, result) {
-            processResponse(response, error, result);
-        })
-    }
-    if (req.body && req.body.saveAllJobs) {
-        configLoader.saveAllJobs (req.body.jobsStr,function (error, result) {
-            processResponse(response, error, result);
-        })
-    }
-
-    if (req.body && req.body.jobScheduler) {
-       if(req.body.run) {
-           jobScheduler.run (function (error, result) {
-               processResponse(response, error, result);
-           })
-       }
-        if(req.body.stop) {
-            jobScheduler.stop (function (error, result) {
+        }
+        if (req.body && req.body.getAllProfiles) {
+            configLoader.getAllProfiles(function (error, result) {
                 processResponse(response, error, result);
             })
         }
+        if (req.body && req.body.writeAllProfiles) {
+            configLoader.writeAllProfiles(req.body.profiles, function (error, result) {
+                processResponse(response, error, result);
+            })
+        }
+
+        if (req.body && req.body.getAllJobs) {
+            configLoader.getAllJobs(function (error, result) {
+                processResponse(response, error, result);
+            })
+        }
+        if (req.body && req.body.saveAllJobs) {
+            configLoader.saveAllJobs(req.body.jobsStr, function (error, result) {
+                processResponse(response, error, result);
+            })
+        }
+
+        if (req.body && req.body.jobScheduler) {
+            if (req.body.run) {
+                jobScheduler.run(function (error, result) {
+                    processResponse(response, error, result);
+                })
+            }
+            if (req.body.stop) {
+                jobScheduler.stop(function (error, result) {
+                    processResponse(response, error, result);
+                })
+            }
+        }
+
+
     }
-
-
-
-
-})
+)
 
 
 router.post('/authDB', function (req, res, next) {
@@ -146,9 +157,6 @@ router.post('/authDB', function (req, res, next) {
             })
         }
     }
-
-
-
 
 
 })

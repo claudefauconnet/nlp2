@@ -5,6 +5,8 @@ var mainController = (function () {
     self.urlPrefix = "."
     self.totalDims = {};
 
+    appConfig.elasticUrl="."+appConfig.elasticUrl
+
     self.leftPanelWidth = 250;
 
 
@@ -62,6 +64,7 @@ var mainController = (function () {
 
     self.initSocket = function () {
         var socket = io();
+        var socket = io("/", {path: '/socket.io'})
         socket.on('connect', function (data) {
             socket.emit('join', 'Hello World from client');
         });
@@ -144,25 +147,7 @@ self.post=function(url,payload,callback){
     }
 
 
-    self.deleteIndexConfig = function (indexName) {
-        if (!indexName)
-            indexName = context.currentIndexName;
-        if (confirm("Delete index configuration :" + indexName)) {
 
-            indexes.deleteIndexConfig(context.currentIndexName, function (err, result) {
-                if (err)
-                    return $("#messageDiv").html(err);
-                $("#messageDiv").html(result.result);
-                indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
-                    if(err)
-                        return  $("#messageDiv").html("indexes non chargés" + err);
-                    ui.initSourcesList();
-                })
-
-            })
-        }
-
-    }
 
     self.duplicateCurrentIndexConfig = function () {
         var newIndexName = prompt("enter new index name");
@@ -205,7 +190,7 @@ self.post=function(url,payload,callback){
 
     self.onAccordionTabChange=function(tabName){
         if( tabName=="Indexation")
-            ui.showIndexationForm()
+            ui.showIndexationForm(ui.onIndexationFormOK)
        else if( tabName=="Profiles")
          profiles.editProfiles();
         else if( tabName=="Jobs") {

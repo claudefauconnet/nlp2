@@ -25,7 +25,7 @@ var asyncDialog=(function(){
                     callbackFn(self.dialogValidated,  self.callbackData);
 
             }
-        }, 500);
+        }, 100);
 
 
 

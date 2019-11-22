@@ -19,6 +19,7 @@ var indexer = {
         var elasticUrl = config.indexation.elasticUrl;
         var connector = config.connector;
 
+
         var indexExists = false;
 
         async.series([
@@ -43,45 +44,15 @@ var indexer = {
                     callbackSeries();
                 },
 
-                //******check if index exist*************
-                function (callbackSeries) {
-                    var options = {
-                        method: 'HEAD',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        url: elasticUrl + index
-                    };
-                    request(options, function (error, response, body) {
-                        if (error)
-                            return callbackSeries(error);
-                        if (response.statusCode == 200)
-                            indexExists = true;
-                        callbackSeries();
-                    })
-                },
+
 
 
                 //******deleteIndex*************
                 function (callbackSeries) {
-                    if (!indexExists || !config.indexation.deleteOldIndex)
-                        return callbackSeries();
+                 indexer.deleteIndex(config,function(err,result){
+                     callbackSeries(err);
+                 })
 
-
-                    var options = {
-                        method: 'DELETE',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        url: "http://localhost:9200/" + index
-                    };
-                    request(options, function (error, response, body) {
-                        if (error)
-                            return callbackSeries(error);
-                        var message = "delete index :" + index
-                        socket.message(message);
-                        callbackSeries();
-                    })
                 },
 
                 // ******** load settings related contentField if mappings******************
@@ -271,6 +242,57 @@ var indexer = {
         )
 
     },
+
+
+    deleteIndex: function (config, callback) {
+        var index = config.general.indexName;
+        var elasticUrl = config.indexation.elasticUrl;
+        var indexExists = false;
+        async.series([
+            //******check if index exist*************
+            function (callbackSeries) {
+                var options = {
+                    method: 'HEAD',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    url: elasticUrl + index
+                };
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackSeries(error);
+                    if (response.statusCode == 200)
+                        indexExists = true;
+                    callbackSeries();
+                })
+            },
+
+            //******deleteIndex*************
+            function (callbackSeries) {
+                if (!indexExists || !config.indexation.deleteOldIndex)
+                    return callbackSeries();
+
+
+                var options = {
+                    method: 'DELETE',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    url: elasticUrl + index
+                };
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackSeries(error);
+                    var message = "delete index :" + index
+                    socket.message(message);
+                    callbackSeries();
+                })
+            }
+
+        ], function (err) {
+            callback(err);
+        })
+    }
 
 }
 

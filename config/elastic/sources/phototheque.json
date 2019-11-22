@@ -1,17 +1,17 @@
 {
   "general": {
-    "description": "index de la phototheque de Baillet",
+    "description": "photos",
     "label": "Photos",
-    "indexName": "phototheque"
+    "indexName": "photos"
   },
   "connector": {
     "type": "sql",
     "subType": "mysql",
-    "sqlQuery": "select * from phototheque",
     "connOptions": {
       "host": "localhost",
-      "user": "root",
-      "password": "vi0lon",
+      "port": "7202",
+      "user": "bailletarchives",
+      "password": "nodeApp55",
       "database": "phototheque",
       "table": "phototheque"
     },
@@ -21,25 +21,16 @@
     "contentField": "attachment.content",
     "analyzer": "lowercase_asciifolding",
     "mappings": {
-      "phototheque": {
+      "photos": {
         "properties": {
-          "id": {
-            "type": "integer"
-          },
           "indexCIJW": {
             "type": "keyword"
           },
-          "dossier": {
-            "type": "keyword"
+          "versement_relié": {
+            "type": "text"
           },
-          "sousdossier": {
-            "type": "keyword"
-          },
-          "document": {
-            "type": "keyword"
-          },
-          "versement": {
-            "type": "integer"
+          "ancienne_cote": {
+            "type": "text"
           },
           "lien": {
             "type": "keyword"
@@ -89,70 +80,16 @@
   },
   "display": [
     {
-      "id": {
-        "cssClass": "text"
-      }
-    },
-    {
       "indexCIJW": {
         "cssClass": "excerpt"
       }
     },
     {
-      "dossier": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "sousdossier": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "document": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "versement": {
-        "cssClass": "text"
-      }
-    },
-    {
       "lien": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "photographe": {
         "cssClass": "excerpt"
       }
     },
-    {
-      "agence": {
-        "cssClass": "excerpt"
-      }
-    },
-    {
-      "droit_auteur": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "droit_image": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "contenu": {
-        "cssClass": "excerpt"
-      }
-    },
-    {
-      "temoin_ref": {
-        "cssClass": "text"
-      }
-    },
+
     {
       "date": {
         "cssClass": "excerpt"
@@ -160,33 +97,12 @@
     },
     {
       "lieu": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "description": {
         "cssClass": "excerpt"
       }
-    },
-    {
-      "local": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "support": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "dateMaj": {
-        "cssClass": "text"
-      }
-    },
-    {
-      "redacteur": {
-        "cssClass": "text"
-      }
     }
-  ]
+  ],
+  "indexation": {
+    "elasticUrl": "http://92.222.116.179:7201/",
+    "deleteOldIndex": "yes"
+  }
 }

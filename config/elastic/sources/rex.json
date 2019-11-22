@@ -1,0 +1,69 @@
+{
+  "general": {
+    "description": "rex",
+    "label": "rex",
+    "indexName": "rex"
+  },
+  "connector": {
+    "type": "document",
+    "dir": "D:\\Total\\REX\\pdfs",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "rex": {
+        "properties": {
+          "attachment.author": {
+            "type": "text"
+          },
+          "attachment.title": {
+            "type": "text"
+          },
+          "attachment.date": {
+            "type": "date"
+          },
+          "attachment.language": {
+            "type": "keyword"
+          },
+          "title": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "attachment.author": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.title": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.date": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.language": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "title": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.content": {
+        "cssClass": "text"
+      }
+    }
+  ]
+}

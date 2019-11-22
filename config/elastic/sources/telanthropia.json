@@ -1,0 +1,23 @@
+{
+  "general": {
+    "description": "telanthropia",
+    "label": "telanthropia",
+    "indexName": "telanthropia"
+  },
+  "connector": {
+    "type": "json",
+    "subType": "object",
+    "filePath": "D:\\telanthropia\\notices.json",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "telanthropia": {
+        "properties": {}
+      }
+    }
+  },
+  "display": []
+}

@@ -95,6 +95,11 @@
               "required": true,
               "default": "localhost"
             },
+              "port": {
+                "type": "string",
+                "title": "port"
+
+              },
             "user": {
               "type": "string",
               "title": "user",

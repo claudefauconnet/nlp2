@@ -4,6 +4,8 @@ const socket = require('../../routes/socket.js');
 const request = require('request');
 const imapMailExtractor = require("./imapMailExtractor.")
 
+//lien pour ouvrir imap
+//https://myaccount.google.com/lesssecureapps
 
 var imapCrawler = {
 

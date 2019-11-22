@@ -1,0 +1,83 @@
+{
+  "general": {
+    "description": "gmail_cf",
+    "label": "gmail_cf",
+    "indexName": "gmail_cf"
+  },
+  "connector": {
+    "type": "imap",
+    "imapServerUrl": "imap.gmail.com",
+    "emailAdress": "claude.fauconnet@gmail.com",
+    "emailpassword": "Fa1#majeur",
+    "rootBox": "INBOX",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "gmail_cf": {
+        "properties": {
+          "attachment.To": {
+            "type": "text"
+          },
+          "attachment.Subject": {
+            "type": "text"
+          },
+          "attachment.From": {
+            "type": "text"
+          },
+          "attachment.Reply": {
+            "type": "text"
+          },
+          "attachment.Cc": {
+            "type": "text"
+          },
+          "attachment.Date": {
+            "type": "date"
+          },
+          "attachment.text": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "attachment.To": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.Subject": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.From": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.Reply": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.Cc": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.Date": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "attachment.text": {
+        "cssClass": "text"
+      }
+    }
+  ]
+}

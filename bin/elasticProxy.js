@@ -2247,7 +2247,7 @@ var elasticProxy = {
             if (error)
                 return callback(error);
             if (!body.hits || !body.hits.hits)
-                console.log("aaaaaaaaaaaaaaaaaaa")
+                console.log("")
             var hits = body.hits.hits;
             var result = [];
             var newObjs = []

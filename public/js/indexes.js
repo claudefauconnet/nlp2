@@ -53,10 +53,11 @@ var indexes = (function () {
 
     }
 
-    self.deleteIndexConfig = function (indexName) {
+    self.deleteIndexConfig = function (config,callback) {
         var payload = {
             deleteIndexConfig: 1,
-            index: indexName
+            config: JSON.stringify(config),
+            deleteIndexContent:config.deleteIndexContent
         }
         $.ajax({
             type: "POST",

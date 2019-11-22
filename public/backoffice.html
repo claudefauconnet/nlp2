@@ -26,9 +26,8 @@
     <script type="text/javascript" src="js/backoffice/others/jsonform.js"></script>
 
 
-
+    <script src="js/config.js"></script>
     <script src="js/backoffice/mainController.js"></script>
-    <script src="js/backoffice/config.js"></script>
     <script src="js/backoffice/context.js"></script>
     <script src="js/backoffice/ui.js"></script>
     <script src="js/backoffice/configEditor.js"></script>
@@ -99,7 +98,7 @@
         }
 
         .accordionInnerDiv {
-            min-height: 300px;
+            min-height:150px;
             background-color: #9ca7b3;
             background-color: snow;
 
@@ -296,7 +295,7 @@
     <script>
         var dialog, dialog2, dialog3;
         $(function () {
-
+           // http://phototheque.cijw.priv/visu.php?indexCIJW=PH0001006001
             mainController.setDivsSize();
             $("#leftAccordion").accordion({
 
@@ -380,7 +379,7 @@
             <img src="images/logoATD.png" width="50px">
             <br>
             <B>Index configurations</B>
-            <select id="sourcesSelect" size="15" onchange="ui.selectIndexConfig($(this).val())"></select>
+            <select id="sourcesSelect" size="7" onchange="ui.selectIndexConfig($(this).val())"></select>
         </div>
         <div id="leftAccordion"  class="accordionInnerDiv">
             <h1>Configuration</h1>
@@ -390,7 +389,7 @@
                     <button onclick="ui.showIndexConfig()">edit source json</button>
 
                     <button onclick="configEditor.createNewConfig()">new source</button>
-                    <button onclick="configEditor.deleteIndxConfig()">delete source</button>
+                    <button onclick="ui.deleteIndexConfig()">delete source</button>
                 </div>
 
             </div>
@@ -437,7 +436,7 @@
     </div>
 
     <div id="right">
-        <span id="messageDiv" class="message">aaaaa</span><img src="images/waitAnimated.gif" id="waitImg" style="display: none;width: 15px">
+        <span id="messageDiv" class="message"></span><img src="images/waitAnimated.gif" id="waitImg" style="display: none;width: 15px">
         <!--   <button id="showHideLeftPanelButton"><< >></button>-->
         <div id="mainDiv" class="dataTableDiv">
 

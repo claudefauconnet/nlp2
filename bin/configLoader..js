@@ -143,7 +143,7 @@ var configLoader = {
 
     getIndexConfigs: function (userGroups, callback) {
         if (!Array.isArray(userGroups)) {
-            userGroups = [userGroups];
+            userGroups = userGroups.split(",");
         }
         var indexes = [];
 

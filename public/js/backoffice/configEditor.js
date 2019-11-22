@@ -158,8 +158,8 @@ var configEditor = (function () {
                 function (err) {
 
                     if (err) {
-                        if(err.responseText)
-                        alert(err.responseText);
+                        if (err.responseText)
+                            alert(err.responseText);
                         else
                             alert(err);
                         return $("#mainDiv").html(err);
@@ -172,8 +172,8 @@ var configEditor = (function () {
 
                         indexes.saveIndexConfig(config.general.indexName, JSON.stringify(config, null, 2), function (err, result) {
 
-                                ui.initSourcesList(true);
-
+                            ui.initSourcesList(true, config.general.indexName);
+                            context.currentIndexName(config.general.indexName)
 
 
                         })
@@ -269,7 +269,6 @@ var configEditor = (function () {
         }
 
 
-
         self.saveIndexationConfig = function () {
             var config = context.indexConfigs[context.currentIndexName];
             var indexationConfig = context.currentIndexationConfig;
@@ -280,25 +279,24 @@ var configEditor = (function () {
         }
 
 
-        self.deleteIndxConfig=function(){
+        self.deleteIndexConfig = function () {
             if (!context.currentIndexName)
                 return alert("select an index ")
 
-            if(confirm("delete source config :"+context.currentIndexName)){
+            if (confirm("delete source config :" + context.currentIndexName)) {
                 var payload = {
                     deleteIndexConfig: 1,
-                    index:context.currentIndexName
+                    index: context.currentIndexName
                 }
                 mainController.post(appConfig.elasticUrl, payload, function (err, result) {
                     if (err)
                         return callback(err);
-                    $("#messageDiv").html("configuration deleted :"+context.currentIndexName);
+                    $("#messageDiv").html("configuration deleted :" + context.currentIndexName);
                     ui.initSourcesList(true);
                 })
 
 
             }
-
 
 
         }

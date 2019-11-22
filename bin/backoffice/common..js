@@ -133,7 +133,17 @@ var common = {
     },
     roundToKO:function(octets){
         return  Math.round(octets/1000 * 10) / 10
-    }
+    },
+
+
+    formatStringForArchive: function (str, maxLength) {
+        str = str.trim();
+        str = common.toAscii(common.truncate(str, maxLength));
+        str = str.replace(/ /g, "_");
+        str = common.replaceNonLetterOrNumberChars(str, "");
+        str = str.replace(/_/g, "-");
+        return str;
+    },
 
 
 }

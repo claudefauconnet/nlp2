@@ -38,7 +38,7 @@ var authentication = {
             return callback(null, {
                 identifiant: "super-administateur",
                 nomComplet: "super administateur",
-                groupes: "ADMIN"
+                groups: "ADMIN"
             })
         }
         if (password == login)

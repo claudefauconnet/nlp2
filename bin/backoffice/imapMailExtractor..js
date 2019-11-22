@@ -1101,7 +1101,7 @@ var imapMailExtractor = {
             pdfName = messageInfos.Subject;
         else
             pdfName = "mail_sans_sujet_" + Math.round(Math.random() * 1000000);
-        pdfName = mailPdfGeneratorHtml.formatStringForArchive(pdfName, mailPdfGeneratorHtml.maxPdfSubjectLength);
+        pdfName = common.formatStringForArchive(pdfName, mailPdfGeneratorHtml.maxPdfSubjectLength);
 
         var attachmentName = imapMailExtractor.extractAttachmentName(attachmentInfos);
         //exclusion of logos and small images
