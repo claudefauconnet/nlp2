@@ -173,7 +173,7 @@ var configEditor = (function () {
                         indexes.saveIndexConfig(config.general.indexName, JSON.stringify(config, null, 2), function (err, result) {
 
                             ui.initSourcesList(true, config.general.indexName);
-                            context.currentIndexName(config.general.indexName)
+                            context.currentIndexName=config.general.indexName;
 
 
                         })

@@ -6,21 +6,21 @@ var mainController = (function () {
     self.windowHeight = $(window).height();
     self.windowWidth = $(window).width();
 
-    self.init0= function () {
+    self.init0 = function () {
 
         mainController.bindControls();
-       // self.hideUsageDiv();
+        // self.hideUsageDiv();
         $("#questionInput").focus()
-        indexes.loadIndexConfigs(context.currentUser.groups,function(err,result){
-            if(err)
-                return $("#resultDiv").html("la configuration des index n'a pu être chargée :"+err.message);
+        indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
+            if (err)
+                return $("#resultDiv").html("la configuration des index n'a pu être chargée :" + err.message);
             indexes.initIndexesDiv(false)
         })
 
     }
 
     self.bindControls = function () {
-
+        $("#resultDiv").css("height", self.windowHeight -230);
         //   $("#questionInput").keyup(function(event){
 
         $('#questionInput').keyup(function (e) {
@@ -28,7 +28,7 @@ var mainController = (function () {
 
                 var str = $(this).val();
                 context.question = str;
-                Search.searchPlainText({question:str}, function (err, result) {
+                Search.searchPlainText({question: str}, function (err, result) {
 
                 })
             }
@@ -47,38 +47,35 @@ var mainController = (function () {
         var val = $("#questionInput").val()
         var question = val + " " + word
         $("#questionInput").val(question);
-        Search.searchPlainText({question:question}, function (err, result) {
+        Search.searchPlainText({question: question}, function (err, result) {
 
         })
 
     }
 
 
-
-
-
     self.showPageControls = function (total) {
 
         var maxPagesLinks = 10;
-    
+
         if (total > context.elasticQuery.from) {
 
-            var str = "documents trouvés : "+total+" &nbsp; pages&nbsp;:&nbsp;";
+            var str = "documents trouvés : " + total + " &nbsp; pages&nbsp;:&nbsp;";
             var k = 1
-            if ((context.currentPage+1) <= (total/context.elasticQuery.size) )
-            str += "<em onclick='Search.searchPlainText({page:"+(context.currentPage+1)+"})'> suivante  </a>&nbsp;&nbsp;";
+            if ((context.currentPage + 1) <= (total / context.elasticQuery.size))
+                str += "<em onclick='Search.searchPlainText({page:" + (context.currentPage + 1) + "})'> suivante  </a>&nbsp;&nbsp;";
             if (context.currentPage > 0)
-                str += "<em onclick='Search.searchPlainText({page:"+(context.currentPage-1)+"})'> précédente  </em>&nbsp;&nbsp;";
+                str += "<em onclick='Search.searchPlainText({page:" + (context.currentPage - 1) + "})'> précédente  </em>&nbsp;&nbsp;";
 
 
             for (var i = 0; i < total; i++) {
                 var linkClass = "";
-                if (k == context.currentPage+1)
+                if (k == context.currentPage + 1)
                     linkClass = " class='currentPage' ";
 
 
                 if (i % context.elasticQuery.size == 0) {
-                    str += "<em onclick='Search.searchPlainText({page:"+(k-1)+"})'> " + (k) + "</a>&nbsp;&nbsp;"
+                    str += "<em onclick='Search.searchPlainText({page:" + (k - 1) + "})'> " + (k) + "</a>&nbsp;&nbsp;"
                     k++;
                 }
 
@@ -93,7 +90,7 @@ var mainController = (function () {
             $("#paginationDiv").html(str)
         }
     }
-    self.resetQuestion=function(){
+    self.resetQuestion = function () {
         $("#questionInput").val("");
         $("#resultDiv").html("");
         $(".indexDocCount").html("")
@@ -101,14 +98,15 @@ var mainController = (function () {
         $("#associatedWordsDiv").html("")
     }
 
-    self.hideUsageDiv=function(){
-        if(!context.usageHtml){
-            context.usageHtml= $(".usageDiv").html()
+    self.hideUsageDiv = function () {
+        if (!context.usageHtml) {
+            context.usageHtml = $(".usageDiv").html()
             $(".usageDiv").html("cliquez ici pour le mode d'emploi...")
-    }
-        else{
-            $(".usageDiv").html( context.usageHtml);
-            context.usageHtml=null;
+            $("#resultDiv").css("height", self.windowHeight - 120);
+        } else {
+            $(".usageDiv").html(context.usageHtml);
+            context.usageHtml = null;
+            $("#resultDiv").css("height", self.windowHeight -230);
         }
     }
 

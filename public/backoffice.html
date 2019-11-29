@@ -27,7 +27,9 @@
 
 
     <script src="js/config.js"></script>
+    <script src="js/authentification.js"></script>
     <script src="js/backoffice/mainController.js"></script>
+
     <script src="js/backoffice/context.js"></script>
     <script src="js/backoffice/ui.js"></script>
     <script src="js/backoffice/configEditor.js"></script>
@@ -350,19 +352,8 @@
 
 
 
+            authentication.init();
 
-            if (false) {
-
-                authentication.init(true, function (err, result) {
-
-                })
-                /* $("#searchTableInput").attr("disabled", true)
-                 $("#leftAccordion").css("opacity", 0.2);
-                 $("#loginDialogDiv").dialog("open");*/
-            }
-            else {
-                mainController.init0();
-            }
 
 
         })
@@ -446,9 +437,20 @@
     </div>
 
     <div id="dialogDiv"></div>
+    </div>
+</div>
 
+<div id="loginDiv"
+     style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
+    <div> login<input id="loginInput">
+        password<input type="password" id="passwordInput" onkeydown="if (event.keyCode == 13)
+                        document.getElementById('loginButton').click()">
+        <button id="loginButton" onclick="authentication.doLogin()">OK</button>
+        <!--   <button id="xxx" onclick="Tablette.updateCotesParTabletteZeros()">TEST boites</button>-->
 
-
+        <div id="loginMessage"></div>
+    </div>
+</div>
 
 
 

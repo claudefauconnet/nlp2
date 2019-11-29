@@ -33,8 +33,11 @@ var indexer = {
                         return callbackSeries("no elasticUrl field in config ");
                     if (!connector)
                         return callbackSeries("no connector field in config ");
-                    if (elasticUrl.charAt(elasticUrl.length - 1) != "/")
+                    if (elasticUrl.charAt(elasticUrl.length - 1) != "/"){
                         elasticUrl += "/";
+                        config.indexation.elasticUrl=elasticUrl;
+                    }
+
                     callbackSeries()
                 },
 

@@ -109,13 +109,13 @@ var csvCrawler = {
 
 
     , generateDefaultMappingFields: function (connector, callback) {
-        csvCrawler.readCsv(connector, 10, function (err, result) {
+        csvCrawler.readCsv(connector, 1000000, function (err, result) {
             if (err)
                 return callback(err);
             var fields = {}
             result.headers.forEach(function (header) {
                 if (header != "")
-                    if (!fields[key]) {
+                    if (!fields[header]) {
                         result.data.forEach(function(line){
                             if (util.isFloat(line[header]))
                                 fields[header] = {type: "float"};

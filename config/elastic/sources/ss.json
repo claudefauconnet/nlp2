@@ -1,0 +1,96 @@
+{
+  "general": {
+    "description": "ss",
+    "label": "ss",
+    "indexName": "ss"
+  },
+  "connector": {
+    "type": "csv",
+    "filePath": "d:\\\\importVideoTheque_22_11_2019.csv",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "ss": {
+        "properties": {
+          "dateCreation": {
+            "type": "text"
+          },
+          "titre": {
+            "type": "text"
+          },
+          "nomFichierNumeriseDiffusion": {
+            "type": "text"
+          },
+          "numeroLotNumerisation": {
+            "type": "text"
+          },
+          "auteur": {
+            "type": "text"
+          },
+          "duree": {
+            "type": "text"
+          },
+          "langue": {
+            "type": "text"
+          },
+          "description": {
+            "type": "text"
+          },
+          "remarque": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "dateCreation": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "titre": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "nomFichierNumeriseDiffusion": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "numeroLotNumerisation": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "auteur": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "duree": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "langue": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "description": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "remarque": {
+        "cssClass": "text"
+      }
+    }
+  ]
+}

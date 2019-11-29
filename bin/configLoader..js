@@ -148,16 +148,20 @@ var configLoader = {
         var indexes = [];
 
 
-        var configs = {}
+        var configs = {};
+        var joker=false;
         async.series([
             function (callbackSeries) {
 
                 configLoader.getAllProfiles(function (err, result) {
                     result.forEach(function (profile) {
                         for (var group in profile) {
+
                             if (userGroups.indexOf(group) > -1) {
                                 indexes = indexes.concat(profile[group].indexes);
                             }
+                            if(profile[group].indexes.indexOf("*")>-1)
+                                joker=true;
 
                         }
                     })
@@ -166,7 +170,7 @@ var configLoader = {
 
             },
             function (callbackSeries) {
-                if (indexes[0] != "*")
+                if (!joker)
                     return callbackSeries();
 
                 configLoader.getAllIndexNames(function (err, result) {

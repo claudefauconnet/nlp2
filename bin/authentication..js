@@ -62,6 +62,8 @@ var authentication = {
                 }
                 var user = result[0];
                 delete user.motDePasse;
+                user.groups=user.groupes;
+                delete user.groupes;
                 logger.info("! AUTHENTICATION "+login + " logged")
                 return callback(null, user);
 

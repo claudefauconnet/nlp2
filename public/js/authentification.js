@@ -1,11 +1,10 @@
 var authentication = (function () {
 
     var self = {}
-// pb avec l'url sur serveur a cause d'nginx qui n'adment pas authentication ??? voir config version antérieure déployéee
-    self.authenticationUrl = "../bailletarchives-authentication";
-    self.authenticationDBUrl = "../authDB";
+
+    self.authenticationDBUrl =appConfig.elasticUrl
     self.userIndexes = [];
-    self.currentUser = {};
+   
 
 
     self.init = function (activate,callback) {
@@ -78,7 +77,7 @@ var authentication = (function () {
                 if (err.responseJSON.ERROR == "changePassword") {
                     //    $("#loginMessage").html("le mot de passe doit être changé (<a href='htmlSnippets/changerMotDePasse.html'>cliquer ici</a>)");
                     $("#loginMessage").html("le mot de passe doit être changé <button onclick='authentication.showChangePasswordDialog()'>OK</button>");
-                    self.currentUser = user;
+                    context.currentUser = user;
                     mainController.init0();
 
                     return
@@ -87,10 +86,12 @@ var authentication = (function () {
 
 
                 } else {
-                    return $("#loginMessage").html(err);
+                    return $("#loginMessage").html(err.responseText);
                 }
 
 
+            }else if(err){
+                return $("#loginMessage").html(err.responseText);
             }
             if (!user)
                 return $("#loginMessage").html("invalid  login or password");
@@ -101,7 +102,7 @@ var authentication = (function () {
 
             $("#loginDiv").css("visibility", "hidden");
             $("#main").css("visibility", "visible");
-            self.currentUser = user;
+            context.currentUser = user;
             mainController.init0();
 
         })

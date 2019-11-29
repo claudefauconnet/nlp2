@@ -5,7 +5,7 @@ var ui = (function () {
     self.getHitDiv = function (hit, displayConfig) {
         var indexLabel = context.indexConfigs[hit._index].general.label
         var html = "<div class='hit' onclick=Search.searchHitDetails('" + hit._id + "') >" +
-            "<span style=' font-size: 12px;font-weight: bold'>" + indexLabel + " : </span>  " +
+            "<span style=' font-size: 12px;color:brown; font-weight: bold'>" + indexLabel + " : </span>  " +
             "" + self.getHitHtml(hit, displayConfig, "list") +
             "" +
             "" +
@@ -34,6 +34,7 @@ var ui = (function () {
 
         $("#dialogDiv").html(html);
         $(".hlt1").css("background-color", " #FFFF00");
+        $(".dialogDiv").css("top", " 100px");
         $("#dialogDiv").dialog("open")
 
     }
@@ -101,6 +102,12 @@ var ui = (function () {
             if (fieldValue.replace) {
                 fieldValue = fieldValue.replace(/\n{2}/gm, "<br>")
                 fieldValue = fieldValue.replace(/\n/gm, "<br>")
+                //format date
+                fieldValue=fieldValue.replace(/(\d{4})-(\d{2})-(\d{2}).*Z/, function(a,year,month,day){
+                    if(appConfig.locale=="Fr")
+                        return ""+day+"/"+month+"/"+year
+                    return ""+year+"/"+month+"/"+day
+                })
             }
             if (template == "details" || [fieldName].highlightWords) {
                 fieldValue = self.setHighlight(fieldValue, words);
@@ -113,29 +120,21 @@ var ui = (function () {
 
             var cssClass = line[fieldName].cssClass;
 
+            if(!cssClass)
+                cssClass="";
 
-            if (template == "list") {
-                if(cssClass == "excerpt") {
-                    html += "<span class='text'>";
-                    html += fieldValue + "  "
-                    return
-                }else{return}
 
-            } else if (cssClass) {
-                if (cssClass == "date" && fieldValue != "") {
-                    var date = new Date(fieldValue)
-                    fieldValue = date.toLocaleDateString("fr-FR");
-                }
 
-                fieldValue = "<span class='" + template + " " + cssClass + "'>" + fieldValue + "</span>";
 
 
                 if (template == "details") {
+                    fieldValue = "<span class='" +  template  +"'>" + fieldValue + "</span>";
                     html += "<B>" + fieldLabel + " : </B>" + fieldValue + "<hr>";
                 } else {
+                    fieldValue = "<span class='" +  template  +" "+cssClass+"'><b>" + fieldValue + "</b></span>";
                     html += fieldValue + "&nbsp;&nbsp;";
                 }
-            }
+
 
 
         })

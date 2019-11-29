@@ -43,7 +43,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         }
 
         if (req.body.deleteIndexConfig) {
-            var config=JSON.parse(req.body.config);
+            var config = JSON.parse(req.body.config);
             if (req.body.deleteIndexContent) {
                 indexer.deleteIndex(config, function (err, result) {
                     if (err)
@@ -124,57 +124,18 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                 })
             }
         }
+        if (req.body.tryLogin) {
+            authentication.loginInDB(req.body.login, req.body.password, function (err, result) {
+                processResponse(response, err, result)
+
+            })
+
+        }
 
 
     }
 )
 
-
-router.post('/authDB', function (req, res, next) {
-    // console.log(JSON.stringify(req.body))
-    if (req.body.tryLogin) {
-        authentication.loginInDB(req.body.login, req.body.password, function (err, result) {
-            processResponse(res, err, result)
-
-        })
-
-    }
-    if (req.body.enrole) {
-        if (req.body.enrole) {
-            if (typeof req.body.users === "string")
-                req.body.users = JSON.parse(req.body.users)
-            authentication.enrole(req.body.users, function (err, result) {
-                processResponse(res, err, result)
-
-            })
-        }
-    }
-    if (req.body.changePassword) {
-        if (req.body.changePassword) {
-            authentication.changePassword(req.body.login, req.body.oldPassword, req.body.newPassword, function (err, result) {
-                processResponse(res, err, result)
-
-            })
-        }
-    }
-
-
-})
-router.post('/bailletarchives-authentication', function (req, response) {
-    if (req.body.authentify)
-        authentication.authentify(req.body.login, req.body.password, function (error, result) {
-            processResponse(response, error, result)
-        });
-
-});
-
-router.post('/imap', function (req, response) {
-    //  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!" + JSON.stringify(req.body));
-    if (req.body.getFolderHierarchy)
-        imapMailExtractor.getFolderHierarchy(req.body.imapServer, req.body.mailAdress, req.body.password, req.body.rootFolder, req.body.folderId, function (error, result) {
-            processResponse(response, error, result)
-        });
-});
 
 function processResponse(response, error, result) {
     if (response && !response.finished) {

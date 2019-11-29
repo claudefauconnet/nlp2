@@ -1,0 +1,69 @@
+{
+  "general": {
+    "description": "gmec",
+    "label": "gmec",
+    "indexName": "gmec"
+  },
+  "connector": {
+    "type": "document",
+    "dir": "D:\\Total\\docs\\test2",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "gmec": {
+        "properties": {
+          "attachment.author": {
+            "type": "text"
+          },
+          "attachment.title": {
+            "type": "text"
+          },
+          "attachment.date": {
+            "type": "date"
+          },
+          "attachment.language": {
+            "type": "keyword"
+          },
+          "title": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "attachment.author": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.date": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.language": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.content": {
+        "cssClass": "text"
+      }
+    }
+  ]
+}

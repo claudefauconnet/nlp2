@@ -1,7 +1,20 @@
 var mysql = require('mysql');
 //var nodeMaria = require('node-mariadb');
 
-
+var mySqlConnectionOptions={
+    host: "localhost",
+        port:7202,
+        user: "bailletarchives",
+        password: "nodeApp55",
+        database: 'bailletarchives'
+}
+var mySqlConnectionOptions={
+    host: "localhost",
+    port:3306,
+    user: "root",
+    password: "vi0lon",
+    database: 'bailletarchives'
+}
 
 var connections = {};
 var mySQLproxy = {
