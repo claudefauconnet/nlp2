@@ -95,11 +95,10 @@
               "required": true,
               "default": "localhost"
             },
-              "port": {
-                "type": "string",
-                "title": "port"
-
-              },
+            "port": {
+              "type": "string",
+              "title": "port"
+            },
             "user": {
               "type": "string",
               "title": "user",
@@ -348,11 +347,47 @@
           "type": "boolean",
           "title": "active",
           "required": true
-
+        }
+      }
+    }
+  },
+  "thesaurus": {
+    "thesaurus": {
+      "type": "object",
+      "title": "skos thesaurus",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "name",
+          "required": true
+        },
+        "skosXmlPath": {
+          "type": "string",
+          "title": "skosXmlPath",
+          "required": true
+        },
+        "extractedLangages": {
+          "type": "string",
+          "title": "extractedLangages",
+          "required": true
+        },
+        "outputLangage": {
+          "type": "string",
+          "title": "outputLangage",
+          "required": true
+        },
+        "uri_candidates": {
+          "type": "string",
+          "title": "uri_candidates",
+          "required": false
+        },
+        "uri_domains": {
+          "type": "string",
+          "title": "uri_domains",
+          "required": false
         }
       }
     }
   }
 }
-
 

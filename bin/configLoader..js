@@ -77,6 +77,33 @@ var configLoader = {
         return callback(null, "jobs saved");
     },
 
+    getAllThesaurusConfig: function (callback) {
+        try {
+            var thesauri = [];
+            var pathStr = path.join(__dirname, configDir + "thesaurii/");
+            fs.readdirSync(pathStr).forEach(file => {
+                var str = "" + fs.readFileSync(pathStr + file);
+                try {
+                    thesauri.push(JSON.parse(str, null, 2))
+                } catch (e) {
+                    return;
+                }
+            });
+        } catch (e) {
+            return callback(e);
+        }
+        return callback(null, thesauri);
+    },
+
+    saveThesaurusConfig: function (name, content, callback) {
+        try {
+            var pathStr = path.join(__dirname, configDir + "thesaurii/" + name + ".json");
+            fs.writeFileSync(pathStr, content);
+        } catch (e) {
+            return callback(e);
+        }
+        return callback(null, "thesaurus saved");
+    },
     loadIndexConfig: function (index, callback) {
         var config = null;
         var str = null;
@@ -149,7 +176,7 @@ var configLoader = {
 
 
         var configs = {};
-        var joker=false;
+        var joker = false;
         async.series([
             function (callbackSeries) {
 
@@ -160,8 +187,8 @@ var configLoader = {
                             if (userGroups.indexOf(group) > -1) {
                                 indexes = indexes.concat(profile[group].indexes);
                             }
-                            if(profile[group].indexes.indexOf("*")>-1)
-                                joker=true;
+                            if (profile[group].indexes.indexOf("*") > -1)
+                                joker = true;
 
                         }
                     })

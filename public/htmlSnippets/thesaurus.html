@@ -1,0 +1,25 @@
+<style>
+.thesaurusDiv{
+ margin: 3px;
+    padding: 3px;
+}
+
+
+</style>
+<div style="display: flex; flex-direction: column">
+    <div class="thesaurusDiv">
+    Thesaurii <select id="thesaurus_select"></select>
+    </div>
+    <div class="thesaurusDiv">
+        <button onclick="Thesaurus.editConfigSkosXml(true)"> New from SKOS XML</button>
+        <button onclick="Thesaurus.editConfigSkosXml()">Edit</button>
+        <button onclick="Thesaurus.delete()">Delete</button>
+
+        <button onclick="Thesaurus.applyToIndex()">Apply to index...</button>
+
+    </div >
+    <div id="thesaurus_mainDiv" class="thesaurusDiv"></div>
+
+
+
+</div>

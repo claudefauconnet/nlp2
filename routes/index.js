@@ -112,6 +112,17 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             })
         }
 
+    if (req.body && req.body.getAllThesaurusConfig) {
+        configLoader.getAllThesaurusConfig(function (error, result) {
+            processResponse(response, error, result);
+        })
+    }
+    if (req.body && req.body.saveThesaurusConfig) {
+        configLoader.saveThesaurusConfig(req.body.name,req.body.content, function (error, result) {
+            processResponse(response, error, result);
+        })
+    }
+
         if (req.body && req.body.jobScheduler) {
             if (req.body.run) {
                 jobScheduler.run(function (error, result) {

@@ -39,6 +39,11 @@
     <script src="js/backoffice/jobScheduler.js"></script>
 
 
+    <script src="js/backoffice/vocabularies/Entities.js"></script>
+    <script src="js/backoffice/vocabularies/Thesaurus.js"></script>
+    <script src="js/backoffice/vocabularies/TMA.js"></script>
+
+
    <!-- <script src="js/backoffice/jsonSchemas.js"></script>-->
 
 
@@ -418,11 +423,18 @@
             <h1>Profiles</h1>
             <div id="profilesWrapperDiv" class="accordionInnerDiv">
 
-
-
+            </div>
+            <h1>Vocabularies</h1>
+            <div id="vocabulariesWrapperDiv" class="accordionInnerDiv">
+                <button onclick="Entities.initDialog()">Entities extractions</button><br>
+                <button onclick="Thesaurus.initDialog()">Integrate Thesaurus</button>
+                <button onclick="TMA.initDialog()">Text Mining Agent</button>
             </div>
 
+
+
         </div>
+
 
     </div>
 

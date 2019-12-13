@@ -1,0 +1,8 @@
+{
+  "name": "Eurovoc_FR",
+  "skosXmlPath": "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
+  "extractedLangages": "en,fr,sp",
+  "outputLangage": "fr",
+  "uri_candidates": "http://eurovoc.europa.eu/candidates",
+  "uri_domains": "http://eurovoc.europa.eu/domains"
+}

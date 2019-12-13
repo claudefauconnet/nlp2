@@ -1,0 +1,73 @@
+{
+  "general": {
+    "description": "Total GM MEC",
+    "label": "Total GM MEC",
+    "indexName": "total_gm_mec"
+  },
+  "connector": {
+    "type": "document",
+    "dir": "D:\\Total\\docs\\GM_MEC_Word",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "total_gm_mec": {
+        "properties": {
+          "attachment.author": {
+            "type": "text"
+          },
+          "attachment.title": {
+            "type": "text"
+          },
+          "attachment.date": {
+            "type": "date"
+          },
+          "attachment.language": {
+            "type": "keyword"
+          },
+          "title": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "attachment.author": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.date": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.language": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.content": {
+        "cssClass": "text"
+      }
+    }
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes"
+  }
+}
