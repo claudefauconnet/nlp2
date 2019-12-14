@@ -112,16 +112,7 @@ var Search = (function () {
                                 "field": appConfig.contentField
                             }
                         },
-                        /*   "associatedWords1":
-                               {
-                                   "significant_text":
 
-                                       {
-                                           "size": 20,
-                                           "field":
-                                              appConfig.contentField
-                                       }
-                               },*/
 
 
                         "indexesCountDocs": {
@@ -137,6 +128,10 @@ var Search = (function () {
                     }
                     if (result.hits.hits.length == 0)
                         return $("#resultDiv").html("pas de résultats");
+
+
+
+
                     //  Entities.showQuestionEntitiesInJsTree(query);
 
                     //    Entities.showAssociatedWordsWordnetEntitiesInJsTree(result.aggregations.associatedWords);
@@ -145,11 +140,15 @@ var Search = (function () {
                     // Entities.showAssociatedWordsWolf(result.aggregations.associatedWords)
                     self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
 
+                    Entities.showThesaurusEntities(result.hits.hits);
+
                     if ($("#indexesCbxes_all").prop("checked"))
                         $("#indexDocCount_all").html("(" + result.hits.total + ")");
                     else
                         $("#indexDocCount_all").html("");
                     mainController.showPageControls(result.hits.total);
+
+                 //   indexes. self.uncheckAllIndexes()
                     return ui.showResultList(result.hits.hits);
 
                 })

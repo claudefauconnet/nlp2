@@ -244,7 +244,7 @@ var skosIntegrator = {
      * @param globalOptions
      */
     annotateCorpus: function (entities, globalOptions, callback) {
-        globalOptions.indexEntities=true;
+        globalOptions.indexEntities = true;
         if (globalOptions.maxEntities)
             globalOptions.maxEntities = 10000;
         if (!globalOptions.thesaurusIndex)
@@ -255,7 +255,6 @@ var skosIntegrator = {
             return callback("No Elastic URL")
         if (globalOptions.elasticUrl.charAt(globalOptions.elasticUrl.length - 1) != "/")
             globalOptions.elasticUrl += "/";
-
 
 
         if (/[A-Z]+/.test(globalOptions.thesaurusIndex))
@@ -364,7 +363,9 @@ var skosIntegrator = {
                         entity.documents.forEach(function (doc) {
                             if (!documentsEntitiesMap[doc.id])
                                 documentsEntitiesMap[doc.id] = []
-                            documentsEntitiesMap[doc.id].push(entity.id)
+
+                            var entityId = entity.id.substring(entity.id.indexOf("#") + 1)
+                            documentsEntitiesMap[doc.id].push(entityId)
 
                         })
                     })
@@ -405,6 +406,7 @@ var skosIntegrator = {
                     for (var docId in documentsEntitiesMap) {
                         var entities = documentsEntitiesMap[docId];
                         var queryString = "";
+
 
                         queryString = JSON.stringify(entities);
                         var elasticQuery = {
@@ -479,9 +481,23 @@ var skosIntegrator = {
                     if (!globalOptions.thesaurusIndex)
                         return callbackSeries();
 
+                    var json = {
+                        "mappings": {
+                            [globalOptions.thesaurusIndex]: {
+                                "properties": {
+                                    "internal_id": {
+                                        "type": "keyword"
+                                    },
+                                    "id": {
+                                        "type": "keyword"
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     var options = {
-
+                       json: json,
                         method: 'PUT',
                         headers: {
                             'content-type': 'application/json'
@@ -513,9 +529,12 @@ var skosIntegrator = {
                     })
 
                     entities.forEach(function (entity) {
-                            var newElasticId = Math.round(Math.random() * 10000000)
-                            serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
-                            serialize.write(entity)
+                        var array = entity.id.split("#");
+                        if (array.length == 2)
+                            entity.internal_id = array[1]
+                        var newElasticId = Math.round(Math.random() * 10000000)
+                        serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
+                        serialize.write(entity)
                     })
                     serialize.end();
                     var options = {
@@ -552,6 +571,34 @@ var skosIntegrator = {
     },
 
 
+    getDocumentsEntitiesHierarchy: function (elasticUrl, thesaurusIndex, selectedentities, callback) {
+
+        var query = {
+            "query": {
+                "terms": {internal_id: selectedentities}
+            },
+            "size": 9000
+        }
+        var options = {
+            method: 'POST',
+            json: query,
+            headers: {
+                'content-type': 'application/json'
+            },
+            url: elasticUrl + thesaurusIndex + "/_search"
+        };
+        request(options, function (error, response, body) {
+            if (error)
+                return callbackSeries(error);
+            var json = response.body;
+            if (json.error) {
+                callback(json.error)
+            }
+            callback(body);
+        })
+    }
+
+
 }
 
 module.exports = skosIntegrator;
@@ -566,7 +613,16 @@ var jstreeJsonPathAnnotated = "D:\\GitHub\\souslesensGraph\\souslesensGraph\\pub
 
 
 if (true) {
+    var entities = ["Component-Valve-AntiSurgeValve"]
+    skosIntegrator.getDocumentsEntitiesHierarchy("http://localhost:9200/", "thesaurus_ctg", entities, function (err, result) {
+
+    })
+
+}
+
+if (false) {
     var options = {
+     //  corpusIndex: "gm_mec_paragraphs",
         corpusIndex: "total_gm_mec",
         thesaurusIndex: "thesaurus_ctg",
         elasticUrl: "http://localhost:9200/",
@@ -579,7 +635,7 @@ if (true) {
 
     skosIntegrator.annotateCorpus(data, options, function (err, result) {
         if (err)
-          return  console.log("ERROR :"+err)
+            return console.log("ERROR :" + err)
         console.log("Done")
     })
 

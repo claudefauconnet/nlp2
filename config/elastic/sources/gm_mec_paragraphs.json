@@ -1,0 +1,97 @@
+{
+  "general": {
+    "description": "gmec paragraphs",
+    "label": "Gmec paragraphs",
+    "indexName": "gm_mec_paragraphs"
+  },
+  "connector": {
+    "type": "json",
+    "subType": "object",
+    "filePath": "D:\\Total\\docs\\extractions\\elasticAllParagraphs.json",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "gm_mec_paragraphs": {
+        "properties": {
+          "paragraphId": {
+            "type": "integer"
+          },
+          "chapterId": {
+            "type": "integer"
+          },
+          "docId": {
+            "type": "integer"
+          },
+          "fileName": {
+            "type": "integer"
+          },
+          "docTitle": {
+            "type": "text"
+          },
+          "chapter": {
+            "type": "text"
+          },
+          "parentChapter": {
+            "type": "text"
+          },
+          "chapterTocNumber": {
+            "type": "float"
+          },
+          "text": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "paragraphId": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "chapterId": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "docId": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "fileName": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "docTitle": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "chapter": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "parentChapter": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "chapterTocNumber": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "text": {
+        "cssClass": "excerpt"
+      }
+    }
+  ]
+}

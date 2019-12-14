@@ -148,20 +148,21 @@ var indexes = (function () {
         var indexes = context.indexConfigs;
         var indexesCxbs = "<ul>";
 
+
         indexesCxbs += "<span class='ui_title'>Sources</span>";
-        indexesCxbs += "<li><input type='checkbox' checked='checked'  id='indexesCbxes_all' onchange='indexes.onIndexAllCBXchange()'>" +
+        indexesCxbs += "<li><input type='checkbox' checked="+checked+" id='indexesCbxes_all' onchange='indexes.onIndexAllCBXchange()'>" +
             "Toutes <index> <span class='indexDocCount' id='indexDocCount_all'/></li><li>&nbsp;</li>"
         indexesCxbs += ""
 
         for (var key in context.indexConfigs) {
             var index = context.indexConfigs[key]
-            indexesCxbs += "<li><input type='checkbox' checked='checked' onchange='indexes.onIndexCBXchange(this)' class='indexesCbxes' id='" + key + "'>" +
+            indexesCxbs += "<li><input type='checkbox' checked="+checked+" onchange='indexes.onIndexCBXchange(this)' class='indexesCbxes' id='" + key + "'>" +
                 "<span onclick=indexes.onIndexSelect('" + key + "') >" + index.general.label + "</span><span class='indexDocCount' id='indexDocCount_" + key + "'/></li>"
         }
         indexesCxbs += "<ul>";
         $("#indexesDiv").html(indexesCxbs);
 
-        if (!checked  && Object.keys(context.indexConfigs)>1  )
+        if (true || checked  && Object.keys(context.indexConfigs)>1  )
             self.uncheckAllIndexes();
         self.setContextIndexes()
     }

@@ -1,5 +1,109 @@
 var Entities = (function () {
     var self = {}
+    self.thesauri = {}
+
+    self.showThesaurusEntities = function (hits, callback) {
+        self.thesauri = {}
+
+        async.series([
+            function (callbackSeries) {
+
+                // consolidate docs entities by thesaurus
+                hits.forEach(function (hit) {
+                    for (var key in hit._source) {
+                        var p;
+                        if ((p = key.indexOf("entities_")) == 0) {
+                            var thesaurusName = key.substring(p + 9);
+                            if (!self.thesauri[thesaurusName])
+                                self.thesauri[thesaurusName] = {allEntities: [], foundEntities: []};
+                            self.thesauri[thesaurusName].foundEntities = self.thesauri[thesaurusName].foundEntities.concat(JSON.parse(hit._source[key]))
+                        }
+
+
+                    }
+                })
+                return callbackSeries();
+            },
+
+
+            // load all entities from thesaurus index
+            function (callbackSeries) {
+                return callbackSeries()
+                for (var thesaurusName in self.thesauri) {
+                    if (self.thesauri[thesaurusName].allEntities.length == 0) {
+                        var query = {
+                            "query": {
+                                "match_all": {}
+                            },
+                            "size": 9000
+                        }
+                    }
+                    Search.queryElastic(query, [thesaurusName], function (err, result) {
+                        if (err)
+                            return callbackSeries(err)
+                        result.hits.hits.forEach(function (hit) {
+                            console.log(JSON.stringify(hit._source))
+                            self.thesauri[thesaurusName].allEntities.push(hit._source)
+                        })
+                        return callbackSeries();
+                    })
+
+                }
+            }
+            ,
+            // get ancestors from entities in docs
+            function (callbackSeries) {
+                for (var thesaurusName in self.thesauri) {
+                    var entities = self.thesauri[thesaurusName].foundEntities;
+                    entities.sort();
+
+                    var map = {};
+                    entities.forEach(function (entity) {
+                        var ancestors = entity.split("-");
+                        ancestors.forEach(function (ancestor, index) {
+                            if (!map[ancestor]) {
+                                var node = {text: ancestor, id: ancestor, count: 1}
+                                if (index >0) {
+                                    node.parent = ancestors[index - 1]
+                                } else {
+                                    node.parent = "#"
+                                }
+                                map[ancestor]=node
+                            } else {
+                                map[ancestor].count += 1
+                            }
+                        })
+
+                    })
+
+                    var jsTreeArray=[];
+                    for(var key in map){
+                        var obj=map[key];
+                        obj.text+=" "+obj.count
+                        jsTreeArray.push(map[key])
+                    }
+
+                    var x=jsTreeArray
+                    Entities.drawJsTree("jstreeDiv", jsTreeArray)
+
+
+                }
+                return callbackSeries();
+            },
+
+            // draw tree
+            function (callbackSeries) {
+
+                return callbackSeries();
+            }
+
+        ], function (err) {
+            if (err)
+                return callback(err);
+         
+
+        })
+    }
 
 
     self.showAssociatedWords = function (aggregation) {
@@ -26,7 +130,7 @@ var Entities = (function () {
         words.sort(function (a, b) {
             return a.score - b.score
         })
-        html+="<li><span class='ui_title'>Mots associés</span></li></li></li>";
+        html += "<li><span class='ui_title'>Mots associés</span></li></li></li>";
         words.forEach(function (key) {
             var word = key
             var p = key.indexOf("'");
@@ -34,7 +138,7 @@ var Entities = (function () {
                 word = key.substring(p + 1)
 
             var doc_count = tokens[key].doc_count;
-            html += "<li onclick=mainController.addAssciatedWordToQuestion('" + word + "')>(" + doc_count + " ) " + word+"</li>";
+            html += "<li onclick=mainController.addAssciatedWordToQuestion('" + word + "')>(" + doc_count + " ) " + word + "</li>";
 
 
         })
@@ -47,12 +151,12 @@ var Entities = (function () {
         var associatedWords = _associatedWords;
         var ndjsonStr = ""
 
-var words=[];
+        var words = [];
         associatedWords.buckets.forEach(function (bucket) {
             var word = bucket.key;
-           var p=word.indexOf("'")
-            if(p>-1)
-                word=word.substring(p+1)
+            var p = word.indexOf("'")
+            if (p > -1)
+                word = word.substring(p + 1)
             if (!isNaN(word))
                 return;
             if (stopWords_fr.indexOf(word) < 0)
@@ -60,8 +164,8 @@ var words=[];
 
         })
 
-            // should :associated words match
-            words.forEach(function (word) {
+        // should :associated words match
+        words.forEach(function (word) {
             var query = {
                 bool: {
                     must: []
@@ -90,8 +194,8 @@ var words=[];
                 var word = words[responseIndex]
                 hits.forEach(function (hit, hitIndex) {
                     var entitiesArray = hit._source.ancestors;
-                    var wordId = word + "_" + Math.round(Math.random()*10000);
-                    entitiesArray.splice(0,0,"*"+word)
+                    var wordId = word + "_" + Math.round(Math.random() * 10000);
+                    entitiesArray.splice(0, 0, "*" + word)
                     entitiesArray.forEach(function (entity, entityIndex) {
                         if (!jsTreeMap[entity]) {
                             jsTreeMap[entity] = {id: entity, text: entity, parent: "#"};

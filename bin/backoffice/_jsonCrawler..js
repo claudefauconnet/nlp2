@@ -32,6 +32,8 @@ var jsonCrawler = {
             ,
             //prepare payload
             function (callbackseries) {
+            var keysToImport=Object.keys(config.schema.mappings[config.general.indexName].properties)
+
 
 
                 data.forEach(function (record, indexedLine) {
@@ -54,7 +56,13 @@ var jsonCrawler = {
                   }
                    else if(config.connector.subType=="object"){
                       record=record;
-                      lineContent=JSON.stringify(record);
+                      var obj={};
+                      keysToImport.forEach(function(key){
+                          if(record[key] && record[key]!="")
+                              obj[key]= record[key];
+                      })
+
+                      lineContent=JSON.stringify(obj);
                     }
                     else  if(config.connector.subType=="nested") {
                       record=record;
@@ -123,15 +131,16 @@ var jsonCrawler = {
 
 
     , generateDefaultMappingFields: function (connector, callback) {
-        if(connector.subType=="object"){
+      /*  if(connector.subType=="object"){
             var fields={}
             return callback(null, fields);
         }
         else  if(connector.subType=="nested") {
             var fields={}
             return callback(null, fields);
-        }
-        else if(connector.subType=="simple") {
+        }*/
+      if(true || connector.subType=="simple"){
+        //    if(connector.subType=="simple" || connector.subType=="object" || connector.subType=="nested") {
             var data = fs.readFileSync(connector.filePath);
             data = JSON.parse("" + data);
             var fields = {};
