@@ -237,21 +237,45 @@ var skosIntegrator = {
     },
 
 
-    annotateCorpus: function (entities, corpusIndexes, conceptsIndexName, globalOptions) {
+    /**********************************************************************************************************************************************
+     *
+     * @param entities
+
+     * @param globalOptions
+     */
+    annotateCorpus: function (entities, globalOptions, callback) {
+        globalOptions.indexEntities=true;
         if (globalOptions.maxEntities)
-            globalOptions.maxEntities = 10000
+            globalOptions.maxEntities = 10000;
+        if (!globalOptions.thesaurusIndex)
+            return callback("No thesaurus name")
+        if (!globalOptions.corpusIndex)
+            return callback("No corpus Index")
+        if (!globalOptions.elasticUrl)
+            return callback("No Elastic URL")
+        if (globalOptions.elasticUrl.charAt(globalOptions.elasticUrl.length - 1) != "/")
+            globalOptions.elasticUrl += "/";
+
+
+
+        if (/[A-Z]+/.test(globalOptions.thesaurusIndex))
+            return callback("No Uppercase in Elastic index names")
+
+
+        var documentsEntitiesMap = {};
         async.series([
 
 
-                function (callbackSeries) {   // annotate docs
+                function (callbackSeries) {   // match entities on each doc of corpus index (all fields)
 
                     var message = "extractingEntities in docs " + entities.length
+                    console.log(message)
                     socket.message(message)
                     entities.forEach(function (concept, conceptIndex) {
                         entities[conceptIndex].source_id = entities[conceptIndex].id
 
                         if (conceptIndex > globalOptions.maxEntities)
-                            return;
+                            return callbackSeries();
 
                         var synonyms = [];
                         if (concept.synonyms) {
@@ -259,18 +283,15 @@ var skosIntegrator = {
                             concept.synonyms.forEach(function (synonym, indexSynonym) {
                                 if (synonym != "") {
 
-                                    synonym=synonym.replace(/\(\)\//g, function(a,b){
+                                    synonym = synonym.replace(/\(\)\//g, function (a, b) {
                                         return a;
                                     })
                                     if (indexSynonym > 0)
                                         queryString += " "
-
-
                                     queryString += "\\\"" + synonym + "\\\""
                                 }
-                                // synonymsMust.push({term: {content: synonym}})
                             })
-                            if (queryString!="") {
+                            if (queryString != "") {
                                 entities[conceptIndex].elasticQuery = {
                                     "query": {
                                         "query_string": {
@@ -283,7 +304,6 @@ var skosIntegrator = {
                                     "_source": "_id"
 
                                 }
-                                //   entities[conceptIndex].elasticQuery = ({query: {bool: {must: synonymsMust}}, size: 10000, _source: "attachment.content"});
 
                             }
 
@@ -298,7 +318,7 @@ var skosIntegrator = {
                     })
                     entities.forEach(function (concept) {
                         if (concept.elasticQuery) {
-                            serialize.write({index: corpusIndexes})
+                            serialize.write({index: globalOptions.corpusIndex})
                             serialize.write(concept.elasticQuery)
                         }
                     })
@@ -321,12 +341,14 @@ var skosIntegrator = {
                         var totalDocsAnnotated = 0
                         responses.forEach(function (response, responseIndex) {
                             entities[responseIndex].documents = [];
-                            if(response.error) {
-                              return  console.log(JSON.stringify(response.error.root_cause))
+                            if (response.error) {
+                                console.log(JSON.stringify(response.error.root_cause))
+                                socket.message(JSON.stringify(response.error.root_cause))
+                                return;
                             }
                             var hits = response.hits.hits;
                             hits.forEach(function (hit) {
-                                var document = {id: hit._id, index: hit._index, title: hit._source.title};
+                                var document = {id: hit._id, index: hit._index};
                                 entities[responseIndex].documents.push(document);
                                 totalDocsAnnotated += 1
                             })
@@ -336,57 +358,141 @@ var skosIntegrator = {
                     })
                 },
 
+                function (callbackSeries) {// set map of entities for eachDocument
 
-                function (callbackSeries) {// delete index
+                    entities.forEach(function (entity) {
+                        entity.documents.forEach(function (doc) {
+                            if (!documentsEntitiesMap[doc.id])
+                                documentsEntitiesMap[doc.id] = []
+                            documentsEntitiesMap[doc.id].push(entity.id)
+
+                        })
+                    })
+
+                    callbackSeries();
+                },
+
+                // remove entities contained in others  entities forEachDoc to be finished
+                function (callbackSeries) {
+                    return callbackSeries();
+
+
+                    for (var docId in documentsEntitiesMap) {
+                        var entities = documentsEntitiesMap[docId];
+                        var fileteredEntities = []
+
+                        entities.forEach(function (entity1, index1) {
+                            entities.forEach(function (entity2, index2) {
+
+                            })
+                        })
+                    }
+
+
+                    callbackSeries();
+                },
+
+                function (callbackSeries) {// update corpus index with entities
                     if (!globalOptions.indexEntities)
                         return callbackSeries();
+
+                    var ndjsonStr = ""
+                    var serialize = ndjson.serialize();
+                    serialize.on('data', function (line) {
+                        ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
+                    })
+
+                    for (var docId in documentsEntitiesMap) {
+                        var entities = documentsEntitiesMap[docId];
+                        var queryString = "";
+
+                        queryString = JSON.stringify(entities);
+                        var elasticQuery = {
+                            "doc": {
+                                ["entities_" + globalOptions.thesaurusIndex]: queryString
+                            }
+                        }
+
+                        serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
+                        serialize.write(elasticQuery)
+
+                    }
+                    serialize.end();
+
                     var options = {
-                        method: 'DELETE',
+                        method: 'POST',
+                        body: ndjsonStr,
                         headers: {
                             'content-type': 'application/json'
                         },
-                        url: "http://localhost:9200/" + conceptsIndexName
+                        url: globalOptions.elasticUrl + "_bulk"
+                    };
+
+                    request(options, function (error, response, body) {
+                            if (error)
+                                return callbackSeries(error);
+                            console.log("index " + globalOptions.thesaurusIndex + " updated")
+                            var json = JSON.parse(response.body);
+                            callbackSeries();
+                        }
+                    )
+                }
+                ,
+                //******delete  old thesaurus index if exists*************
+                function (callbackSeries) {
+                    if (!globalOptions.thesaurusIndex)
+                        return callbackSeries();
+                    var options = {
+                        method: 'HEAD',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
                     };
                     request(options, function (error, response, body) {
                         if (error)
                             return callbackSeries(error);
-                        console.log("index " + conceptsIndexName + " deleted")
-                        var json = JSON.parse(response.body);
-                        callbackSeries();
+                        if (response.statusCode != 200)
+                            callbackSeries();
+                        else {
+                            var options = {
+                                method: 'DELETE',
+                                headers: {
+                                    'content-type': 'application/json'
+                                },
+                                url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
+                            };
+                            request(options, function (error, response, body) {
+                                if (error)
+                                    return callbackSeries(error);
+                                var message = "delete index :" + globalOptions.thesaurusIndex;
+                                console.log(message);
+                                socket.message(message);
+                                callbackSeries();
+                            })
+                        }
                     })
-                }
-                ,
+                },
 
-
-                function (callbackSeries) {//create index and mappings
-                    if (!globalOptions.indexEntities)
+                // create thesaurus index
+                function (callbackSeries) {
+                    if (!globalOptions.thesaurusIndex)
                         return callbackSeries();
 
 
-                    var json = {mappings: {}}
-                    json.mappings[conceptsIndexName] = {
-                        "properties": {
-                            "source_id": {
-                                "type": "keyword"
-                            },
-                            "parent": {
-                                "type": "keyword"
-                            },
-
-                        }
-                    }
                     var options = {
-                        json: json,
+
                         method: 'PUT',
                         headers: {
                             'content-type': 'application/json'
                         },
-                        url: "http://localhost:9200/" + conceptsIndexName
+                        url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
                     };
                     request(options, function (error, response, body) {
                         if (error)
                             return callbackSeries(error);
-                        console.log("index " + conceptsIndexName + " created")
+                        console.log("index thesaurus_" + globalOptions.thesaurusIndex + " created")
+                        socket.message("index thesaurus_" + globalOptions.thesaurusIndex + " created")
                         callbackSeries();
                     })
                 }
@@ -397,26 +503,24 @@ var skosIntegrator = {
 
                     if (!globalOptions.indexEntities)
                         return callbackSeries();
-                    console.log("indexing entities")
-                    var conceptsNdjsonWithDocs = ""
+
+                    console.log("indexing entities");
+                    socket.message("indexing entities");
+                    var ndJson = ""
                     var serialize = ndjson.serialize();
                     serialize.on('data', function (line) {
-                        conceptsNdjsonWithDocs += line; // line is a line of stringified JSON with a newline delimiter at the end
+                        ndJson += line; // line is a line of stringified JSON with a newline delimiter at the end
                     })
 
-                    entities.forEach(function (concept) {
-                        if (concept.elasticQuery && concept.documents.length > 0) {
+                    entities.forEach(function (entity) {
                             var newElasticId = Math.round(Math.random() * 10000000)
-                            serialize.write({"index": {"_index": conceptsIndexName, "_type": conceptsIndexName, "_id": newElasticId}})
-                            delete concept.elasticQuery
-                            serialize.write(concept)
-                        }
-
+                            serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
+                            serialize.write(entity)
                     })
                     serialize.end();
                     var options = {
                         method: 'POST',
-                        body: conceptsNdjsonWithDocs,
+                        body: ndJson,
                         headers: {
                             'content-type': 'application/json'
                         },
@@ -430,117 +534,19 @@ var skosIntegrator = {
 
 
                     })
-                },
-
-
-                function (callbackSeries) {   //generateThesaurusTreeMap
-                    if (!globalOptions.generateThesaurusTreeMap)
-                        return callbackSeries()
-
-                    console.log("generateThesaurusTreeMap")
-                    var conceptsMap = {};
-                    entities.forEach(function (concept) {
-                        concept.children = [];
-                        conceptsMap[concept.id] = concept;
-                    })
-// set Children
-                    entities.forEach(function (concept, index) {
-                        if (concept.parent && concept.parent != "#")
-                            conceptsMap[concept.parent].children.push(concept)
-
-                    })
-
-                    function recurse(parentTreeNode, obj) {
-                        var childTreeNode = {
-                            key: obj.text,
-                        }
-                        parentTreeNode.values.push(childTreeNode)
-                        if (obj.children.length == 0) {
-                            childTreeNode.value = obj.documents ? obj.documents.length : 0
-                            childTreeNode.data = {
-                                documents: obj.documents,
-                                synonyms: obj.synonyms
-                            }
-                        } else {
-                            childTreeNode.values = [];
-                            obj.children.forEach(function (child, index) {
-                                if (child.children.length > 0 || child.documents.length > 0)
-
-                                    recurse(childTreeNode, child)
-
-                            })
-                        }
-
-
-                    }
-
-                    // set tree
-                    var tree = {key: "root", values: []};
-                    entities.forEach(function (concept, index) {
-                        if (concept.parent && concept.parent == "#")
-                            recurse(tree, concept)
-
-                    })
-// only top domains
-                    tree = tree.values[2].values
-
-                    fs.writeFileSync(jstreeJsonPathAnnotated.replace(".json", "Tree.json"), JSON.stringify(tree, null, 2))
-                    var x = tree;
-                    callbackSeries();
-
-
                 }
-
-
-                , function (callbackSeries) { //generateThesaurusJstreeWithDocuments
-                    if (!globalOptions.generateThesaurusJstreeWithDocuments)
-                        return callbackSeries()
-                    console.log("generateThesaurusJstreeWithDocuments")
-                    var conceptsMap = {};
-                    entities.forEach(function (concept) {
-
-                        conceptsMap[concept.id] = concept;
-                    })
-
-                    entities.forEach(function (concept, indexConcept) {
-                        //  if (concept.documents) {//} && concept.documents.length > 0)
-
-                        function recurse(conceptId, chilDocumentCount) {
-                            if (!concept.documents)
-                                concept.documents = [];
-                            if (!conceptsMap[conceptId].docsCount)
-                                conceptsMap[conceptId].docsCount = chilDocumentCount;
-                            conceptsMap[conceptId].docsCount += concept.documents.length;
-                            if (conceptsMap[conceptId].parent && conceptsMap[conceptId].parent != "#")
-                                recurse(conceptsMap[conceptId].parent, conceptsMap[conceptId].docsCount)
-                        }
-
-                        recurse(concept.id, 0)
-                    })
-                    var entitiesAnnotated = []
-
-                    for (var key in conceptsMap) {
-                        var concept = conceptsMap[key];
-                        if (concept.docsCount) {
-                            concept.text = "*" + concept.docsCount + "* " + concept.text
-                        }
-                        delete concept.elasticQuery;
-                        entitiesAnnotated.push(concept)
-                    }
-                    fs.writeFileSync(jstreeJsonPathAnnotated, JSON.stringify(entitiesAnnotated, null, 2))
-                    callbackSeries();
-                }
-
-
             ],
 
             // at the end
             function (err) {
                 if (err) {
-                    return console.log(err);
+                    console.log(err);
+                    return callback(err)
                 }
-                return console.log("Done");
-            })
+                console.log("Done");
+                return callback(null, "DONE")
+            }
+        )
 
 
     },
@@ -561,20 +567,22 @@ var jstreeJsonPathAnnotated = "D:\\GitHub\\souslesensGraph\\souslesensGraph\\pub
 
 if (true) {
     var options = {
-        indexEntities: false,
-        generateThesaurusTreeMap: false,
-        generateThesaurusJstreeWithDocuments: false
+        corpusIndex: "total_gm_mec",
+        thesaurusIndex: "thesaurus_ctg",
+        elasticUrl: "http://localhost:9200/",
+        // generateThesaurusTreeMap: false,
+        //  generateThesaurusJstreeWithDocuments: false
 
     }
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
     var data = JSON.parse("" + fs.readFileSync(jstreeJsonPath));
-    skosIntegrator.annotateCorpus(data, ["total_gm_mec"],
-        "eurovoc_entities"
-        , options)
-    return;
-    skosIntegrator.annotateCorpus(jstreeJsonPath, ["artotheque", "phototheque", "videotheque", "audiotheque", "ocr", "bordereaux"],
-        "eurovoc_entities"
-        , options)
+
+    skosIntegrator.annotateCorpus(data, options, function (err, result) {
+        if (err)
+          return  console.log("ERROR :"+err)
+        console.log("Done")
+    })
+
 }
 
 if (false) {

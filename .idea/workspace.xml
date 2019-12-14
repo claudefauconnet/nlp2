@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2aed3304-3bbc-4755-9793-0734f56799f9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/bin/backoffice/skosIntegrator..js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/htmlSnippets/thesaurus.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/backoffice/vocabularies/Entities.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/backoffice/vocabularies/TMA.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/backoffice/vocabularies/Thesaurus.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/configLoader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/configLoader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/templates/jsonSchemas.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/templates/jsonSchemas.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/backoffice.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/backoffice.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosIntegrator..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosIntegrator..js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -101,7 +93,7 @@
       <workItem from="1574878143836" duration="612000" />
       <workItem from="1575048434284" duration="597000" />
       <workItem from="1576171844455" duration="1469000" />
-      <workItem from="1576225550190" duration="17031000" />
+      <workItem from="1576225550190" duration="26938000" />
     </task>
     <servers />
   </component>
@@ -151,19 +143,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/backoffice/skosIntegrator..js</url>
-          <line>340</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosIntegrator..js</url>
-          <line>334</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosIntegrator..js</url>
-          <line>262</line>
+          <line>286</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="56" />
         </line-breakpoint>
