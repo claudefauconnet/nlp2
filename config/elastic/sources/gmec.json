@@ -6,7 +6,7 @@
   },
   "connector": {
     "type": "document",
-    "dir": "D:\\Total\\docs\\test2",
+    "dirPath": "D:\\Total\\docs\\test2",
     "contentField": "attachment.content"
   },
   "schema": {

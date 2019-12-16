@@ -47,11 +47,15 @@ var imapCrawler = {
 
             if (error)
                 return callback(err);
+            const indexer=require('./indexer..js')
+            indexer.checkBulkQueryResponse(body, function(err,result){
+                if(err)
+                    return callback(err);
+                var message = "indexed " + result.length + " records ";
+                socket.message(message)
+                return callback()
 
-            var result = new String(body)
-            if (result.errors)
-                return callback(errors)
-            return callback();
+            })
         })
     }
 

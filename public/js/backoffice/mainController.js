@@ -130,8 +130,9 @@ self.post=function(url,payload,callback){
         if (!indexName)
             indexName = context.currentIndexName;
         try {
+            context.indexConfigs[context.currentIndexName]=ui.jsonEditor.get();
             var jsonStr = JSON.stringify(ui.jsonEditor.get(), null, 2);
-            jsonStr = jsonStr.replace(/\\\\\\/g, "\\\\");
+         //   jsonStr = jsonStr.replace(/\\\\\\/g, "\\\\");
             indexes.saveIndexConfig(indexName, jsonStr, function (err, result) {
                 if (err)
                     return $("#messageDiv").html(err);

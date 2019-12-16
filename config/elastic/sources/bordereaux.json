@@ -6,7 +6,7 @@
   },
   "connector": {
     "type": "document",
-    "dir": "D:\\ATD_Baillet\\versements2018"
+    "dirPath": "D:\\ATD_Baillet\\versements2018"
   },
   "schema": {
     "contentField": "attachment.content",

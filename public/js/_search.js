@@ -85,6 +85,7 @@ var Search = (function () {
                 else
                     context.currentPage = 0;
             }
+            $("#entitiesWrapperDiv").css("visibility","hidden");
             $("#resultDiv").html("");
             $(".indexDocCount").html("")
             $("#paginationDiv").html("")
@@ -98,6 +99,11 @@ var Search = (function () {
 
             self.analyzeQuestion(question, function (err, query) {
                 $("#queryTA").val(JSON.stringify(query, null, 2))
+
+                query={bool:{must:query}}
+                if(options.filter)
+                    query.bool.filter=options.filter;
+
 
                 Search.queryElastic({
                     query: query,
@@ -139,7 +145,7 @@ var Search = (function () {
                     Entities.showAssociatedWords(result.aggregations.associatedWords)
                     // Entities.showAssociatedWordsWolf(result.aggregations.associatedWords)
                     self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
-
+                    context.currentHits=result.hits.hits;
                     Entities.showThesaurusEntities(result.hits.hits);
 
                     if ($("#indexesCbxes_all").prop("checked"))

@@ -255,6 +255,8 @@ var skosIntegrator = {
             return callback("No Elastic URL")
         if (globalOptions.elasticUrl.charAt(globalOptions.elasticUrl.length - 1) != "/")
             globalOptions.elasticUrl += "/";
+        if (!globalOptions.searchField)
+            globalOptions.searchField = "attachment.content"
 
 
         if (/[A-Z]+/.test(globalOptions.thesaurusIndex))
@@ -262,66 +264,110 @@ var skosIntegrator = {
 
 
         var documentsEntitiesMap = {};
+        //   var allSynonyms = [];
         async.series([
+
+
+                // remove entities contained in others  entities forEachDoc to be finished
+                /*   function (callbackSeries) {
+                       //   return callbackSeries();
+
+                       entities.forEach(function (entity, index) {
+                           entity.synonyms.forEach(function (synonym, indexSynonym) {
+                               if (allSynonyms.indexOf(synonym) < 0)
+                                   allSynonyms.push(synonym)
+                           })
+                       })
+                       allSynonyms.sort();
+
+
+                       callbackSeries();
+                   },*/
 
 
                 function (callbackSeries) {   // match entities on each doc of corpus index (all fields)
 
+
                     var message = "extractingEntities in docs " + entities.length
                     console.log(message)
                     socket.message(message)
-                    entities.forEach(function (concept, conceptIndex) {
-                        entities[conceptIndex].source_id = entities[conceptIndex].id
 
-                        if (conceptIndex > globalOptions.maxEntities)
+
+                    // verifie que synonym est la valeur composée la plus longue de tous les synonymes
+                    function acceptSynonym(synonym, synonyms) {
+                        if (synonyms.indexOf(synonym + " ") > -1)
+                            return false;
+                        return true;
+                    }
+
+
+                    entities.forEach(function (entity, entityIndex) {
+                        entities[entityIndex].source_id = entities[entityIndex].id
+
+                        if (entityIndex > globalOptions.maxEntities)
                             return callbackSeries();
 
                         var synonyms = [];
-                        if (concept.synonyms) {
-                            var queryString = ""
-                            concept.synonyms.forEach(function (synonym, indexSynonym) {
+                        if (entity.synonyms) {
+                            var synonyms = entity.synonyms.toString().toLowerCase()
+                            var queryString = "";
+                            var mustQuery = [];
+                            entity.synonyms.forEach(function (synonym, indexSynonym) {
                                 if (synonym != "") {
 
+                                    if (false && !acceptSynonym(synonym.toLowerCase(), synonyms))
+                                        return;
                                     synonym = synonym.replace(/\(\)\//g, function (a, b) {
                                         return a;
                                     })
-                                    if (indexSynonym > 0)
-                                        queryString += " "
-                                    queryString += "\\\"" + synonym + "\\\""
+
+                                    if (synonym.trim().indexOf(" ") > -1)
+                                        mustQuery.push({match_phrase: {[globalOptions.searchField]: synonym}});
+                                    else
+                                        mustQuery.push({match: {[globalOptions.searchField]: synonym}});
+
+
                                 }
                             })
-                            if (queryString != "") {
-                                entities[conceptIndex].elasticQuery = {
+                            if (mustQuery.length > 0) {
+                                entities[entityIndex].elasticQuery = {
                                     "query": {
-                                        "query_string": {
-                                            "query": queryString,
-                                            "default_operator": "OR"
-                                        }
-                                    },
+                                        "bool":
+                                            {
+                                                "must": mustQuery
+                                            }
+                                    }
+                                    ,
                                     "from": 0,
                                     "size": 1000,
-                                    "_source": "_id"
-
+                                    "_source": "_id",
+                                    "highlight": {
+                                        "number_of_fragments": 30,
+                                        "fragment_size": 100,
+                                        "fields": {
+                                            "attachment.content": {}
+                                        }
+                                    }
                                 }
-
                             }
-
                         }
-
-
                     })
                     var ndjsonStr = ""
                     var serialize = ndjson.serialize();
                     serialize.on('data', function (line) {
                         ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
                     })
-                    entities.forEach(function (concept) {
+
+                    var queriedEntities = [];
+                    entities.forEach(function (concept, entityIndex) {
                         if (concept.elasticQuery) {
+                            queriedEntities.push(entityIndex)
                             serialize.write({index: globalOptions.corpusIndex})
                             serialize.write(concept.elasticQuery)
                         }
                     })
                     serialize.end();
+                    console.log(ndjsonStr)
                     var options = {
                         method: 'POST',
                         body: ndjsonStr,
@@ -339,7 +385,7 @@ var skosIntegrator = {
                         var responses = json.responses;
                         var totalDocsAnnotated = 0
                         responses.forEach(function (response, responseIndex) {
-                            entities[responseIndex].documents = [];
+                            entities[queriedEntities[responseIndex]].documents = [];
                             if (response.error) {
                                 console.log(JSON.stringify(response.error.root_cause))
                                 socket.message(JSON.stringify(response.error.root_cause))
@@ -347,9 +393,19 @@ var skosIntegrator = {
                             }
                             var hits = response.hits.hits;
                             hits.forEach(function (hit) {
-                                var document = {id: hit._id, index: hit._index};
-                                entities[responseIndex].documents.push(document);
-                                totalDocsAnnotated += 1
+                                var document = {id: hit._id, index: hit._index, score: hit._max_score};
+                                entities[queriedEntities[responseIndex]].documents.push(document);
+                                totalDocsAnnotated += 1;
+
+                                if (hit.highlight && hit.highlight[globalOptions.searchField]) {
+                                    hit.highlight[globalOptions.searchField].forEach(function (highlight) {
+                                        var p = highlight.indexOf("<em>")
+                                        var q = highlight.indexOf("</em>")
+                                        var offset = hit._source([globalOptions.searchField])
+
+                                    })
+                                }
+
                             })
                         })
                         console.log("totalDocsAnnotated " + totalDocsAnnotated)
@@ -360,6 +416,8 @@ var skosIntegrator = {
                 function (callbackSeries) {// set map of entities for eachDocument
 
                     entities.forEach(function (entity) {
+                        if (!entity.documents)
+                            return;
                         entity.documents.forEach(function (doc) {
                             if (!documentsEntitiesMap[doc.id])
                                 documentsEntitiesMap[doc.id] = []
@@ -375,18 +433,24 @@ var skosIntegrator = {
 
                 // remove entities contained in others  entities forEachDoc to be finished
                 function (callbackSeries) {
-                    return callbackSeries();
+                    //   return callbackSeries();
 
 
                     for (var docId in documentsEntitiesMap) {
                         var entities = documentsEntitiesMap[docId];
                         var fileteredEntities = []
+                        entities.sort();
 
-                        entities.forEach(function (entity1, index1) {
-                            entities.forEach(function (entity2, index2) {
+                        entities.forEach(function (entity, index) {
+                            if (index < entities.length - 1) {
+                                if (entities[index + 1].indexOf(entity) < 0)
+                                    fileteredEntities.push(entity);
+                            } else {
+                                fileteredEntities.push(entity);
+                            }
 
-                            })
                         })
+                        documentsEntitiesMap[docId] = fileteredEntities;
                     }
 
 
@@ -409,6 +473,7 @@ var skosIntegrator = {
 
 
                         queryString = JSON.stringify(entities);
+                        queryString = entities;
                         var elasticQuery = {
                             "doc": {
                                 ["entities_" + globalOptions.thesaurusIndex]: queryString
@@ -433,12 +498,19 @@ var skosIntegrator = {
                     request(options, function (error, response, body) {
                             if (error)
                                 return callbackSeries(error);
-                            console.log("index " + globalOptions.thesaurusIndex + " updated")
-                            var json = JSON.parse(response.body);
-                            callbackSeries();
+                            const indexer = require('./indexer..js')
+                            indexer.checkBulkQueryResponse(body, function (err, result) {
+                                if (err)
+                                    return callbackSeries(err);
+                                var message = "indexed " + result.length + " records ";
+                                socket.message(message)
+                                return callbackSeries()
+
+                            })
                         }
                     )
                 }
+                
                 ,
                 //******delete  old thesaurus index if exists*************
                 function (callbackSeries) {
@@ -497,7 +569,7 @@ var skosIntegrator = {
                     }
 
                     var options = {
-                       json: json,
+                        json: json,
                         method: 'PUT',
                         headers: {
                             'content-type': 'application/json'
@@ -612,7 +684,7 @@ var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
 var jstreeJsonPathAnnotated = "D:\\GitHub\\souslesensGraph\\souslesensGraph\\public\\semanticWeb\\eurovocFrAnnotated.json"
 
 
-if (true) {
+if (false) {
     var entities = ["Component-Valve-AntiSurgeValve"]
     skosIntegrator.getDocumentsEntitiesHierarchy("http://localhost:9200/", "thesaurus_ctg", entities, function (err, result) {
 
@@ -620,10 +692,10 @@ if (true) {
 
 }
 
-if (false) {
+if (true) {
     var options = {
-     //  corpusIndex: "gm_mec_paragraphs",
-        corpusIndex: "total_gm_mec",
+        corpusIndex: "gm_mec_paragraphs",
+        //  corpusIndex: "total_gm_mec",
         thesaurusIndex: "thesaurus_ctg",
         elasticUrl: "http://localhost:9200/",
         // generateThesaurusTreeMap: false,
@@ -641,14 +713,14 @@ if (false) {
 
 }
 
-if (false) {
+if (true) {
     options = {
         outputLangage: "fr",
         extractedLangages: ["en", "fr", "sp"],
         uri_candidates: "http://eurovoc.europa.eu/candidates",
         uri_domains: "http://eurovoc.europa.eu/domains"
     }
-    var rdfXmlPath = "D:\\NLP\\Thesaurus_CTG_Skos_V1.6_201905.xml";
+    var rdfXmlPath = "D:\\NLP\\total2019_spans20191210.skos";
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
 
     options = {

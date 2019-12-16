@@ -165,18 +165,18 @@ var sqlCrawler = {
                             return callbackWhilst(error)
 
                         }
-                        if (body.error) {
-                            if (body.error.reason) {
-                                return callbackWhilst(body.error.reason);
-                            } else {
-                                return callbackWhilst(body.error);
-                            }
-                        }
+                        const indexer=require('./indexer..js')
+                        indexer.checkBulkQueryResponse(body, function(err,result){
+                            if(err)
+                                return callbackWhilst(err);
+                            var message = "indexed " + result.length + " records ";
+                            socket.message(message)
+                            return callbackWhilst()
+
+                        })
 
 
-                        var message = "indexed " + indexedFiles + "/" + totalSqlRecords + " records ";
-                        socket.message(message)
-                        return callbackWhilst()
+
                     })
 
 

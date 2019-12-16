@@ -140,7 +140,7 @@
           "default": "document",
           "readOnly ": true
         },
-        "dir": {
+        "dirPath": {
           "type": "string",
           "title": "directory",
           "required": true

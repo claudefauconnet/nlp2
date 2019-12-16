@@ -1,19 +1,19 @@
 {
   "general": {
-    "description": "Total GM MEC",
-    "label": "Total GM MEC",
-    "indexName": "total_gm_mec"
+    "description": "iè--",
+    "label": "è-èè-_",
+    "indexName": "errr"
   },
   "connector": {
     "type": "document",
-    "dirPath": "D:\\Total\\docs\\GM_MEC_Word",
+    "dirPath": "D:\\\\Total\\\\docs\\\\GM_MEC_Word",
     "contentField": "attachment.content"
   },
   "schema": {
     "contentField": "attachment.content",
     "analyzer": "lowercase_asciifolding",
     "mappings": {
-      "total_gm_mec": {
+      "errr": {
         "properties": {
           "attachment.author": {
             "type": "text"
@@ -37,22 +37,22 @@
   "display": [
     {
       "attachment.author": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "attachment.title": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "attachment.date": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "attachment.language": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {

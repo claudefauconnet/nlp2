@@ -1,13 +1,12 @@
 {
   "general": {
     "description": "gmec paragraphs",
-    "label": "Gmec paragraphs",
+    "label": "gmec paragraphs",
     "indexName": "gm_mec_paragraphs"
   },
   "connector": {
-    "type": "json",
-    "subType": "object",
-    "filePath": "D:\\Total\\docs\\extractions\\elasticAllParagraphs.json",
+    "type": "csv",
+    "filePath": "D:\\Total\\docs\\extractions\\allDocsContent2.csv",
     "contentField": "attachment.content"
   },
   "schema": {
@@ -16,31 +15,40 @@
     "mappings": {
       "gm_mec_paragraphs": {
         "properties": {
-          "paragraphId": {
+          "id": {
             "type": "integer"
           },
-          "chapterId": {
-            "type": "integer"
-          },
-          "docId": {
-            "type": "integer"
-          },
-          "fileName": {
-            "type": "integer"
+          "file": {
+            "type": "text"
           },
           "docTitle": {
+            "type": "text"
+          },
+          "purpose": {
+            "type": "text"
+          },
+          "scope": {
+            "type": "text"
+          },
+          "parentChapters": {
+            "type": "text"
+          },
+          "chapterKey": {
             "type": "text"
           },
           "chapter": {
             "type": "text"
           },
-          "parentChapter": {
+          "title": {
             "type": "text"
           },
-          "chapterTocNumber": {
-            "type": "float"
-          },
           "text": {
+            "type": "text"
+          },
+          "table": {
+            "type": "text"
+          },
+          "image": {
             "type": "text"
           }
         }
@@ -49,22 +57,12 @@
   },
   "display": [
     {
-      "paragraphId": {
+      "id": {
         "cssClass": "excerpt"
       }
     },
     {
-      "chapterId": {
-        "cssClass": "excerpt"
-      }
-    },
-    {
-      "docId": {
-        "cssClass": "excerpt"
-      }
-    },
-    {
-      "fileName": {
+      "file": {
         "cssClass": "excerpt"
       }
     },
@@ -74,17 +72,42 @@
       }
     },
     {
+      "purpose": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "scope": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "parentChapters": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "chapterKey": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
       "chapter": {
         "cssClass": "excerpt"
       }
     },
     {
-      "parentChapter": {
+      "htmlText": {
         "cssClass": "excerpt"
       }
     },
     {
-      "chapterTocNumber": {
+      "botText": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "title": {
         "cssClass": "excerpt"
       }
     },
@@ -92,6 +115,20 @@
       "text": {
         "cssClass": "excerpt"
       }
+    },
+    {
+      "table": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "image": {
+        "cssClass": "excerpt"
+      }
     }
-  ]
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes"
+  }
 }

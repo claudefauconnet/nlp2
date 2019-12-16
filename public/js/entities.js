@@ -16,7 +16,7 @@ var Entities = (function () {
                             var thesaurusName = key.substring(p + 9);
                             if (!self.thesauri[thesaurusName])
                                 self.thesauri[thesaurusName] = {allEntities: [], foundEntities: []};
-                            self.thesauri[thesaurusName].foundEntities = self.thesauri[thesaurusName].foundEntities.concat(JSON.parse(hit._source[key]))
+                            self.thesauri[thesaurusName].foundEntities = self.thesauri[thesaurusName].foundEntities.concat(hit._source[key])
                         }
 
 
@@ -60,30 +60,37 @@ var Entities = (function () {
                     var map = {};
                     entities.forEach(function (entity) {
                         var ancestors = entity.split("-");
+                        var id = "";
+                        var parent = ""
                         ancestors.forEach(function (ancestor, index) {
-                            if (!map[ancestor]) {
-                                var node = {text: ancestor, id: ancestor, count: 1}
-                                if (index >0) {
-                                    node.parent = ancestors[index - 1]
+                            parent = id;
+                            if (index > 0)
+                                id += "-"
+                            id += ancestor
+                            if (!map[id]) {
+                                var node = {text: ancestor, id: id, count: 1}
+                                if (index > 0) {
+                                    node.parent = parent
                                 } else {
                                     node.parent = "#"
                                 }
-                                map[ancestor]=node
+                                map[id] = node
                             } else {
-                                map[ancestor].count += 1
+                                map[id].count += 1
                             }
                         })
 
                     })
 
-                    var jsTreeArray=[];
-                    for(var key in map){
-                        var obj=map[key];
-                        obj.text+=" "+obj.count
+                    var jsTreeArray = [];
+                    for (var key in map) {
+                        var obj = map[key];
+                        obj.text += " " + obj.count
                         jsTreeArray.push(map[key])
                     }
 
-                    var x=jsTreeArray
+
+                    $("#entitiesWrapperDiv").css("visibility","visible");
                     Entities.drawJsTree("jstreeDiv", jsTreeArray)
 
 
@@ -100,7 +107,7 @@ var Entities = (function () {
         ], function (err) {
             if (err)
                 return callback(err);
-         
+
 
         })
     }
@@ -537,9 +544,53 @@ var Entities = (function () {
         }).on("select_node.jstree",
             function (evt, obj) {
                 var x = obj;
-                showNodeInfos(obj.node);
+                Entities.runEntityQuery(obj.node);
                 //   $("#dataDiv").html(JSON.stringify(obj.node.data,null,2))
             })
+    }
+
+    self.runEntityQuery = function (node) {
+        if (!context.filterEntities)
+            context.filterEntities = []
+        if (node) {
+            context.filterEntities.push(node.id)
+        }
+
+
+        var str = "";
+        var html = ""
+        context.filterEntities.forEach(function (entity, index) {
+            html += "<div class='selectedEntity' onclick='Entities.deleteEntityFilter($(this).val())'>" + entity + "</div>"
+            if (index > 0)
+                str += " "
+            str += "\\\"" + entity + "\\\""
+        })
+
+       // html+="<button onclick='graphController.showGraph()'>Graph...</button>"
+        $("#selectedEntitiesDiv").html(html)
+        var options = {}
+        if (context.filterEntities.length > 0) {
+            var filter = {
+                "query_string": {
+                    "query": str,
+                    "default_field": "entities_thesaurus_ctg",
+                    "default_operator": "AND"
+                }
+            }
+
+            options = {filter: filter}
+        }
+        Search.searchPlainText(options, function (err, result) {
+
+
+        })
+    }
+
+    self.deleteEntityFilter = function (entity) {
+        var p = context.filterEntities.indexOf(entity);
+        context.filterEntities.splice(p, 1);
+        Entities.runEntityQuery()
+
     }
 
 

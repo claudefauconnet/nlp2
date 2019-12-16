@@ -25,6 +25,13 @@
 <script src="js/entities.js"></script>
 <script src="js/authentification.js"></script>
 <script src="data/stopwords-fr..js"></script>
+
+
+<script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
+<link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
+<script src="js/graph/visjsGraph2.js"></script>
+<script src="js/graph/graphController.js"></script>
+
 <script>
     $(function () {
             authentication.init(true)
@@ -123,9 +130,19 @@
 
         border-radius: 3px;
     }
+.selectedEntity{
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    text-align: justify;
+    margin: 2px;
+    padding:2px;
+    border-radius: 5px;
+  border: #3f3731 solid 2px;
 
+}
     #jstreeDiv{
-        width:400px;height: 800px;overflow: auto
+        width:400px;height: 200px;overflow: auto
     }
     #indexesDiv{
         width:250px;min-height: 300px;overflow: auto;
@@ -161,7 +178,7 @@
 
 
         <div id="indexesDiv"></div>
-        <div id="jstreeDiv"></div>
+
 
     </div>
     <div class="centerDiv">
@@ -214,11 +231,17 @@
         </div>
     </div>
     <div class="rightDiv">
-        <p align="center" > centre Joseph Wrésinski  moteur de recherche fédéree </p>
+     <!--   <p align="center" > centre Joseph Wrésinski  moteur de recherche fédéree </p>
         <div style="display:table-cell; vertical-align:middle; text-align:center">
             <img src="images/logoATD.png" width="100px">
+        </div>-->
+        <br>
+       <!-- <span class='ui_title'>Entities</span>-->
+        <div  id="entitiesWrapperDiv">
+        <button onclick='graphController.showGraph()'>Graph...</button>
+        <div id="selectedEntitiesDiv"></div>
+        <div id="jstreeDiv"></div>
         </div>
-
         <div id="associatedWordsDiv" style="width:90%;padding:3px; font-size:12px"></div>
         <div id="associatedWordsEntitiesDiv" style="width:90%;padding:3px"></div>
     </div>

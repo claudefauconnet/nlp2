@@ -160,13 +160,21 @@ var bookCrawler = {
 
                     if (error)
                         return callbackSeries(error);
+
                     if (currentPage % 20 == 0) {
                         var duration = new Date().getTime() - t0;
                         var message = "indexed " + currentPage + " pages in " + duration + " msec.";
                         socket.message(message);
                     }
+                    const indexer=require('./indexer..js')
+                    indexer.checkBulkQueryResponse(body, function(err,result){
+                        if(err)
+                            return callbackseries(err);
+                        var message = "indexed " + result.length + " records ";
+                        socket.message(message)
+                        return callbackseries()
 
-                    return callbackSeries(null);
+                    })
                 })
             }
 

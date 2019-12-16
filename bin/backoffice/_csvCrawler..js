@@ -79,18 +79,18 @@ var csvCrawler = {
                         return callbackseries(error)
 
                     }
-                    if (body.error) {
-                        if (body.error.reason) {
-                            return callbackseries(body.error.reason);
-                        } else {
-                            return callbackseries(body.error);
-                        }
-                    }
+                    const indexer=require('./indexer..js')
+                    indexer.checkBulkQueryResponse(body, function(err,result){
+                        if(err)
+                            return callbackseries(err);
+                        var message = "indexed " + result.length + " records ";
+                        socket.message(message)
+                        return callbackseries()
+
+                    })
 
 
-                    var message = "indexed " + data.length + " records ";
-                    socket.message(message)
-                    return callbackseries()
+
                 })
             }
 

@@ -114,11 +114,15 @@ var bookIngester = {
                 };
 
                 request(options, function (error, response, body) {
+                    const indexer=require('./indexer..js')
+                    indexer.checkBulkQueryResponse(body, function(err,result){
+                        if(err)
+                            return callbackSeries(err);
+                        var message = "indexed " + result.length + " records ";
+                        socket.message(message)
+                        return callbackSeries()
 
-                    if (error)
-                        return callbackSeries(err);
-                    var json = JSON.parse(response.body);
-                    return callbackSeries(null,json);
+                    })
                 })
             }
             ],function(err){

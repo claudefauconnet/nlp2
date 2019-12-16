@@ -6,7 +6,7 @@
   },
   "connector": {
     "type": "document",
-    "dir": "D:\\Total\\REX\\pdfs",
+    "dirPath": "D:\\Total\\REX\\pdfs",
     "contentField": "attachment.content"
   },
   "schema": {

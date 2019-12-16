@@ -131,6 +131,7 @@ var configLoader = {
         fs.writeFile(pathStr, jsonStr, function (err, result) {
             if (err)
                 return callback(err);
+
             return callback(null, "index saved : " + index);
         });
 

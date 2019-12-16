@@ -6,7 +6,7 @@
   },
   "connector": {
     "type": "document",
-    "dir": "D:\\ATD_Baillet\\testIndexation",
+    "dirPath": "D:\\ATD_Baillet\\testIndexation",
     "contentField": "attachment.content"
   },
   "schema": {

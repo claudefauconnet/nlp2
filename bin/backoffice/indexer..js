@@ -98,18 +98,19 @@ var indexer = {
 
                         //mappings
                         if (indexSchema.mappings)
-                            json.mappings = {[index]: {properties: indexSchema.mappings}};
+                            json.mappings = indexSchema.mappings;//{[index]: {properties: indexSchema.mappings}};
 
                         if (indexSchema.contentField) {
-
-                            json.mappings[index].properties[indexSchema.contentField] = {
+                            json.mappings[index].properties[indexSchema.contentField]={
+                         //   json.mappings[index].properties[indexSchema.contentField] = {
                                 "type": "text",
-                                "index_options": "offsets",
+                             //   "index_options": "offsets",
+                                "term_vector": "with_positions_offsets_payloads",
+                                "store" : false,
                                 "analyzer": config.schema.analyzer,
                                 "fielddata": true,
                                 "fields": {
                                     "raw": {
-
                                         "type": "keyword",
                                         "ignore_above": 256,
                                     }
@@ -295,6 +296,23 @@ var indexer = {
         ], function (err) {
             callback(err);
         })
+    },
+
+
+    checkBulkQueryResponse:function(reponseBody,callback){
+
+        var body=JSON.parse(reponseBody.toString());
+        var errors=[]
+        body.items.forEach(function(item){
+            if(item.index.error)
+                errors.push(item.index.error);
+        })
+
+        if(errors.length>0) {
+            errors=errors.slice(0, 20);
+            return callback(errors);
+        }
+        return callback(null, body.items.length);
     }
 
 }

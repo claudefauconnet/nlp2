@@ -30,7 +30,10 @@ var ui = (function () {
         if (!context.currentIndexName)
             return alert("select an index ")
         var config = context.indexConfigs[context.currentIndexName];
-
+        if (config.connector.filePath)
+            config.connector.filePath = config.connector.filePath.replace(/\\+/g, "\\")
+        if (config.connector.dirPath)
+            config.connector.dirPath = config.connector.dirPath.replace(/\\+/g, "\\")
 
         $("#mainDiv").html("<div>" +
             "<span class='title'>index : " + context.currentIndexName + "</span>&nbsp;&nbsp;" +
@@ -71,7 +74,7 @@ var ui = (function () {
                 if (!config.indexation) {
                     ui.showIndexationForm(function (data) {
                         config.indexation = data.indexation;
-                        config.deleteIndexContent=true;
+                        config.deleteIndexContent = true;
                         exec()
                     })
 

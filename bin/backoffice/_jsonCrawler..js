@@ -2,6 +2,7 @@ const async = require("async");
 const util = require("./util.");
 const socket = require('../../routes/socket.js');
 const request = require('request');
+
 const fs = require('fs');
 
 var jsonCrawler = {
@@ -63,6 +64,7 @@ var jsonCrawler = {
                       })
 
                       lineContent=JSON.stringify(obj);
+                   //   console.log(lineContent)
                     }
                     else  if(config.connector.subType=="nested") {
                       record=record;
@@ -101,18 +103,16 @@ var jsonCrawler = {
                         return callbackseries(error)
 
                     }
-                    if (body.error) {
-                        if (body.error.reason) {
-                            return callbackseries(body.error.reason);
-                        } else {
-                            return callbackseries(body.error);
-                        }
-                    }
+                    const indexer=require('./indexer..js')
+                    indexer.checkBulkQueryResponse(body, function(err,result){
+                        if(err)
+                            return callbackseries(err);
+                        var message = "indexed " + result.length + " records ";
+                        socket.message(message)
+                        return callbackseries()
 
+                    })
 
-                    var message = "indexed " + data.length + " records ";
-                    socket.message(message)
-                    return callbackseries()
                 })
             }
 
@@ -131,6 +131,11 @@ var jsonCrawler = {
 
 
     , generateDefaultMappingFields: function (connector, callback) {
+
+
+
+        var fields = {};
+
       /*  if(connector.subType=="object"){
             var fields={}
             return callback(null, fields);
@@ -146,17 +151,18 @@ var jsonCrawler = {
             var fields = {};
             data.forEach(function (line) {
                 Object.keys(line).forEach(function (key) {
-                    if (!fields[key]) {
-                        if (util.isFloat(line[key]))
+
+
+                    /*    if (util.isFloat(line[key]))
                             fields[key] = {type: "float"};
                         else if (util.isInt(line[key]))
-                            fields[key] = {type: "integer"};
-                        else if(typeof line[key]=="object")
+                            fields[key] = {type: "integer"};*/
+                        if(typeof line[key]=="object")
                             fields[key] = {type: "object"};
                         else
                             fields[key] = {type: "text"};
 
-                    }
+
 
                 })
 
