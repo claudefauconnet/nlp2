@@ -302,10 +302,16 @@ var indexer = {
     checkBulkQueryResponse:function(reponseBody,callback){
 
         var body=JSON.parse(reponseBody.toString());
-        var errors=[]
+        var errors=[];
+        if(body.error)
+            return callback(body.error)
         body.items.forEach(function(item){
-            if(item.index.error)
+            if(item.index && item.index.error)
                 errors.push(item.index.error);
+            else if(item.update && item.update.error)
+                errors.push(item.update.error);
+            else if(item.delete && item.delete.error)
+                errors.push(item.delete.error);
         })
 
         if(errors.length>0) {

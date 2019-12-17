@@ -55,20 +55,17 @@ var jsonCrawler = {
 
                       })
                   }
-                   else if(config.connector.subType=="object"){
+                   else if(config.connector.subType=="object" || config.connector.subType=="nested"){
                       record=record;
                       var obj={};
                       keysToImport.forEach(function(key){
-                          if(record[key] && record[key]!="")
+                          if(record[key] && record[key]!=""){
                               obj[key]= record[key];
+                              lineContent+=record[key]+";"
+                          }
+
                       })
 
-                      lineContent=JSON.stringify(obj);
-                   //   console.log(lineContent)
-                    }
-                    else  if(config.connector.subType=="nested") {
-                      record=record;
-                      lineContent=JSON.stringify(record);
                     }
 
                         record[config.schema.contentField] = lineContent;

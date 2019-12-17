@@ -264,26 +264,34 @@ var skosIntegrator = {
 
 
         var documentsEntitiesMap = {};
-        //   var allSynonyms = [];
+
         async.series([
 
 
-                // remove entities contained in others  entities forEachDoc to be finished
-                /*   function (callbackSeries) {
-                       //   return callbackSeries();
-
-                       entities.forEach(function (entity, index) {
-                           entity.synonyms.forEach(function (synonym, indexSynonym) {
-                               if (allSynonyms.indexOf(synonym) < 0)
-                                   allSynonyms.push(synonym)
-                           })
-                       })
-                       allSynonyms.sort();
 
 
-                       callbackSeries();
-                   },*/
+            function (callbackSeries) {
+            if(!globalOptions.excludeEntitiesPrefixs)
+               return callbackSeries();
+            var filteredEntitiesMap={};
+                entities.forEach(function (entity, entityIndex) {
+                    var ok=true;
+                    globalOptions.excludeEntitiesPrefixs.forEach(function(prefix){
+                        if(entity.id.indexOf("#"+prefix)>-1)
+                            ok=false;
 
+                    })
+                    if(ok)
+                        filteredEntitiesMap[entity.id]=(entity);
+
+                })
+                entities=[];
+                for (var key in filteredEntitiesMap){
+                    entities.push(filteredEntitiesMap[key]);
+                }
+
+                callbackSeries();
+            },
 
                 function (callbackSeries) {   // match entities on each doc of corpus index (all fields)
 
@@ -367,7 +375,7 @@ var skosIntegrator = {
                         }
                     })
                     serialize.end();
-                    console.log(ndjsonStr)
+                 //   console.log(ndjsonStr)
                     var options = {
                         method: 'POST',
                         body: ndjsonStr,
@@ -397,14 +405,14 @@ var skosIntegrator = {
                                 entities[queriedEntities[responseIndex]].documents.push(document);
                                 totalDocsAnnotated += 1;
 
-                                if (hit.highlight && hit.highlight[globalOptions.searchField]) {
+                              /*  if (hit.highlight && hit.highlight[globalOptions.searchField]) {
                                     hit.highlight[globalOptions.searchField].forEach(function (highlight) {
                                         var p = highlight.indexOf("<em>")
                                         var q = highlight.indexOf("</em>")
                                         var offset = hit._source([globalOptions.searchField])
 
                                     })
-                                }
+                                }*/
 
                             })
                         })
@@ -510,7 +518,7 @@ var skosIntegrator = {
                         }
                     )
                 }
-                
+
                 ,
                 //******delete  old thesaurus index if exists*************
                 function (callbackSeries) {
@@ -694,15 +702,18 @@ if (false) {
 
 if (true) {
     var options = {
-        corpusIndex: "gm_mec_paragraphs",
+        corpusIndex: "testxx",
         //  corpusIndex: "total_gm_mec",
-        thesaurusIndex: "thesaurus_ctg",
+       // thesaurusIndex: "thesaurus_ctg",
+        thesaurusIndex: "testth",
         elasticUrl: "http://localhost:9200/",
+        excludeEntitiesPrefixs:["SemanticTools","PISTE","Structure"]
         // generateThesaurusTreeMap: false,
         //  generateThesaurusJstreeWithDocuments: false
 
     }
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
+    var jstreeJsonPath = "D:\\NLP\\testTh.json";
     var data = JSON.parse("" + fs.readFileSync(jstreeJsonPath));
 
     skosIntegrator.annotateCorpus(data, options, function (err, result) {
@@ -713,7 +724,7 @@ if (true) {
 
 }
 
-if (true) {
+if (false) {
     options = {
         outputLangage: "fr",
         extractedLangages: ["en", "fr", "sp"],
@@ -722,6 +733,8 @@ if (true) {
     }
     var rdfXmlPath = "D:\\NLP\\total2019_spans20191210.skos";
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
+
+
 
     options = {
 
