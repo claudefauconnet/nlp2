@@ -72,6 +72,7 @@ var Search = (function () {
 
 
         self.searchPlainText = function (options, callback) {
+
             if (!options)
                 options = {};
             var question = options.question || $("#questionInput").val();
@@ -100,9 +101,12 @@ var Search = (function () {
             self.analyzeQuestion(question, function (err, query) {
                 $("#queryTA").val(JSON.stringify(query, null, 2))
 
-                query={bool:{must:query}}
-                if(options.filter)
-                    query.bool.filter=options.filter;
+                var must=[query]
+                if(options.mustQueries)
+                    must=must.concat(options.mustQueries)
+
+                query={bool:{must:must}}
+
 
 
                 Search.queryElastic({

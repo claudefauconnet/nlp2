@@ -101,5 +101,9 @@
         "cssClass": "excerpt"
       }
     }
-  ]
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes"
+  }
 }

@@ -52,16 +52,11 @@ var skosIntegrator = {
 
                 }
 
-                for (var key2 in concept.altLabels) {
-                    if (Array.isArray(concept.altLabels[key2])) {
-                        concept.altLabels[key2].forEach(function (str) {
-                            obj.synonyms += str + ";"
-                        })
-                    } else {
-                        obj.synonyms.push(concept.altLabels[key2]);
-                    }
+                concept.altLabels.forEach(function (str) {
+                    obj.synonyms.push(str);
+                })
 
-                }
+
 // indentification des domaines
                 if (options.uri_domains && concept.schemes.length == 1 && concept.schemes.indexOf(options.uri_domains) > -1) {
                     var domainKey = concept.prefLabels[options.outputLangage].substring(0, 2);
@@ -137,13 +132,13 @@ var skosIntegrator = {
         saxStream.on("opentag", function (node) {
             var x = node;
 
+
             if (node.name == "rdf:Description" || node.name == "skos:Concept") {
                 currentConcept = {};
                 var id = node.attributes["rdf:about"];
                 currentConcept.id = id;
                 currentConcept.prefLabels = {};
-                currentConcept.altLabels = {};
-
+                currentConcept.altLabels = [];
                 currentConcept.schemes = [];
                 currentConcept.relateds = [];
                 currentConcept.narrowers = [];
@@ -157,12 +152,6 @@ var skosIntegrator = {
                 if (options.extractedLangages.indexOf(lang) > -1) {
                     currentTagName = "prefLabels_" + lang
                 }
-                /*    if (lang == "fr")
-                        currentTagName = "prefLabelFr";
-                    if (lang == "en")
-                        currentTagName = "prefLabelEn";
-                    if (lang == "es")
-                        currentTagName = "prefLabelEs";*/
 
             }
             if (node.name == "skos:altLabel") {
@@ -171,15 +160,7 @@ var skosIntegrator = {
                     currentTagName = "altLabels_" + lang
                 }
 
-                /*   if (lang == "fr")
-                       currentTagName = "altLabelFr";
-                   if (lang == "en")
-                       currentTagName = "altLabelEn";
-                   if (lang == "es")
-                       currentTagName = "altLabelEs";*/
-
             }
-
 
             if (node.name == "skos:topConceptOf") {
                 var type = node.attributes["rdf:resource"]
@@ -190,19 +171,12 @@ var skosIntegrator = {
                     currentConcept.isConceptScheme = true;
                 }
             } else if (node.name == "skos:inScheme") {
-
                 currentConcept.schemes.push(node.attributes["rdf:resource"]);
-
             } else if (node.name == "skos:broader") {
-
                 currentConcept.broaders.push(node.attributes["rdf:resource"]);
-
             } else if (node.name == "skos:narrower") {
-
                 currentConcept.narrowers.push(node.attributes["rdf:resource"]);
-
             } else if (node.name == "skos:related") {
-
                 currentConcept.relateds.push(node.attributes["rdf:resource"]);
 
             }
@@ -211,11 +185,14 @@ var skosIntegrator = {
 
         saxStream.on("text", function (text) {
 
-            if (currentTagName && (currentTagName.indexOf("prefLabels_") == 0 || currentTagName.indexOf("altLabels_") == 0)) {
-                var array = currentTagName.split("_")
-                currentConcept[array[0]] = {[array[1]]: text};
+            if (currentTagName) {
+                if (currentTagName.indexOf("prefLabels_") == 0) {
+                    var array = currentTagName.split("_")
+                    currentConcept[array[0]] = {[array[1]]: text};
+                } else if (currentTagName.indexOf("altLabels_") == 0) {
+                    currentConcept.altLabels.push(text)
+                }
             }
-
 
             currentTagName = null;
         })
@@ -268,32 +245,31 @@ var skosIntegrator = {
         async.series([
 
 
+                function (callbackSeries) {
+                    if (!globalOptions.excludeEntitiesPrefixs)
+                        return callbackSeries();
+                    var filteredEntitiesMap = {};
+                    entities.forEach(function (entity, entityIndex) {
+                        var ok = true;
+                        globalOptions.excludeEntitiesPrefixs.forEach(function (prefix) {
+                            if (entity.id.indexOf("#" + prefix) > -1)
+                                ok = false;
 
-
-            function (callbackSeries) {
-            if(!globalOptions.excludeEntitiesPrefixs)
-               return callbackSeries();
-            var filteredEntitiesMap={};
-                entities.forEach(function (entity, entityIndex) {
-                    var ok=true;
-                    globalOptions.excludeEntitiesPrefixs.forEach(function(prefix){
-                        if(entity.id.indexOf("#"+prefix)>-1)
-                            ok=false;
+                        })
+                        if (ok)
+                            filteredEntitiesMap[entity.id] = (entity);
 
                     })
-                    if(ok)
-                        filteredEntitiesMap[entity.id]=(entity);
+                    entities = [];
+                    for (var key in filteredEntitiesMap) {
+                        entities.push(filteredEntitiesMap[key]);
+                    }
 
-                })
-                entities=[];
-                for (var key in filteredEntitiesMap){
-                    entities.push(filteredEntitiesMap[key]);
-                }
+                    callbackSeries();
+                },
 
-                callbackSeries();
-            },
-
-                function (callbackSeries) {   // match entities on each doc of corpus index (all fields)
+                // match entities on each doc of corpus index (all fields)
+                function (callbackSeries) {
 
 
                     var message = "extractingEntities in docs " + entities.length
@@ -316,47 +292,70 @@ var skosIntegrator = {
                             return callbackSeries();
 
                         var synonyms = [];
+
                         if (entity.synonyms) {
                             var synonyms = entity.synonyms.toString().toLowerCase()
                             var queryString = "";
-                            var mustQuery = [];
+                            var shouldQuery = [];
                             entity.synonyms.forEach(function (synonym, indexSynonym) {
+
                                 if (synonym != "") {
+                                    if (indexSynonym > 0)
+                                        queryString += " OR "
 
-                                    if (false && !acceptSynonym(synonym.toLowerCase(), synonyms))
-                                        return;
-                                    synonym = synonym.replace(/\(\)\//g, function (a, b) {
-                                        return a;
-                                    })
+                                    queryString += "\\\\\"" + synonym + "\\\\\"";
 
-                                    if (synonym.trim().indexOf(" ") > -1)
-                                        mustQuery.push({match_phrase: {[globalOptions.searchField]: synonym}});
-                                    else
-                                        mustQuery.push({match: {[globalOptions.searchField]: synonym}});
+
 
 
                                 }
                             })
-                            if (mustQuery.length > 0) {
-                                entities[entityIndex].elasticQuery = {
-                                    "query": {
-                                        "bool":
-                                            {
-                                                "must": mustQuery
-                                            }
+                            if (true || shouldQuery.length > 0) {
+                                if (false) {
+                                    entities[entityIndex].elasticQuery = {
+                                        "query": {
+                                            "bool":
+                                                {
+                                                    "should": shouldQuery
+                                                }
+                                        }
+                                        ,
+                                        "from": 0,
+                                        "size": 1000,
+                                        "_source": "_id",
+                                        /*  "highlight": {
+                                              "number_of_fragments": 30,
+                                              "fragment_size": 100,
+                                              "fields": {
+                                                  "attachment.content": {}
+                                              }
+                                          }*/
                                     }
+                                }
+                                entities[entityIndex].elasticQuery = {
+
+
+                                    "query": {
+                                        "query_string": {
+                                            "query": queryString,
+                                            "fields": [globalOptions.searchField],
+
+                                        }
+                                    }
+
                                     ,
                                     "from": 0,
                                     "size": 1000,
                                     "_source": "_id",
-                                    "highlight": {
-                                        "number_of_fragments": 30,
-                                        "fragment_size": 100,
-                                        "fields": {
-                                            "attachment.content": {}
-                                        }
-                                    }
+                                    /*  "highlight": {
+                                          "number_of_fragments": 30,
+                                          "fragment_size": 100,
+                                          "fields": {
+                                              "attachment.content": {}
+                                          }
+                                      }*/
                                 }
+
                             }
                         }
                     })
@@ -367,15 +366,17 @@ var skosIntegrator = {
                     })
 
                     var queriedEntities = [];
-                    entities.forEach(function (concept, entityIndex) {
-                        if (concept.elasticQuery) {
+                    entities.forEach(function (entity, entityIndex) {
+                        if (entity.elasticQuery) {
+                            if (entity.id == "http://www.proxem.com/onto/concept#Component-SurgeSystem")
+                                var x = 3
                             queriedEntities.push(entityIndex)
                             serialize.write({index: globalOptions.corpusIndex})
-                            serialize.write(concept.elasticQuery)
+                            serialize.write(entity.elasticQuery)
                         }
                     })
                     serialize.end();
-                 //   console.log(ndjsonStr)
+                    //   console.log(ndjsonStr)
                     var options = {
                         method: 'POST',
                         body: ndjsonStr,
@@ -391,7 +392,7 @@ var skosIntegrator = {
                             return callbackSeries(err);
                         var json = JSON.parse(response.body);
                         var responses = json.responses;
-                        var totalDocsAnnotated = 0
+                        var totalAnnotations = 0
                         responses.forEach(function (response, responseIndex) {
                             entities[queriedEntities[responseIndex]].documents = [];
                             if (response.error) {
@@ -400,23 +401,29 @@ var skosIntegrator = {
                                 return;
                             }
                             var hits = response.hits.hits;
+                            if (responseIndex == 74)
+                                var xx = 3
                             hits.forEach(function (hit) {
-                                var document = {id: hit._id, index: hit._index, score: hit._max_score};
+                                var document = {id: hit._id, index: hit._index, score: hit._score};
+                                if(hit._id=="R835278790"){
+                                    console.log("----"+entities[queriedEntities[responseIndex]].id+"----"+JSON.stringify(entities[queriedEntities[responseIndex]].elasticQuery))
+                                }
+
                                 entities[queriedEntities[responseIndex]].documents.push(document);
-                                totalDocsAnnotated += 1;
+                                totalAnnotations += 1;
 
-                              /*  if (hit.highlight && hit.highlight[globalOptions.searchField]) {
-                                    hit.highlight[globalOptions.searchField].forEach(function (highlight) {
-                                        var p = highlight.indexOf("<em>")
-                                        var q = highlight.indexOf("</em>")
-                                        var offset = hit._source([globalOptions.searchField])
+                                /*  if (hit.highlight && hit.highlight[globalOptions.searchField]) {
+                                      hit.highlight[globalOptions.searchField].forEach(function (highlight) {
+                                          var p = highlight.indexOf("<em>")
+                                          var q = highlight.indexOf("</em>")
+                                          var offset = hit._source([globalOptions.searchField])
 
-                                    })
-                                }*/
+                                      })
+                                  }*/
 
                             })
                         })
-                        console.log("totalDocsAnnotated " + totalDocsAnnotated)
+                        console.log("total Annotations " + totalAnnotations + " on " + entities.length + " entities ");
                         callbackSeries();
                     })
                 },
@@ -424,9 +431,12 @@ var skosIntegrator = {
                 function (callbackSeries) {// set map of entities for eachDocument
 
                     entities.forEach(function (entity) {
+                        if (entity.id == "http://www.proxem.com/onto/concept#Component-SurgeSystem")
+                            var xx = 3
                         if (!entity.documents)
                             return;
                         entity.documents.forEach(function (doc) {
+
                             if (!documentsEntitiesMap[doc.id])
                                 documentsEntitiesMap[doc.id] = []
 
@@ -441,7 +451,7 @@ var skosIntegrator = {
 
                 // remove entities contained in others  entities forEachDoc to be finished
                 function (callbackSeries) {
-                    //   return callbackSeries();
+                 //   return callbackSeries();
 
 
                     for (var docId in documentsEntitiesMap) {
@@ -465,6 +475,76 @@ var skosIntegrator = {
                     callbackSeries();
                 },
 
+
+                function (callbackSeries) {//delete thesaurus field in corpus index
+                    var script = {
+                        "script": "ctx._source.remove('" + "entities_" + globalOptions.thesaurusIndex + "')",
+                        "query": {
+                            "exists": {"field": "entities_" + globalOptions.thesaurusIndex}
+                        }
+                    }
+
+                    var options = {
+                        method: 'POST',
+                        json: script,
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        url: globalOptions.elasticUrl + globalOptions.corpusIndex + "/_update_by_query?conflicts=proceed"
+                    };
+
+                    request(options, function (error, response, body) {
+                            if (error)
+                                return callbackSeries(error);
+                            const indexer = require('./indexer..js')
+                            indexer.checkBulkQueryResponse(body, function (err, result) {
+                                if (err)
+                                    return callbackSeries(err);
+                                var message = "indexed " + result.length + " records ";
+                                socket.message(message)
+                                return callbackSeries()
+
+                            })
+                        }
+                    )
+                },
+
+                function (callbackSeries) {// create /update mappings for entity field
+                    var json = {
+                        "gmec_par": {
+                            "properties": {
+                                ["entities_" + globalOptions.thesaurusIndex]: {
+                                    "type": "keyword"
+                                }
+                            }
+                        }
+                    }
+                    var options = {
+                        method: 'POST',
+                        json: json,
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        url: globalOptions.elasticUrl + globalOptions.corpusIndex + "/" + globalOptions.corpusIndex + "/_mappings"
+                    };
+
+                    request(options, function (error, response, body) {
+                            if (error)
+                                return callbackSeries(error);
+                            const indexer = require('./indexer..js')
+                            indexer.checkBulkQueryResponse(body, function (err, result) {
+                                if (err)
+                                    return callbackSeries(err);
+                                var message = "indexed " + result.length + " records ";
+                                socket.message(message)
+                                return callbackSeries()
+
+                            })
+                        }
+                    )
+
+
+                },
                 function (callbackSeries) {// update corpus index with entities
                     if (!globalOptions.indexEntities)
                         return callbackSeries();
@@ -476,20 +556,23 @@ var skosIntegrator = {
                     })
 
                     for (var docId in documentsEntitiesMap) {
-                        var entities = documentsEntitiesMap[docId];
-                        var queryString = "";
+                        if (true || docId == "R835278790") {
+                            var x = 3
+                            var entities = documentsEntitiesMap[docId];
+                            var queryString = "";
 
 
-                        queryString = JSON.stringify(entities);
-                        queryString = entities;
-                        var elasticQuery = {
-                            "doc": {
-                                ["entities_" + globalOptions.thesaurusIndex]: queryString
+                            queryString = JSON.stringify(entities);
+                            queryString = entities;
+                            var elasticQuery = {
+                                "doc": {
+                                    ["entities_" + globalOptions.thesaurusIndex]: queryString
+                                }
                             }
-                        }
 
-                        serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
-                        serialize.write(elasticQuery)
+                            serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
+                            serialize.write(elasticQuery)
+                        }
 
                     }
                     serialize.end();
@@ -600,7 +683,7 @@ var skosIntegrator = {
                     if (!globalOptions.indexEntities)
                         return callbackSeries();
 
-                    console.log("indexing entities");
+                    console.log("indexing entities ");
                     socket.message("indexing entities");
                     var ndJson = ""
                     var serialize = ndjson.serialize();
@@ -702,18 +785,19 @@ if (false) {
 
 if (true) {
     var options = {
-        corpusIndex: "testxx",
+        // corpusIndex: "testxx",
         //  corpusIndex: "total_gm_mec",
-       // thesaurusIndex: "thesaurus_ctg",
-        thesaurusIndex: "testth",
+        corpusIndex: "gmec_par",
+        thesaurusIndex: "thesaurus_ctg",
+        // thesaurusIndex: "testth",
         elasticUrl: "http://localhost:9200/",
-        excludeEntitiesPrefixs:["SemanticTools","PISTE","Structure"]
+        excludeEntitiesPrefixs: ["SemanticTools", "PISTE", "Structure"]
         // generateThesaurusTreeMap: false,
         //  generateThesaurusJstreeWithDocuments: false
 
     }
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
-    var jstreeJsonPath = "D:\\NLP\\testTh.json";
+    //  var jstreeJsonPath = "D:\\NLP\\testTh.json";
     var data = JSON.parse("" + fs.readFileSync(jstreeJsonPath));
 
     skosIntegrator.annotateCorpus(data, options, function (err, result) {
@@ -726,14 +810,14 @@ if (true) {
 
 if (false) {
     options = {
-        outputLangage: "fr",
+        outputLangage: "en",
         extractedLangages: ["en", "fr", "sp"],
         uri_candidates: "http://eurovoc.europa.eu/candidates",
         uri_domains: "http://eurovoc.europa.eu/domains"
     }
     var rdfXmlPath = "D:\\NLP\\total2019_spans20191210.skos";
+    var rdfXmlPath = "D:\\NLP\\Thesaurus_CTG_Skos_V1.6_201905.xml"
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
-
 
 
     options = {

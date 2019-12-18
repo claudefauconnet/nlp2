@@ -33,9 +33,9 @@ var indexer = {
                         return callbackSeries("no elasticUrl field in config ");
                     if (!connector)
                         return callbackSeries("no connector field in config ");
-                    if (elasticUrl.charAt(elasticUrl.length - 1) != "/"){
+                    if (elasticUrl.charAt(elasticUrl.length - 1) != "/") {
                         elasticUrl += "/";
-                        config.indexation.elasticUrl=elasticUrl;
+                        config.indexation.elasticUrl = elasticUrl;
                     }
 
                     callbackSeries()
@@ -48,13 +48,11 @@ var indexer = {
                 },
 
 
-
-
                 //******deleteIndex*************
                 function (callbackSeries) {
-                 indexer.deleteIndex(config,function(err,result){
-                     callbackSeries(err);
-                 })
+                    indexer.deleteIndex(config, function (err, result) {
+                        callbackSeries(err);
+                    })
 
                 },
 
@@ -101,12 +99,12 @@ var indexer = {
                             json.mappings = indexSchema.mappings;//{[index]: {properties: indexSchema.mappings}};
 
                         if (indexSchema.contentField) {
-                            json.mappings[index].properties[indexSchema.contentField]={
-                         //   json.mappings[index].properties[indexSchema.contentField] = {
+                            json.mappings[index].properties[indexSchema.contentField] = {
+                                //   json.mappings[index].properties[indexSchema.contentField] = {
                                 "type": "text",
-                             //   "index_options": "offsets",
+                                //   "index_options": "offsets",
                                 "term_vector": "with_positions_offsets_payloads",
-                                "store" : false,
+                                "store": false,
                                 "analyzer": config.schema.analyzer,
                                 "fielddata": true,
                                 "fields": {
@@ -299,23 +297,28 @@ var indexer = {
     },
 
 
-    checkBulkQueryResponse:function(reponseBody,callback){
-
-        var body=JSON.parse(reponseBody.toString());
-        var errors=[];
-        if(body.error)
+    checkBulkQueryResponse: function (responseBody, callback) {
+        var body;
+        if (typeof responseBody !="object" )
+            body = JSON.parse(responseBody.toString());
+        else
+            body = responseBody;
+        var errors = [];
+        if (body.error)
             return callback(body.error)
-        body.items.forEach(function(item){
-            if(item.index && item.index.error)
+        if (!body.items)
+            return callback(null, "done");
+        body.items.forEach(function (item) {
+            if (item.index && item.index.error)
                 errors.push(item.index.error);
-            else if(item.update && item.update.error)
+            else if (item.update && item.update.error)
                 errors.push(item.update.error);
-            else if(item.delete && item.delete.error)
+            else if (item.delete && item.delete.error)
                 errors.push(item.delete.error);
         })
 
-        if(errors.length>0) {
-            errors=errors.slice(0, 20);
+        if (errors.length > 0) {
+            errors = errors.slice(0, 20);
             return callback(errors);
         }
         return callback(null, body.items.length);

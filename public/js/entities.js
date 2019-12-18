@@ -1,6 +1,8 @@
 var Entities = (function () {
     var self = {}
     self.thesauri = {}
+    self.jsTreeNodesMap = {}
+
 
     self.showThesaurusEntities = function (hits, callback) {
         self.thesauri = {}
@@ -16,7 +18,13 @@ var Entities = (function () {
                             var thesaurusName = key.substring(p + 9);
                             if (!self.thesauri[thesaurusName])
                                 self.thesauri[thesaurusName] = {allEntities: [], foundEntities: []};
-                            self.thesauri[thesaurusName].foundEntities = self.thesauri[thesaurusName].foundEntities.concat(hit._source[key])
+
+                            var entities = hit._source[key];
+                            entities.forEach(function (entity) {
+                                if (self.thesauri[thesaurusName].foundEntities.indexOf(entity) < 0)
+                                    self.thesauri[thesaurusName].foundEntities.push(entity)
+                            })
+
                         }
 
 
@@ -58,40 +66,50 @@ var Entities = (function () {
                     entities.sort();
 
                     var map = {};
-                    entities.forEach(function (entity) {
+                    entities.forEach(function (entity, indexEntities) {
                         var ancestors = entity.split("-");
                         var id = "";
                         var parent = ""
-                        ancestors.forEach(function (ancestor, index) {
+                        ancestors.forEach(function (ancestor, indexAncestor) {
                             parent = id;
-                            if (index > 0)
+                            if (indexAncestor > 0)
                                 id += "-"
                             id += ancestor
                             if (!map[id]) {
-                                var node = {text: ancestor, id: id, count: 1}
-                                if (index > 0) {
+                                var node = {text: ancestor, id: id, count: 1, data: {thesaurusName: thesaurusName, descendants: []}}
+                                if (indexAncestor > 0) {
                                     node.parent = parent
                                 } else {
                                     node.parent = "#"
                                 }
+
                                 map[id] = node
                             } else {
                                 map[id].count += 1
                             }
+
                         })
 
                     })
-
-                    var jsTreeArray = [];
-                    for (var key in map) {
-                        var obj = map[key];
-                        obj.text += " " + obj.count
-                        jsTreeArray.push(map[key])
-                    }
+                    self.jsTreeNodesMap = map;
 
 
-                    $("#entitiesWrapperDiv").css("visibility","visible");
-                    Entities.drawJsTree("jstreeDiv", jsTreeArray)
+                }
+                return callbackSeries();
+            },
+            // setDescendants
+            function (callbackSeries) {
+                var keys = Object.keys(self.jsTreeNodesMap);
+                for (var key1 in self.jsTreeNodesMap) {
+
+                    keys.forEach(function (key2) {
+                        if(key2!=key1) {
+                            var p = key2.indexOf(key1 + "-");
+                            if (p > -1)
+                                self.jsTreeNodesMap[key1].data.descendants.push(key2)
+
+                        }
+                    })
 
 
                 }
@@ -100,7 +118,14 @@ var Entities = (function () {
 
             // draw tree
             function (callbackSeries) {
-
+                var jsTreeArray = [];
+                for (var key in self.jsTreeNodesMap) {
+                    var obj = self.jsTreeNodesMap[key];
+                    obj.text += " " + obj.count
+                    jsTreeArray.push(self.jsTreeNodesMap[key])
+                }
+                $("#entitiesWrapperDiv").css("visibility", "visible");
+                Entities.drawJsTree("jstreeDiv", jsTreeArray)
                 return callbackSeries();
             }
 
@@ -507,6 +532,7 @@ var Entities = (function () {
 
 
             var jstreeArray = formatResult(entities);
+
             Entities.drawJsTree("jstreeDiv", jstreeArray)
 
 
@@ -550,45 +576,62 @@ var Entities = (function () {
     }
 
     self.runEntityQuery = function (node) {
-        if (!context.filterEntities)
-            context.filterEntities = []
+        if (!context.filteredEntities)
+            context.filteredEntities = {}
+
         if (node) {
-            context.filterEntities.push(node.id)
+
+            var leafChildrenEntities = [];
+
+            self.thesauri[node.data.thesaurusName].foundEntities.forEach(function (entity) {
+                // take only leaf children entities
+                self.jsTreeNodesMap[node.id].data.descendants.forEach(function (descendant) {
+                    if(self.jsTreeNodesMap[descendant].data.descendants.length==0)
+                        leafChildrenEntities.push(descendant)
+                })
+                //if node is leaf add it to query
+                if(self.jsTreeNodesMap[node.id].data.descendants.length==0)
+                    leafChildrenEntities.push(node.id)
+
+
+            })
+            context.filteredEntities[node.id] = {name: node.id, thesaurus: node.data.thesaurusName, childrenEntities: leafChildrenEntities};
         }
 
 
         var str = "";
         var html = ""
-        context.filterEntities.forEach(function (entity, index) {
-            html += "<div class='selectedEntity' onclick='Entities.deleteEntityFilter($(this).val())'>" + entity + "</div>"
-            if (index > 0)
-                str += " "
-            str += "\\\"" + entity + "\\\""
-        })
 
-       // html+="<button onclick='graphController.showGraph()'>Graph...</button>"
+        for (var key in context.filteredEntities) {
+            html += "<div class='selectedEntity' onclick='Entities.deleteEntityFilter(\"" + key + "\")'>" + key + "</div>";
+        }
+
+
+        // html+="<button onclick='graphController.showGraph()'>Graph...</button>"
         $("#selectedEntitiesDiv").html(html)
         var options = {}
-        if (context.filterEntities.length > 0) {
-            var filter = {
-                "query_string": {
-                    "query": str,
-                    "default_field": "entities_thesaurus_ctg",
-                    "default_operator": "AND"
-                }
-            }
 
-            options = {filter: filter}
+        var mustQueries = [];
+        for (var key in context.filteredEntities) {
+            var childrenMust = []
+            context.filteredEntities[key].childrenEntities.forEach(function (entity) {
+                childrenMust.push(entity)
+            })
+            mustQueries.push({"terms": {["entities_thesaurus_ctg"]: childrenMust}})
         }
-        Search.searchPlainText(options, function (err, result) {
+
+        if (mustQueries.length > 0) {
+            options = {mustQueries: mustQueries}
+
+            Search.searchPlainText(options, function (err, result) {
 
 
-        })
+            })
+        }
     }
 
     self.deleteEntityFilter = function (entity) {
-        var p = context.filterEntities.indexOf(entity);
-        context.filterEntities.splice(p, 1);
+        delete context.filteredEntities[entity];
         Entities.runEntityQuery()
 
     }
