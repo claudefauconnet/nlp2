@@ -169,7 +169,7 @@ var configLoader = {
     ,
 
 
-    getIndexConfigs: function (userGroups, callback) {
+    getUserIndexConfigs: function (userGroups, callback) {
         if (!Array.isArray(userGroups)) {
             userGroups = userGroups.split(",");
         }
@@ -222,6 +222,25 @@ var configLoader = {
             }
         ], function (err) {
             callback(err, configs)
+        })
+
+    }
+    ,
+    getUserThesaurus: function (userGroups, callback) {
+        if (!Array.isArray(userGroups)) {
+            userGroups = userGroups.split(",");
+        }
+        var thesauri = [];
+        configLoader.getAllProfiles(function (err, result) {
+            result.forEach(function (profile) {
+                for (var group in profile) {
+
+                    if (userGroups.indexOf(group) > -1) {
+                        thesauri = thesauri.concat(profile[group].thesauri);
+                    }
+                }
+            })
+            return callback(null, thesauri);
         })
 
     }
@@ -278,7 +297,7 @@ var configLoader = {
 module.exports = configLoader;
 
 if (false) {
-    configLoader.getIndexConfigs("archives", function (err, result) {
+    configLoader.getUserIndexConfigs("archives", function (err, result) {
         var xx = err;
     })
 }

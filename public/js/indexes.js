@@ -4,7 +4,7 @@ var indexes = (function () {
 
     self.loadIndexConfigs = function (userGroups, callback) {
         var payload = {
-            getIndexConfigs: 1,
+            getUserIndexConfigs: 1,
             userGroups: JSON.stringify(userGroups)
         }
         $.ajax({

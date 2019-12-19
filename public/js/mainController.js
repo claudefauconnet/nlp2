@@ -8,19 +8,47 @@ var mainController = (function () {
 
     self.init0 = function () {
 
-        mainController.bindControls();
-        // self.hideUsageDiv();
-        $("#questionInput").focus()
-        indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
+        async.series([
+            function(callbackSeries) {
+                mainController.bindControls();
+                // self.hideUsageDiv();
+                $("#questionInput").focus()
+                return callbackSeries();
+            }
+
+            , function (callbackSeries) {
+                indexes.loadIndexConfigs(context.currentUser.groups, function (err, result) {
+                    if (err)
+                        return
+                    return callbackSeries()
+                    indexes.initIndexesDiv(false)
+                })
+
+            }
+            , function (callbackSeries) {
+                Entities.loadUserThesauri(context.currentUser.groups, function (err, result) {
+                    if (err)
+                        return
+
+                    indexes.initIndexesDiv(false)
+                    return callbackSeries()
+                })
+            }
+            , function (callbackSeries) {
+                return callbackSeries()
+            }
+        ], function (err) {
             if (err)
-                return $("#resultDiv").html("la configuration des index n'a pu être chargée :" + err.message);
-            indexes.initIndexesDiv(false)
+                return $("#resultDiv").html(err);
+            $("#resultDiv").html("config loaded");
+
         })
+
 
     }
 
     self.bindControls = function () {
-        $("#resultDiv").css("height", self.windowHeight -230);
+        $("#resultDiv").css("height", self.windowHeight - 230);
         //   $("#questionInput").keyup(function(event){
 
         $('#questionInput').keyup(function (e) {
@@ -106,8 +134,25 @@ var mainController = (function () {
         } else {
             $(".usageDiv").html(context.usageHtml);
             context.usageHtml = null;
-            $("#resultDiv").css("height", self.windowHeight -230);
+            $("#resultDiv").css("height", self.windowHeight - 230);
         }
+    }
+
+    self.onThumbnails=function(value){
+        if(value=="list"){
+            $("#dialogDiv").dialog("close")
+        }
+        else if(value=="graph"){
+           graphController.showGraph()
+        }
+        else if(value=="stats"){
+            statistics.showGraph()
+        }
+        else if(value=="entities"){
+            Entities.showAllEntitiesTree("thesaurus_ctg");
+
+        }
+
     }
 
     return self;

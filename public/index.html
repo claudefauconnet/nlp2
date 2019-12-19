@@ -31,6 +31,9 @@
 <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
 <script src="js/graph/visjsGraph2.js"></script>
 <script src="js/graph/graphController.js"></script>
+<script src="js/statistics.js"></script>
+
+
 
 <script>
     $(function () {
@@ -75,6 +78,15 @@
         display: flex;
         justify-content: center;
     }
+
+    #thumbnailsDiv{
+        display: flex;
+        flex-direction: row;
+        align-items: start;
+        display: none;
+
+    }
+
 
     .resultDiv {
 
@@ -138,11 +150,12 @@
     margin: 2px;
     padding:2px;
     border-radius: 5px;
+    background-color: #d9bb73;
   border: #3f3731 solid 2px;
 
 }
     #jstreeDiv{
-        width:400px;height: 200px;overflow: auto
+        width:400px;height: 600px;overflow: auto
     }
     #indexesDiv{
         width:250px;min-height: 300px;overflow: auto;
@@ -179,7 +192,8 @@
 
         <div id="indexesDiv"></div>
 
-
+        <div id="associatedWordsDiv" style="width:90%;padding:3px; font-size:12px"></div>
+        <div id="associatedWordsEntitiesDiv" style="width:90%;padding:3px"></div>
     </div>
     <div class="centerDiv">
         <div class="searchDiv">
@@ -226,6 +240,12 @@
 
         </div>
         <div id="paginationDiv"></div>
+        <div id="thumbnailsDiv" >
+            <button onclick='mainController.onThumbnails("list")'>List</button>
+            <button onclick='mainController.onThumbnails("graph")'>Graph...</button>
+            <button onclick='mainController.onThumbnails("stats")'>Stats...</button>
+            <button onclick='mainController.onThumbnails("entities")'>Entities</button>
+        </div>
         <div class="resultDiv" id="resultDiv">
          <!--   <textarea id="queryTA" row="20" cols="40"></textarea>-->
         </div>
@@ -236,14 +256,13 @@
             <img src="images/logoATD.png" width="100px">
         </div>-->
         <br>
-       <!-- <span class='ui_title'>Entities</span>-->
+
         <div  id="entitiesWrapperDiv">
-        <button onclick='graphController.showGraph()'>Graph...</button>
+
         <div id="selectedEntitiesDiv"></div>
         <div id="jstreeDiv"></div>
         </div>
-        <div id="associatedWordsDiv" style="width:90%;padding:3px; font-size:12px"></div>
-        <div id="associatedWordsEntitiesDiv" style="width:90%;padding:3px"></div>
+
     </div>
 
 

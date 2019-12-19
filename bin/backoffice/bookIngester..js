@@ -115,7 +115,7 @@ var bookIngester = {
 
                 request(options, function (error, response, body) {
                     const indexer=require('./indexer..js')
-                    indexer.checkBulkQueryResponse(body, function(err,result){
+                    elasticRestProxy.checkBulkQueryResponse(body, function(err,result){
                         if(err)
                             return callbackSeries(err);
                         var message = "indexed " + result.length + " records ";

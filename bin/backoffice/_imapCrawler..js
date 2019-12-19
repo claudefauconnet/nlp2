@@ -48,7 +48,7 @@ var imapCrawler = {
             if (error)
                 return callback(err);
             const indexer=require('./indexer..js')
-            indexer.checkBulkQueryResponse(body, function(err,result){
+            elasticRestProxy.checkBulkQueryResponse(body, function(err,result){
                 if(err)
                     return callback(err);
                 var message = "indexed " + result.length + " records ";

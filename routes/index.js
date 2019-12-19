@@ -3,7 +3,7 @@ var router = express.Router();
 var serverParams = {routesRootUrl: ""}
 
 
-var elasticProxy = require('../bin/elasticProxy');
+var elasticRestProxy = require('../bin/elasticRestProxy');
 var authentication = require('../bin/authentication..js');
 var configLoader = require('../bin/configLoader..js');
 var logger = require("../bin/logger..js");
@@ -20,7 +20,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
         if (req.body.executeQuery) {
             var queryObj = JSON.parse(req.body.executeQuery);
-            elasticProxy.executeQuery(queryObj, JSON.parse(req.body.indexes), function (error, result) {
+            elasticRestProxy.executePostQuery(queryObj, JSON.parse(req.body.indexes), function (error, result) {
                 logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
                 processResponse(response, error, result);
 
@@ -28,8 +28,8 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
         }
 
-        if (req.body.getIndexConfigs) {
-            configLoader.getIndexConfigs(JSON.parse(req.body.userGroups), function (error, result) {
+        if (req.body.getUserIndexConfigs) {
+            configLoader.getUserIndexConfigs(JSON.parse(req.body.userGroups), function (error, result) {
                 processResponse(response, error, result)
             });
 
@@ -112,18 +112,27 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             })
         }
 
+
+
     if (req.body && req.body.getAllThesaurusConfig) {
         configLoader.getAllThesaurusConfig(function (error, result) {
             processResponse(response, error, result);
         })
     }
+
     if (req.body && req.body.saveThesaurusConfig) {
         configLoader.saveThesaurusConfig(req.body.name,req.body.content, function (error, result) {
             processResponse(response, error, result);
         })
     }
+    if (req.body && req.body.getUserThesauri) {
+        configLoader.getUserThesaurus(JSON.parse(req.body.userGroups),function (error, result) {
+                return processResponse(response, error, result);
+        })
+    }
 
-        if (req.body && req.body.jobScheduler) {
+
+    if (req.body && req.body.jobScheduler) {
             if (req.body.run) {
                 jobScheduler.run(function (error, result) {
                     processResponse(response, error, result);

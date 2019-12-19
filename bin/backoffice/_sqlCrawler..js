@@ -166,7 +166,7 @@ var sqlCrawler = {
 
                         }
                         const indexer=require('./indexer..js')
-                        indexer.checkBulkQueryResponse(body, function(err,result){
+                        elasticRestProxy.checkBulkQueryResponse(body, function(err,result){
                             if(err)
                                 return callbackWhilst(err);
                             var message = "indexed " + result.length + " records ";

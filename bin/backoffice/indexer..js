@@ -12,6 +12,8 @@ var sqlCrawler = require("./_sqlCrawler.");
 var csvCrawler = require("./_csvCrawler.");
 var imapCrawler = require("./_imapCrawler.");
 var jsonCrawler = require("./_jsonCrawler.");
+var elasticRestProxy=require("../elasticRestProxy.");
+
 var indexer = {
 
     runIndexation: function (config, callback) {
@@ -173,13 +175,8 @@ var indexer = {
                                 url: elasticUrl + index + "/_search"
                             };
 
-
-                            request(options, function (error, response, body) {
-                                if (error)
-                                    return callbackSeries(error);
-                                if (body.error && body.error.reason)
-                                    return callbackSeries(body.error.reason)
-                                var hits = body.hits.hits;
+                            elasticRestProxy.executePostQuery(elasticUrl + index + "/_search",query,function(err, result){
+                                var hits = result.hits.hits;
                                 resultSize = hits.length;
                                 offset += resultSize;
 
@@ -187,9 +184,9 @@ var indexer = {
                                     incrementRecordIds.push(hit._source.incrementRecordId);
                                 })
 
-
                                 return callbackWhilst();
                             })
+
 
 
                         }, function (err) {
@@ -294,37 +291,11 @@ var indexer = {
         ], function (err) {
             callback(err);
         })
-    },
-
-
-    checkBulkQueryResponse: function (responseBody, callback) {
-        var body;
-        if (typeof responseBody !="object" )
-            body = JSON.parse(responseBody.toString());
-        else
-            body = responseBody;
-        var errors = [];
-        if (body.error)
-            return callback(body.error)
-        if (!body.items)
-            return callback(null, "done");
-        body.items.forEach(function (item) {
-            if (item.index && item.index.error)
-                errors.push(item.index.error);
-            else if (item.update && item.update.error)
-                errors.push(item.update.error);
-            else if (item.delete && item.delete.error)
-                errors.push(item.delete.error);
-        })
-
-        if (errors.length > 0) {
-            errors = errors.slice(0, 20);
-            return callback(errors);
-        }
-        return callback(null, body.items.length);
     }
-
 }
+
+
+
 
 module.exports = indexer;
 

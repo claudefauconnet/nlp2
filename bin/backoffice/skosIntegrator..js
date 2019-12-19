@@ -7,6 +7,7 @@ var async = require('async');
 var request = require('request');
 var ndjson = require('ndjson');
 const socket = require('../../routes/socket.js');
+const elasticRestProxy=require('../elasticRestProxy..js')
 
 var skosIntegrator = {
 
@@ -405,9 +406,7 @@ var skosIntegrator = {
                                 var xx = 3
                             hits.forEach(function (hit) {
                                 var document = {id: hit._id, index: hit._index, score: hit._score};
-                                if(hit._id=="R835278790"){
-                                    console.log("----"+entities[queriedEntities[responseIndex]].id+"----"+JSON.stringify(entities[queriedEntities[responseIndex]].elasticQuery))
-                                }
+
 
                                 entities[queriedEntities[responseIndex]].documents.push(document);
                                 totalAnnotations += 1;
@@ -497,7 +496,7 @@ var skosIntegrator = {
                             if (error)
                                 return callbackSeries(error);
                             const indexer = require('./indexer..js')
-                            indexer.checkBulkQueryResponse(body, function (err, result) {
+                            elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
                                 if (err)
                                     return callbackSeries(err);
                                 var message = "indexed " + result.length + " records ";
@@ -532,7 +531,7 @@ var skosIntegrator = {
                             if (error)
                                 return callbackSeries(error);
                             const indexer = require('./indexer..js')
-                            indexer.checkBulkQueryResponse(body, function (err, result) {
+                            elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
                                 if (err)
                                     return callbackSeries(err);
                                 var message = "indexed " + result.length + " records ";
@@ -590,7 +589,7 @@ var skosIntegrator = {
                             if (error)
                                 return callbackSeries(error);
                             const indexer = require('./indexer..js')
-                            indexer.checkBulkQueryResponse(body, function (err, result) {
+                            elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
                                 if (err)
                                     return callbackSeries(err);
                                 var message = "indexed " + result.length + " records ";
@@ -789,7 +788,6 @@ if (true) {
         //  corpusIndex: "total_gm_mec",
         corpusIndex: "gmec_par",
         thesaurusIndex: "thesaurus_ctg",
-        // thesaurusIndex: "testth",
         elasticUrl: "http://localhost:9200/",
         excludeEntitiesPrefixs: ["SemanticTools", "PISTE", "Structure"]
         // generateThesaurusTreeMap: false,

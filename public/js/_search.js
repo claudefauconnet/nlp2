@@ -86,11 +86,14 @@ var Search = (function () {
                 else
                     context.currentPage = 0;
             }
-            $("#entitiesWrapperDiv").css("visibility","hidden");
+            $("#entitiesWrapperDiv").css("visibility", "hidden");
+            $("#thumbnailsDiv").css("display", "none");
+
+
             $("#resultDiv").html("");
             $(".indexDocCount").html("")
             $("#paginationDiv").html("")
-            $("#associatedWordsDiv").html("")
+            $("#associatedWordsDiv").html("");
 
             if (!question || question.length < 3)
                 return $("#resultDiv").html("entrer une question (au moins 3 lettres)");
@@ -99,23 +102,18 @@ var Search = (function () {
                 return $("#resultDiv").html("selectionner au moins une source");
 
             self.analyzeQuestion(question, function (err, query) {
-                $("#queryTA").val(JSON.stringify(query, null, 2))
+                    $("#queryTA").val(JSON.stringify(query, null, 2))
 
-                var must=[query]
-                if(options.mustQueries)
-                    must=must.concat(options.mustQueries)
+                    var must = [query]
+                    if (options.mustQueries)
+                        must = must.concat(options.mustQueries)
+                    else
+                        context.filteredEntities = {}
 
-                query={bool:{must:must}}
+                    query = {bool: {must: must}}
 
+                    var aggregations = {
 
-
-                Search.queryElastic({
-                    query: query,
-                    from: from,
-                    size: size,
-                    _source: context.elasticQuery.source,
-                    highlight: context.elasticQuery.highlight,
-                    "aggregations": {
                         "associatedWords": {
                             "significant_terms": {
                                 "size": 30,
@@ -123,47 +121,62 @@ var Search = (function () {
                             }
                         },
 
-
-
                         "indexesCountDocs": {
                             "terms": {"field": "_index"}
                         }
-
-
                     }
-
-                }, null, function (err, result) {
-                    if (err) {
-                        return $("#resultDiv").html(err);
-                    }
-                    if (result.hits.hits.length == 0)
-                        return $("#resultDiv").html("pas de résultats");
+                    context.thesauri.forEach(function (thesaurus) {
+                        aggregations["entities_" + thesaurus] = {"terms": {"field": "entities_" + thesaurus, "size": 50, "order": {"_count": "desc"}}};
+                    })
 
 
+                    Search.queryElastic({
+                            query: query,
+                            from: from,
+                            size: size,
+                            _source: context.elasticQuery.source,
+                            highlight: context.elasticQuery.highlight,
+                            aggregations: aggregations
 
 
-                    //  Entities.showQuestionEntitiesInJsTree(query);
+                        }
 
-                    //    Entities.showAssociatedWordsWordnetEntitiesInJsTree(result.aggregations.associatedWords);
-                    // Entities.showAssociatedWordsEntitiesInJsTree(result.aggregations.associatedWords,result.hits.hits);
-                    Entities.showAssociatedWords(result.aggregations.associatedWords)
-                    // Entities.showAssociatedWordsWolf(result.aggregations.associatedWords)
-                    self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
-                    context.currentHits=result.hits.hits;
-                    Entities.showThesaurusEntities(result.hits.hits);
 
-                    if ($("#indexesCbxes_all").prop("checked"))
-                        $("#indexDocCount_all").html("(" + result.hits.total + ")");
-                    else
-                        $("#indexDocCount_all").html("");
-                    mainController.showPageControls(result.hits.total);
+                        , null, function (err, result) {
+                            if (err) {
+                                return $("#resultDiv").html(err);
+                            }
+                            if (result.hits.hits.length == 0)
+                                return $("#resultDiv").html("pas de résultats");
 
-                 //   indexes. self.uncheckAllIndexes()
-                    return ui.showResultList(result.hits.hits);
 
-                })
+                            Entities.showAssociatedWords(result.aggregations.associatedWords)
 
-            })
+
+                            self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
+
+                            self.thesauri = {}
+                            context.thesauri.forEach(function(thesaurus){
+                                Entities.showThesaurusEntities(thesaurus,result.aggregations["entities_"+thesaurus]);
+                            })
+
+
+
+                            context.currentHits = result.hits.hits;
+                            if ($("#indexesCbxes_all").prop("checked"))
+                                $("#indexDocCount_all").html("(" + result.hits.total + ")");
+                            else
+                                $("#indexDocCount_all").html("");
+                            mainController.showPageControls(result.hits.total);
+
+                            $("#thumbnailsDiv").css("display", "flex");
+                            //   indexes. self.uncheckAllIndexes()
+                            return ui.showResultList(result.hits.hits);
+
+                        })
+
+                }
+            )
 
 
         }
@@ -250,7 +263,7 @@ var Search = (function () {
                 }
                 //process not phrases
             }
-            if(true){
+            if (true) {
                 question = question.replace(/(\w*\*?)\/(\w*\*?)/g, function (matched, $1, $2) {
 
                     return "(" + $1 + " OR " + $2 + ")";
@@ -386,4 +399,5 @@ var Search = (function () {
 
 
     }
-)()
+)
+()

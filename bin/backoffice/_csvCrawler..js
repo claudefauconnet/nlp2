@@ -80,7 +80,7 @@ var csvCrawler = {
 
                     }
                     const indexer=require('./indexer..js')
-                    indexer.checkBulkQueryResponse(body, function(err,result){
+                    elasticRestProxy.checkBulkQueryResponse(body, function(err,result){
                         if(err)
                             return callbackseries(err);
                         var message = "indexed " + result.length + " records ";

@@ -25,7 +25,7 @@ var authentication = (function () {
             context.currentUser = {
                 identifiant: "admin",
                 login: "none",
-                groups: "ADMIN,search"
+                groups: ["ADMIN","search"]
             }
             mainController.init0();
         }

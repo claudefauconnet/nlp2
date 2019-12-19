@@ -3,71 +3,53 @@ var Entities = (function () {
     self.thesauri = {}
     self.jsTreeNodesMap = {}
 
+    self.loadUserThesauri = function (userGroups, callback) {
+        var payload = {
+            getUserThesauri: 1,
+            userGroups: JSON.stringify(userGroups)
+        }
+        $.ajax({
+            type: "POST",
+            url: appConfig.elasticUrl,
+            data: payload,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                context.thesauri = data;
+                callback(null, data);
 
-    self.showThesaurusEntities = function (hits, callback) {
-        self.thesauri = {}
+            }
+            , error: function (err) {
+                console.log(err.responseText)
+                return callback(err)
+            }
+
+        });
+
+
+    }
+    self.showThesaurusEntities = function (thesaurusName, aggregation, callback) {
+
+
+        self.thesauri[thesaurusName] = {foundEntities: aggregation.buckets};
+
 
         async.series([
-            function (callbackSeries) {
-
-                // consolidate docs entities by thesaurus
-                hits.forEach(function (hit) {
-                    for (var key in hit._source) {
-                        var p;
-                        if ((p = key.indexOf("entities_")) == 0) {
-                            var thesaurusName = key.substring(p + 9);
-                            if (!self.thesauri[thesaurusName])
-                                self.thesauri[thesaurusName] = {allEntities: [], foundEntities: []};
-
-                            var entities = hit._source[key];
-                            entities.forEach(function (entity) {
-                                if (self.thesauri[thesaurusName].foundEntities.indexOf(entity) < 0)
-                                    self.thesauri[thesaurusName].foundEntities.push(entity)
-                            })
-
-                        }
-
-
-                    }
-                })
-                return callbackSeries();
-            },
-
-
-            // load all entities from thesaurus index
-            function (callbackSeries) {
-                return callbackSeries()
-                for (var thesaurusName in self.thesauri) {
-                    if (self.thesauri[thesaurusName].allEntities.length == 0) {
-                        var query = {
-                            "query": {
-                                "match_all": {}
-                            },
-                            "size": 9000
-                        }
-                    }
-                    Search.queryElastic(query, [thesaurusName], function (err, result) {
-                        if (err)
-                            return callbackSeries(err)
-                        result.hits.hits.forEach(function (hit) {
-                            console.log(JSON.stringify(hit._source))
-                            self.thesauri[thesaurusName].allEntities.push(hit._source)
-                        })
-                        return callbackSeries();
-                    })
-
-                }
-            }
-            ,
             // get ancestors from entities in docs
             function (callbackSeries) {
                 for (var thesaurusName in self.thesauri) {
                     var entities = self.thesauri[thesaurusName].foundEntities;
-                    entities.sort();
+                    entities.sort(function (a, b) {
+                        if (a.key > b.key)
+                            return 1;
+                        if (b.key > a.key)
+                            return -1;
+                        return 0;
+                    });
+
 
                     var map = {};
                     entities.forEach(function (entity, indexEntities) {
-                        var ancestors = entity.split("-");
+                        var ancestors = entity.key.split("-");
                         var id = "";
                         var parent = ""
                         ancestors.forEach(function (ancestor, indexAncestor) {
@@ -76,7 +58,7 @@ var Entities = (function () {
                                 id += "-"
                             id += ancestor
                             if (!map[id]) {
-                                var node = {text: ancestor, id: id, count: 1, data: {thesaurusName: thesaurusName, descendants: []}}
+                                var node = {text: ancestor, id: id, count: entity.doc_count, data: {thesaurusName: thesaurusName, descendants: []}}
                                 if (indexAncestor > 0) {
                                     node.parent = parent
                                 } else {
@@ -85,7 +67,7 @@ var Entities = (function () {
 
                                 map[id] = node
                             } else {
-                                map[id].count += 1
+
                             }
 
                         })
@@ -103,7 +85,7 @@ var Entities = (function () {
                 for (var key1 in self.jsTreeNodesMap) {
 
                     keys.forEach(function (key2) {
-                        if(key2!=key1) {
+                        if (key2 != key1) {
                             var p = key2.indexOf(key1 + "-");
                             if (p > -1)
                                 self.jsTreeNodesMap[key1].data.descendants.push(key2)
@@ -179,231 +161,10 @@ var Entities = (function () {
         $("#associatedWordsDiv").html(html);
     }
 
-    self.showAssociatedWordsWolf = function (_associatedWords) {
-        var associatedWords = _associatedWords;
-        var ndjsonStr = ""
 
-        var words = [];
-        associatedWords.buckets.forEach(function (bucket) {
-            var word = bucket.key;
-            var p = word.indexOf("'")
-            if (p > -1)
-                word = word.substring(p + 1)
-            if (!isNaN(word))
-                return;
-            if (stopWords_fr.indexOf(word) < 0)
-                words.push(word);
 
-        })
 
-        // should :associated words match
-        words.forEach(function (word) {
-            var query = {
-                bool: {
-                    must: []
-                }
-            }
-            query.bool.must.push({term: {"synonyms.literal": word}})
 
-
-            ndjsonStr += JSON.stringify({_index: "wolf"}) + "\r\n"
-            ndjsonStr += JSON.stringify({query: query}) + "\r\n"
-
-
-        })
-
-        //  console.log(ndjsonStr)
-
-
-        Search.executeMsearch(ndjsonStr, function (err, responses) {
-            if (err)
-                return callback(err);
-            var jsTreeMap = {};
-            responses.forEach(function (response, responseIndex) {
-
-                var hits = response.hits.hits;
-
-                var word = words[responseIndex]
-                hits.forEach(function (hit, hitIndex) {
-                    var entitiesArray = hit._source.ancestors;
-                    var wordId = word + "_" + Math.round(Math.random() * 10000);
-                    entitiesArray.splice(0, 0, "*" + word)
-                    entitiesArray.forEach(function (entity, entityIndex) {
-                        if (!jsTreeMap[entity]) {
-                            jsTreeMap[entity] = {id: entity, text: entity, parent: "#"};
-
-
-                        }
-                        if (entityIndex < entitiesArray.length - 1)
-                            jsTreeMap[entity].parent = entitiesArray[entityIndex + 1]
-                    })
-
-
-                })
-            })
-            var jstreeArray = [];
-            for (var key in jsTreeMap) {
-
-                jstreeArray.push(jsTreeMap[key])
-            }
-
-            Entities.drawJsTree("jstreeDiv", jstreeArray)
-
-
-        })
-
-
-    }
-
-
-    self.showAssociatedWordsWordnetEntitiesInJsTree = function (_associatedWords) {
-        var associatedWords = _associatedWords;
-        var ndjsonStr = ""
-
-
-        // should :associated words match
-        associatedWords.buckets.forEach(function (bucket) {
-            var word = bucket.key;
-            var query = {
-                bool: {
-                    should: [],
-                    must: []
-                }
-            }
-            // query.bool.should.push({wildcard: {"data.synonyms": word + "*"}})
-            query.bool.must.push({match: {"content.synonyms": word}})
-            //must : only on ids retreived by question query
-            //    query.bool.must.push({terms: {"data.documents.id": docIds}})
-
-
-            ndjsonStr += JSON.stringify({_index: "wordnet_fr"}) + "\r\n"
-            ndjsonStr += JSON.stringify({query: query}) + "\r\n"
-
-            //   serialize.write({"_index": index, "_id": id})
-            //   serialize.write({title: docTitle, path: docPath, page: (pageIndex + 1), content: page})
-
-        })
-
-        console.log(ndjsonStr)
-
-
-        Search.executeMsearch(ndjsonStr, function (err, responses) {
-            if (err)
-                return callback(err);
-            var entities = [];
-            responses.forEach(function (response, responseIndex) {
-
-                var hits = response.hits.hits;
-
-                var associatedWordsBuckets = associatedWords.buckets;
-                hits.forEach(function (hit, hitIndex) {
-                    entities.push({
-                            count: associatedWordsBuckets[responseIndex].doc_count,
-                            word: associatedWordsBuckets[responseIndex].key,
-                            entity_name: hit._source.content.synonyms
-                        }
-                    )
-                })
-            })
-
-
-            entities.sort(function (a, b) {
-                return a.count - b.count
-            })
-            var html = ""
-            entities.forEach(function (entity) {
-                var word = entity.word
-
-                var doc_count = entity.count;
-                var entity_name = entity.entity_name
-                html += "<li onclick=mainController.addAssciatedWordToQuestion('" + word + "')>(" + doc_count + " ) " + entity_name + " :" + word;
-
-
-            })
-            html += "</li>";
-
-            $("#associatedWordsEntitiesDiv").html(html);
-        })
-
-
-    }
-
-    self.showAssociatedWordsEntitiesInJsTree = function (_associatedWords, hits) {
-        var associatedWords = _associatedWords;
-        var ndjsonStr = ""
-        var docIds = [];
-
-        hits.forEach(function (hit) {
-            docIds.push(hit._id);
-        })
-
-
-        // should :associated words match
-        associatedWords.buckets.forEach(function (bucket) {
-            var word = bucket.key;
-            var query = {
-                bool: {
-                    should: [],
-                    must: []
-                }
-            }
-            // query.bool.should.push({wildcard: {"data.synonyms": word + "*"}})
-            query.bool.should.push({match: {"data.synonyms": word}})
-            //must : only on ids retreived by question query
-            query.bool.must.push({terms: {"data.documents.id": docIds}})
-
-
-            ndjsonStr += JSON.stringify({_index: "eurovoc_entities"}) + "\r\n"
-            ndjsonStr += JSON.stringify({query: query}) + "\r\n"
-
-            //   serialize.write({"_index": index, "_id": id})
-            //   serialize.write({title: docTitle, path: docPath, page: (pageIndex + 1), content: page})
-
-        })
-
-        console.log(ndjsonStr)
-
-
-        Search.executeMsearch(ndjsonStr, function (err, responses) {
-            if (err)
-                return callback(err);
-            var entities = [];
-            responses.forEach(function (response, responseIndex) {
-
-                var hits = response.hits.hits;
-
-                var associatedWordsBuckets = associatedWords.buckets;
-                hits.forEach(function (hit, hitIndex) {
-                    entities.push({
-                            count: associatedWordsBuckets[responseIndex].doc_count,
-                            word: associatedWordsBuckets[responseIndex].key,
-                            entity_name: hit._source.text
-                        }
-                    )
-                })
-            })
-
-
-            entities.sort(function (a, b) {
-                return a.count - b.count
-            })
-            var html = ""
-            entities.forEach(function (entity) {
-                var word = entity.word
-
-                var doc_count = entity.count;
-                var entity_name = entity.entity_name
-                html += "<li onclick=mainController.addAssciatedWordToQuestion('" + word + "')>(" + doc_count + " ) " + entity_name + " :" + word;
-
-
-            })
-            html += "</li>";
-
-            $("#associatedWordsEntitiesDiv").html(html);
-        })
-
-
-    }
 
 
     self.getQuestionEntities = function (query, callback) {
@@ -586,12 +347,14 @@ var Entities = (function () {
             self.thesauri[node.data.thesaurusName].foundEntities.forEach(function (entity) {
                 // take only leaf children entities
                 self.jsTreeNodesMap[node.id].data.descendants.forEach(function (descendant) {
-                    if(self.jsTreeNodesMap[descendant].data.descendants.length==0)
-                        leafChildrenEntities.push(descendant)
+                    if (self.jsTreeNodesMap[descendant].data.descendants.length == 0)
+                        if (leafChildrenEntities.indexOf(descendant) < 0)
+                            leafChildrenEntities.push(descendant)
                 })
                 //if node is leaf add it to query
-                if(self.jsTreeNodesMap[node.id].data.descendants.length==0)
-                    leafChildrenEntities.push(node.id)
+                if (self.jsTreeNodesMap[node.id].data.descendants.length == 0)
+                    if (leafChildrenEntities.indexOf(node.id) < 0)
+                        leafChildrenEntities.push(node.id)
 
 
             })
@@ -609,7 +372,7 @@ var Entities = (function () {
 
         // html+="<button onclick='graphController.showGraph()'>Graph...</button>"
         $("#selectedEntitiesDiv").html(html)
-        var options = {}
+
 
         var mustQueries = [];
         for (var key in context.filteredEntities) {
@@ -620,20 +383,59 @@ var Entities = (function () {
             mustQueries.push({"terms": {["entities_thesaurus_ctg"]: childrenMust}})
         }
 
+        var options = {}
         if (mustQueries.length > 0) {
             options = {mustQueries: mustQueries}
-
+        }
             Search.searchPlainText(options, function (err, result) {
 
 
             })
-        }
+
     }
 
     self.deleteEntityFilter = function (entity) {
         delete context.filteredEntities[entity];
         Entities.runEntityQuery()
 
+    }
+
+    self.showAllEntitiesTree=function(thesaurus) {
+        self.getAllThesaurusEntities(thesaurus,function(err, buckets){
+            if(err)
+                return    $("#resultDiv").html(err);
+        })
+    }
+        self.getAllThesaurusEntities=function(_thesaurus,callback) {
+            var thesaurus=_thesaurus
+        var query = {
+            query: {
+                "match_all": {}
+            },
+            "aggregations": {
+                ["entities_"+thesaurus ]: {
+                    "terms": {
+                        "field": "entities_"+ thesaurus,
+                        "size": 500,
+                        "order": {
+                            "_count": "desc"
+                        }
+                    }
+                }
+            },
+            size: 0,
+            _source: ""
+        }
+
+        Search.queryElastic(query, null, function (err, result) {
+            if (err) {
+
+                return callback(err)
+            }
+                var buckets= result.aggregations["entities_"+thesaurus].buckets;
+                return callback(null, buckets);
+
+        })
     }
 
 

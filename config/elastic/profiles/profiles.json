@@ -3,15 +3,18 @@
     "indexes": [
       "artotheque",
       "jeanpaul"
-    ]
+    ],
+    "thesauri": []
   },
   "test2": {
     "indexes": [
       "testbook",
       "artotheque"
-    ]
+    ],
+    "thesauri": []
   },
   "ADMIN": {
-    "indexes":"*"
+    "indexes":"*",
+    "thesauri": ["thesaurus_ctg"]
   }
 }
