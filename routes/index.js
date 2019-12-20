@@ -3,24 +3,37 @@ var router = express.Router();
 var serverParams = {routesRootUrl: ""}
 
 
-var elasticRestProxy = require('../bin/elasticRestProxy');
+var elasticRestProxy = require('../bin/elasticRestProxy..js');
 var authentication = require('../bin/authentication..js');
 var configLoader = require('../bin/configLoader..js');
 var logger = require("../bin/logger..js");
 var indexer = require("../bin/backoffice/indexer..js")
 var imapMailExtractor = require("../bin/backoffice/imapMailExtractor.");
 var jobScheduler = require("../bin/backoffice/jobScheduler.")
+var statistics=require("../bin/backoffice/statistics.")
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('index', {title: 'Express'});
 });
 
+
+
 router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
         if (req.body.executeQuery) {
             var queryObj = JSON.parse(req.body.executeQuery);
-            elasticRestProxy.executePostQuery(queryObj, JSON.parse(req.body.indexes), function (error, result) {
+            var indexesStr="";
+            var indexes = JSON.parse(req.body.indexes);
+            if (Array.isArray(indexes)) {
+                indexes.forEach(function (index, p) {
+                    if (p > 0)
+                        indexesStr += ","
+                    indexesStr += index;
+                })
+            } else
+                indexesStr = indexes
+            elasticRestProxy.executePostQuery(indexesStr+"/_search", queryObj, function (error, result) {
                 logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
                 processResponse(response, error, result);
 
@@ -153,7 +166,14 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         }
 
 
-    }
+    },
+    router.get('/heatMap', function (req, res, next) {
+
+        statistics.getEntitiesMatrix( null,null,function (err, result) {
+            processResponse(res, err, result)
+        })
+    })
+
 )
 
 

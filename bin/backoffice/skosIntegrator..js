@@ -510,7 +510,7 @@ var skosIntegrator = {
 
                 function (callbackSeries) {// create /update mappings for entity field
                     var json = {
-                        "gmec_par": {
+                        [globalOptions.corpusIndex]: {
                             "properties": {
                                 ["entities_" + globalOptions.thesaurusIndex]: {
                                     "type": "keyword"
@@ -652,8 +652,22 @@ var skosIntegrator = {
                                     },
                                     "id": {
                                         "type": "keyword"
+                                    },
+                                    "documents":{
+                                        "properties": {
+                                            "id": {
+                                                "type": "keyword"
+                                            },
+                                            "score": {
+                                                "type": "float"
+                                            },
+                                            "index": {
+                                                "type": "keyword"
+                                            }
+                                        }
                                     }
-                                }
+                                },
+
                             }
                         }
                     }

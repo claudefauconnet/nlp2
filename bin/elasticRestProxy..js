@@ -7,6 +7,7 @@ var elasticRestProxy = {
 
 
     executePostQuery: function (url, query, callback) {
+
         if(url.toLowerCase().trim().indexOf("http")<0)
             url=elasticUrl+url;
         var options = {
@@ -17,7 +18,7 @@ var elasticRestProxy = {
             },
             url:  url
         };
-        if(debug)
+        if(false && debug)
             console.log(JSON.stringify(query,null,2));
         request(options, function (error, response, body) {
             if (error)
@@ -37,6 +38,38 @@ var elasticRestProxy = {
                 callback(null, body)
             }
         })
+
+    },
+    executeMsearch:function(ndjson,callback){
+        var options = {
+            method: 'POST',
+            body: ndjson,
+            encoding: null,
+            headers: {
+                'content-type': 'application/json'
+            },
+            url: baseUrl+"/_msearch"
+        };
+
+        console.log(ndjson)
+        request(options, function (error, response, body) {
+            if(error)
+                return  callback(error);
+            if(body.error && body.error.reason)
+                return  callback(body.error.reason)
+            var json = JSON.parse(response.body);
+            var responses = json.responses;
+            var totalDocsAnnotated = 0
+            /*  responses.forEach(function (response, responseIndex) {
+
+                  var hits = response.hits.hits;
+                  hits.forEach(function (hit) {
+
+                  })
+              })*/
+            return callback(null, responses)
+
+        });
 
     },
 
