@@ -29,8 +29,14 @@ var ui = (function () {
 
     self.showHitDetails = function (hit) {
         var displayConfig = context.indexConfigs[hit._index].display;
-        var indexLabel = context.indexConfigs[hit._index].general.label
-        var html = "<b> Source : </b><span class='title'>" + indexLabel + "</span><hr> " + self.getHitHtml(hit, displayConfig, "details");
+        var indexLabel = context.indexConfigs[hit._index].general.label;
+
+            context.thesauri.forEach(function (thesaurus){
+       if( hit._source["entities_" +thesaurus ])
+        hit = Entities.setHitEntitiesHiglight(hit,hit._source["entities_" +thesaurus ])
+    })
+       var  hitHtml=self.getHitHtml(hit, displayConfig, "details")
+        var html = "<b> Source : </b><span class='title'>" + indexLabel + "</span><hr> " +hitHtml ;
 
         $("#dialogDiv").html(html);
         $(".hlt1").css("background-color", " #FFFF00");
@@ -67,6 +73,7 @@ var ui = (function () {
 
         return words;
     }
+
 
     self.getHitHtml = function (hit, displayConfig, template) {
 

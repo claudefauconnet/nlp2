@@ -49,6 +49,9 @@ var statistics = {
         var allDocs = [];
 
         elasticRestProxy.executePostQuery(thesaurus + "/_search", aggrQuery, function (err, result) {
+
+            if(err)
+                return callback(err);
             var buckets = result.aggregations["entities_"].buckets;
             var entities = {}
             buckets.forEach(function (bucketEntity, indexEntity) {
@@ -75,6 +78,10 @@ var statistics = {
                                 else
                                     entities[key].relatedEntities[key2] += 1
                             }
+                            else{
+                                entities[key].relatedEntities[key] = 1
+                            }
+
                         }
                     }
 
@@ -91,6 +98,7 @@ var statistics = {
                 allValidEntities.forEach(function (key2) {
                     var count = 0;
                     if (entities[key].relatedEntities[key2])
+                        if(key.indexOf(key2)<0 && key2.indexOf(key) <0)// to avoid entities having parent synonyms included in child (ex :Component-ProtectionSytem)
                         count = entities[key].relatedEntities[key2];
 
                     x.push(count);

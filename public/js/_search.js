@@ -126,7 +126,7 @@ var Search = (function () {
                         }
                     }
                     context.thesauri.forEach(function (thesaurus) {
-                        aggregations["entities_" + thesaurus] = {"terms": {"field": "entities_" + thesaurus, "size": 50, "order": {"_count": "desc"}}};
+                        aggregations["entities_" + thesaurus] = {"terms": {"field": "entities_" + thesaurus+".id", "size": 50, "order": {"_count": "desc"}}};
                     })
 
 
@@ -144,10 +144,17 @@ var Search = (function () {
 
                         , null, function (err, result) {
                             if (err) {
-                                return $("#resultDiv").html(err);
+                                $("#resultDiv").html(err);
+                                if (callback)
+                                    return callback(err);
+                                return;
                             }
-                            if (result.hits.hits.length == 0)
+                            if (result.hits.hits.length == 0) {
                                 return $("#resultDiv").html("pas de résultats");
+                                if (callback)
+                                    return callback("pas de résultats");
+                                return;
+                            }
 
 
                             Entities.showAssociatedWords(result.aggregations.associatedWords)
@@ -156,10 +163,9 @@ var Search = (function () {
                             self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
 
                             self.thesauri = {}
-                            context.thesauri.forEach(function(thesaurus){
-                                Entities.showThesaurusEntities(thesaurus,result.aggregations["entities_"+thesaurus]);
+                            context.thesauri.forEach(function (thesaurus) {
+                                Entities.showThesaurusEntities(thesaurus, result.aggregations["entities_" + thesaurus]);
                             })
-
 
 
                             context.currentHits = result.hits.hits;
@@ -171,6 +177,8 @@ var Search = (function () {
 
                             $("#thumbnailsDiv").css("display", "flex");
                             //   indexes. self.uncheckAllIndexes()
+                            if (callback)
+                                callback();
                             return ui.showResultList(result.hits.hits);
 
                         })
@@ -204,18 +212,18 @@ var Search = (function () {
                         "_id": hitId
                     }
                 })
+
+
                 Search.queryElastic({
                         query: query,
                         // _source: context.elasticQuery.source,
                         highlight: {
                             tags_schema: "styled",
-                            fragment_size: 1,
+                            fragment_size: 0,
                             number_of_fragments: 0,
                             fields: {[appConfig.contentField]: {}}
-                            //   "attachment.content": {},
 
-                            // }
-                        }
+                        },
 
                     }, null
 

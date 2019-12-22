@@ -61,7 +61,7 @@ var jsonCrawler = {
                       keysToImport.forEach(function(key){
                           if(record[key] && record[key]!=""){
                               obj[key]= record[key];
-                              lineContent+=record[key]+";"
+                              lineContent+=record[key]+" ; "
                           }
 
                       })
@@ -100,7 +100,7 @@ var jsonCrawler = {
                         return callbackseries(error)
 
                     }
-                    const indexer=require('./indexer..js')
+                    const elasticRestProxy=require('../elasticRestProxy..js')
                     elasticRestProxy.checkBulkQueryResponse(body, function(err,result){
                         if(err)
                             return callbackseries(err);

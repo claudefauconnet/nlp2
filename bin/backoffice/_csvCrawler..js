@@ -43,7 +43,7 @@ var csvCrawler = {
                             return;
                         if (value == "0000-00-00")
                             return;
-                        lineContent += value + ";";
+                        lineContent += value + " ; ";
                         record[key] = value;
 
                     })
@@ -79,7 +79,7 @@ var csvCrawler = {
                         return callbackseries(error)
 
                     }
-                    const indexer=require('./indexer..js')
+                    const elasticRestProxy=require('../elasticRestProxy..js')
                     elasticRestProxy.checkBulkQueryResponse(body, function(err,result){
                         if(err)
                             return callbackseries(err);

@@ -108,11 +108,13 @@ var indexer = {
                                 "term_vector": "with_positions_offsets_payloads",
                                 "store": false,
                                 "analyzer": config.schema.analyzer,
+
                                 "fielddata": true,
                                 "fields": {
                                     "raw": {
                                         "type": "keyword",
                                         "ignore_above": 256,
+                                       // "search_analyzer": "case_insentisitive",
                                     }
                                 }
                             }

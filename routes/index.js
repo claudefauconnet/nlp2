@@ -168,8 +168,9 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
     },
     router.get('/heatMap', function (req, res, next) {
+var elasticQuery=JSON.parse(req.query.query);
 
-        statistics.getEntitiesMatrix( null,null,function (err, result) {
+        statistics.getEntitiesMatrix( null,elasticQuery,function (err, result) {
             processResponse(res, err, result)
         })
     })

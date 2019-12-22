@@ -380,7 +380,7 @@ var Entities = (function () {
             context.filteredEntities[key].childrenEntities.forEach(function (entity) {
                 childrenMust.push(entity)
             })
-            mustQueries.push({"terms": {["entities_thesaurus_ctg"]: childrenMust}})
+            mustQueries.push({"terms": {["entities_"+node.data.thesaurusName+".id"]: childrenMust}})
         }
 
         var options = {}
@@ -388,6 +388,9 @@ var Entities = (function () {
             options = {mustQueries: mustQueries}
         }
             Search.searchPlainText(options, function (err, result) {
+               if(err)
+                   return;
+            //   Entities.hilightEntitiesSynonyms( context.filteredEntities)
 
 
             })
@@ -437,6 +440,35 @@ var Entities = (function () {
 
         })
     }
+
+
+   self.setHitEntitiesHiglight=function(hit,entities){
+        var fieldsoffsets={};
+        var content=hit._source["attachment.content"];
+        var p=0
+       for (var key in hit._source){
+           p=content.indexOf(hit._source[key],p);
+           fieldsoffsets[key]={start:p,entities:{}};
+           p+=1;
+       }
+     entities.forEach(function(entity){
+         entity.offsets.forEach(function(offset){
+            for (var key in fieldsoffsets){
+                if( fieldsoffsets[key].start >-1 && fieldsoffsets[key].start>=offset.start) {
+                    if (!fieldsoffsets[key].entities)
+                        fieldsoffsets[key].entities = {}
+                    fieldsoffsets[key].entities[entity.id] = offset.start - fieldsoffsets[key].start
+                }
+            }
+         })
+
+     })
+
+var x=fieldsoffsets;
+
+return hit;
+    }
+
 
 
     return self;

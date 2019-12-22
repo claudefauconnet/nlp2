@@ -165,7 +165,7 @@ var sqlCrawler = {
                             return callbackWhilst(error)
 
                         }
-                        const indexer=require('./indexer..js')
+                        const elasticRestProxy=require('../elasticRestProxy..js')
                         elasticRestProxy.checkBulkQueryResponse(body, function(err,result){
                             if(err)
                                 return callbackWhilst(err);

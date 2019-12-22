@@ -6,9 +6,20 @@
             "filter": [
               "lowercase",
               "asciifolding"
+            ],
+             "char_filter": [
+              "html_strip"
+            ]
+          },
+          "case_insentisitive": {
+            "tokenizer": "standard",
+            "filter": [
+
             ]
           }
       }
     }
+
+
 
 }

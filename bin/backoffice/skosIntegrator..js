@@ -7,7 +7,7 @@ var async = require('async');
 var request = require('request');
 var ndjson = require('ndjson');
 const socket = require('../../routes/socket.js');
-const elasticRestProxy=require('../elasticRestProxy..js')
+const elasticRestProxy = require('../elasticRestProxy..js')
 
 var skosIntegrator = {
 
@@ -242,9 +242,46 @@ var skosIntegrator = {
 
 
         var documentsEntitiesMap = {};
+        var corpusIndexTextFields = [];
 
         async.series([
 
+                //set corpusIndexTextMappings
+                function (callbackSeries) {
+            return callbackSeries();
+                    var options = {
+                        method: 'GET',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+
+                        url: globalOptions.elasticUrl + globalOptions.corpusIndex + "/_mappings"
+                    };
+
+                    request(options, function (error, response, body) {
+                        var mappings = JSON.parse(body);
+                        var textFields = []
+                        var recurse = function (obj, parent) {
+                            if (typeof obj == "object") {
+                                for (var key in obj) {
+                                    if (parent && parent!="content" && key == "type" && obj[key] == "text") {
+                                        textFields.push(parent)
+                                    } else {
+                                        parent = key
+                                        recurse(obj[key], parent)
+                                    }
+                                }
+
+                            }
+
+                        }
+                        recurse(mappings);
+                        corpusIndexTextFields = textFields;
+                        callbackSeries();
+                    })
+
+
+                },
 
                 function (callbackSeries) {
                     if (!globalOptions.excludeEntitiesPrefixs)
@@ -307,32 +344,13 @@ var skosIntegrator = {
                                     queryString += "\\\\\"" + synonym + "\\\\\"";
 
 
-
-
                                 }
                             })
-                            if (true || shouldQuery.length > 0) {
-                                if (false) {
-                                    entities[entityIndex].elasticQuery = {
-                                        "query": {
-                                            "bool":
-                                                {
-                                                    "should": shouldQuery
-                                                }
-                                        }
-                                        ,
-                                        "from": 0,
-                                        "size": 1000,
-                                        "_source": "_id",
-                                        /*  "highlight": {
-                                              "number_of_fragments": 30,
-                                              "fragment_size": 100,
-                                              "fields": {
-                                                  "attachment.content": {}
-                                              }
-                                          }*/
-                                    }
-                                }
+                            if (queryString.length > 0) {
+                              /*  var highligthFields={};
+                                corpusIndexTextFields.forEach(function(field){
+                                    highligthFields[field]={ "number_of_fragments": 0};
+                                })*/
                                 entities[entityIndex].elasticQuery = {
 
 
@@ -348,13 +366,11 @@ var skosIntegrator = {
                                     "from": 0,
                                     "size": 1000,
                                     "_source": "_id",
-                                    /*  "highlight": {
-                                          "number_of_fragments": 30,
-                                          "fragment_size": 100,
-                                          "fields": {
-                                              "attachment.content": {}
-                                          }
-                                      }*/
+                                    "highlight": {
+                                        "number_of_fragments": 0,
+                                        "fragment_size": 0,
+                                        "fields": {"attachment.content":{}}
+                                    }
                                 }
 
                             }
@@ -385,7 +401,7 @@ var skosIntegrator = {
                             'content-type': 'application/json'
                         },
 
-                        url: "http://localhost:9200/_msearch"
+                        url: globalOptions.elasticUrl + "_msearch"
                     };
 
                     request(options, function (error, response, body) {
@@ -404,21 +420,32 @@ var skosIntegrator = {
                             var hits = response.hits.hits;
                             if (responseIndex == 74)
                                 var xx = 3
+                            var highlightRegEx = /<em[^\/]*?>([^<]*)<\/em>/gm;
+
                             hits.forEach(function (hit) {
                                 var document = {id: hit._id, index: hit._index, score: hit._score};
 
 
                                 entities[queriedEntities[responseIndex]].documents.push(document);
                                 totalAnnotations += 1;
+                                var offsets = []
+                                if (hit.highlight ){//&& hit.highlight[globalOptions.searchField]) {
+                                    hit.highlight[globalOptions.searchField].forEach(function (highlight) {
+                                        var array = [];
 
-                                /*  if (hit.highlight && hit.highlight[globalOptions.searchField]) {
-                                      hit.highlight[globalOptions.searchField].forEach(function (highlight) {
-                                          var p = highlight.indexOf("<em>")
-                                          var q = highlight.indexOf("</em>")
-                                          var offset = hit._source([globalOptions.searchField])
+                                        while ((array = highlightRegEx.exec(highlight)) != null) {
 
-                                      })
-                                  }*/
+                                            var end = highlightRegEx.lastIndex - 5
+                                            var offset={syn:array[1],start: end-(array[1].length)}
+                                            offsets.push(offset)
+
+
+                                        }
+
+
+                                    })
+                                }
+                                document.entityOffsets = offsets;
 
                             })
                         })
@@ -440,7 +467,7 @@ var skosIntegrator = {
                                 documentsEntitiesMap[doc.id] = []
 
                             var entityId = entity.id.substring(entity.id.indexOf("#") + 1)
-                            documentsEntitiesMap[doc.id].push(entityId)
+                            documentsEntitiesMap[doc.id].push({id: entityId, offsets: doc.entityOffsets})
 
                         })
                     })
@@ -450,17 +477,23 @@ var skosIntegrator = {
 
                 // remove entities contained in others  entities forEachDoc to be finished
                 function (callbackSeries) {
-                 //   return callbackSeries();
+                    //   return callbackSeries();
 
 
                     for (var docId in documentsEntitiesMap) {
                         var entities = documentsEntitiesMap[docId];
                         var fileteredEntities = []
-                        entities.sort();
+                        entities.sort(function (a, b) {
+                            if (a.id > b.id)
+                                return 1;
+                            if (a.id < b.id)
+                                return -1;
+                            return 0;
+                        });
 
                         entities.forEach(function (entity, index) {
                             if (index < entities.length - 1) {
-                                if (entities[index + 1].indexOf(entity) < 0)
+                                if (entities[index + 1].id.indexOf(entity.id) < 0)
                                     fileteredEntities.push(entity);
                             } else {
                                 fileteredEntities.push(entity);
@@ -513,7 +546,16 @@ var skosIntegrator = {
                         [globalOptions.corpusIndex]: {
                             "properties": {
                                 ["entities_" + globalOptions.thesaurusIndex]: {
-                                    "type": "keyword"
+                                    //   "type": "keyword"
+                                    "properties": {
+                                        id: {type: "keyword"},
+                                        offsets: {
+                                            "properties": {
+                                                start: {type: "integer"},
+                                                end: {type: "integer"}
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -555,23 +597,22 @@ var skosIntegrator = {
                     })
 
                     for (var docId in documentsEntitiesMap) {
-                        if (true || docId == "R835278790") {
-                            var x = 3
-                            var entities = documentsEntitiesMap[docId];
-                            var queryString = "";
+
+                        var entities = documentsEntitiesMap[docId];
+                        var queryString = "";
 
 
-                            queryString = JSON.stringify(entities);
-                            queryString = entities;
-                            var elasticQuery = {
-                                "doc": {
-                                    ["entities_" + globalOptions.thesaurusIndex]: queryString
-                                }
+                        queryString = JSON.stringify(entities);
+                        queryString = entities;
+                        var elasticQuery = {
+                            "doc": {
+                                ["entities_" + globalOptions.thesaurusIndex]: queryString
                             }
-
-                            serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
-                            serialize.write(elasticQuery)
                         }
+
+                        serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
+                        serialize.write(elasticQuery)
+
 
                     }
                     serialize.end();
@@ -653,7 +694,7 @@ var skosIntegrator = {
                                     "id": {
                                         "type": "keyword"
                                     },
-                                    "documents":{
+                                    "documents": {
                                         "properties": {
                                             "id": {
                                                 "type": "keyword"
@@ -719,7 +760,7 @@ var skosIntegrator = {
                         headers: {
                             'content-type': 'application/json'
                         },
-                        url: "http://localhost:9200/_bulk"
+                        url: globalOptions.elasticUrl + "/_bulk"
                     };
                     request(options, function (error, response, body) {
                         if (error)
