@@ -236,6 +236,7 @@ var Search = (function () {
 
                         return ui.showHitDetails(result.hits.hits[0])
 
+
                     })
             })
 

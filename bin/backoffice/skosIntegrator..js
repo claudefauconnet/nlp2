@@ -853,15 +853,17 @@ if (true) {
     var options = {
         // corpusIndex: "testxx",
         //  corpusIndex: "total_gm_mec",
-        corpusIndex: "gmec_par",
-        thesaurusIndex: "thesaurus_ctg",
+      corpusIndex: "bordereaux",
+       // corpusIndex: "gmec_par",
+        thesaurusIndex: "thesaurus_eurovoc",
         elasticUrl: "http://localhost:9200/",
-        excludeEntitiesPrefixs: ["SemanticTools", "PISTE", "Structure"]
+      //  excludeEntitiesPrefixs: ["SemanticTools", "PISTE", "Structure"]
         // generateThesaurusTreeMap: false,
         //  generateThesaurusJstreeWithDocuments: false
 
     }
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
+    var jstreeJsonPath ="D:\\NLP\\eurovoc_in_skos_core_concepts.json";
     //  var jstreeJsonPath = "D:\\NLP\\testTh.json";
     var data = JSON.parse("" + fs.readFileSync(jstreeJsonPath));
 
@@ -880,17 +882,26 @@ if (false) {
         uri_candidates: "http://eurovoc.europa.eu/candidates",
         uri_domains: "http://eurovoc.europa.eu/domains"
     }
+
+
     var rdfXmlPath = "D:\\NLP\\total2019_spans20191210.skos";
     var rdfXmlPath = "D:\\NLP\\Thesaurus_CTG_Skos_V1.6_201905.xml"
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
 
-
+    var rdfXmlPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf";
+    var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
     options = {
+        outputLangage: "fr",
+        extractedLangages: ["en", "fr", "sp"],
+        uri_candidates: "http://eurovoc.europa.eu/candidates",
+        uri_domains: "http://eurovoc.europa.eu/domains"
+    }
+ /*   options = {
 
         outputLangage: "en",
         extractedLangages: ["en"],
 
-    }
+    }*/
 
 
     skosIntegrator.rdfToJsTree(rdfXmlPath, options, function (err, result) {

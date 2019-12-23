@@ -21,9 +21,15 @@ var imapCrawler = {
         mailsToIndex.forEach(function (mail, pageIndex) {
             var elasticId = Math.round(Math.random() * 100000000);
 
-            var id = "" + elasticId
+            var id = "" + elasticId;
+           var fields=["Subject","From","To","Reply","Cc","text"];
+           var content="";
+            fields.forEach(function(key){
+                content+="[#"+key+"] "+mail[key]+" [/#]"
+            })
 
-            mail["attachment.content"] = mail.Subject + ";" + mail.From + ";" + mail.To + ";" + mail.Reply + ";" + mail.Cc + ";" + mail.text + ";"
+            mail["attachment.content"] =content;
+         //   mail["attachment.content"] = mail.Subject + ";" + mail.From + ";" + mail.To + ";" + mail.Reply + ";" + mail.Cc + ";" + mail.text + ";"
             str += JSON.stringify({index: {"_index": config.general.indexName, "_type": config.general.indexName, "_id": id}}) + "\r\n"
             str += JSON.stringify(mail) + "\r\n"
 

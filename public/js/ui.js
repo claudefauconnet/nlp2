@@ -25,30 +25,51 @@ var ui = (function () {
 
 
     }
-
+    self.getEntitiesLegendDiv = function () {
+        if (!context.currententityNames)
+            return "";
+        var html = "<div style='display:flex;flex-direction:column; border: solid;1px; border-radius: 5px;width: 200px'>Entities"
+        context.currententityNames.forEach(function (entity, entityIndex) {
+            html += "<em class='E_" + entityIndex + "'>" + entity + "</em>&nbsp;";
+        })
+        html += "</div>"
+        return html
+    }
 
     self.showHitDetails = function (hit) {
         var displayConfig = context.indexConfigs[hit._index].display;
         var indexLabel = context.indexConfigs[hit._index].general.label;
 
-            context.thesauri.forEach(function (thesaurus){
-       if( hit._source["entities_" +thesaurus ])
-        hit = Entities.setHitEntitiesHiglight(hit,hit._source["entities_" +thesaurus ])
-    })
-       var  hitHtml=self.getHitHtml(hit, displayConfig, "details")
-        var html = "<b> Source : </b><span class='title'>" + indexLabel + "</span><hr> " +hitHtml ;
+        context.thesauri.forEach(function (thesaurus) {
+            if (hit._source["entities_" + thesaurus])
+                hit = Entities.setHitEntitiesHiglight(hit, hit._source["entities_" + thesaurus])
+        })
+        var hitHtml = self.getHitHtml(hit, displayConfig, "details")
+
+        var entitieLegendHtml = self.getEntitiesLegendDiv();
+        var html = "<div style='flex;flex-direction=row' >" +entitieLegendHtml
+        html + "<b> Source : </b><span class='title'>" + indexLabel + "</span><hr> "
+        html += hitHtml
+        html += "</div>";
 
         $("#dialogDiv").html(html);
         $(".hlt1").css("background-color", " #FFFF00");
         $(".dialogDiv").css("top", " 100px");
         $("#dialogDiv").dialog("open")
+        var ccc = $(".entity");
+        $(".entity").bind("click", function () {
+            var x = $(this)
+            var emClass = $(this).attr('class');
+            var index = parseInt(emClass.substring(emClass.lastIndexOf("_") + 1))
+            alert(context.currententityNames[index])
+        })
 
     }
 
     self.setHighlight = function (text, highlightedWords) {
-        if(highlightedWords.length>2)
+        if (highlightedWords.length > 2)
             return text;
-        if(!text.replace)
+        if (!text.replace)
             return text;
         highlightedWords.forEach(function (word) {
             word = word.replace(/\*/g, "")
@@ -77,9 +98,9 @@ var ui = (function () {
 
     self.getHitHtml = function (hit, displayConfig, template) {
 
-        if(!displayConfig || displayConfig.length==0 && template=="details") {
-          delete  hit._source["attachment.content"]
-            return JSON.stringify(hit._source, null, 2).replace(/\n/g,"<br>")
+        if (!displayConfig || displayConfig.length == 0 && template == "details") {
+            delete hit._source["attachment.content"]
+            return JSON.stringify(hit._source, null, 2).replace(/\n/g, "<br>")
         }
 
         var words = self.getQuestionWords(context.question);
@@ -110,10 +131,10 @@ var ui = (function () {
                 fieldValue = fieldValue.replace(/\n{2}/gm, "<br>")
                 fieldValue = fieldValue.replace(/\n/gm, "<br>")
                 //format date
-                fieldValue=fieldValue.replace(/(\d{4})-(\d{2})-(\d{2}).*Z/, function(a,year,month,day){
-                    if(appConfig.locale=="Fr")
-                        return ""+day+"/"+month+"/"+year
-                    return ""+year+"/"+month+"/"+day
+                fieldValue = fieldValue.replace(/(\d{4})-(\d{2})-(\d{2}).*Z/, function (a, year, month, day) {
+                    if (appConfig.locale == "Fr")
+                        return "" + day + "/" + month + "/" + year
+                    return "" + year + "/" + month + "/" + day
                 })
             }
             if (template == "details" || [fieldName].highlightWords) {
@@ -127,21 +148,17 @@ var ui = (function () {
 
             var cssClass = line[fieldName].cssClass;
 
-            if(!cssClass)
-                cssClass="";
+            if (!cssClass)
+                cssClass = "";
 
 
-
-
-
-                if (template == "details") {
-                    fieldValue = "<span class='" +  template  +"'>" + fieldValue + "</span>";
-                    html += "<B>" + fieldLabel + " : </B>" + fieldValue + "<hr>";
-                } else {
-                    fieldValue = "<span class='" +  template  +" "+cssClass+"'><b>" + fieldValue + "</b></span>";
-                    html += fieldValue + "&nbsp;&nbsp;";
-                }
-
+            if (template == "details") {
+                fieldValue = "<span class='" + template + "'>" + fieldValue + "</span>";
+                html += "<B>" + fieldLabel + " : </B>" + fieldValue + "<hr>";
+            } else {
+                fieldValue = "<span class='" + template + " " + cssClass + "'><b>" + fieldValue + "</b></span>";
+                html += fieldValue + "&nbsp;&nbsp;";
+            }
 
 
         })

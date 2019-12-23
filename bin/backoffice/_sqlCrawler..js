@@ -129,7 +129,7 @@ var sqlCrawler = {
                                 return;
                             if (value == "0000-00-00")
                                 return;
-                            content += " " + value;
+                            content +="[#"+field+"] "+value+" [/#]";;
                             record[field] = value;
 
                         })

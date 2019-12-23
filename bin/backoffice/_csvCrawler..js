@@ -43,7 +43,7 @@ var csvCrawler = {
                             return;
                         if (value == "0000-00-00")
                             return;
-                        lineContent += value + " ; ";
+                        lineContent +=    "[#"+key+"] "+value+" [/#]"
                         record[key] = value;
 
                     })

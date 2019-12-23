@@ -451,7 +451,8 @@ var Entities = (function () {
                 fieldsEntities[offset.field].push(offset)
             })
         })
-
+context.currententityNames=entityNames;
+;
         for (var field in fieldsEntities) {
             var offsets = fieldsEntities[field]
             var content = hit._source[field];
@@ -461,7 +462,7 @@ var Entities = (function () {
                 var q=content.indexOf(offset.syn,p)
                 fieldChunks.push(content.substring(p, q))
                 p=q+offset.syn.length;
-                fieldChunks.push("<em class='E_" + entityNames.indexOf(offset.entity )+ "'>" + content.substring(q, p) + "</em>")
+                fieldChunks.push("<em class='entity E_" + entityNames.indexOf(offset.entity )+ "'>" + content.substring(q, p) + "</em>")
 
              /*   var q = offset.start;
                 fieldChunks.push(content.substring(p, q))
