@@ -162,11 +162,6 @@ var Entities = (function () {
     }
 
 
-
-
-
-
-
     self.getQuestionEntities = function (query, callback) {
 
         Search.queryElastic({
@@ -380,20 +375,20 @@ var Entities = (function () {
             context.filteredEntities[key].childrenEntities.forEach(function (entity) {
                 childrenMust.push(entity)
             })
-            mustQueries.push({"terms": {["entities_"+node.data.thesaurusName+".id"]: childrenMust}})
+            mustQueries.push({"terms": {["entities_" + node.data.thesaurusName + ".id"]: childrenMust}})
         }
 
         var options = {}
         if (mustQueries.length > 0) {
             options = {mustQueries: mustQueries}
         }
-            Search.searchPlainText(options, function (err, result) {
-               if(err)
-                   return;
+        Search.searchPlainText(options, function (err, result) {
+            if (err)
+                return;
             //   Entities.hilightEntitiesSynonyms( context.filteredEntities)
 
 
-            })
+        })
 
     }
 
@@ -403,22 +398,22 @@ var Entities = (function () {
 
     }
 
-    self.showAllEntitiesTree=function(thesaurus) {
-        self.getAllThesaurusEntities(thesaurus,function(err, buckets){
-            if(err)
-                return    $("#resultDiv").html(err);
+    self.showAllEntitiesTree = function (thesaurus) {
+        self.getAllThesaurusEntities(thesaurus, function (err, buckets) {
+            if (err)
+                return $("#resultDiv").html(err);
         })
     }
-        self.getAllThesaurusEntities=function(_thesaurus,callback) {
-            var thesaurus=_thesaurus
+    self.getAllThesaurusEntities = function (_thesaurus, callback) {
+        var thesaurus = _thesaurus
         var query = {
             query: {
                 "match_all": {}
             },
             "aggregations": {
-                ["entities_"+thesaurus ]: {
+                ["entities_" + thesaurus]: {
                     "terms": {
-                        "field": "entities_"+ thesaurus,
+                        "field": "entities_" + thesaurus,
                         "size": 500,
                         "order": {
                             "_count": "desc"
@@ -435,40 +430,57 @@ var Entities = (function () {
 
                 return callback(err)
             }
-                var buckets= result.aggregations["entities_"+thesaurus].buckets;
-                return callback(null, buckets);
+            var buckets = result.aggregations["entities_" + thesaurus].buckets;
+            return callback(null, buckets);
 
         })
     }
 
 
-   self.setHitEntitiesHiglight=function(hit,entities){
-        var fieldsoffsets={};
-        var content=hit._source["attachment.content"];
-        var p=0
-       for (var key in hit._source){
-           p=content.indexOf(hit._source[key],p);
-           fieldsoffsets[key]={start:p,entities:{}};
-           p+=1;
-       }
-     entities.forEach(function(entity){
-         entity.offsets.forEach(function(offset){
-            for (var key in fieldsoffsets){
-                if( fieldsoffsets[key].start >-1 && fieldsoffsets[key].start>=offset.start) {
-                    if (!fieldsoffsets[key].entities)
-                        fieldsoffsets[key].entities = {}
-                    fieldsoffsets[key].entities[entity.id] = offset.start - fieldsoffsets[key].start
-                }
-            }
-         })
+    self.setHitEntitiesHiglight = function (hit, entities) {
 
-     })
+        // content.trim();
+       var  fieldsEntities = {};
+        var entityNames=[]
+        entities.forEach(function (entity) {
+            entityNames.push(entity.id)
+            entity.offsets.forEach(function (offset) {
+                if (!fieldsEntities[offset.field])
+                    fieldsEntities[offset.field] = []
+                offset.entity = entity.id
+                fieldsEntities[offset.field].push(offset)
+            })
+        })
 
-var x=fieldsoffsets;
+        for (var field in fieldsEntities) {
+            var offsets = fieldsEntities[field]
+            var content = hit._source[field];
+            var fieldChunks = [];
+            var p = 0;
+            offsets.forEach(function (offset) {
+                var q=content.indexOf(offset.syn,p)
+                fieldChunks.push(content.substring(p, q))
+                p=q+offset.syn.length;
+                fieldChunks.push("<em class='E_" + entityNames.indexOf(offset.entity )+ "'>" + content.substring(q, p) + "</em>")
 
-return hit;
+             /*   var q = offset.start;
+                fieldChunks.push(content.substring(p, q))
+                p = q + offset.syn.length*/
+            //    fieldChunks.push("<em class='E_" + entityNames.indexOf(offset.entity )+ "'>" + content.substring(q, p) + "</em>")
+
+            })
+            var str = ""
+            fieldChunks.forEach(function (chunk) {
+                str += chunk;
+            })
+            hit._source[field] = str;
+
+
+        }
+
+
+        return hit;
     }
-
 
 
     return self;

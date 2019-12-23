@@ -248,7 +248,7 @@ var skosIntegrator = {
 
                 //set corpusIndexTextMappings
                 function (callbackSeries) {
-            return callbackSeries();
+                    return callbackSeries();
                     var options = {
                         method: 'GET',
                         headers: {
@@ -264,7 +264,7 @@ var skosIntegrator = {
                         var recurse = function (obj, parent) {
                             if (typeof obj == "object") {
                                 for (var key in obj) {
-                                    if (parent && parent!="content" && key == "type" && obj[key] == "text") {
+                                    if (parent && parent != "content" && key == "type" && obj[key] == "text") {
                                         textFields.push(parent)
                                     } else {
                                         parent = key
@@ -347,10 +347,10 @@ var skosIntegrator = {
                                 }
                             })
                             if (queryString.length > 0) {
-                              /*  var highligthFields={};
-                                corpusIndexTextFields.forEach(function(field){
-                                    highligthFields[field]={ "number_of_fragments": 0};
-                                })*/
+                                /*  var highligthFields={};
+                                  corpusIndexTextFields.forEach(function(field){
+                                      highligthFields[field]={ "number_of_fragments": 0};
+                                  })*/
                                 entities[entityIndex].elasticQuery = {
 
 
@@ -369,7 +369,7 @@ var skosIntegrator = {
                                     "highlight": {
                                         "number_of_fragments": 0,
                                         "fragment_size": 0,
-                                        "fields": {"attachment.content":{}}
+                                        "fields": {"attachment.content": {}}
                                     }
                                 }
 
@@ -419,7 +419,9 @@ var skosIntegrator = {
                             }
                             var hits = response.hits.hits;
                             if (responseIndex == 74)
-                                var xx = 3
+                                var xx = 3;
+
+                            var splitFieldContentRegEx = /\[#([^\].]*)\]([^\[\\.]*)/gm
                             var highlightRegEx = /<em[^\/]*?>([^<]*)<\/em>/gm;
 
                             hits.forEach(function (hit) {
@@ -428,18 +430,28 @@ var skosIntegrator = {
 
                                 entities[queriedEntities[responseIndex]].documents.push(document);
                                 totalAnnotations += 1;
-                                var offsets = []
-                                if (hit.highlight ){//&& hit.highlight[globalOptions.searchField]) {
+                                var offsets = [];
+
+
+                                if (hit.highlight) {//&& hit.highlight[globalOptions.searchField]) {
                                     hit.highlight[globalOptions.searchField].forEach(function (highlight) {
                                         var array = [];
 
-                                        while ((array = highlightRegEx.exec(highlight)) != null) {
 
-                                            var end = highlightRegEx.lastIndex - 5
-                                            var offset={syn:array[1],start: end-(array[1].length)}
-                                            offsets.push(offset)
+                                        var fieldContents = {};
 
+                                        while ((array = splitFieldContentRegEx.exec(highlight)) != null) {
+                                            fieldContents[array[1]] = array[2]
+                                        }
+                                        for (var field in fieldContents) {
+                                            var array = [];
+                                            while ((array = highlightRegEx.exec(fieldContents[field])) != null) {
 
+                                                var end = highlightRegEx.lastIndex - 5
+                                                var offset = {field: field, syn: array[1], start: end - (array[1].length)}
+                                                offsets.push(offset)
+
+                                            }
                                         }
 
 

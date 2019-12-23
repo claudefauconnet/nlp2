@@ -61,7 +61,7 @@ var jsonCrawler = {
                       keysToImport.forEach(function(key){
                           if(record[key] && record[key]!=""){
                               obj[key]= record[key];
-                              lineContent+=record[key]+" ; "
+                              lineContent+="[#"+key+"] "+record[key]+" [/#]"
                           }
 
                       })
