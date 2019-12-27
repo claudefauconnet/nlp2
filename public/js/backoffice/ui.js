@@ -109,7 +109,7 @@ var ui = (function () {
     self.onIndexationFormOK = function (data) {
         context.currentIndexationConfig = data.indexation;
         $("#mainDiv").html(
-            "<div><button onclick='configEditor.saveIndexationConfig()'>save indexation config</button> "
+            "<div><button onclick='configEditor.saveIndexationConfig(null,true)'>save indexation config</button> "
             + "<button onclick='indexes.runIndexation()'>run indexation</button> " +
             "</div><div id='socketDiv'  style='font: italic 18px;color:blue'></div>"
         );
@@ -124,6 +124,8 @@ var ui = (function () {
         $("#mainDiv").html("");
 
     }
+
+
 
 
     return self;

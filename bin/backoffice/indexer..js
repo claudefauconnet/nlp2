@@ -12,7 +12,9 @@ var sqlCrawler = require("./_sqlCrawler.");
 var csvCrawler = require("./_csvCrawler.");
 var imapCrawler = require("./_imapCrawler.");
 var jsonCrawler = require("./_jsonCrawler.");
-var elasticRestProxy=require("../elasticRestProxy.");
+var elasticRestProxy = require("../elasticRestProxy.");
+
+var annotator_skos = require("./annotator_skos.")
 
 var indexer = {
 
@@ -114,7 +116,7 @@ var indexer = {
                                     "raw": {
                                         "type": "keyword",
                                         "ignore_above": 256,
-                                       // "search_analyzer": "case_insentisitive",
+                                        // "search_analyzer": "case_insentisitive",
                                     }
                                 }
                             }
@@ -177,7 +179,7 @@ var indexer = {
                                 url: elasticUrl + index + "/_search"
                             };
 
-                            elasticRestProxy.executePostQuery(elasticUrl + index + "/_search",query,function(err, result){
+                            elasticRestProxy.executePostQuery(elasticUrl + index + "/_search", query, function (err, result) {
                                 var hits = result.hits.hits;
                                 resultSize = hits.length;
                                 offset += resultSize;
@@ -188,7 +190,6 @@ var indexer = {
 
                                 return callbackWhilst();
                             })
-
 
 
                         }, function (err) {
@@ -233,8 +234,40 @@ var indexer = {
                         return callbackSeries("no valid connector type declared");
 
 
-                }
+                },
 
+
+                //******run thesaurusAnnotator *************
+                function (callbackSeries) {
+                    if (!config.thesauri)
+                        return callbackSeries();
+
+                    var thesauri = Object.keys(config.thesauri)
+                    async.eachSeries(thesauri, function (thesaurus, callbackEach) {
+                        var thesaurusConfig = config.thesauri[thesaurus];
+                        annotator_skos.annotateCorpusFromRDFfile(thesaurusConfig, index,elasticUrl, function (err, result) {
+                            if (err)
+                                return callbackEach(err);
+                            callbackEach()
+                        });
+                    }, function (err) {
+                        if (err)
+                            return callbackSeries(err);
+                        callbackSeries();
+
+                    })
+
+                },
+                //******run entitiesAnnotator *************
+                function (callbackSeries) {
+
+                    return callbackSeries();
+                },
+                //******run regexAnnotator *************
+                function (callbackSeries) {
+
+                    return callbackSeries();
+                }
             ],
 
             function (err) {
@@ -295,8 +328,6 @@ var indexer = {
         })
     }
 }
-
-
 
 
 module.exports = indexer;

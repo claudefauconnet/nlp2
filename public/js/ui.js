@@ -30,7 +30,7 @@ var ui = (function () {
             return "";
         var html = "<div style='display:flex;flex-direction:column; border: solid;1px; border-radius: 5px;width: 200px'>Entities"
         context.currententityNames.forEach(function (entity, entityIndex) {
-            html += "<em class='E_" + entityIndex + "'>" + entity + "</em>&nbsp;";
+            html += "<em  class='E_" + entityIndex + "'>" + entity + "</em>&nbsp;";
         })
         html += "</div>"
         return html
@@ -40,28 +40,30 @@ var ui = (function () {
         var displayConfig = context.indexConfigs[hit._index].display;
         var indexLabel = context.indexConfigs[hit._index].general.label;
 
-        context.thesauri.forEach(function (thesaurus) {
+        for(var thesaurus in context.thesauri) {
             if (hit._source["entities_" + thesaurus])
                 hit = Entities.setHitEntitiesHiglight(hit, hit._source["entities_" + thesaurus])
-        })
+        }
         var hitHtml = self.getHitHtml(hit, displayConfig, "details")
 
         var entitieLegendHtml = self.getEntitiesLegendDiv();
-        var html = "<div style='flex;flex-direction=row' >" +entitieLegendHtml
-        html + "<b> Source : </b><span class='title'>" + indexLabel + "</span><hr> "
-        html += hitHtml
+        var html="<div id='entityExtractDiv'></div>"
+        html+= "<div style='display:flex;flex-direction:row' >" +entitieLegendHtml
+        html +="<div id='detailsContentDiv'> <b> Source : </b><span class='title'>" + indexLabel + "</span><hr> "
+        html += hitHtml+"</div>"
         html += "</div>";
 
         $("#dialogDiv").html(html);
         $(".hlt1").css("background-color", " #FFFF00");
         $(".dialogDiv").css("top", " 100px");
         $("#dialogDiv").dialog("open")
-        var ccc = $(".entity");
-        $(".entity").bind("click", function () {
+
+        $("em[class^='E_']").bind("click", function () {
             var x = $(this)
             var emClass = $(this).attr('class');
-            var index = parseInt(emClass.substring(emClass.lastIndexOf("_") + 1))
-            alert(context.currententityNames[index])
+           // var index = parseInt(emClass.substring(emClass.lastIndexOf("_") + 1))
+            Entities.showEntityExtracts(emClass)
+
         })
 
     }

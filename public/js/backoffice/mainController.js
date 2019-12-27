@@ -71,6 +71,9 @@ var mainController = (function () {
         socket.on('messages', function (message) {
 
             if (message || message.length > 0)
+                if(context.socketAppend)
+                    return $("#socketDiv").append("<i>" + message + "<i><br>");
+                else
                 return $("#socketDiv").html("<i>" + message + "<i>");
 
 

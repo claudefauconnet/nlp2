@@ -9,7 +9,7 @@ var ndjson = require('ndjson');
 const socket = require('../../routes/socket.js');
 const elasticRestProxy = require('../elasticRestProxy..js')
 
-var skosIntegrator = {
+var annotator_skos = {
 
 
     rdfToJsTree: function (sourcePath, options, callback) {
@@ -106,15 +106,45 @@ var skosIntegrator = {
                     }
                 }
             }
+            // set internal_id as concat of all ancestors separated by "-"
+            for (var key in treeMap) {
+                var concept = treeMap[key];
+                var str = "";
+
+                if (concept.ancestors) {
+
+                    concept.ancestors.forEach(function (ancestorId, index) {
+                        var ancestor = treeMap[ancestorId];
+
+                        if (ancestor && ancestor.parent && ancestor.parent != "#") {
+                            if (str != "")
+                                str += "-";
+                            str += ancestor.text;
+
+                        }
+                    })
+                    if (!concept.text)
+                        concept.text = "?"
+                    if (str != "")
+                        treeMap[key].internal_id = str + "-" + concept.text;
+                    else
+                        treeMap[key].internal_id = concept.text;
+
+
+                }
+            }
+
+
             var conceptsArray = []
             for (var key in treeMap) {
                 if (!treeMap[key].parent)
                     treeMap[key].parent = "#"
+
                 conceptsArray.push(treeMap[key])
             }
             return conceptsArray;
-
         }
+
 
         var conceptsMap = {}
         var currentConcept = null;
@@ -210,8 +240,14 @@ var skosIntegrator = {
             callback(null, conceptsArray)
         })
 
-        fs.createReadStream(sourcePath)
-            .pipe(saxStream)
+        if (fs.existsSync(sourcePath)) {
+            fs.createReadStream(sourcePath)
+                .pipe(saxStream)
+        } else {
+            callback("No such File " + sourcePath);
+        }
+
+
     },
 
 
@@ -249,6 +285,8 @@ var skosIntegrator = {
                 //set corpusIndexTextMappings
                 function (callbackSeries) {
                     return callbackSeries();
+
+
                     var options = {
                         method: 'GET',
                         headers: {
@@ -286,6 +324,7 @@ var skosIntegrator = {
                 function (callbackSeries) {
                     if (!globalOptions.excludeEntitiesPrefixs)
                         return callbackSeries();
+
                     var filteredEntitiesMap = {};
                     entities.forEach(function (entity, entityIndex) {
                         var ok = true;
@@ -324,7 +363,7 @@ var skosIntegrator = {
 
 
                     entities.forEach(function (entity, entityIndex) {
-                        entities[entityIndex].source_id = entities[entityIndex].id
+                        entities[entityIndex].internal_id = entities[entityIndex].internal_id
 
                         if (entityIndex > globalOptions.maxEntities)
                             return callbackSeries();
@@ -347,10 +386,7 @@ var skosIntegrator = {
                                 }
                             })
                             if (queryString.length > 0) {
-                                /*  var highligthFields={};
-                                  corpusIndexTextFields.forEach(function(field){
-                                      highligthFields[field]={ "number_of_fragments": 0};
-                                  })*/
+
                                 entities[entityIndex].elasticQuery = {
 
 
@@ -393,7 +429,7 @@ var skosIntegrator = {
                         }
                     })
                     serialize.end();
-                    //   console.log(ndjsonStr)
+
                     var options = {
                         method: 'POST',
                         body: ndjsonStr,
@@ -406,11 +442,11 @@ var skosIntegrator = {
 
                     request(options, function (error, response, body) {
                         if (error)
-                            return callbackSeries(err);
+                            return callbackSeries(error);
                         var json = JSON.parse(response.body);
                         var responses = json.responses;
                         var totalAnnotations = 0
-                        responses.forEach(function (response, responseIndex) {
+                        responses.forEach(function s(response, responseIndex) {
                             entities[queriedEntities[responseIndex]].documents = [];
                             if (response.error) {
                                 console.log(JSON.stringify(response.error.root_cause))
@@ -443,6 +479,10 @@ var skosIntegrator = {
                                         while ((array = splitFieldContentRegEx.exec(highlight)) != null) {
                                             fieldContents[array[1]] = array[2]
                                         }
+                                        if (Object.keys(fieldContents).length == 0) {// no fields
+                                            fieldContents[globalOptions.searchField] = highlight
+                                        }
+
                                         for (var field in fieldContents) {
                                             var array = [];
                                             while ((array = highlightRegEx.exec(fieldContents[field])) != null) {
@@ -469,8 +509,7 @@ var skosIntegrator = {
                 function (callbackSeries) {// set map of entities for eachDocument
 
                     entities.forEach(function (entity) {
-                        if (entity.id == "http://www.proxem.com/onto/concept#Component-SurgeSystem")
-                            var xx = 3
+
                         if (!entity.documents)
                             return;
                         entity.documents.forEach(function (doc) {
@@ -478,8 +517,8 @@ var skosIntegrator = {
                             if (!documentsEntitiesMap[doc.id])
                                 documentsEntitiesMap[doc.id] = []
 
-                            var entityId = entity.id.substring(entity.id.indexOf("#") + 1)
-                            documentsEntitiesMap[doc.id].push({id: entityId, offsets: doc.entityOffsets})
+                            //  var entityId = entity.id.substring(entity.id.indexOf("#") + 1)
+                            documentsEntitiesMap[doc.id].push({id: entity.internal_id, offsets: doc.entityOffsets})
 
                         })
                     })
@@ -521,6 +560,8 @@ var skosIntegrator = {
 
 
                 function (callbackSeries) {//delete thesaurus field in corpus index
+                    if (!globalOptions.append)
+                        return callbackSeries();
                     var script = {
                         "script": "ctx._source.remove('" + "entities_" + globalOptions.thesaurusIndex + "')",
                         "query": {
@@ -554,12 +595,15 @@ var skosIntegrator = {
                 },
 
                 function (callbackSeries) {// create /update mappings for entity field
+                    if (globalOptions.append)
+                        return callbackSeries();
                     var json = {
                         [globalOptions.corpusIndex]: {
                             "properties": {
                                 ["entities_" + globalOptions.thesaurusIndex]: {
                                     //   "type": "keyword"
                                     "properties": {
+
                                         id: {type: "keyword"},
                                         offsets: {
                                             "properties": {
@@ -659,6 +703,9 @@ var skosIntegrator = {
                 function (callbackSeries) {
                     if (!globalOptions.thesaurusIndex)
                         return callbackSeries();
+                    if (globalOptions.append)
+                        return callbackSeries();
+
                     var options = {
                         method: 'HEAD',
                         headers: {
@@ -694,6 +741,8 @@ var skosIntegrator = {
                 // create thesaurus index
                 function (callbackSeries) {
                     if (!globalOptions.thesaurusIndex)
+                        return callbackSeries();
+                    if (globalOptions.append)
                         return callbackSeries();
 
                     var json = {
@@ -798,6 +847,59 @@ var skosIntegrator = {
 
 
     },
+    annotateCorpusFromRDFfile: function (thesaurusConfig, index, elasticUrl, callback) {
+        var thesaurusIndexName = thesaurusConfig.name.toLowerCase()
+        socket.message("Parsing  thesaurus " + thesaurusIndexName + " from file " + thesaurusConfig.skosXmlPath)
+        annotator_skos.rdfToJsTree(thesaurusConfig.skosXmlPath, thesaurusConfig, function (err, result) {
+            if (err)
+                return callback(err);
+            var entities = result;
+            socket.message("extracted " + entities.length + "entities  from thesaurus from file " + thesaurusConfig.skosXmlPath)
+            var fetchSize = 1500
+            var options = {
+                corpusIndex: index,
+                thesaurusIndex: "thesaurus_" + thesaurusIndexName,
+                elasticUrl: elasticUrl
+            }
+
+
+            var slicedData = [];
+            var p = 0;
+            var q = 0;
+            do {
+                q = p + fetchSize;
+                slicedData.push(entities.slice(p, q));
+                p = q;
+
+            } while (p < entities.length)
+
+
+            var i = 0;
+            socket.message("Starting annotation of index " + options.corpusIndex + "with thesaurus " + options.thesaurusIndex)
+            async.eachSeries(slicedData, function (slice, callbackEach) {
+                    if (i > 0)
+                        options.append = true
+                    annotator_skos.annotateCorpus(slice, options, function (err, result) {
+                        if (err) {
+                            console.log("ERROR :" + err)
+                            return callbackEach(err);
+                        }
+                        i++;
+                        socket.message("extracted  entities  from " + fetchSize * i + " documents")
+
+                        return callbackEach();
+                    })
+                }, function (err) {
+                    if (err)
+                        return callback(err);
+                    socket.message("Finished annotation of index " + options.corpusIndex + "with thesaurus " + options.thesaurusIndex)
+                    callback(null, "ALL DONE")
+                }
+            )
+
+
+        })
+    },
 
 
     getDocumentsEntitiesHierarchy: function (elasticUrl, thesaurusIndex, selectedentities, callback) {
@@ -830,7 +932,7 @@ var skosIntegrator = {
 
 }
 
-module.exports = skosIntegrator;
+module.exports = annotator_skos;
 
 
 var rdfXmlPath = "C:\\Users\\claud\\Downloads\\eurovoc_in_skos_core_concepts.rdf";
@@ -843,35 +945,69 @@ var jstreeJsonPathAnnotated = "D:\\GitHub\\souslesensGraph\\souslesensGraph\\pub
 
 if (false) {
     var entities = ["Component-Valve-AntiSurgeValve"]
-    skosIntegrator.getDocumentsEntitiesHierarchy("http://localhost:9200/", "thesaurus_ctg", entities, function (err, result) {
+    annotator_skos.getDocumentsEntitiesHierarchy("http://localhost:9200/", "thesaurus_ctg", entities, function (err, result) {
 
     })
 
 }
 
-if (true) {
+if (false) {
     var options = {
         // corpusIndex: "testxx",
         //  corpusIndex: "total_gm_mec",
-      corpusIndex: "bordereaux",
-       // corpusIndex: "gmec_par",
+        corpusIndex: "bordereaux",
+        // corpusIndex: "gmec_par",
         thesaurusIndex: "thesaurus_eurovoc",
         elasticUrl: "http://localhost:9200/",
-      //  excludeEntitiesPrefixs: ["SemanticTools", "PISTE", "Structure"]
+        //  excludeEntitiesPrefixs: ["SemanticTools", "PISTE", "Structure"]
         // generateThesaurusTreeMap: false,
         //  generateThesaurusJstreeWithDocuments: false
 
     }
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
-    var jstreeJsonPath ="D:\\NLP\\eurovoc_in_skos_core_concepts.json";
+    var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
     //  var jstreeJsonPath = "D:\\NLP\\testTh.json";
     var data = JSON.parse("" + fs.readFileSync(jstreeJsonPath));
 
-    skosIntegrator.annotateCorpus(data, options, function (err, result) {
-        if (err)
-            return console.log("ERROR :" + err)
-        console.log("Done")
-    })
+    if (data.length < 1500) {
+        annotator_skos.annotateCorpus(data, options, function (err, result) {
+            if (err)
+                return console.log("ERROR :" + err)
+            console.log("Done")
+        })
+    } else {
+
+        var slicedData = [];
+        var p = 0;
+        var q = 0;
+        do {
+            q = p + 1000;
+            slicedData.push(data.slice(p, q));
+            p = q;
+
+        } while (p < data.length)
+        var i = 0;
+        async.eachSeries(slicedData, function (slice, callbackEach) {
+                if (i > 0)
+                    options.append = true
+                annotator_skos.annotateCorpus(slice, options, function (err, result) {
+                    if (err) {
+                        console.log("ERROR :" + err)
+                        return callbackEach(err);
+                    }
+                    i++;
+                    console.log("Done " + 1000 * i)
+                    return callbackEach();
+                })
+            }, function (err) {
+                if (err)
+                    return console.log(err);
+                return console.log("ALL DONE")
+            }
+        )
+
+
+    }
 
 }
 
@@ -896,15 +1032,15 @@ if (false) {
         uri_candidates: "http://eurovoc.europa.eu/candidates",
         uri_domains: "http://eurovoc.europa.eu/domains"
     }
- /*   options = {
+    /*   options = {
 
-        outputLangage: "en",
-        extractedLangages: ["en"],
+           outputLangage: "en",
+           extractedLangages: ["en"],
 
-    }*/
+       }*/
 
 
-    skosIntegrator.rdfToJsTree(rdfXmlPath, options, function (err, result) {
+    annotator_skos.rdfToJsTree(rdfXmlPath, options, function (err, result) {
         var str = JSON.stringify(result, null, 2);
         fs.writeFileSync(jstreeJsonPath, str);
     })

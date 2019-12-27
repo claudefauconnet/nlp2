@@ -169,7 +169,9 @@ var indexes = (function () {
 
 
     self.runIndexation = function () {
-        $("#messageDiv").html("")
+        $("#messageDiv").html("");
+        $("#socketDiv").html("");
+        context.socketAppend=true;
         var config = context.indexConfigs[context.currentIndexName];
         var indexationConfig = context.currentIndexationConfig;
         config.indexation = indexationConfig;
@@ -185,11 +187,12 @@ var indexes = (function () {
             success: function (data, textStatus, jqXHR) {
 
                 $("#messageDiv").html("done")
-
+                context.socketAppend=null;
             }
             , error: function (err) {
                 $("#messageDiv").html("error" + err.responseText)
                 console.log(err.responseText)
+                context.socketAppend=null;
 
             }
 

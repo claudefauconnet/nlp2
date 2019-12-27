@@ -1,6 +1,6 @@
 var Entities = (function () {
     var self = {}
-    self.thesauri = {}
+    context.thesauri = {}
     self.jsTreeNodesMap = {}
 
     self.loadUserThesauri = function (userGroups, callback) {
@@ -14,7 +14,7 @@ var Entities = (function () {
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
-                context.thesauri = data;
+                context.thesauri = {[data]: {}};
                 callback(null, data);
 
             }
@@ -30,14 +30,14 @@ var Entities = (function () {
     self.showThesaurusEntities = function (thesaurusName, aggregation, callback) {
 
 
-        self.thesauri[thesaurusName] = {foundEntities: aggregation.buckets};
-
+        context.thesauri[thesaurusName] = {foundEntities: aggregation.buckets};
+        context.currentThesaurus = thesaurusName;
 
         async.series([
             // get ancestors from entities in docs
             function (callbackSeries) {
-                for (var thesaurusName in self.thesauri) {
-                    var entities = self.thesauri[thesaurusName].foundEntities;
+                for (var thesaurusName in context.thesauri) {
+                    var entities = context.thesauri[thesaurusName].foundEntities;
                     entities.sort(function (a, b) {
                         if (a.key > b.key)
                             return 1;
@@ -203,7 +203,7 @@ var Entities = (function () {
                         query: {
 
                             "terms": {
-                                "source_id": parentEntities
+                                "internal_id": parentEntities
                             }
 
                         }
@@ -339,7 +339,7 @@ var Entities = (function () {
 
             var leafChildrenEntities = [];
 
-            self.thesauri[node.data.thesaurusName].foundEntities.forEach(function (entity) {
+            context.thesauri[node.data.thesaurusName].foundEntities.forEach(function (entity) {
                 // take only leaf children entities
                 self.jsTreeNodesMap[node.id].data.descendants.forEach(function (descendant) {
                     if (self.jsTreeNodesMap[descendant].data.descendants.length == 0)
@@ -440,8 +440,8 @@ var Entities = (function () {
     self.setHitEntitiesHiglight = function (hit, entities) {
 
         // content.trim();
-       var  fieldsEntities = {};
-        var entityNames=[]
+        var fieldsEntities = {};
+        var entityNames = []
         entities.forEach(function (entity) {
             entityNames.push(entity.id)
             entity.offsets.forEach(function (offset) {
@@ -451,30 +451,41 @@ var Entities = (function () {
                 fieldsEntities[offset.field].push(offset)
             })
         })
-context.currententityNames=entityNames;
-;
+
+        context.currententityNames = entityNames;
+        ;
         for (var field in fieldsEntities) {
             var offsets = fieldsEntities[field]
             var content = hit._source[field];
+            if (!content) {
+                var array = field.split(".")
+                content = hit._source[array[0]][array[1]]
+            }
             var fieldChunks = [];
             var p = 0;
             offsets.forEach(function (offset) {
-                var q=content.indexOf(offset.syn,p)
+                var q = content.indexOf(offset.syn, p)
                 fieldChunks.push(content.substring(p, q))
-                p=q+offset.syn.length;
-                fieldChunks.push("<em class='entity E_" + entityNames.indexOf(offset.entity )+ "'>" + content.substring(q, p) + "</em>")
+                p = q + offset.syn.length;
+                fieldChunks.push("<em class='entity E_" + entityNames.indexOf(offset.entity) + "'>" + content.substring(q, p) + "</em>")
 
-             /*   var q = offset.start;
-                fieldChunks.push(content.substring(p, q))
-                p = q + offset.syn.length*/
-            //    fieldChunks.push("<em class='E_" + entityNames.indexOf(offset.entity )+ "'>" + content.substring(q, p) + "</em>")
+                /*   var q = offset.start;
+                   fieldChunks.push(content.substring(p, q))
+                   p = q + offset.syn.length*/
+                //    fieldChunks.push("<em class='E_" + entityNames.indexOf(offset.entity )+ "'>" + content.substring(q, p) + "</em>")
 
             })
             var str = ""
             fieldChunks.forEach(function (chunk) {
                 str += chunk;
             })
-            hit._source[field] = str;
+
+            if (!hit._source[field]) {
+                var array = field.split(".")
+                if (hit._source[array[0]][array[1]])
+                    hit._source[array[0]][array[1]] = str
+            } else
+                hit._source[field] = str;
 
 
         }
@@ -483,6 +494,30 @@ context.currententityNames=entityNames;
         return hit;
     }
 
+    self.showEntityExtracts = function (emClass) {
+        // var entities = context.thesauri[context.currentThesaurus].foundEntities;
+
+        var html = $("#detailsContentDiv").html();
+        //var regex=new RegExp("<em class='entity "+emClass+"'>","gm");
+        //  var array;
+        var p = 0;
+        var q = 0;
+        var extracts = [];
+
+        do {
+            q = html.indexOf(emClass, p);
+            if (q > -1) {
+                extracts.push(html.substring(Math.max(0, q - 40), Math.min(html.length - 1, q + 40))+"...<br>");
+                p=q+2;
+            }
+        } while (q > -1)
+        var str = "";
+        extracts.forEach(function (extract) {
+            str += "..." + extract + "..."
+        })
+
+        $("#entityExtractDiv").html(str)
+    }
 
     return self;
 

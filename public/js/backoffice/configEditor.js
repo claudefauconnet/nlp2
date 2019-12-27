@@ -269,10 +269,16 @@ var configEditor = (function () {
         }
 
 
-        self.saveIndexationConfig = function () {
-            var config = context.indexConfigs[context.currentIndexName];
-            var indexationConfig = context.currentIndexationConfig;
-            config.indexation = indexationConfig;
+        self.saveIndexationConfig = function (index,withIndexationConfig) {
+            if(context.currentIndexName && !index)
+               return  alert("No index selected")
+            if(!index)
+                index=context.currentIndexName;
+            var config = context.indexConfigs[index];
+            if(withIndexationConfig) {
+                var indexationConfig = context.currentIndexationConfig;
+                config.indexation = indexationConfig;
+            }
             indexes.saveIndexConfig(config.general.indexName, JSON.stringify(config, null, 2), function (err, result) {
                 $("#messageDiv").html("configuration saved");
             })

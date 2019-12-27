@@ -125,9 +125,9 @@ var Search = (function () {
                             "terms": {"field": "_index"}
                         }
                     }
-                    context.thesauri.forEach(function (thesaurus) {
+                   for(var thesaurus in context.thesauri) {
                         aggregations["entities_" + thesaurus] = {"terms": {"field": "entities_" + thesaurus+".id", "size": 50, "order": {"_count": "desc"}}};
-                    })
+                    }
 
 
                     Search.queryElastic({
@@ -163,9 +163,9 @@ var Search = (function () {
                             self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
 
                             self.thesauri = {}
-                            context.thesauri.forEach(function (thesaurus) {
+                           for(var thesaurus in context.thesauri) {
                                 Entities.showThesaurusEntities(thesaurus, result.aggregations["entities_" + thesaurus]);
-                            })
+                            }
 
 
                             context.currentHits = result.hits.hits;
