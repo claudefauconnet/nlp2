@@ -44,7 +44,7 @@ var visjsGraph = (function () {
                 else
                     self.network.startSimulation();
                 simulationOn = !simulationOn;
-              GraphController.hideNodePopover();
+            // graphController.hideNodePopover();
             }
 
             // select node
@@ -59,7 +59,7 @@ var visjsGraph = (function () {
                     ctrlKey:(params.event.srcEvent.ctrlKey?1:0)
                 }
 
-                GraphController.onNodeClicked(node, point,options)
+               graphController.onNodeClicked(node, point,options)
 
 
             }
@@ -71,7 +71,7 @@ var visjsGraph = (function () {
                 edge.fromNode = self.data.nodes.get(edge.from);
                 edge.toNode = self.data.nodes.get(edge.to);
                 var point = params.pointer.DOM;
-                GraphController.onEdgeClicked(edge, point)
+                graphController.onEdgeClicked(edge, point)
             }
 
             }).on("zoom", function (params) {
@@ -138,6 +138,7 @@ var visjsGraph = (function () {
         if (!self.currentScale || Math.abs(scale - self.currentScale) > .01) {
 
             var scaleCoef = scale >= 1 ? (scale * .9) : (scale * 2)
+
             var size = Config.visjs.defaultNodeSize / scaleCoef;
             var fontSize = (Config.visjs.defaultTextSize / (scaleCoef));
             if (scale < 1)
@@ -147,14 +148,20 @@ var visjsGraph = (function () {
 
             var nodes = self.data.nodes.get();
             nodes.forEach(function (node) {
-
+if(node.size) {
+    if(!node.originalSize)
+        node.originalSize= node.size
+    size = node.originalSize * scaleCoef
+}
+if(!node.hiddenLabel)
+    node.hiddenLabel=node.label
                 var shape = node.shape;
                 if (!shape)
                     shape = Config.visjs.defaultNodeShape;
                 if (shape != "box") {
 
                     if (scale > Config.visjs.showNodesLabelMinScale) {
-                        node.label=node.ishidden ? null : node.hiddenLabel;
+                        node.label= node.hiddenLabel;
                         node.size= size;
                         node.font={size: fontSize}
                         self.labelsVisible = true;

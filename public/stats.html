@@ -16,11 +16,15 @@
 
 
     <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/jquery/jquery-ui.min.js"></script>
+    <link href="js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+
     <script src="js/others/d3/d3.v5.js" charset="utf-8"></script>
     <script src="js/graph/drawCanvas.js"></script>
     <script src="js/graph/visjsGraph2.js"></script>
     <script src="js/config.js"></script>
     <script src="js/statistics.js"></script>
+    <script src="js/graph/graphController.js"></script>
 
     <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
     <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
@@ -30,7 +34,21 @@
 
     <script>
 
-
+        $( function() {
+            $( "#slider" ).slider({
+                min: graphController.sliderIndexMin,
+                max:graphController.sliderIndexMax,
+                step:10,
+                slide: function( event, ui ) {
+                    var value = ui.value;
+                    if(value>graphController.sliderEdges.index)
+                    visjsGraph.data.edges.add(graphController.sliderEdges.slice(graphController.sliderEdges.index,value));
+                    else
+                        visjsGraph.data.edges.remove(graphController.sliderEdges.slice(value,graphController.sliderEdges.index));
+                    graphController.sliderEdges.index=value;
+                }
+            });
+        } );
 
     </script>
 
@@ -43,6 +61,8 @@
        word <input id="queryStringInput" style="width: 200px;">  <input id="entityQueryStringInput" style="width: 200px;" value="valve">
         <button onclick="statistics.drawHeatMap()">draw heatMap</button>
         <button onclick="statistics.drawGraph()">draw graph</button>
+        <button onclick="statistics.startGraph()">start graph</button>
+        <div id="slider" ></div>
         <div id="graphDiv" style="width:800px;height: 800px;"></div>
     </div>
     <div id="right">

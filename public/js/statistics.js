@@ -109,7 +109,7 @@ var statistics = (function () {
             var query = {
                 "match_all": {}
             };
-            drawCanvas.drawAll({onclickFn: statistics.onRectClick, query: query});
+            return callback(null, query);
 
         }
 
@@ -125,10 +125,17 @@ var statistics = (function () {
 
     self.drawGraph = function () {
         self.getEntitiesQuery(function (err, result) {
+            if (err)
+                return console.log(err);
             var url = "./heatMap"
-            if (result && result.terms && result.terms["documents.id"].length > 0) {
-                var ids = result.terms["documents.id"];
-                var query = {terms: {"documents.id": ids}}
+            if (result) {
+
+                if (result.terms && result.terms["documents.id"].length > 0) {
+                    var ids = result.terms["documents.id"];
+                    var query = {terms: {"documents.id": ids}}
+                } else
+                    query = result  //match_all
+
                 var queryStr = encodeURIComponent(JSON.stringify(query))
                 url += "?query=" + queryStr
             }
@@ -137,34 +144,9 @@ var statistics = (function () {
                 type: "GET",
                 url: url,
                 dataType: "json",
+
                 success: function (data, textStatus, jqXHR) {
-
-                    var xx = data;
-                    var nodes=[];
-                    var edges=[];
-                    data.labels.forEach(function (label,labelIndex) {
-                        var node = {
-                            id:"E_"+labelIndex,
-                            color: "red",
-                            label: "" + label
-                        }
-                        nodes.push(node);
-                        data.data[labelIndex].forEach(function(col,colIndex){
-                            if(col>20){
-                               var edge ={
-                                   from:"E_"+labelIndex,
-                                   to:"E_"+colIndex,
-
-
-                               }
-                                edges.push(edge)
-                            }
-
-                        })
-
-                    })
-visjsGraph.draw("graphDiv",{nodes:nodes,edges:edges},{})
-
+                    graphController.drawEntitiesGraph(data);
 
 
                 }, error: function (err) {
@@ -175,7 +157,46 @@ visjsGraph.draw("graphDiv",{nodes:nodes,edges:edges},{})
         })
     }
 
+    self.startGraph = function () {
+        var entityQueryString = $("#entityQueryStringInput").val();
 
+        if (entityQueryString && entityQueryString.length > 0) {
+
+            var queryEntities = {
+                query: {
+                    "query_string": {
+                        "query": entityQueryString,
+                        "fields": ["internal_id", "synonyms"],
+                        "default_operator": "AND"
+                    }
+                }
+            }
+            var payload = {
+                executeQuery: JSON.stringify(queryEntities),
+                indexes: JSON.stringify(["thesaurus_ctg"])
+
+            }
+            $.ajax({
+                type: "POST",
+                url: appConfig.elasticUrl,
+                data: payload,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    var nodes = [];
+                    var edges=[];
+                    data.hits.hits.forEach(function (hit) {
+                     nodes.push(graphController.getNodeFromEntityHit(hit))
+                    })
+
+                    visjsGraph.draw("graphDiv",{nodes:nodes,edges:edges},{})
+                }
+
+                , error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
+    }
     self.onRectClick = function (p, data) {
         var labels = drawCanvas.rawData.labels;
         var entity1 = labels[data.coords.x];
@@ -191,14 +212,14 @@ visjsGraph.draw("graphDiv",{nodes:nodes,edges:edges},{})
             query: {
                 bool: {
                     must: [
-                        {term: {"entities_thesaurus_ctg": entity1}},
-                        {term: {"entities_thesaurus_ctg": entity2}},
+                        {term: {"entities_thesaurus_ctg.id": entity1}},
+                        {term: {"entities_thesaurus_ctg.id": entity2}},
                     ]
                 }
             }
             , size: 1000
         }
-
+console.log(JSON.stringify(query,null,2))
         var payload = {
             executeQuery: JSON.stringify(query),
             indexes: JSON.stringify(["gmec_par"])
