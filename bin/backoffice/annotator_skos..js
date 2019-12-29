@@ -91,48 +91,97 @@ var annotator_skos = {
                     })
                 }
             }
+
 // rattachemenet aux domaines (premier niveau)
-            var regex = /[0-9]{2}/
-            for (var key in treeMap) {
-                if (!treeMap[key].parent || treeMap[key].parent == "#") {
-                    //  console.log( treeMap[key].text)
-                    if (treeMap[key].text) {
-                        var str = treeMap[key].text.substring(0, 2)
-                        if (regex.test(str)) {
-                            var domainId = domains[str];
-                            treeMap[key].parent = domainId
-                            treeMap[key].ancestors.push(treeMap[key].parent)
-                        }
+
+
+            function recurseAncestors(node) {
+                if (node.parent) {
+                    //  node.ancestors.splice(0, 0, node.parent);
+                    if (treeMap[node.parent] && treeMap[node.parent].parent) {
+                        node.ancestors.push(treeMap[node.parent].parent);
+                        recurseAncestors(treeMap[node.parent].parent)
                     }
+
                 }
+
             }
-            // set internal_id as concat of all ancestors separated by "-"
+
             for (var key in treeMap) {
                 var concept = treeMap[key];
+                if (!concept.text)
+                    concept.text = "?"
+
+                if (key.indexOf("Surge System") > -1)
+                    var x = 3
+                recurseAncestors(concept)
+
                 var str = "";
+                var allAncestors = concept.ancestors;
+                allAncestors.splice(0,0,key)
+                allAncestors.forEach(function (ancestorId, index) {
 
-                if (concept.ancestors) {
 
-                    concept.ancestors.forEach(function (ancestorId, index) {
-                        var ancestor = treeMap[ancestorId];
-
-                        if (ancestor && ancestor.parent && ancestor.parent != "#") {
-                            if (str != "")
-                                str += "-";
-                            str += ancestor.text;
-
-                        }
-                    })
-                    if (!concept.text)
-                        concept.text = "?"
-                    if (str != "")
-                        treeMap[key].internal_id = str + "-" + concept.text;
+                    var p = ancestorId.indexOf("#")
+                    if (p < 0)
+                        return console.log("wrong concept URI" + ancestorId)
                     else
-                        treeMap[key].internal_id = concept.text;
+                        var name = ancestorId.substring(p + 1);
+                    if (str.indexOf(name) == 0)
+                        return;//cf thesaurus-ctg ids
 
 
-                }
+                    if (str != "")
+                        name += "-"
+                    str = name + str;
+                })
+
+
+                concept.internal_id = str;
+
             }
+
+            /*     var regex = /[0-9]{2}/
+                 for (var key in treeMap) {
+                     if (!treeMap[key].parent || treeMap[key].parent == "#") {
+                         //  console.log( treeMap[key].text)
+                         if (treeMap[key].text) {
+                             var str = treeMap[key].text.substring(0, 2)
+                             if (regex.test(str)) {
+                                 var domainId = domains[str];
+                                 treeMap[key].parent = domainId
+                                 treeMap[key].ancestors.push(treeMap[key].parent)
+                             }
+                         }
+                     }
+                 }
+                 // set internal_id as concat of all ancestors separated by "-"
+                 for (var key in treeMap) {
+                     var concept = treeMap[key];
+                     var str = "";
+
+                     if (concept.ancestors) {
+
+                         concept.ancestors.forEach(function (ancestorId, index) {
+                             var ancestor = treeMap[ancestorId];
+
+                             if (ancestor && ancestor.parent && ancestor.parent != "#") {
+                                 if (str != "")
+                                     str += "-";
+                                 str += ancestor.text;
+
+                             }
+                         })
+                         if (!concept.text)
+                             concept.text = "?"
+
+                         if (str != "")
+                             treeMap[key].internal_id = str + "-" + concept.text;
+                         else
+                             treeMap[key].internal_id = concept.text;
+
+                     }
+                 }*/
 
 
             var conceptsArray = []
@@ -421,11 +470,11 @@ var annotator_skos = {
                     var queriedEntities = [];
                     entities.forEach(function (entity, entityIndex) {
                         if (entity.elasticQuery) {
-                            if (entity.id == "http://www.proxem.com/onto/concept#Component-SurgeSystem")
-                                var x = 3
-                            queriedEntities.push(entityIndex)
-                            serialize.write({index: globalOptions.corpusIndex})
-                            serialize.write(entity.elasticQuery)
+
+                                queriedEntities.push(entityIndex)
+                                serialize.write({index: globalOptions.corpusIndex})
+                                serialize.write(entity.elasticQuery)
+
                         }
                     })
                     serialize.end();
@@ -497,6 +546,15 @@ var annotator_skos = {
 
                                     })
                                 }
+                                offsets.sort(function(a,b){
+                                    if(a.start>b.start)
+                                        return -1;
+                                    if(b.start>a.start)
+                                        return 1;
+                                    return 0;
+
+
+                                })
                                 document.entityOffsets = offsets;
 
                             })
@@ -516,7 +574,8 @@ var annotator_skos = {
 
                             if (!documentsEntitiesMap[doc.id])
                                 documentsEntitiesMap[doc.id] = []
-
+                            if (entity.internal_id.indexOf("Component-Surge") > -1)
+                                var x = 3
                             //  var entityId = entity.id.substring(entity.id.indexOf("#") + 1)
                             documentsEntitiesMap[doc.id].push({id: entity.internal_id, offsets: doc.entityOffsets})
 
@@ -528,7 +587,7 @@ var annotator_skos = {
 
                 // remove entities contained in others  entities forEachDoc to be finished
                 function (callbackSeries) {
-                    //   return callbackSeries();
+                    return callbackSeries();
 
 
                     for (var docId in documentsEntitiesMap) {
@@ -1024,10 +1083,10 @@ if (false) {
     var rdfXmlPath = "D:\\NLP\\Thesaurus_CTG_Skos_V1.6_201905.xml"
     var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
 
-    var rdfXmlPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf";
-    var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
+    //  var rdfXmlPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf";
+    //   var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
     options = {
-        outputLangage: "fr",
+        outputLangage: "en",
         extractedLangages: ["en", "fr", "sp"],
         uri_candidates: "http://eurovoc.europa.eu/candidates",
         uri_domains: "http://eurovoc.europa.eu/domains"

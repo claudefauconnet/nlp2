@@ -119,7 +119,7 @@ var statistics = (function () {
     self.drawHeatMap = function () {
         self.clear();
         self.getEntitiesQuery(function (err, result) {
-            drawCanvas.drawAll({onclickFn: statistics.onRectClick, query: result});
+            drawCanvas.drawAll({onclickFn: statistics.onRectClick, onMouseOverFn: statistics.onRectMouseOver, query: result});
         })
     }
 
@@ -183,12 +183,12 @@ var statistics = (function () {
                 dataType: "json",
                 success: function (data, textStatus, jqXHR) {
                     var nodes = [];
-                    var edges=[];
+                    var edges = [];
                     data.hits.hits.forEach(function (hit) {
-                     nodes.push(graphController.getNodeFromEntityHit(hit))
+                        nodes.push(graphController.getNodeFromEntityHit(hit))
                     })
 
-                    visjsGraph.draw("graphDiv",{nodes:nodes,edges:edges},{})
+                    visjsGraph.draw("graphDiv", {nodes: nodes, edges: edges}, {})
                 }
 
                 , error: function (err) {
@@ -207,6 +207,17 @@ var statistics = (function () {
         self.showDocs(entity1, entity2)
     }
 
+    self.onRectMouseOver = function (p, data) {
+        var labels = drawCanvas.rawData.labels;
+        var entity1 = labels[data.coords.x];
+        var entity2 = labels[data.coords.y];
+        var count = drawCanvas.rawData.data[data.coords.x][data.coords.y]
+        var str = "" + entity1 + " / " + entity2 + " " + count + "";
+        var p2={x:p[0]+10,y:p[1]+10}
+        $("#mouseOverDiv").css("visibility", "visible")
+        $("#mouseOverDiv").css({top: p2.y, left: p2.x, position:'absolute'});
+        $("#mouseOverDiv").html(str)
+    }
     self.showDocs = function (entity1, entity2) {
         var query = {
             query: {
@@ -219,7 +230,7 @@ var statistics = (function () {
             }
             , size: 1000
         }
-console.log(JSON.stringify(query,null,2))
+        console.log(JSON.stringify(query, null, 2))
         var payload = {
             executeQuery: JSON.stringify(query),
             indexes: JSON.stringify(["gmec_par"])
@@ -238,14 +249,14 @@ console.log(JSON.stringify(query,null,2))
                     var docs = {};
                     data.hits.hits.forEach(function (hit) {
                         var docAttrs = hit._source
+                        //     console.log(docAttrs.docTitle + " " + docAttrs.chapter + " " + docAttrs.paragraphId)
                         if (!docs[docAttrs["docTitle"]]) {
-                            docs[docAttrs["docTitle"]] = {chapters: {}, docId: docAttrs.docId}
-
-                            if (!docs[docAttrs["docTitle"]].chapters[docAttrs["chapter"]]) {
-                                docs[docAttrs["docTitle"]].chapters[docAttrs["chapter"]] = {paragraphs: [], chapterId: docAttrs.chapterId}
-                            }
-                            docs[docAttrs["docTitle"]].chapters[docAttrs["chapter"]].paragraphs.push({text: docAttrs.text, paragraphId: docAttrs.paragraphId})
+                            docs[docAttrs["docTitle"]] = {chapters: {}, docId: docAttrs.docId,entities:docAttrs.entities_thesaurus_ctg}
                         }
+                        if (!docs[docAttrs["docTitle"]].chapters[docAttrs["chapter"]]) {
+                            docs[docAttrs["docTitle"]].chapters[docAttrs["chapter"]] = {paragraphs: [], chapterId: docAttrs.chapterId}
+                        }
+                        docs[docAttrs["docTitle"]].chapters[docAttrs["chapter"]].paragraphs.push({text: docAttrs.text, paragraphId: docAttrs.paragraphId})
 
 
                     })
@@ -254,17 +265,17 @@ console.log(JSON.stringify(query,null,2))
                     for (var docKey in docs) {
                         var doc = docs[docKey];
                         jsTreeArray.push({
-                            text: docKey, id: doc.docId, parent: "#"
-                        })
+                            text: docKey, id: doc.docId, parent: "#",data:{type:"document",text: docKey,entities:doc.entities }}
+                            )
                         for (var chapterKey in doc.chapters) {
                             var chapter = doc.chapters[chapterKey];
                             jsTreeArray.push({
-                                text: chapterKey, id: chapter.chapterId, parent: doc.docId
+                                text: chapterKey, id: chapter.chapterId, parent: doc.docId,data: {type:"chapter",text: chapterKey}
                             })
 
                             chapter.paragraphs.forEach(function (paragraph) {
                                 jsTreeArray.push({
-                                    text: paragraph.paragraphId, id: paragraph.paragraphId, parent: chapter.chapterId, data: {text: paragraph.text}
+                                    text: paragraph.paragraphId, id: paragraph.paragraphId, parent: chapter.chapterId, data: {type:"paragraph",text: paragraph.text}
                                 })
                             })
 
@@ -274,7 +285,8 @@ console.log(JSON.stringify(query,null,2))
                 }
 
                 var jsTreeArray = docDataToJstree(data);
-                self.drawJsTree("jstreeDiv", jsTreeArray)
+                self.drawJsTree("jstreeDiv", jsTreeArray);
+
 
             }
             , error: function (err) {
@@ -315,9 +327,67 @@ console.log(JSON.stringify(query,null,2))
         }).on("select_node.jstree",
             function (evt, obj) {
                 var x = obj;
-                var html = obj.node.text
+                var html=""
+                var entities=[];
+                var documentHtml="";
+                var chapterHtml="";
+                var paragraphHtml="";
+                obj.node.parents.forEach(function(parent){
+                   if(parent=="#")
+                       return;
+                    var parentNode =  $("#" + treeDiv).jstree(true).get_json(parent);
+                    if(parentNode.data.type=="document") {
+                        documentHtml = parentNode.data.text
+                    }
+                    if(parentNode.data.type=="chapter"){
+                        chapterHtml= parentNode.data.text
+                    }
+
+                    if(parentNode.data.entities)
+                        entities=parentNode.data.entities;
+                })
+
                 if (obj.node.data && obj.node.data.text)
-                    html = obj.node.data.text
+                    paragraphHtml = obj.node.data.text;
+                else
+                    paragraphHtml = obj.node.text;
+var entityNames=[]
+                entities.forEach(function(entity){
+                    entityNames.push(entity.id)
+                    var entityName=entity.id;
+                    entity.offsets.sort(function(a,b){
+                        if(a.start>b.start)
+                            return -1;
+                        if(b.start>a.start)
+                            return 1;
+                        return 0;
+
+
+                    })
+if(false){
+                    entity.offsets.forEach(function(offset){
+                        if(offset.field="docTitle") {
+                            documentHtml = documentHtml.substring(0, offset.start-1) + "<em class='E_" + entityNames.length - 1 + "'>"
+                                +documentHtml.substring( offset.start,offset.start+offset.syn.length)+"</em>"+documentHtml.substring(offset.start+offset.syn.length)
+                        }
+                        if(offset.field="parentChapter") {
+                            chapterHtml = chapterHtml.substring(0, offset.start-1) + "<em class='E_" + entityNames.length - 1 + "'>"
+                                +chapterHtml.substring( offset.start,offset.start+offset.syn.length)+"</em>"+chapterHtml.substring(offset.start+offset.syn.length)
+                        }
+                        if(offset.field="text") {
+                            paragraphHtml = paragraphHtml.substring(0, offset.start-1) + "<em class='E_" + entityNames.length - 1 + "'>"
+                                +paragraphHtml.substring( offset.start,offset.start+offset.syn.length)+"</em>"+paragraphHtml.substring(offset.start+offset.syn.length)
+                        }
+                    })
+}
+                })
+
+
+                html="<div class='jstreeDocTitle'>"+documentHtml+"</div>"
+                html+="<div class='jstreeChapterTitle'>"+chapterHtml+"</div>";
+                html+=paragraphHtml;
+
+
 
                 $("#textDiv").html(html)
                 //   Entities.runEntityQuery(obj.node);

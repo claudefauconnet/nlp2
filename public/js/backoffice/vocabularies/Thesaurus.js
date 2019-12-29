@@ -93,8 +93,8 @@ if(thesaurusIndexes.indexOf(index)>-1)
         self.associateToIndex = function (index, thesaurus) {
             var indexConfig = context.indexConfigs[index];
 
-            if (!indexConfig.thesaurii)
-                indexConfig.thesaurii = {};
+            if (!indexConfig.thesauri)
+                indexConfig.thesauri = {};
             var thesaurusName = $("#thesaurus_select").val();
             var json = context.thesauri[thesaurus];
             indexConfig.thesauri[thesaurus] = json;
@@ -104,16 +104,16 @@ if(thesaurusIndexes.indexOf(index)>-1)
     }
 
     self.getThesaurusIndexAssociations = function (thesaurus) {
-        var thesauriIndexes = [];
+        var thesaurindexes = [];
         for (var key in context.indexConfigs) {
             if (context.indexConfigs[key].thesauri) {
                 if (context.indexConfigs[key].thesauri[thesaurus]) {
-                    thesauriIndexes.push(key)
+                    thesaurindexes.push(key)
                 }
             }
 
         }
-        return thesauriIndexes;
+        return thesaurindexes;
     }
 
 

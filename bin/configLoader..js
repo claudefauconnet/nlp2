@@ -38,7 +38,11 @@ var configLoader = {
             var pathStr = path.join(__dirname, configDir + "profiles/");
             fs.readdirSync(pathStr).forEach(file => {
                 var str = "" + fs.readFileSync(pathStr + file);
+                try{
                 profiles.push(JSON.parse(str, null, 2))
+                }catch(e){
+                    return callback(pathStr+" ")+e;
+                }
             });
         } catch (e) {
             return callback(e);
@@ -59,7 +63,11 @@ var configLoader = {
             var profiles = [];
             var pathStr = path.join(__dirname, configDir + "jobs/jobs.json");
             var str = "" + fs.readFileSync(pathStr);
+            try{
             var jobs = JSON.parse(str, null, 2);
+            }catch(e){
+                return callback(pathStr+" ")+e;
+            }
 
         } catch (e) {
             return callback(e);
@@ -80,13 +88,13 @@ var configLoader = {
     getAllThesaurusConfig: function (callback) {
         try {
             var thesauri = [];
-            var pathStr = path.join(__dirname, configDir + "thesaurii/");
+            var pathStr = path.join(__dirname, configDir + "thesauri/");
             fs.readdirSync(pathStr).forEach(file => {
                 var str = "" + fs.readFileSync(pathStr + file);
                 try {
                     thesauri.push(JSON.parse(str, null, 2))
                 } catch (e) {
-                    return;
+                    return callback(file+"  "+e);
                 }
             });
         } catch (e) {
@@ -97,7 +105,7 @@ var configLoader = {
 
     saveThesaurusConfig: function (name, content, callback) {
         try {
-            var pathStr = path.join(__dirname, configDir + "thesaurii/" + name + ".json");
+            var pathStr = path.join(__dirname, configDir + "thesauri/" + name + ".json");
             fs.writeFileSync(pathStr, content);
         } catch (e) {
             return callback(e);
@@ -119,7 +127,7 @@ var configLoader = {
         try {
             config = JSON.parse(str);
         } catch (e) {
-            return callback(e);
+          return callback(pathStr+"  "+e);
         }
         return callback(null, config);
 
@@ -255,7 +263,11 @@ var configLoader = {
                 var filePath = dirPathStr + file
 
                 var str = "" + fs.readFileSync(filePath);
-                var json0 = JSON.parse(str)
+                try {
+                    var json0 = JSON.parse(str)
+                }catch(e){
+                   return callback(filePath+" ")+e;
+                }
                 var p = file.indexOf(".json")
                 var name = file.substring(0, p);
                 json[name] = json0;

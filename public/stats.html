@@ -11,13 +11,31 @@
             overflow: auto
         }
 
+        #mouseOverDiv {
+            background-color: #efec9f;
+            font-size: 14px;
+            margin: 2px;
+        }
+        .jstreeDocTitle{
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .jstreeChapterTitle{
+            font-weight: normal;
+            font-style: italic;
+            font-size: 14px;
+        }
+        #textDiv{
+            height: 300px;
+            overflow: auto;
+        }
 
     </style>
 
 
     <script src="js/jquery/jquery.min.js"></script>
     <script src="js/jquery/jquery-ui.min.js"></script>
-    <link href="js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
 
     <script src="js/others/d3/d3.v5.js" charset="utf-8"></script>
     <script src="js/graph/drawCanvas.js"></script>
@@ -27,28 +45,28 @@
     <script src="js/graph/graphController.js"></script>
 
     <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
-    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
     <script>
 
-        $( function() {
-            $( "#slider" ).slider({
+        $(function () {
+            $("#slider").slider({
                 min: graphController.sliderIndexMin,
-                max:graphController.sliderIndexMax,
-                step:10,
-                slide: function( event, ui ) {
+                max: graphController.sliderIndexMax,
+                step: 10,
+                slide: function (event, ui) {
                     var value = ui.value;
-                    if(value>graphController.sliderEdges.index)
-                    visjsGraph.data.edges.add(graphController.sliderEdges.slice(graphController.sliderEdges.index,value));
+                    if (value > graphController.sliderEdges.index)
+                        visjsGraph.data.edges.add(graphController.sliderEdges.slice(graphController.sliderEdges.index, value));
                     else
-                        visjsGraph.data.edges.remove(graphController.sliderEdges.slice(value,graphController.sliderEdges.index));
-                    graphController.sliderEdges.index=value;
+                        visjsGraph.data.edges.remove(graphController.sliderEdges.slice(value, graphController.sliderEdges.index));
+                    graphController.sliderEdges.index = value;
                 }
             });
-        } );
+        });
 
     </script>
 
@@ -58,26 +76,24 @@
 <div style="display: flex;flex-direction: row;">
     <div id="center">
 
-       word <input id="queryStringInput" style="width: 200px;">  <input id="entityQueryStringInput" style="width: 200px;" value="valve">
+        word <input id="queryStringInput" style="width: 200px;"> <input id="entityQueryStringInput" style="width: 200px;" value="valve">
         <button onclick="statistics.drawHeatMap()">draw heatMap</button>
         <button onclick="statistics.drawGraph()">draw graph</button>
         <button onclick="statistics.startGraph()">start graph</button>
-        <div id="slider" ></div>
+        <div id="slider"></div>
         <div id="graphDiv" style="width:800px;height: 800px;"></div>
     </div>
     <div id="right">
         <span id="infosDiv"></span>
-        <div id="docsDiv">  </div>
-            <div id="jstreeDiv" style="width:300px; overflow: auto;height: 800px"></div>
-
-
-
+        <div id="docsDiv"></div>
+        <div id="jstreeDiv" style="width:300px; overflow: auto;height: 800px"></div>
 
 
     </div>
 
 </div>
 <div id="textDiv"></div>
+<div id="mouseOverDiv"></div>
 </body>
 <script>
 

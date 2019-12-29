@@ -120,7 +120,7 @@ self.post=function(url,payload,callback){
             }
             , error: function (err) {
                 console.log(err.responseText)
-                return callback(err)
+                return callback(err.responseText)
             }
 
         });

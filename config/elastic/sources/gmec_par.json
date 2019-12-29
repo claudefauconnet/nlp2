@@ -105,7 +105,7 @@
   "indexation": {
     "elasticUrl": "http://localhost:9200/",
     "deleteOldIndex": "yes",
-    "applyThesaurii": "yes"
+    "applythesauri": "yes"
   },
   "thesauri": {
     "CTG": {
@@ -115,5 +115,5 @@
       "outputLangage": "en"
     }
   },
-  "thesaurii": {}
+  "thesauri": {}
 }

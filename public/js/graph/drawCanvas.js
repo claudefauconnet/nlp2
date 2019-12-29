@@ -7,6 +7,7 @@ var drawCanvas = (function () {
         var contextRotation = 0;
         var angle90 = -Math.PI / 2
         var onclickFn = null;
+        var onMouseOverFn=null;
 
         var totalWidth;
         var totalHeight;
@@ -63,8 +64,14 @@ var drawCanvas = (function () {
 
             if (onclickFn)
                 onclickFn(point, obj)
-            if (obj.data) {
+          /*  if (obj.data) {
                 $("#graphInfos").html(obj.data.name);
+            }*/
+        }
+
+        function    onMouseOver(point, obj){
+            if (onMouseOverFn) {
+                onMouseOverFn(point, obj)
             }
         }
 
@@ -102,8 +109,32 @@ var drawCanvas = (function () {
         }
 
         function moved() {
-            //  $("#popupD3Div").css("visibility", "hidden")
+
+            var point = d3.mouse(this);
+            var x = d3.event.pageX;
+            var y = d3.event.pageY;
+            var realPoint = [x, y];
+            point[0] = (point[0] - currentZoomTransform.x) / currentZoomTransform.k
+            point[1] = (point[1] - currentZoomTransform.y) / currentZoomTransform.k
+            var node;
+            canvasData.forEach(function (rect) {
+
+                if (rect.x < point[0] && (rect.x + rect.w) > point[0]) {
+                    if (rect.y < point[1] && (rect.y + rect.h) > point[1]) {
+                        return node = rect;
+                    }
+                }
+            })
+            if(node) {
+                onMouseOver(realPoint, node)
+             //   $(this).css('cursor','pointer');
+            }
+            else
+              //  $(this).css('cursor','default');
+                $("#mouseOverDiv").css("visibility","hidden")
         }
+
+
 
 
         function initCanvas(graphDiv) {
@@ -114,6 +145,7 @@ var drawCanvas = (function () {
                 .attr('width', totalWidth)
                 .attr('height', totalHeight);
             canvas.on('mousedown', clicked).on('mousemove', moved);
+
             context = canvas.node().getContext('2d');
             var customBase = document.createElement('custom');
             var custom = d3.select(customBase); // this is our svg replacement
@@ -268,6 +300,9 @@ var drawCanvas = (function () {
             }
             if (options.onclickFn)
                 onclickFn = options.onclickFn;
+            if (options.onMouseOverFn)
+                onMouseOverFn = options.onMouseOverFn;
+
             d3.json(url).then(function (data) {
 
                 totalWidth = $(graphDiv).width() - 50;
@@ -306,6 +341,8 @@ var drawCanvas = (function () {
             data.data.forEach(function (line, lineIndex) {
                 var x = 100;
                 line.forEach(function (row, rowIndex) {
+                    if(rowIndex>lineIndex)
+                        return;
                     var bgColor = "#aaa"
                     if (row > 0)
                         bgColor = interpolateViridisColours(Math.log(row))

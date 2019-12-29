@@ -276,7 +276,7 @@
           ],
           "required": true
         },
-        "applyThesaurii": {
+        "applythesauri": {
           "type": "bool",
           "title": "apply associated thesauri",
           "enum": [
@@ -374,6 +374,11 @@
             "title": "skosXmlPath",
             "required": true
           },
+          "xmlns": {
+            "type": "string",
+            "title": "xmlns",
+            "required": true
+          },
           "extractedLangages": {
             "type": "string",
             "title": "extractedLangages",
@@ -384,6 +389,8 @@
             "title": "outputLangage",
             "required": true
           },
+
+
           "uri_candidates": {
             "type": "string",
             "title": "uri_candidates",

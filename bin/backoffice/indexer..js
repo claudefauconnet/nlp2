@@ -233,6 +233,8 @@ var indexer = {
                     } else
                         return callbackSeries("no valid connector type declared");
 
+                    var message = " indexation running on index :" + index+" using connector "+connector.type+" WAIT ..."
+                    socket.message(message);
 
                 },
 
