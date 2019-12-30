@@ -374,11 +374,6 @@
             "title": "skosXmlPath",
             "required": true
           },
-          "xmlns": {
-            "type": "string",
-            "title": "xmlns",
-            "required": true
-          },
           "extractedLangages": {
             "type": "string",
             "title": "extractedLangages",

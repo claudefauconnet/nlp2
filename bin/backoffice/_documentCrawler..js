@@ -128,7 +128,7 @@ var _documentCrawler = {
                             if (result.indexed) {
                                 indexedFilesCount += 1;
                             }
-                          if(indexedFilesCount%5==0) {
+                          if(indexedFilesCount%10==0) {
                               var duration = new Date().getTime() - t0alldocs;
                               var message = "indexed "+ indexedFilesCount+" documents in " + duration + " msec.";
                               socket.message(message);

@@ -15,6 +15,6 @@
   },
   "ADMIN": {
     "indexes":"*",
-    "thesauri": ["thesaurus_ctg"]
+    "thesauri": ["thesaurus_ctg","thesaurus_eurovoc_fr"]
   }
 }

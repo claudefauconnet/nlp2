@@ -13,6 +13,7 @@ var annotator_skos = {
 
 
     rdfToJsTree: function (sourcePath, options, callback) {
+        var xmlnsRootLength=-1
         if (!options)
             options = {
                 outputLangage: "fr",
@@ -26,7 +27,20 @@ var annotator_skos = {
             var schemesMap = {};
             var ancestorsMap = {};
             var domains = {};
+            var i=0;
             for (var key in conceptsMap) {
+                //identitification of xmlnsRootLength (position of # or last / in the uri)
+                if(i++<5){
+                    var p=key.indexOf("#");
+                    if(p<0)
+                        p=key.lastIndexOf("/")
+                   if(p<0)
+                      return callback("Cannot analyze concept uri :"+key)
+                    if(xmlnsRootLength==-1)
+                        xmlnsRootLength=p+1
+                    else if( xmlnsRootLength!=(p+1))
+                       return  callback("Cannot continue uri has not the same xmlns:"+key)
+                }
 
                 var concept = conceptsMap[key];
 
@@ -122,11 +136,8 @@ var annotator_skos = {
                 allAncestors.forEach(function (ancestorId, index) {
 
 
-                    var p = ancestorId.indexOf("#")
-                    if (p < 0)
-                        return console.log("wrong concept URI" + ancestorId)
-                    else
-                        var name = ancestorId.substring(p + 1);
+                  
+                        var name = ancestorId.substring(xmlnsRootLength);
                     if (str.indexOf(name) == 0)
                         return;//cf thesaurus-ctg ids
 
