@@ -125,7 +125,8 @@ var Search = (function () {
                             "terms": {"field": "_index"}
                         }
                     }
-                   for(var thesaurus in context.thesauri) {
+                    Entities.setUserIndexesThesauri()
+                   for(var thesaurus in context.allowedThesauri) {
                         aggregations["entities_" + thesaurus] = {"terms": {"field": "entities_" + thesaurus+".id", "size": 50, "order": {"_count": "desc"}}};
                     }
 
@@ -163,7 +164,7 @@ var Search = (function () {
                             self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
 
                             self.thesauri = {}
-                           for(var thesaurus in context.thesauri) {
+                           for(var thesaurus in context.allowedThesauri) {
                                 Entities.showThesaurusEntities(thesaurus, result.aggregations["entities_" + thesaurus]);
                             }
 

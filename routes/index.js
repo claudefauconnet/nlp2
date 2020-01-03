@@ -11,6 +11,8 @@ var indexer = require("../bin/backoffice/indexer..js")
 var imapMailExtractor = require("../bin/backoffice/imapMailExtractor.");
 var jobScheduler = require("../bin/backoffice/jobScheduler.")
 var statistics=require("../bin/backoffice/statistics.")
+var questionAnswering=require("../bin/questionAnswering.");
+var annotator_skos=require("../bin/backoffice/annotator_skos.");
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -164,6 +166,23 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             })
 
         }
+    if(req.body.annotateCorpusFromRDFfile){
+        annotator_skos.annotateCorpusFromRDFfile(JSON.parse(req.body.thesaurusConfig), req.body.index,req.body.elasticUrl, function (err, result) {
+            processResponse(response, err, result)
+
+        })
+
+    }
+
+
+
+        if(req.body.answerQuestion){
+            questionAnswering.processQuestion(req.body.question,JSON.parse(req.body.options),function (err, result) {
+                processResponse(response, err, result)
+
+            })
+
+        }
 
 
     },
@@ -220,6 +239,7 @@ function processResponse(response, error, result) {
                         response.send(result.data);
                 } else {
                     var resultObj = result;
+                    response.setHeader('Content-type', "application/json");
                     // response.send(JSON.stringify(resultObj));
                     response.send(resultObj);
                 }

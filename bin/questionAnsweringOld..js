@@ -17,7 +17,7 @@ var prepositionEntitiesMapping = {
 
 
 var loadPrepositions = function () {
-    var prepositionsPath = path.resolve("./config/elastic/regex/prepositions.json")
+    var prepositionsPath = path.resolve("../config/elastic/regex/prepositions.json")
     var prepositions = fs.readFileSync(prepositionsPath)
     prepositions = JSON.parse("" + prepositions);
     return prepositions;
@@ -198,7 +198,7 @@ var questionAnswering = {
                                                countEntityWords+=1;
                                         })
                                       if( countEntityWords>0)
-                                          tokenEntities[hit._source.internal_id].documents.push(document.id)
+                                          tokenEntities[hit._source.internal_id].documents.push(document)
 
 
                                     })
@@ -217,7 +217,11 @@ var questionAnswering = {
 
 
                 },
-
+                // get non entities token
+                function (callbackSeries) {
+                    var xx = tokens;
+                    return callbackSeries();
+                },
                 //calculate boost with commmon documents
            /*     function (callbackSeries) {
                     return callbackSeries();
@@ -257,13 +261,10 @@ var questionAnswering = {
                     })
                     for (var key in tokenEntities) {
                         var entity = tokenEntities[key];
-                        var documents=entity.documents;
+
                         entityIdShoulds.push({
-
                             //  match: {"entities_thesaurus_ctg.id": {query: entity.internal_id, boost: entity.score}}
-                          //  match: {"entities_thesaurus_ctg.id": {query: entity.internal_id}}
-                            terms:{"_id":documents}
-
+                            match: {"entities_thesaurus_ctg.id": {query: entity.internal_id}}
                         })
 
                     }
@@ -378,8 +379,8 @@ var questionAnswering = {
                             var totalMatchingEntities = source.matchingEntities.concat(chapterObj.matchingEntities).concat(docObj.matchingEntities)
                             var totalMeasurementEntities = source.matchingMeasurementEntities
 
-                            totalMeasurementUnitsScore=(totalMeasurementEntities.length==0?0:(2 * Math.log(totalMeasurementEntities.length)))
-                            var score = totalMatchingEntities.length + totalMeasurementUnitsScore;
+
+                            var score = totalMatchingEntities.length + (2 * Math.log(totalMeasurementEntities.length))
 
                             var prepositions = extractPrepositions(source.matchingEntities, source.text);
                             score += 3 * prepositions.length
@@ -433,7 +434,7 @@ var questionAnswering = {
 module.exports = questionAnswering
 
 
-if (false) {
+if (true) {
 
 
     var options = {

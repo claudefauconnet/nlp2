@@ -11,9 +11,9 @@ var Thesaurus = (function () {
                 if (err)
                     return $("#messageDiv").html(err);
                 mainController.fillSelectOptions("thesaurus_select", result, "true", "name", "name");
-                context.thesauri = {}
+                context.allowedThesauri = {}
                 result.forEach(function (thesaurusConfig) {
-                    context.thesauri[thesaurusConfig.name] = thesaurusConfig;
+                    context.allowedThesauri[thesaurusConfig.name] = thesaurusConfig;
                 })
 
             })
@@ -29,7 +29,7 @@ var Thesaurus = (function () {
         var json = null;
         if (!create) {
             var thesaurusName = $("#thesaurus_select").val();
-            var obj = context.thesauri[thesaurusName];
+            var obj = context.allowedThesauri[thesaurusName];
             if (!obj)
                 return $("#messageDiv").html("select a thesaurus configuration");
             json = {thesaurus: obj}
@@ -62,9 +62,60 @@ var Thesaurus = (function () {
     self.showJson = function () {
 
     }
-    self.showApplyToIndexDialog = function () {
+
+    self.annotateIndexWithThesaurus = function () {
         var thesaurusName = $("#thesaurus_select").val();
-        var json = context.thesauri[thesaurusName];
+        var json = context.allowedThesauri[thesaurusName];
+        if (!json)
+            return $("#messageDiv").html("select a thesaurus configuration");
+        var thesaurusIndexes = self.getThesaurusIndexAssociations(thesaurusName);
+        var indexes = Object.keys(context.indexConfigs);
+        var optionsStr = "<option></option>"
+        indexes.forEach(function (index) {
+            var selected = "";
+            if (thesaurusIndexes.indexOf(index) > -1)
+                selected = "selected='selected'"
+            optionsStr += "<option " + selected + ">" + index + "</option>"
+        })
+        var html = "Index<select id='thesaurus_indexSelect' >" + optionsStr + "</select><br> "
+        html += "elasticUrl<input id='thesaurus_elasticUrlInput' value='http://localhost:9200/'>"
+
+
+        asyncDialog.show("thesaurus_mainDiv", html, function (err, result) {
+            var index = $("#thesaurus_indexSelect").val();
+            var elasticUrl = $("#thesaurus_elasticUrlInput").val();
+
+            if (confirm("confirm annotate index " + index + " with thesaurus " + thesaurusName)) {
+                var payload = {
+                    annotateCorpusFromRDFfile: 1,
+                    thesaurusConfig: JSON.stringify(json),
+                    index: index,
+                    elasticUrl: elasticUrl
+                }
+                $.ajax({
+                    type: "POST",
+                    url: appConfig.elasticUrl,
+                    data: payload,
+                    dataType: "json",
+                    success: function (data, textStatus, jqXHR) {
+
+                        $("#messageDiv").html("done")
+                        context.socketAppend = null;
+                    }
+                    , error: function (err) {
+                        $("#messageDiv").html("error" + err.responseText)
+                        console.log(err.responseText)
+                        context.socketAppend = null;
+
+                    }
+                })
+            }
+        })
+
+    }
+    self.showAssociateToIndexDialog = function () {
+        var thesaurusName = $("#thesaurus_select").val();
+        var json = context.allowedThesauri[thesaurusName];
         if (!json)
             return $("#messageDiv").html("select a thesaurus configuration");
 
@@ -72,10 +123,10 @@ var Thesaurus = (function () {
         var indexes = Object.keys(context.indexConfigs);
         var optionsStr = "<option></option>"
         indexes.forEach(function (index) {
-var selected="";
-if(thesaurusIndexes.indexOf(index)>-1)
-    selected="selected='selected'"
-            optionsStr += "<option "+selected+">" + index + "</option>"
+            var selected = "";
+            if (thesaurusIndexes.indexOf(index) > -1)
+                selected = "selected='selected'"
+            optionsStr += "<option " + selected + ">" + index + "</option>"
         })
         var html = "Indexes<div><select id='thesaurus_indexSelect' multiple='true' size='10'>" + optionsStr + "</select> "
 
@@ -96,7 +147,7 @@ if(thesaurusIndexes.indexOf(index)>-1)
             if (!indexConfig.thesauri)
                 indexConfig.thesauri = {};
             var thesaurusName = $("#thesaurus_select").val();
-            var json = context.thesauri[thesaurus];
+            var json = context.allowedThesauri[thesaurus];
             indexConfig.thesauri[thesaurus] = json;
             configEditor.saveIndexationConfig(index);
 

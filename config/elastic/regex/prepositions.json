@@ -1,0 +1,8 @@
+{"prepositions": {
+  "direction":"(around|on|opposite|out|outside|over|through|to|towards|under|up+)",
+  "place":"(above|across|along|among|at|behind|below|beneath|beside|between+)",
+  "position":"(against|beyond|by|down|from|in|inside|in front of|into|near|off|onto|underneath|upon|via+)",
+  "time":"(after|at|before|by|during|for|from|in|past|since|to|until+)",
+  "comparison":"(as|despite|except|like|round|than|unlike+)"
+}
+}

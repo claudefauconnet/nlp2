@@ -2,16 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/bin/backoffice/unitsExtractor..js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/questionAnsweringOld..js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/elastic/regex/measurementUnits.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/elastic/regex/prepositions.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/questions.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/questions.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/_documentCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_documentCrawler..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/_bookCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_bookCrawler..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_regex..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/annotator_regex..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_skos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/annotator_skos..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/bookIngester..js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/indexer..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/indexer..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/eurovoc..js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/elasticRestProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/elasticRestProxy..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/questionAnswering..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/questionAnswering..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/elastic/profiles/profiles.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/profiles/profiles.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/elastic/sources/bordereaux.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/bordereaux.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/elastic/sources/gmec_par.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/gmec_par.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/elastic/templates/jsonSchemas.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/templates/jsonSchemas.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/elastic/thesauri/CTG.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/thesauri/thesaurus_ctg.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/elastic/thesauri/Eurovoc_FR.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/thesauri/thesaurus_eurovoc_fr.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/backoffice.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/backoffice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/htmlSnippets/thesaurus.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/htmlSnippets/thesaurus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/_search.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/_search.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/backoffice/vocabularies/Thesaurus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/backoffice/vocabularies/Thesaurus.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/entities.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/entities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/stats.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,10 +36,32 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JS module" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1VpsKw74S8xmRO36Vx5bkbfWijH" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin" />
     <property name="restartRequiresConfirmation" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\bin" />
+      <recent name="D:\GitHub\nlp2\public" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\js" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -36,13 +75,25 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.questionAnswering..js">
+  <component name="RunManager" selected="Node.js.annotator_skos..js">
+    <configuration name="annotator_regex..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_regex..js" working-dir="$PROJECT_DIR$/bin/backoffice">
+      <method v="2" />
+    </configuration>
+    <configuration name="annotator_skos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_skos..js" working-dir="$PROJECT_DIR$/bin/backoffice">
+      <method v="2" />
+    </configuration>
     <configuration name="questionAnswering..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="questionAnswering..js" working-dir="$PROJECT_DIR$/bin">
+      <method v="2" />
+    </configuration>
+    <configuration name="unitsExtractor..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="unitsExtractor..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.annotator_skos..js" />
         <item itemvalue="Node.js.questionAnswering..js" />
+        <item itemvalue="Node.js.annotator_regex..js" />
+        <item itemvalue="Node.js.unitsExtractor..js" />
       </list>
     </recent_temporary>
   </component>
@@ -56,7 +107,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1577680273964</updated>
-      <workItem from="1577680279465" duration="4268000" />
+      <workItem from="1577680279465" duration="54291000" />
+      <workItem from="1577961328476" duration="29710000" />
     </task>
     <servers />
   </component>
@@ -68,7 +120,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -77,11 +131,57 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
+        <line-breakpoint type="javascript">
+          <url>file://$PROJECT_DIR$/public/js/backoffice/mainController.js</url>
+          <line>26</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_regex..js</url>
+          <line>28</line>
+          <option name="timeStamp" value="136" />
+        </line-breakpoint>
+        <line-breakpoint type="javascript">
           <url>file://$PROJECT_DIR$/bin/questionAnswering..js</url>
-          <line>226</line>
+          <line>227</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="10" />
+          <option name="timeStamp" value="194" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/js/entities.js</url>
+          <line>566</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="215" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_skos..js</url>
+          <line>559</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="217" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_skos..js</url>
+          <line>562</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="220" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_skos..js</url>
+          <line>555</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="223" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_skos..js</url>
+          <line>1169</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="224" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_skos..js</url>
+          <line>1154</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="225" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

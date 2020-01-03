@@ -1,0 +1,61 @@
+{
+  "measurementUnits": {
+    "time-sec": "(\\d*\\.?\\d+)\\s?(s|min|h|ks|ms|ps|µs|ns|hours|minute|second+)",
+    "time-day": "(\\d*\\.?\\d+)\\s?(d|wk|mo|y|year|month|year+)",
+    "mass": "(\\d*\\.?\\d+)\\s?(µg|dag|dg|kg|g|cg|t|dt|dtn|mg|hg|kt|Mg|lb|gr|oz|ton+)",
+    "density": "(\\d*\\.?\\d+)\\s?(g/cm³|t/m³|g/ml|kg/l or kg/L|g/l|g/m³|mg/m³|Mg/m³|kg/dm³|mg/g|µg/l|mg/l|µg/m³|api|°api|g\/mol+)",
+    "force": "(\\d*\\.?\\d+)\\s?(N|MN|kN|mN|µN|dyn|lbf|kgf|kp|ozf|ton.sh-force|lbf\\/ft|lbf\\/in|N·m²\\/kg²|N·m|N\\/A|MN·m|kN·m|mN·m|µN·m|dN·m|cN·m|N·cm|N·m\\/A|Nm\\/°|N·m\\/kg|N\\/mm|N·m·W⁻⁰‧⁵|kgf·m|in·lb|oz·in|oz·ft|lbf·ft\\/A|lbf·in|lbf·ft\\/lb|dyn·cm|ozf·in+)",
+    "pressure": "(\\d*\\.?\\d+)\\s?(psi|psia|psig|mPa|MPa|Pa|kPa|bar|hbar|mbar|kbar|atm|GPa|µPa|hPa|daPa|µbar|N\\/m²|N\\/mm²|hPa\\/bar|MPa\\/bar|mbar\\/bar|Pa\\/bar|Pa·s\\/bar|hPa·m³\\/s|hPa·l\\/s|hPa\\/K|kPa\\/bar|kPa\\/K|MPa·m³\\/s|MPa·l\\/s|MPa\\/K|Pa\\/bar|Pa·s\\/bar|mbar·m³\\/s|mbar·l\\/s|mbar\\/K|Pa·m³\\/s|Pa·l\\/s|Pa.s\\/K|MPa\\/K|lb\\/ft²|lbf\\/in²|kgf\\/m²|Torr|at|lb\\/in²|cm H₂O|mm H₂O|mm Hg|inHg|inH₂O|cm Hg|ft H₂O|ft Hg|gf\\/cm²|kgf\\/cm²|kgf·m\\/cm²|lbf\\/ft²|bar\\/bar|psi\\/°F|psi\\/psi+)/gmi",
+    "power": "(\\d*\\.?\\d+)\\s?(W|kW|MW|GW|mW|µW|erg\\/s|ft·lbf\\/s|kgf·m\\/s|metric hp|CV|BHP+)"
+  },
+
+
+
+  "measurementUnitsCandidates": {
+    "length": "(\\d*\\.?\\d+)\\s?( )",
+    "volume": "(\\d*\\.?\\d+)\\s?( )",
+    "mass": "(\\d*\\.?\\d+)\\s?(µg|dag|dg|kg|g|cg|t|dt|dtn|mg|hg|kt|Mg|lb|gr|oz|ton+)",
+    "density": "(\\d*\\.?\\d+)\\s?(g/cm³|t/m³|g/ml|kg/l or kg/L|g/l|g/m³|mg/m³|Mg/m³|kg/dm³|mg/g|µg/l|mg/l|µg/m³|api|°api|g\/mol+)",
+    "electricity": "(\\d*\\.?\\d+)\\s?( )",
+    "flow": "(\\d*\\.?\\d+)\\s?( )",
+    "force": "(\\d*\\.?\\d+)\\s?(N|MN|kN|mN|µN|dyn|lbf|kgf|kp|ozf|ton.sh-force|lbf\\/ft|lbf\\/in|N·m²\\/kg²|N·m|N\\/A|MN·m|kN·m|mN·m|µN·m|dN·m|cN·m|N·cm|N·m\\/A|Nm\\/°|N·m\\/kg|N\\/mm|N·m·W⁻⁰‧⁵|kgf·m|in·lb|oz·in|oz·ft|lbf·ft\\/A|lbf·in|lbf·ft\\/lb|dyn·cm|ozf·in+)",
+    "pressure": "(\\d*\\.?\\d+)\\s?(psi|psia|psig|mPa|MPa|Pa|kPa|bar|hbar|mbar|kbar|atm|GPa|µPa|hPa|daPa|µbar|N\\/m²|N\\/mm²|hPa\\/bar|MPa\\/bar|mbar\\/bar|Pa\\/bar|Pa·s\\/bar|hPa·m³\\/s|hPa·l\\/s|hPa\\/K|kPa\\/bar|kPa\\/K|MPa·m³\\/s|MPa·l\\/s|MPa\\/K|Pa\\/bar|Pa·s\\/bar|mbar·m³\\/s|mbar·l\\/s|mbar\\/K|Pa·m³\\/s|Pa·l\\/s|Pa.s\\/K|MPa\\/K|lb\\/ft²|lbf\\/in²|kgf\\/m²|Torr|at|lb\\/in²|cm H₂O|mm H₂O|mm Hg|inHg|inH₂O|cm Hg|ft H₂O|ft Hg|gf\\/cm²|kgf\\/cm²|kgf·m\\/cm²|lbf\\/ft²|bar\\/bar|psi\\/°F|psi\\/psi+)/gmi",
+    "power": "(\\d*\\.?\\d+)\\s?(W|kW|MW|GW|mW|µW|erg\\/s|ft·lbf\\/s|kgf·m\\/s|metric hp|CV|BHP+)"
+  },
+  "conversions": {
+    "length-m": {
+      "target": "m",
+      "sources": {
+        "cm": 0.01,
+        "dm": 0.1,
+        "km": 1000
+      }
+    },
+    "time-sec": {
+      "target": "s",
+      "sources": {
+        "s": 1,
+        "min": 60,
+        "h": 3600,
+        "ks": 1000,
+        "ms": 0.001,
+        "µs": 0.000001,
+        "ns": 0.000000001,
+        "hour": 3600,
+        "minute": 60,
+        "second": 1
+      }
+    },
+    "time-day": {
+      "target": "s",
+      "sources": {
+        "d": 1,
+        "wk": 7,
+        "mo": 30.5,
+        "y": 365.5,
+        "year": 365.5,
+        "month": 30.5
+      }
+    }
+  }
+}

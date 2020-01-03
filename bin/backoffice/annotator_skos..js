@@ -275,7 +275,8 @@ var annotator_skos = {
         })
 
         saxStream.on("text", function (text) {
-
+if(!currentConcept)
+    return;
             if (currentTagName) {
                 if (currentTagName.indexOf("prefLabels_") == 0) {
                     var array = currentTagName.split("_")
@@ -290,6 +291,8 @@ var annotator_skos = {
 
 
         saxStream.on("closetag", function (node) {
+            if(!currentConcept)
+                return;
             if (node == "rdf:Description" || node == "skos:Concept") {
                 conceptsMap[currentConcept.id] = currentConcept;
             }
@@ -331,6 +334,18 @@ var annotator_skos = {
             globalOptions.elasticUrl += "/";
         if (!globalOptions.searchField)
             globalOptions.searchField = "attachment.content"
+
+        if  (!globalOptions.sourceFields )
+            globalOptions.highlightFields = ["text","docTitle","chapter"]
+
+       if(globalOptions.highlightFields){
+           globalOptions.highlightFieldsMap={}
+           globalOptions.searchField= globalOptions.highlightFields
+           globalOptions.highlightFields.forEach(function(field){
+               globalOptions.highlightFieldsMap[field]={};
+           })
+       }
+
 
 
         if (/[A-Z]+/.test(globalOptions.thesaurusIndex))
@@ -453,7 +468,7 @@ var annotator_skos = {
                                     "query": {
                                         "query_string": {
                                             "query": queryString,
-                                            "fields": [globalOptions.searchField],
+                                            "fields": globalOptions.searchField,
 
                                         }
                                     }
@@ -465,7 +480,11 @@ var annotator_skos = {
                                     "highlight": {
                                         "number_of_fragments": 0,
                                         "fragment_size": 0,
-                                        "fields": {"attachment.content": {}}
+                                        "fields": globalOptions.highlightFieldsMap,
+                                        "pre_tags" : ["|"],
+                                        "post_tags" : ["|"]
+
+
                                     }
                                 }
 
@@ -514,11 +533,10 @@ var annotator_skos = {
                                 return;
                             }
                             var hits = response.hits.hits;
-                            if (responseIndex == 74)
-                                var xx = 3;
 
-                            var splitFieldContentRegEx = /\[#([^\].]*)\]([^\[\\.]*)/gm
-                            var highlightRegEx = /<em[^\/]*?>([^<]*)<\/em>/gm;
+
+                         //   var splitFieldContentRegEx = /\[#([^\].]*)\]([^\[\\.]*)/gm
+                            var highlightRegEx = /(<em[^\/]*?>([^<]*)<\/em>)/gm;
 
                             hits.forEach(function (hit) {
                                 var document = {id: hit._id, index: hit._index, score: hit._score};
@@ -530,32 +548,27 @@ var annotator_skos = {
 
 
                                 if (hit.highlight) {//&& hit.highlight[globalOptions.searchField]) {
-                                    hit.highlight[globalOptions.searchField].forEach(function (highlight) {
-                                        var array = [];
+                                    globalOptions.searchField.forEach(function(field){
+                                        if( hit.highlight[field]) {
+                                            hit.highlight[field].forEach(function (highlight) {
 
 
-                                        var fieldContents = {};
+var xx=highlight.search(highlightRegEx);
+                                                var array = [];
+                                                while ((array = highlightRegEx.exec(highlight)) != null) {
 
-                                        while ((array = splitFieldContentRegEx.exec(highlight)) != null) {
-                                            fieldContents[array[1]] = array[2]
+                                                    var start = (highlightRegEx.lastIndex+1)-(array[1].length);
+                                                    var end=start+array[2].length
+                                                    var offset = {field: field, syn: array[2], end:end,start: start}
+                                                    offsets.push(offset)
+
+                                                }
+                                            })
                                         }
-                                        if (Object.keys(fieldContents).length == 0) {// no fields
-                                            fieldContents[globalOptions.searchField] = highlight
-                                        }
-
-                                        for (var field in fieldContents) {
-                                            var array = [];
-                                            while ((array = highlightRegEx.exec(fieldContents[field])) != null) {
-
-                                                var end = highlightRegEx.lastIndex - 5
-                                                var offset = {field: field, syn: array[1], start: end - (array[1].length)}
-                                                offsets.push(offset)
-
-                                            }
-                                        }
-
-
                                     })
+
+
+
                                 }
                                 offsets.sort(function(a,b){
                                     if(a.start>b.start)
@@ -655,7 +668,7 @@ var annotator_skos = {
                             elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
                                 if (err)
                                     return callbackSeries(err);
-                                var message = "indexed " + result.length + " records ";
+                                 var message = "mappings updated "+globalOptions.corpusIndex;
                                 socket.message(message)
                                 return callbackSeries()
 
@@ -702,7 +715,7 @@ var annotator_skos = {
                             elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
                                 if (err)
                                     return callbackSeries(err);
-                                var message = "indexed " + result.length + " records ";
+                                var message = "mappings updated "+globalOptions.corpusIndex;
                                 socket.message(message)
                                 return callbackSeries()
 
@@ -825,6 +838,9 @@ var annotator_skos = {
                                     "id": {
                                         "type": "keyword"
                                     },
+                                    "synonyms": {
+                                        "type": "text"
+                                    },
                                     "documents": {
                                         "properties": {
                                             "id": {
@@ -928,7 +944,7 @@ var annotator_skos = {
             var fetchSize = 1500
             var options = {
                 corpusIndex: index,
-                thesaurusIndex: "thesaurus_" + thesaurusIndexName,
+                thesaurusIndex:  thesaurusIndexName,
                 elasticUrl: elasticUrl
             }
 
@@ -1108,10 +1124,60 @@ if (false) {
            extractedLangages: ["en"],
 
        }*/
+    var rdfXmlPath = "D:\\NLP\\measurement-unit-skos.rdf"
+    var jstreeJsonPath = "D:\\NLP\\Tmeasurement-unit-skos.json";
+
+    //  var rdfXmlPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf";
+    //   var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
+    options = {
+        outputLangage: "en",
+        extractedLangages: ["en", "fr", "sp"],
+
+    }
 
 
     annotator_skos.rdfToJsTree(rdfXmlPath, options, function (err, result) {
         var str = JSON.stringify(result, null, 2);
         fs.writeFileSync(jstreeJsonPath, str);
     })
+}
+
+if( true){
+
+    var content="This recommendation shall be applicable for all new machines installed at the opportunity of re-rates, |plant| expansion projects or new |plants|."
+
+    var i=0
+var splitArray=content.split("|");
+    var offsets=[];
+    var str=""
+    var start;
+    var end;
+    splitArray.forEach(function (chunk,index){
+     str+=chunk;
+
+     if(index%2==0) {
+         start = str.length;
+     }
+     else{
+         end = str.length;
+         offsets.push({start:start,end:end})
+     }
+
+
+    })
+
+
+    var p=-1;
+    var offsets=[]
+    while((p=content.search(highlightRegEx))>-1){
+     var q=p
+    }
+
+
+    var xxx=content.replace(highlightRegEx,function(a,b,c,d){
+        var x=a
+    })
+
+
+
 }

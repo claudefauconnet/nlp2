@@ -1,5 +1,5 @@
 {
-  "name": "Eurovoc_FR",
+  "name": "thesaurus_eurovoc_fr",
   "skosXmlPath": "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
   "extractedLangages": "en,fr,sp",
   "outputLangage": "fr",

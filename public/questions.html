@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Souslesens search stats</title>
+    <title>Souslesens questions</title>
 
     <style>
         #jstreeDiv {
@@ -41,7 +41,7 @@
     <script src="js/graph/drawCanvas.js"></script>
     <script src="js/graph/visjsGraph2.js"></script>
     <script src="js/config.js"></script>
-    <script src="js/statistics.js"></script>
+    <script src="js/questions.js"></script>
     <script src="js/graph/graphController.js"></script>
 
     <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
@@ -53,6 +53,7 @@
     <script>
 
         $(function () {
+            questions.loadQuestions();
             $("#slider").slider({
                 min: graphController.sliderIndexMin,
                 max: graphController.sliderIndexMax,
@@ -76,11 +77,13 @@
 <div style="display: flex;flex-direction: row;">
     <div id="center">
 
-        word <input id="queryStringInput" style="width: 200px;"> <input id="entityQueryStringInput" style="width: 200px;" value="valve">
-        <button onclick="statistics.drawHeatMap()">draw heatMap</button>
-        <button onclick="statistics.drawGraph()">draw graph</button>
-        <button onclick="statistics.startGraph()">start graph</button>
+       Question<input id="questionInput" style="width: 400px;">
+        test questions  <select id="testQuestionsSelect" style="width: 400px;" onchange="$('#questionInput').val($(this).val())"></select>
+        <button onclick="questions.listAnswers($('#questionInput').val())">List response</button>
+        <button onclick="statistics.drawGraph()">X</button>
+        <button onclick="statistics.startGraph()">X</button>
         <div id="slider"></div>
+        <div id="responsesDiv" style="width:800px;height: 800px;"></div>
         <div id="graphDiv" style="width:800px;height: 800px;"></div>
     </div>
     <div id="right">

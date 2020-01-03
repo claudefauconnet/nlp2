@@ -40,7 +40,7 @@ var ui = (function () {
         var displayConfig = context.indexConfigs[hit._index].display;
         var indexLabel = context.indexConfigs[hit._index].general.label;
 
-        for(var thesaurus in context.thesauri) {
+        for(var thesaurus in context.allowedThesauri) {
             if (hit._source["entities_" + thesaurus])
                 hit = Entities.setHitEntitiesHiglight(hit, hit._source["entities_" + thesaurus])
         }
@@ -48,7 +48,7 @@ var ui = (function () {
 
         var entitieLegendHtml = self.getEntitiesLegendDiv();
         var html="<div id='entityExtractDiv'></div>"
-        html+= "<div style='display:flex;flex-direction:row' >" +entitieLegendHtml
+        html+= "<div style='display:flex;flex-direction:row' >" +entitieLegendHtml+"</div>"
         html +="<div id='detailsContentDiv'> <b> Source : </b><span class='title'>" + indexLabel + "</span><hr> "
         html += hitHtml+"</div>"
         html += "</div>";

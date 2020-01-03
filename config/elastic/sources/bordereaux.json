@@ -71,13 +71,18 @@
     }
   ],
   "thesauri": {
-    "Eurovoc_FR": {
-      "name": "Eurovoc_FR",
+    "thesaurus_eurovoc_fr": {
+      "name": "thesaurus_eurovoc_fr",
       "skosXmlPath": "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
       "extractedLangages": "en,fr,sp",
       "outputLangage": "fr",
       "uri_candidates": "http://eurovoc.europa.eu/candidates",
       "uri_domains": "http://eurovoc.europa.eu/domains"
     }
+  },
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes",
+    "applythesauri": "yes"
   }
 }

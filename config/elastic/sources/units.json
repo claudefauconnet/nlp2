@@ -1,0 +1,45 @@
+{
+  "general": {
+    "description": "units",
+    "label": "units",
+    "indexName": "units"
+  },
+  "connector": {
+    "type": "book",
+    "dirPath": "D:\\NLP\\measurementUnits",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "units": {
+        "properties": {
+          "title": {
+            "type": "text"
+          },
+          "page": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "page": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.content": {
+        "cssClass": "text"
+      }
+    }
+  ]
+}

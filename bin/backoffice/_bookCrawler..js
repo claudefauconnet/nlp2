@@ -169,10 +169,10 @@ var bookCrawler = {
                     const elasticRestProxy=require('../elasticRestProxy..js')
                     elasticRestProxy.checkBulkQueryResponse(body, function(err,result){
                         if(err)
-                            return callbackseries(err);
+                            return callbackSeries(err);
                         var message = "indexed " + result.length + " records ";
                         socket.message(message)
-                        return callbackseries()
+                        return callbackSeries()
 
                     })
                 })

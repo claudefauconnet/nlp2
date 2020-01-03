@@ -4,7 +4,7 @@ const request = require('request');
 const elasticUrl = "http://localhost:9200/";
 const debug=true;
 var elasticRestProxy = {
-
+    elasticUrl:elasticUrl,
 
     executePostQuery: function (url, query, callback) {
 

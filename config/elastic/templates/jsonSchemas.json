@@ -287,119 +287,122 @@
       }
     }
   },
+  "profiles": {
     "profiles": {
-      "profiles": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "title": "profile",
-          "properties": {
-            "group": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "profile",
+        "properties": {
+          "group": {
+            "type": "string",
+            "title": "group",
+            "required": true
+          },
+          "indexes": {
+            "type": "array",
+            "items": {
               "type": "string",
-              "title": "group",
+              "title": "index",
               "required": true
-            },
-            "indexes": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "title": "index",
-                "required": true
-              }
             }
           }
         }
       }
-    },
+    }
+  },
+  "job": {
     "job": {
-      "job": {
-        "type": "object",
-        "title": "job",
-        "properties": {
-          "indexName": {
-            "type": "string",
-            "title": "indexName",
-            "required": true
-          },
-          "runEvery": {
-            "type": "string",
-            "title": "run every",
-            "enum": [
-              "",
-              "minute",
-              "hour",
-              "day",
-              "week",
-              "month"
-            ]
-          },
-          "runTime": {
-            "type": "string",
-            "title": "run time (hh:min)"
-          },
-          "elasticUrl": {
-            "type": "string",
-            "title": "elasticSearch server url and port",
-            "default": "http://localhost:9200/"
-          },
-          "deleteOldIndex": {
-            "type": "bool",
-            "title": "deleteOldIndex",
-            "enum": [
-              "",
-              "yes",
-              "no"
-            ]
-          },
-          "active": {
-            "type": "boolean",
-            "title": "active",
-            "required": true
-          }
+      "type": "object",
+      "title": "job",
+      "properties": {
+        "indexName": {
+          "type": "string",
+          "title": "indexName",
+          "required": true
+        },
+        "runEvery": {
+          "type": "string",
+          "title": "run every",
+          "enum": [
+            "",
+            "minute",
+            "hour",
+            "day",
+            "week",
+            "month"
+          ]
+        },
+        "runTime": {
+          "type": "string",
+          "title": "run time (hh:min)"
+        },
+        "elasticUrl": {
+          "type": "string",
+          "title": "elasticSearch server url and port",
+          "default": "http://localhost:9200/"
+        },
+        "deleteOldIndex": {
+          "type": "bool",
+          "title": "deleteOldIndex",
+          "enum": [
+            "",
+            "yes",
+            "no"
+          ]
+        },
+        "active": {
+          "type": "boolean",
+          "title": "active",
+          "required": true
         }
       }
-    },
+    }
+  },
+  "thesaurus": {
     "thesaurus": {
-      "thesaurus": {
-        "type": "object",
-        "title": "skos thesaurus",
-        "properties": {
-          "name": {
-            "type": "string",
-            "title": "name",
-            "required": true
-          },
-          "skosXmlPath": {
-            "type": "string",
-            "title": "skosXmlPath",
-            "required": true
-          },
-          "extractedLangages": {
-            "type": "string",
-            "title": "extractedLangages",
-            "required": true
-          },
-          "outputLangage": {
-            "type": "string",
-            "title": "outputLangage",
-            "required": true
-          },
-
-
-          "uri_candidates": {
-            "type": "string",
-            "title": "uri_candidates",
-            "required": false
-          },
-          "uri_domains": {
-            "type": "string",
-            "title": "uri_domains",
-            "required": false
-          }
+      "type": "object",
+      "title": "skos thesaurus",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "name",
+          "required": true
+        },
+        "skosXmlPath": {
+          "type": "string",
+          "title": "skosXmlPath",
+          "required": true
+        },
+        "highlightFields": {
+          "type": "string",
+          "title": "highlightFields",
+          "required": true
+        },
+        "extractedLangages": {
+          "type": "string",
+          "title": "extractedLangages",
+          "required": true
+        },
+        "outputLangage": {
+          "type": "string",
+          "title": "outputLangage",
+          "required": true
+        },
+        "uri_candidates": {
+          "type": "string",
+          "title": "uri_candidates",
+          "required": false
+        },
+        "uri_domains": {
+          "type": "string",
+          "title": "uri_domains",
+          "required": false
         }
       }
     }
   }
+}
 
 
 
