@@ -21,6 +21,19 @@ var annotator_regex = {
         var docEntities = [];
         var measurementEntities = {};
         var allUnits = []
+
+
+        if  (!globalOptions.sourceFields )
+            globalOptions.highlightFields = ["text"]
+
+        if(globalOptions.highlightFields){
+            globalOptions.highlightFieldsMap={}
+            globalOptions.searchField= globalOptions.highlightFields
+            globalOptions.highlightFields.forEach(function(field){
+                globalOptions.highlightFieldsMap[field]={};
+            })
+        }
+
         async.whilst(
             function test(cb) {
                 cb(null, count > 0 || (i++) == 0)
@@ -98,9 +111,11 @@ var annotator_regex = {
                                                 offsets: {
                                                     "properties": {
                                                         start: {type: "integer"},
+                                                        end: {type: "integer"},
                                                         value: {type: "float"},
                                                         unit: {type: "keyword"},
-                                                        normalizedValue: {type: "float"},
+                                                        field:{type: "keyword"},
+                                                        normalizedValue: {type: "float"}
 
                                                     }
                                                 }
@@ -147,9 +162,11 @@ var annotator_regex = {
                                     }
                                     docEntitiesMap[doc.id].entities.push({id:key, offsets:{
                                         start:doc.start,
+                                            end:doc.end,
                                             value:doc.value,
                                             unit:doc.unit,
-                                            normalizedValue:doc.normalizedValue
+                                            normalizedValue:doc.normalizedValue,
+                                            field:doc.field
                                         }
                                     })
 
@@ -169,6 +186,8 @@ var annotator_regex = {
 
                         function (callbackSeries) {// update corpus index with entities
 
+                            if(docEntities.length==0)
+                                return callbackSeries();
 
                             var ndjsonStr = ""
                             var serialize = ndjson.serialize();
@@ -257,18 +276,20 @@ var annotator_regex = {
             hits.forEach(function (hit, hitIndex) {
 
                 var array = [];
-                var str = hit._source[globalOptions.contentField];
+                globalOptions.highlightFields.forEach(function(field){
+                var str = hit._source[field];
                 if (!str)
                     return;
                 while ((array = regex.exec(str)) != null) {
                     if (array.length == 3) {
                         var start = regex.lastIndex - array[0].length
-                        var obj = {id: hit._id, value: array[1], unit: array[2], start: start}
+                        var obj = {field:field,id: hit._id, value: array[1], unit: array[2], start: start,end: regex.lastIndex}
 
                         entityHits.documents.push(obj);
 
                     }
                 }
+                })
             })
 
             measurementEntities[key] = entityHits;

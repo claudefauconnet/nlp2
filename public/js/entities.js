@@ -460,8 +460,6 @@ var Entities = (function () {
             })
         }
         self.setHitEntitiesHiglight = function (hit, entities) {
-
-            // content.trim();
             var fields = {};
             var entityNames = []
             entities.forEach(function (entity) {
@@ -481,10 +479,8 @@ var Entities = (function () {
 
                 })
             })
-
             context.currententityNames = entityNames;
             ;
-
             for (var field in fields) {
                 var fieldChunks = [];
                 var offsets = fields[field].offsets
@@ -507,11 +503,15 @@ var Entities = (function () {
                     var p = 0;
                     keys.forEach(function (key) {
                         var offset = offsets[key];
-                        var chunk = content.slice(p, offset.start-1);
-                        fieldChunks.push(chunk)
-                        p = offset.end + 1
+                        var chunk = content.slice(p, offset.start);
+                        fieldChunks.push(chunk);
+                       chunk = content.slice( offset.start ,offset.end);
+                       chunk="<em class='E_"+offset.entityIndexes[0]+"'>"+chunk+"</em>"
+                        fieldChunks.push(chunk);
+                        p = offset.end
                     })
-
+                    var chunk = content.slice( p,content.length);
+                    fieldChunks.push(chunk);
 
                     var str = ""
                     fieldChunks.forEach(function (chunk) {
@@ -527,66 +527,7 @@ var Entities = (function () {
             return hit;
         }
 
-        self.setHitEntitiesHiglightOld = function (hit, entities) {
 
-            // content.trim();
-            var fieldsEntities = {};
-            var entityNames = []
-            entities.forEach(function (entity) {
-                if (entityNames.indexOf(entity.id) < 0)
-                    entityNames.push(entity.id)
-                entity.offsets.forEach(function (offset) {
-                    if (!fieldsEntities[offset.field])
-                        fieldsEntities[offset.field] = []
-                    offset.entity = entity.id
-                    fieldsEntities[offset.field].push(offset)
-                })
-            })
-
-            context.currententityNames = entityNames;
-            ;
-            var uniqueOffsets = []
-            for (var field in fieldsEntities) {
-                var offsets = fieldsEntities[field]
-                var content = hit._source[field];
-                if (!content) {
-                    var array = field.split(".")
-                    content = hit._source[array[0]][array[1]]
-                }
-                var fieldChunks = [];
-                var p = 0;
-
-                offsets.forEach(function (offset) {
-                    var q = content.indexOf(offset.syn, p)
-                    if (uniqueOffsets.indexOf(p + "-" + field) < 0) {
-                        uniqueOffsets.push(p + "-" + field)
-                        fieldChunks.push(content.substring(p, q))
-                        p = q + offset.syn.length;
-                        fieldChunks.push("<em class='entity E_" + entityNames.indexOf(offset.entity) + "'>" + content.substring(q, p) + "</em>")
-                    } else {
-                        x = 3
-                    }
-
-
-                })
-                var str = ""
-                fieldChunks.forEach(function (chunk) {
-                    str += chunk;
-                })
-
-                if (!hit._source[field]) {
-                    var array = field.split(".")
-                    if (hit._source[array[0]][array[1]])
-                        hit._source[array[0]][array[1]] = str
-                } else
-                    hit._source[field] = str;
-
-
-            }
-
-
-            return hit;
-        }
 
         self.showEntityExtracts = function (emClass) {
             // var entities = context.allowedThesauri[context.currentThesaurus].foundEntities;

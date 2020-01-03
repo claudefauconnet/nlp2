@@ -97,62 +97,7 @@ var questionAnswering = {
                 },
 
 
-                // search entities with synonyms matching tokens
-            /*    function (callbackSeries) {
-                    var i = 0;
-                    async.eachSeries(tokens, function (tokenObj, callbackEach) {
-                            var queryString = "\\\\\"" + tokenObj.token + "\\\\\"";
-                            var query = {
-                                "query": {
-                                    "query_string": {
-                                        "query": queryString,
-                                        "fields": ["synonyms"],
-
-                                    }
-                                }
-
-                            }
-                            var options = {
-                                method: 'POST',
-                                url: globalOptions.elasticUrl + globalOptions.thesaurusIndex + "/_search",
-                                json: query
-                            };
-                            request(options, function (error, response, body) {
-                                if (error)
-                                    return callbackSeries(error);
-                                if (body.error)
-                                    return callbackSeries(body.error);
-                                var hits = body.hits.hits;
-                                hits.forEach(function (hit) {
-                                    hit._source._id = hit._id;
-                                    hit._source._score = hit._score
-                                    hit._source._token = tokenObj.token
-                                    tokens[i].hasEntity = true;
-
-                                    tokenEntities[hit._source.internal_id] = hit._source
-                                    if (measurementEntitiesMapping[hit._source.internal_id]) {
-                                        measurementEntities = measurementEntities.concat(measurementEntitiesMapping[hit._source.internal_id])
-                                    }
-                                })
-                                i++;
-                                return callbackEach()
-
-                            })
-
-
-                        }, function (err) {
-                            if (err)
-                                return callbackSeries(err);
-
-                            return callbackSeries();
-                        }
-                    )
-                },
-                // get non entities token
-                function (callbackSeries) {
-                    var xx = tokens;
-                    return callbackSeries();
-                },*/
+      //find entities containing tokens in their synonyms
                 function (callbackSeries) {
                     var i = 0;
                     var queryString=""
@@ -218,39 +163,16 @@ var questionAnswering = {
 
                 },
 
-                //calculate boost with commmon documents
-           /*     function (callbackSeries) {
-                    return callbackSeries();
-                    var docScores = {}
-                    for (var key in tokenEntities) {
 
 
-                        tokenEntities[key].documents.forEach(function (doc) {
-                            if (!docScores[doc.id])
-                                docScores[doc.id] = [];
-                            docScores[doc.id].push(tokenEntities[key].internal_id)
-                        })
 
-
-                    }
-
-                    for (var key in docScores) {
-                        docScores[key].forEach(function (entity_internal_id) {
-                            tokenEntities[entity_internal_id].score = docScores[key].length
-                        })
-
-                    }
-                    callbackSeries();
-
-                },*/
-
-
-                // query corpus with all entities matching tokens
+                // query corpus with all documents matching entities with tokens
+            //matching also mesaurment units boosted
+           // and tokens with no entities as plain text search
                 function (callbackSeries) {
                     var entityIdShoulds = []
                     measurementEntities.forEach(function (measurementEntity) {
                         entityIdShoulds.push({
-                            //  match: {"entities_thesaurus_ctg.id": {query: entity.internal_id, boost: entity.score}}
                             match: {"entities_measurement_units.id": {query: measurementEntity, boost: 3}}
                         })
 
@@ -387,9 +309,9 @@ var questionAnswering = {
 
                             obj = {
                                 score: score,
-                                paragraph: source.text,
+                                text: source.text,
                                 chapter: chapterObj.chapter,
-                                document: docObj.docTitle,
+                                docTitle: docObj.docTitle,
                                 matchingPrepositions: prepositions.length,
                                 matchingEntities: totalMatchingEntities,
                                 totalMeasurementEntities: totalMeasurementEntities

@@ -1,3 +1,4 @@
+var context = {}
 var questions = (function () {
     var self = {};
 
@@ -106,9 +107,7 @@ var questions = (function () {
                         entityNames.push(entity.id)
                 })
 
-                var html=self.getResponseHtml(response, entityNames)
-
-
+                var html = self.getResponseHtml(response, entityNames)
 
 
                 allHtml += html
@@ -121,59 +120,27 @@ var questions = (function () {
 
     }
     self.getResponseHtml = function (hit, entityNames) {
-        var documentHtml = hit.document;
-        var chapterHtml = hit.chapter;
-        var paragraphHtml = hit.paragraph;
-        hit.matchingEntities.forEach(function (entity) {
+
+        //
+        hit._source = hit;
+        var hit = Entities.setHitEntitiesHiglight(hit, hit.matchingEntities)
+
+        var documentHtml = hit._source.docTitle;
+        var chapterHtml = hit._source.chapter;
+        var paragraphHtml = hit._source.text;
 
 
-            entity.offsets.sort(function (a, b) {
-                if (a.start > b.start)
-                    return -1;
-                if (b.start > a.start)
-                    return 1;
-                return 0;
+        var html = "<div style='border-color: #6a7179;border-style: solid; border-radius: 5px'>"
+        html += "<div style='background-color:#efec9f;border: 1px solid black' >" + "score" + hit.score + " entities" + hit.matchingEntities.length + "measures" + hit.totalMeasurementEntities.length + "</div>"
 
-
-            })
-            if (true) {
-
-                function insertEm(html,offset,emClassIndex){
-                    return html;
-                    var p=html.toLowerCase().lastIndexOf(offset.syn.toLowerCase())
-                    if(p<0)
-                        return html;
-                    var q=p+1+offset.syn.length
-                    var str1=html.slice(0, p);
-                    var str2=offset.syn
-                    var str3=html.slice(q,html.length-1);
-                  return str1+ "<em class='E_" +( entityNames.length - 1) + "'>"+str2+"</em>"+str3;
-                }
-
-                entity.offsets.forEach(function (offset) {
-                    if (offset.field = "docTitle") {
-                        documentHtml =insertEm(documentHtml,offset, entityNames.length - 1)
-
-                    }
-                    if (offset.field = "parentChapter") {
-                        chapterHtml =insertEm(chapterHtml,offset, entityNames.length - 1)               }
-                    if (offset.field = "text") {
-                        paragraphHtml =insertEm(paragraphHtml,offset, entityNames.length - 1)                         }
-                })
-
-
-
-            }
-        })
-       var  html = "<div style='border-color: #6a7179;border-style: solid; border-radius: 5px'>"
         html += "<div style='font-weight: bold'>" + documentHtml + "</div>"
         html += "<div style='font-weight: normal;font-style: italic;'>" + chapterHtml + "</div>";
         html += "<div>" + paragraphHtml + "</div></div>"
 
         return html;
 
-    }
 
+    }
 
     return self;
 })()

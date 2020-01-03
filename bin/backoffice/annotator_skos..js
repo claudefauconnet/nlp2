@@ -551,18 +551,24 @@ if(!currentConcept)
                                     globalOptions.searchField.forEach(function(field){
                                         if( hit.highlight[field]) {
                                             hit.highlight[field].forEach(function (highlight) {
+                                                var splitArray = highlight.split("|");
 
+                                                var str = ""
+                                                var start;
+                                                var end;
+                                                splitArray.forEach(function (chunk, index) {
+                                                    str += chunk;
 
-var xx=highlight.search(highlightRegEx);
-                                                var array = [];
-                                                while ((array = highlightRegEx.exec(highlight)) != null) {
+                                                    if (index % 2 == 0) {
+                                                        start = str.length;
+                                                    } else {
+                                                        end = str.length;
+                                                        var offset = {field: field, syn: chunk, end: end, start: start}
+                                                        offsets.push(offset)
+                                                    }
 
-                                                    var start = (highlightRegEx.lastIndex+1)-(array[1].length);
-                                                    var end=start+array[2].length
-                                                    var offset = {field: field, syn: array[2], end:end,start: start}
-                                                    offsets.push(offset)
+                                                })
 
-                                                }
                                             })
                                         }
                                     })
@@ -1142,11 +1148,11 @@ if (false) {
     })
 }
 
-if( true){
+if( false){
 
     var content="This recommendation shall be applicable for all new machines installed at the opportunity of re-rates, |plant| expansion projects or new |plants|."
 
-    var i=0
+
 var splitArray=content.split("|");
     var offsets=[];
     var str=""
