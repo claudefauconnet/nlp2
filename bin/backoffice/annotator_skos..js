@@ -13,7 +13,7 @@ var annotator_skos = {
 
 
     rdfToJsTree: function (sourcePath, options, callback) {
-        var xmlnsRootLength=-1
+        var xmlnsRootLength = -1
         if (!options)
             options = {
                 outputLangage: "fr",
@@ -27,25 +27,27 @@ var annotator_skos = {
             var schemesMap = {};
             var ancestorsMap = {};
             var domains = {};
-            var i=0;
+            var i = 0;
             for (var key in conceptsMap) {
                 //identitification of xmlnsRootLength (position of # or last / in the uri)
-                if(i++<5){
-                    var p=key.indexOf("#");
-                    if(p<0)
-                        p=key.lastIndexOf("/")
-                   if(p<0)
-                      return callback("Cannot analyze concept uri :"+key)
-                    if(xmlnsRootLength==-1)
-                        xmlnsRootLength=p+1
-                    else if( xmlnsRootLength!=(p+1))
-                       return  callback("Cannot continue uri has not the same xmlns:"+key)
+                if (i++ < 5) {
+                    var p = key.indexOf("#");
+                    if (p < 0)
+                        p = key.lastIndexOf("/")
+                    if (p < 0)
+                        return callback("Cannot analyze concept uri :" + key)
+                    if (xmlnsRootLength == -1)
+                        xmlnsRootLength = p + 1
+                    else if (xmlnsRootLength != (p + 1))
+                        return callback("Cannot continue uri has not the same xmlns:" + key)
                 }
 
                 var concept = conceptsMap[key];
 
+                if (concept.id.indexOf("C00131") > -1)
+                    var x = 3;
                 var obj = {
-                    text: concept.prefLabels[options.outputLangage || "en"],
+                    text: (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"]),
                     id: concept.id,
                     synonyms: [],
                     ancestors: [],
@@ -78,17 +80,20 @@ var annotator_skos = {
                     domains[domainKey] = concept.id
                 }
 
+                if (concept.broaders.length > 0) {
+                    obj.parent = concept.broaders[concept.broaders.length - 1];
+                    obj.ancestors = concept.broaders;
+                }
+                if (concept.topConcepts.length > 0) {
+                    if (concept.broaders.length == 0) {
 
-                if (concept.topConcepts.length > 0) {// && concept.topConcepts.indexOf("http://eurovoc.europa.eu/candidates")<0) {
                     obj.parent = concept.topConcepts[concept.topConcepts.length - 1];
-                    obj.ancestors = concept.topConcepts;
+                    obj.ancestors=concept.topConcepts;
+                }
                 } else if (concept.schemes.length > 0) {// && concept.topConcepts.indexOf("http://eurovoc.europa.eu/candidates")<0) {
-                    obj.parent = concept.schemes[concept.schemes.length - 1];
-                    obj.ancestors = concept.schemes;
-                } else {
-                    if (concept.broaders.length > 0) {
-                        obj.parent = concept.broaders[concept.broaders.length - 1];
-                        obj.ancestors = concept.broaders;
+                    if (concept.broaders.length == 0) {
+                        obj.parent = concept.schemes[concept.schemes.length - 1];
+                        obj.ancestors = concept.schemes;
                     }
                 }
                 treeMap[concept.id] = obj
@@ -132,67 +137,26 @@ var annotator_skos = {
 
                 var str = "";
                 var allAncestors = concept.ancestors;
-                allAncestors.splice(0,0,key)
+                allAncestors.splice(0, 0, key)
                 allAncestors.forEach(function (ancestorId, index) {
 
 
-                  
-                        var name = ancestorId.substring(xmlnsRootLength);
-                    if (str.indexOf(name) == 0)
+                    if (!treeMap[ancestorId])
+                        return;
+                    var ancestorName = treeMap[ancestorId].text
+                    if (str.indexOf(ancestorName) == 0)
                         return;//cf thesaurus-ctg ids
 
 
                     if (str != "")
-                        name += "-"
-                    str = name + str;
+                        ancestorName += "-"
+                    str = ancestorName + str;
                 })
 
 
                 concept.internal_id = str;
 
             }
-
-            /*     var regex = /[0-9]{2}/
-                 for (var key in treeMap) {
-                     if (!treeMap[key].parent || treeMap[key].parent == "#") {
-                         //  console.log( treeMap[key].text)
-                         if (treeMap[key].text) {
-                             var str = treeMap[key].text.substring(0, 2)
-                             if (regex.test(str)) {
-                                 var domainId = domains[str];
-                                 treeMap[key].parent = domainId
-                                 treeMap[key].ancestors.push(treeMap[key].parent)
-                             }
-                         }
-                     }
-                 }
-                 // set internal_id as concat of all ancestors separated by "-"
-                 for (var key in treeMap) {
-                     var concept = treeMap[key];
-                     var str = "";
-
-                     if (concept.ancestors) {
-
-                         concept.ancestors.forEach(function (ancestorId, index) {
-                             var ancestor = treeMap[ancestorId];
-
-                             if (ancestor && ancestor.parent && ancestor.parent != "#") {
-                                 if (str != "")
-                                     str += "-";
-                                 str += ancestor.text;
-
-                             }
-                         })
-                         if (!concept.text)
-                             concept.text = "?"
-
-                         if (str != "")
-                             treeMap[key].internal_id = str + "-" + concept.text;
-                         else
-                             treeMap[key].internal_id = concept.text;
-
-                     }
-                 }*/
 
 
             var conceptsArray = []
@@ -205,7 +169,7 @@ var annotator_skos = {
             return conceptsArray;
         }
 
-
+        var conceptTagNames = ["rdf:Description", "skos:ConceptScheme", "skos:Concept", "iso-thes:ConceptGroup"]
         var conceptsMap = {}
         var currentConcept = null;
         var currentTagName = null;
@@ -224,9 +188,11 @@ var annotator_skos = {
             var x = node;
 
 
-            if (node.name == "rdf:Description" || node.name == "skos:Concept") {
+            if (conceptTagNames.indexOf(node.name) > -1) {
                 currentConcept = {};
                 var id = node.attributes["rdf:about"];
+                if (id.indexOf("COL001") > -1)
+                    var x = 3
                 currentConcept.id = id;
                 currentConcept.prefLabels = {};
                 currentConcept.altLabels = [];
@@ -271,16 +237,21 @@ var annotator_skos = {
                 currentConcept.relateds.push(node.attributes["rdf:resource"]);
 
             }
+            /*   if (node.name == "iso-thes:superGroup") {
+                   currentConcept.broaders.push(node.attributes["rdf:resource"]);
+               }*/
+
 
         })
 
         saxStream.on("text", function (text) {
-if(!currentConcept)
-    return;
+            if (!currentConcept)
+                return;
             if (currentTagName) {
                 if (currentTagName.indexOf("prefLabels_") == 0) {
                     var array = currentTagName.split("_")
-                    currentConcept[array[0]] = {[array[1]]: text};
+
+                    currentConcept[array[0]][array[1]] = text;
                 } else if (currentTagName.indexOf("altLabels_") == 0) {
                     currentConcept.altLabels.push(text)
                 }
@@ -291,9 +262,9 @@ if(!currentConcept)
 
 
         saxStream.on("closetag", function (node) {
-            if(!currentConcept)
+            if (!currentConcept)
                 return;
-            if (node == "rdf:Description" || node == "skos:Concept") {
+            if (conceptTagNames.indexOf(node) > -1) {
                 conceptsMap[currentConcept.id] = currentConcept;
             }
         })
@@ -332,20 +303,17 @@ if(!currentConcept)
             return callback("No Elastic URL")
         if (globalOptions.elasticUrl.charAt(globalOptions.elasticUrl.length - 1) != "/")
             globalOptions.elasticUrl += "/";
-        if (!globalOptions.searchField)
-            globalOptions.searchField = "attachment.content"
+        if (!globalOptions.highlightFields)
+            globalOptions.highlightFields = "attachment.content"
 
-        if  (!globalOptions.sourceFields )
-            globalOptions.highlightFields = ["text","docTitle","chapter"]
 
-       if(globalOptions.highlightFields){
-           globalOptions.highlightFieldsMap={}
-           globalOptions.searchField= globalOptions.highlightFields
-           globalOptions.highlightFields.forEach(function(field){
-               globalOptions.highlightFieldsMap[field]={};
-           })
-       }
-
+        if (globalOptions.highlightFields) {
+            globalOptions.highlightFieldsMap = {}
+            globalOptions.searchField = globalOptions.highlightFields
+            globalOptions.highlightFields.forEach(function (field) {
+                globalOptions.highlightFieldsMap[field] = {};
+            })
+        }
 
 
         if (/[A-Z]+/.test(globalOptions.thesaurusIndex))
@@ -438,7 +406,7 @@ if(!currentConcept)
 
 
                     entities.forEach(function (entity, entityIndex) {
-                        entities[entityIndex].internal_id = entities[entityIndex].internal_id
+
 
                         if (entityIndex > globalOptions.maxEntities)
                             return callbackSeries();
@@ -481,8 +449,8 @@ if(!currentConcept)
                                         "number_of_fragments": 0,
                                         "fragment_size": 0,
                                         "fields": globalOptions.highlightFieldsMap,
-                                        "pre_tags" : ["|"],
-                                        "post_tags" : ["|"]
+                                        "pre_tags": ["|"],
+                                        "post_tags": ["|"]
 
 
                                     }
@@ -501,9 +469,9 @@ if(!currentConcept)
                     entities.forEach(function (entity, entityIndex) {
                         if (entity.elasticQuery) {
 
-                                queriedEntities.push(entityIndex)
-                                serialize.write({index: globalOptions.corpusIndex})
-                                serialize.write(entity.elasticQuery)
+                            queriedEntities.push(entityIndex)
+                            serialize.write({index: globalOptions.corpusIndex})
+                            serialize.write(entity.elasticQuery)
 
                         }
                     })
@@ -535,7 +503,7 @@ if(!currentConcept)
                             var hits = response.hits.hits;
 
 
-                         //   var splitFieldContentRegEx = /\[#([^\].]*)\]([^\[\\.]*)/gm
+                            //   var splitFieldContentRegEx = /\[#([^\].]*)\]([^\[\\.]*)/gm
                             var highlightRegEx = /(<em[^\/]*?>([^<]*)<\/em>)/gm;
 
                             hits.forEach(function (hit) {
@@ -548,8 +516,8 @@ if(!currentConcept)
 
 
                                 if (hit.highlight) {//&& hit.highlight[globalOptions.searchField]) {
-                                    globalOptions.searchField.forEach(function(field){
-                                        if( hit.highlight[field]) {
+                                    globalOptions.searchField.forEach(function (field) {
+                                        if (hit.highlight[field]) {
                                             hit.highlight[field].forEach(function (highlight) {
                                                 var splitArray = highlight.split("|");
 
@@ -574,12 +542,11 @@ if(!currentConcept)
                                     })
 
 
-
                                 }
-                                offsets.sort(function(a,b){
-                                    if(a.start>b.start)
+                                offsets.sort(function (a, b) {
+                                    if (a.start > b.start)
                                         return -1;
-                                    if(b.start>a.start)
+                                    if (b.start > a.start)
                                         return 1;
                                     return 0;
 
@@ -604,9 +571,7 @@ if(!currentConcept)
 
                             if (!documentsEntitiesMap[doc.id])
                                 documentsEntitiesMap[doc.id] = []
-                            if (entity.internal_id.indexOf("Component-Surge") > -1)
-                                var x = 3
-                            //  var entityId = entity.id.substring(entity.id.indexOf("#") + 1)
+
                             documentsEntitiesMap[doc.id].push({id: entity.internal_id, offsets: doc.entityOffsets})
 
                         })
@@ -674,7 +639,7 @@ if(!currentConcept)
                             elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
                                 if (err)
                                     return callbackSeries(err);
-                                 var message = "mappings updated "+globalOptions.corpusIndex;
+                                var message = "mappings updated " + globalOptions.corpusIndex;
                                 socket.message(message)
                                 return callbackSeries()
 
@@ -721,7 +686,7 @@ if(!currentConcept)
                             elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
                                 if (err)
                                     return callbackSeries(err);
-                                var message = "mappings updated "+globalOptions.corpusIndex;
+                                var message = "mappings updated " + globalOptions.corpusIndex;
                                 socket.message(message)
                                 return callbackSeries()
 
@@ -741,6 +706,8 @@ if(!currentConcept)
                         ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
                     })
 
+                    if (Object.keys(documentsEntitiesMap).length == 0)
+                        return callbackSeries();
                     for (var docId in documentsEntitiesMap) {
 
                         var entities = documentsEntitiesMap[docId];
@@ -947,11 +914,12 @@ if(!currentConcept)
                 return callback(err);
             var entities = result;
             socket.message("extracted " + entities.length + "entities  from thesaurus from file " + thesaurusConfig.skosXmlPath)
-            var fetchSize = 1500
+            var fetchSize = 200
             var options = {
                 corpusIndex: index,
-                thesaurusIndex:  thesaurusIndexName,
-                elasticUrl: elasticUrl
+                thesaurusIndex: thesaurusIndexName,
+                elasticUrl: elasticUrl,
+                highlightFields: thesaurusConfig.highlightFields
             }
 
 
@@ -1045,20 +1013,17 @@ if (false) {
 
 if (false) {
     var options = {
-        // corpusIndex: "testxx",
-        //  corpusIndex: "total_gm_mec",
+
         corpusIndex: "bordereaux",
-        // corpusIndex: "gmec_par",
         thesaurusIndex: "thesaurus_eurovoc",
         elasticUrl: "http://localhost:9200/",
-        //  excludeEntitiesPrefixs: ["SemanticTools", "PISTE", "Structure"]
-        // generateThesaurusTreeMap: false,
-        //  generateThesaurusJstreeWithDocuments: false
+
 
     }
-    var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
-    var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
-    //  var jstreeJsonPath = "D:\\NLP\\testTh.json";
+
+    var jstreeJsonPath = "D:\\NLP\\unescothes.rdf";
+
+
     var data = JSON.parse("" + fs.readFileSync(jstreeJsonPath));
 
     if (data.length < 1500) {
@@ -1105,41 +1070,13 @@ if (false) {
 
 if (false) {
     options = {
-        outputLangage: "en",
-        extractedLangages: ["en", "fr", "sp"],
-        uri_candidates: "http://eurovoc.europa.eu/candidates",
-        uri_domains: "http://eurovoc.europa.eu/domains"
-    }
-
-
-    var rdfXmlPath = "D:\\NLP\\total2019_spans20191210.skos";
-    var rdfXmlPath = "D:\\NLP\\Thesaurus_CTG_Skos_V1.6_201905.xml"
-    var jstreeJsonPath = "D:\\NLP\\Thesaurus_CTG.json";
-
-    //  var rdfXmlPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf";
-    //   var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
-    options = {
-        outputLangage: "en",
-        extractedLangages: ["en", "fr", "sp"],
-        uri_candidates: "http://eurovoc.europa.eu/candidates",
-        uri_domains: "http://eurovoc.europa.eu/domains"
-    }
-    /*   options = {
-
-           outputLangage: "en",
-           extractedLangages: ["en"],
-
-       }*/
-    var rdfXmlPath = "D:\\NLP\\measurement-unit-skos.rdf"
-    var jstreeJsonPath = "D:\\NLP\\Tmeasurement-unit-skos.json";
-
-    //  var rdfXmlPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf";
-    //   var jstreeJsonPath = "D:\\NLP\\eurovoc_in_skos_core_concepts.json";
-    options = {
-        outputLangage: "en",
+        outputLangage: "fr",
         extractedLangages: ["en", "fr", "sp"],
 
     }
+
+
+    var rdfXmlPath = "D:\\NLP\\unescothes.rdf"
 
 
     annotator_skos.rdfToJsTree(rdfXmlPath, options, function (err, result) {
@@ -1148,42 +1085,40 @@ if (false) {
     })
 }
 
-if( false){
+if (false) {
 
-    var content="This recommendation shall be applicable for all new machines installed at the opportunity of re-rates, |plant| expansion projects or new |plants|."
+    var content = "This recommendation shall be applicable for all new machines installed at the opportunity of re-rates, |plant| expansion projects or new |plants|."
 
 
-var splitArray=content.split("|");
-    var offsets=[];
-    var str=""
+    var splitArray = content.split("|");
+    var offsets = [];
+    var str = ""
     var start;
     var end;
-    splitArray.forEach(function (chunk,index){
-     str+=chunk;
+    splitArray.forEach(function (chunk, index) {
+        str += chunk;
 
-     if(index%2==0) {
-         start = str.length;
-     }
-     else{
-         end = str.length;
-         offsets.push({start:start,end:end})
-     }
+        if (index % 2 == 0) {
+            start = str.length;
+        } else {
+            end = str.length;
+            offsets.push({start: start, end: end})
+        }
 
 
     })
 
 
-    var p=-1;
-    var offsets=[]
-    while((p=content.search(highlightRegEx))>-1){
-     var q=p
+    var p = -1;
+    var offsets = []
+    while ((p = content.search(highlightRegEx)) > -1) {
+        var q = p
     }
 
 
-    var xxx=content.replace(highlightRegEx,function(a,b,c,d){
-        var x=a
+    var xxx = content.replace(highlightRegEx, function (a, b, c, d) {
+        var x = a
     })
-
 
 
 }

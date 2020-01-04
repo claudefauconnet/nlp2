@@ -68,7 +68,12 @@ var graphController = (function () {
                     color: color,
                     label: "" + data.labels[edge.from],
                     size: edge.width / 2,
-                    //   shape:"ellipse"
+                    font:{
+                        color:color,
+                        bold:true,
+                        size:14,
+                    },
+                     shape:"square"
                 }
             } else {
                 nodeMap[edge.from].size += edge.width / 2
@@ -181,7 +186,13 @@ var graphController = (function () {
                 documents: hit._source.documents,
             },
             value: hit._source.documents.length,
-            color: color
+            color: color,
+            shape:"square",
+            font:{
+                color:color,
+                bold:true,
+                size:14,
+            },
 
 
         }

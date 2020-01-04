@@ -460,6 +460,7 @@ var Entities = (function () {
             })
         }
         self.setHitEntitiesHiglight = function (hit, entities) {
+            var measurementUnitsEntities=["time-day","time-sec"]
             var fields = {};
             var entityNames = []
             entities.forEach(function (entity) {
@@ -470,7 +471,10 @@ var Entities = (function () {
                         fields[offset.field] = {entities: [], offsets: {}}
                     fields[offset.field].entities.push(entity.id);
                     var entityIndex = entityNames.indexOf(entity.id);
-                    offset.end = offset.start + offset.syn.length
+                    if(measurementUnitsEntities.indexOf(entity.id)>-1)
+                        entityIndex=-1
+
+
                     if (!fields[offset.field].offsets[offset.start]) {// une seule entite par offset et par field
                         fields[offset.field].offsets[offset.start] = {start: offset.start, end: offset.end, syn: offset.syn, entityIndexes: []}
                     }
@@ -483,8 +487,15 @@ var Entities = (function () {
             ;
             for (var field in fields) {
                 var fieldChunks = [];
-                var offsets = fields[field].offsets
-                var content = hit._source[field];
+                var offsets = fields[field].offsets;
+
+                var content
+                if( hit._source[field])
+                 content = hit._source[field];
+                else {
+                    var array=field.split(".")
+                    content = hit._source[array[0]][array[1]];//attachment.content
+                }
                 if (!content) {
                     hit._source[field] = "";
                 } else {
@@ -506,6 +517,9 @@ var Entities = (function () {
                         var chunk = content.slice(p, offset.start);
                         fieldChunks.push(chunk);
                        chunk = content.slice( offset.start ,offset.end);
+                       if(chunk.indexOf("<em")>-1)
+                           var x=3
+
                        chunk="<em class='E_"+offset.entityIndexes[0]+"'>"+chunk+"</em>"
                         fieldChunks.push(chunk);
                         p = offset.end
@@ -518,7 +532,13 @@ var Entities = (function () {
                         str += chunk;
                     })
 
-                    hit._source[field] = str;
+                    if( hit._source[field])
+                         hit._source[field]=str;
+                    else {
+                        var array=field.split(".")
+                         hit._source[array[0]][array[1]]=str;//attachment.content
+                    }
+
                 }
 
 

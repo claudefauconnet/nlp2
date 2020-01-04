@@ -28,6 +28,8 @@ var _documentCrawler = {
 
                 function getFilesRecursive(dir) {
                     dir = path.normalize(dir);
+                    if(!fs.existsSync(dir))
+                        return callbackSeries("dir doesnt not exist :"+dir)
                     if (dir.charAt(dir.length - 1) != path.sep)
                         dir += path.sep;
 

@@ -1,6 +1,9 @@
 {
   "name": "thesaurus_eurovoc_fr",
   "skosXmlPath": "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
+  "highlightFields": [
+    "attachment.content"
+  ],
   "extractedLangages": "en,fr,sp",
   "outputLangage": "fr",
   "uri_candidates": "http://eurovoc.europa.eu/candidates",

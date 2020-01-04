@@ -40,6 +40,7 @@ var Thesaurus = (function () {
         configEditor.editJsonForm('shemaForm', context.jsonSchemas.thesaurus, json, null, function (errors, data) {
             if (errors)
                 return;
+            data.thesaurus.highlightFields=data.thesaurus.highlightFields.split(",");
             var payload = {
                 saveThesaurusConfig: 1,
                 name: data.thesaurus.name,

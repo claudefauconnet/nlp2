@@ -1,0 +1,9 @@
+{
+  "name": "thesaurus_unesco",
+  "skosXmlPath": "D:\\NLP\\unescothes.rdf",
+  "highlightFields": [
+    "attachment.content"
+  ],
+  "extractedLangages": "en,fr,es",
+  "outputLangage": "fr"
+}

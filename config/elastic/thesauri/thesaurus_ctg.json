@@ -1,7 +1,11 @@
 {
   "name": "thesaurus_ctg",
   "skosXmlPath": "D:\\NLP\\Thesaurus_CTG_Skos_V1.6_201905.xml",
-  "highlightFields":["text","docTitle","chapter"],
+  "highlightFields": [
+    "text",
+    "docTitle",
+    "chapter"
+  ],
   "extractedLangages": "en",
   "outputLangage": "en"
 }

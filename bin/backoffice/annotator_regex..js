@@ -15,7 +15,7 @@ var annotator_regex = {
     annotateCorpus: function (globalOptions, callback) {
         var count = 0;
         var i = 0;
-        var fetchSize = 200;
+        var fetchSize = 2000;
         var from = 0;
         var allMeasurementUnits = [];
         var docEntities = [];
@@ -157,26 +157,38 @@ var annotator_regex = {
                             for (var key in measurementEntities) {
 
                                 measurementEntities[key].documents.forEach(function (doc) {
-                                    if(!docEntitiesMap[doc.id]){
-                                        docEntitiesMap[doc.id]={ id:doc.id, entities:[]}
+                                    if(!docEntitiesMap[doc.id]) {
+                                        docEntitiesMap[doc.id] = {id: doc.id, entities: [], entityNames: []}
+
                                     }
-                                    docEntitiesMap[doc.id].entities.push({id:key, offsets:{
+                                    var p=-1
+                                    if (docEntitiesMap[doc.id].entityNames.indexOf(key) < 0) {
+                                        docEntitiesMap[doc.id].entityNames.push(key);
+                                        docEntitiesMap[doc.id].entities.push({id: key, offsets: []})
+                                        p=0;
+                                    }else{
+                                        p= docEntitiesMap[doc.id].entityNames.indexOf(key);
+                                    }
+
+                             //    if( docEntitiesMap[doc.id].entities.indexOf(({id:key)
+                                    docEntitiesMap[doc.id].entities[p].offsets.push({
                                         start:doc.start,
                                             end:doc.end,
                                             value:doc.value,
                                             unit:doc.unit,
                                             normalizedValue:doc.normalizedValue,
                                             field:doc.field
-                                        }
+                                        })
                                     })
 
 
-                                    })
+
 
 
                             }
                             docEntities=[]
                             for(var key in docEntitiesMap){
+                                delete docEntitiesMap[key].entityNames;
                                 docEntities.push(docEntitiesMap[key])
                             }
                             callbackSeries();

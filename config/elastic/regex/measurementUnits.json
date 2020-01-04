@@ -22,6 +22,9 @@
     "pressure": "(\\d*\\.?\\d+)\\s?(psi|psia|psig|mPa|MPa|Pa|kPa|bar|hbar|mbar|kbar|atm|GPa|µPa|hPa|daPa|µbar|N\\/m²|N\\/mm²|hPa\\/bar|MPa\\/bar|mbar\\/bar|Pa\\/bar|Pa·s\\/bar|hPa·m³\\/s|hPa·l\\/s|hPa\\/K|kPa\\/bar|kPa\\/K|MPa·m³\\/s|MPa·l\\/s|MPa\\/K|Pa\\/bar|Pa·s\\/bar|mbar·m³\\/s|mbar·l\\/s|mbar\\/K|Pa·m³\\/s|Pa·l\\/s|Pa.s\\/K|MPa\\/K|lb\\/ft²|lbf\\/in²|kgf\\/m²|Torr|at|lb\\/in²|cm H₂O|mm H₂O|mm Hg|inHg|inH₂O|cm Hg|ft H₂O|ft Hg|gf\\/cm²|kgf\\/cm²|kgf·m\\/cm²|lbf\\/ft²|bar\\/bar|psi\\/°F|psi\\/psi+)/gmi",
     "power": "(\\d*\\.?\\d+)\\s?(W|kW|MW|GW|mW|µW|erg\\/s|ft·lbf\\/s|kgf·m\\/s|metric hp|CV|BHP+)"
   },
+
+
+
   "conversions": {
     "length-m": {
       "target": "m",

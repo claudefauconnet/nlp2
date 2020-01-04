@@ -314,7 +314,7 @@ var questionAnswering = {
                                 docTitle: docObj.docTitle,
                                 matchingPrepositions: prepositions.length,
                                 matchingEntities: totalMatchingEntities,
-                                totalMeasurementEntities: totalMeasurementEntities
+                                measurementEntities: totalMeasurementEntities
                             }
                             aggregatedHits.push(obj);
 

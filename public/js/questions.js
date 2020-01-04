@@ -123,7 +123,10 @@ var questions = (function () {
 
         //
         hit._source = hit;
-        var hit = Entities.setHitEntitiesHiglight(hit, hit.matchingEntities)
+        var allEntities= hit.matchingEntities;
+        if( hit.measurementEntities.length>0)
+            allEntities=allEntities.concat(hit.measurementEntities)
+        var hit = Entities.setHitEntitiesHiglight(hit,allEntities)
 
         var documentHtml = hit._source.docTitle;
         var chapterHtml = hit._source.chapter;
@@ -131,7 +134,7 @@ var questions = (function () {
 
 
         var html = "<div style='border-color: #6a7179;border-style: solid; border-radius: 5px'>"
-        html += "<div style='background-color:#efec9f;border: 1px solid black' >" + "score" + hit.score + " entities" + hit.matchingEntities.length + "measures" + hit.totalMeasurementEntities.length + "</div>"
+        html += "<div style='background-color:#efec9f;border: 1px solid black' >" + "score" + hit.score + " entities" + hit.matchingEntities.length + "measures" + hit.measurementEntities.length + "</div>"
 
         html += "<div style='font-weight: bold'>" + documentHtml + "</div>"
         html += "<div style='font-weight: normal;font-style: italic;'>" + chapterHtml + "</div>";
