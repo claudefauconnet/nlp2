@@ -133,8 +133,8 @@ var questions = (function () {
         var paragraphHtml = hit._source.text;
 
 
-        var html = "<div style='border-color: #6a7179;border-style: solid; border-radius: 5px'>"
-        html += "<div style='background-color:#efec9f;border: 1px solid black' >" + "score" + hit.score + " entities" + hit.matchingEntities.length + "measures" + hit.measurementEntities.length + "</div>"
+        var html = "<div style='border-color: #6a7179;border-style: solid; border-radius: 5px;margin: 5px; padding: 5px'>"
+        html += "<div style='background-color:#f9faf0;border: 1px solid black' >" + "score : " + hit.score + " entities : " + hit.matchingEntities.length +  " measures : " + hit.measurementEntities.length + "</div>"
 
         html += "<div style='font-weight: bold'>" + documentHtml + "</div>"
         html += "<div style='font-weight: normal;font-style: italic;'>" + chapterHtml + "</div>";

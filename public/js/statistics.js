@@ -12,7 +12,8 @@ var statistics = (function () {
 
 
     self.getEntitiesQuery = function (callback) {
-
+        context.currentCorpusIndex=$("#corpusIndexSelect").val();
+        context.currentThesaurusIndex=$("#thesaurusIndexSelect").val();
         var queryString = $("#queryStringInput").val();
         var entityQueryString = $("#entityQueryStringInput").val();
         if (queryString && queryString.length > 0) {
@@ -31,7 +32,7 @@ var statistics = (function () {
             }
             var payload = {
                 executeQuery: JSON.stringify(queryDocs),
-                indexes: JSON.stringify(["gmec_par"])
+                indexes: JSON.stringify([context.currentCorpusIndex])
 
             }
             $.ajax({
@@ -73,7 +74,7 @@ var statistics = (function () {
             }
             var payload = {
                 executeQuery: JSON.stringify(queryEntities),
-                indexes: JSON.stringify(["thesaurus_ctg"])
+                indexes: JSON.stringify([context.currentThesaurusIndex])
 
             }
             $.ajax({
@@ -158,6 +159,9 @@ var statistics = (function () {
     }
 
     self.startGraph = function () {
+        
+        context.currentCorpusIndex=$("#corpusIndexSelect").val();
+        context.currentThesaurusIndex=$("#thesaurusIndexSelect").val();
         var entityQueryString = $("#entityQueryStringInput").val();
 
         if (entityQueryString && entityQueryString.length > 0) {
@@ -171,11 +175,13 @@ var statistics = (function () {
                     }
                 }
             }
+
             var payload = {
                 executeQuery: JSON.stringify(queryEntities),
-                indexes: JSON.stringify(["thesaurus_ctg"])
+                indexes: JSON.stringify([context.currentThesaurusIndex])
 
             }
+            console.log(JSON.stringify(payload,null,2))
             $.ajax({
                 type: "POST",
                 url: appConfig.elasticUrl,
@@ -233,7 +239,7 @@ var statistics = (function () {
         console.log(JSON.stringify(query, null, 2))
         var payload = {
             executeQuery: JSON.stringify(query),
-            indexes: JSON.stringify(["gmec_par"])
+            indexes: JSON.stringify([context.currentCorpusIndex])
 
         }
         $.ajax({

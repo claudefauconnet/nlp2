@@ -7,7 +7,7 @@
   "connector": {
     "type": "json",
     "subType": "object",
-    "filePath": "D:\\Total\\docs\\extractions\\elasticAllParagraphs.json",
+    "filePath": "D:\\\\Total\\\\docs\\\\extractions\\\\elasticAllParagraphs.json",
     "contentField": "attachment.content"
   },
   "schema": {
@@ -110,7 +110,12 @@
   "thesauri": {
     "thesaurus_ctg": {
       "name": "thesaurus_ctg",
-      "skosXmlPath": "D:\\\\NLP\\\\Thesaurus_CTG_Skos_V1.6_201905.xml",
+      "skosXmlPath": "D:\\NLP\\Thesaurus_CTG_Skos_V1.6_201905.xml",
+      "highlightFields": [
+        "text",
+        "docTitle",
+        "chapter"
+      ],
       "extractedLangages": "en",
       "outputLangage": "en"
     }

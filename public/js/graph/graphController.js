@@ -143,7 +143,7 @@ var graphController = (function () {
         //  console.log(queryStr)
         var payload = {
             executeQuery: queryStr,
-            indexes: JSON.stringify(["thesaurus_ctg"])
+            indexes: JSON.stringify([context.currentThesaurusIndex])
 
         }
         $.ajax({

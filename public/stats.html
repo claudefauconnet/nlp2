@@ -43,6 +43,8 @@
     <script src="js/config.js"></script>
     <script src="js/statistics.js"></script>
     <script src="js/graph/graphController.js"></script>
+    <script src="js/backoffice/mainController.js"></script>
+    <script src="js/context.js"></script>
 
     <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
     <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>
@@ -66,6 +68,19 @@
                     graphController.sliderEdges.index = value;
                 }
             });
+
+            var corpusIndexes=[
+                "gmec_par",
+                "bordereaux"
+            ]
+
+            var thesaurusIndexes=[
+                "thesaurus_ctg",
+                "thesaurus_unesco"
+            ]
+            mainController.fillSelectOptions("corpusIndexSelect",corpusIndexes,false)
+            mainController.fillSelectOptions("thesaurusIndexSelect",thesaurusIndexes,false)
+
         });
 
     </script>
@@ -76,11 +91,18 @@
 <div style="display: flex;flex-direction: row;">
     <div id="center">
 
-        word <input id="queryStringInput" style="width: 200px;"> <input id="entityQueryStringInput" style="width: 200px;" value="valve">
+        <select id="corpusIndexSelect"></select>
+        <select id="thesaurusIndexSelect"></select>
+<br>
+      <!--  word <input id="queryStringInput" style="width: 200px;"> --><input id="entityQueryStringInput" style="width: 200px;" value="valve">
+
+
+
         <button onclick="statistics.drawHeatMap()">draw heatMap</button>
         <button onclick="statistics.drawGraph()">draw graph</button>
         <button onclick="statistics.startGraph()">start graph</button>
         <div id="slider"></div>
+        <br>
         <div id="graphDiv" style="width:800px;height: 800px;"></div>
     </div>
     <div id="right">

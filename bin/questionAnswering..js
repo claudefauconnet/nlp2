@@ -16,14 +16,9 @@ var prepositionEntitiesMapping = {
 }
 
 
-var loadPrepositions = function () {
-    var prepositionsPath = path.resolve("./config/elastic/regex/prepositions.json")
-    var prepositions = fs.readFileSync(prepositionsPath)
-    prepositions = JSON.parse("" + prepositions);
-    return prepositions;
-}
+
 var questionAnswering = {
- //   prepositions: loadPrepositions(),
+
     createQuestionIndex: function (elasticUrl, indexName, callback) {
         var filePath = "D:\\GitHub\\nlp2\\config\\elastic\\templates\\question_index_settings.json"
         var settings = JSON.parse("" + fs.readFileSync(filePath));
@@ -67,6 +62,7 @@ var questionAnswering = {
         var tokenEntities = {};
         var allShouldEntityHits = [];
         var aggregatedHits = [];
+        var nonEntentityTokens=[];
         ;
         var measurementEntities = []
 
@@ -91,6 +87,7 @@ var questionAnswering = {
                         tokens = body.tokens;
                         tokens.forEach(function(tokenObj){
                             tokenWords.push(tokenObj.token)
+                            nonEntentityTokens.push(tokenObj.token)
                         })
                         return callbackSeries();
                     })
@@ -99,6 +96,7 @@ var questionAnswering = {
 
       //find entities containing tokens in their synonyms
                 function (callbackSeries) {
+
                     var i = 0;
                     var queryString=""
                    tokens.forEach( function (tokenObj) {
@@ -116,7 +114,7 @@ var questionAnswering = {
                                         "fields": ["synonyms"],
 
                                     }
-                                }
+                                },size:1000
 
                             }
                             var options = {
@@ -139,11 +137,16 @@ var questionAnswering = {
                                     hit._source.documents.forEach(function(document){
 
                                         document.entityOffsets.forEach(function(offset){
-                                            if(tokenWords.indexOf(offset.syn)>0)
-                                               countEntityWords+=1;
+                                            var p;
+                                            if((p=tokenWords.indexOf(offset.syn))>0) {
+                                                countEntityWords += 1;
+                                             nonEntentityTokens.splice(p,1);
+                                            }
                                         })
-                                      if( countEntityWords>0)
+                                      if( countEntityWords>0) {
                                           tokenEntities[hit._source.internal_id].documents.push(document.id)
+
+                                      }
 
 
                                     })
@@ -166,6 +169,8 @@ var questionAnswering = {
 
 
 
+
+
                 // query corpus with all documents matching entities with tokens
             //matching also mesaurment units boosted
            // and tokens with no entities as plain text search
@@ -173,7 +178,7 @@ var questionAnswering = {
                     var entityIdShoulds = []
                     measurementEntities.forEach(function (measurementEntity) {
                         entityIdShoulds.push({
-                            match: {"entities_measurement_units.id": {query: measurementEntity, boost: 3}}
+                            term: {"entities_measurement_units.id": {query: measurementEntity, boost: 3}}
                         })
 
                     })
@@ -189,6 +194,20 @@ var questionAnswering = {
                         })
 
                     }
+                    nonEntentityTokens.forEach(function(token){
+                        entityIdShoulds.push(
+                        {
+
+                            "match" : {
+                                "text" : {
+                                    "query" :token
+                                }
+                            }
+
+
+                        })
+
+                    })
 
 
                     var query = {
@@ -222,16 +241,18 @@ var questionAnswering = {
                 // for each hit set questionEntities (more they are better will be the doc
                 function (callbackSeries) {
                     var questionEntities = Object.keys(tokenEntities);
+              //  console.log(questionEntities.toString())
                     allShouldEntityHits.forEach(function (hit) {
                         hit._source.matchingEntities = [];
                         hit._source.matchingMeasurementEntities = [];
+                        if (hit._source.entities_thesaurus_ctg) {
+                            hit._source.entities_thesaurus_ctg.forEach(function (entity) {
+                       //  console.log(entity.id);
+                                if (questionEntities.indexOf(entity.id) > -1)
+                                    hit._source.matchingEntities.push(entity)
 
-                        hit._source.entities_thesaurus_ctg.forEach(function (entity) {
-
-                            if (questionEntities.indexOf(entity.id) > -1)
-                                hit._source.matchingEntities.push(entity)
-
-                        })
+                            })
+                        }
                         if (hit._source.entities_measurement_units) {
                             hit._source.entities_measurement_units.forEach(function (entity) {
 
@@ -250,7 +271,7 @@ var questionAnswering = {
 
                     function extractPrepositions(matchingEntities, text) {
                         var extractedPrepositions = []
-                        if (false) {
+                        if (true) {
                             matchingEntities.forEach(function (entity) {
                                 if (prepositionEntitiesMapping[entity.id]) {
                                     prepositionEntitiesMapping[entity.id].forEach(function (type) {
@@ -303,7 +324,7 @@ var questionAnswering = {
                             totalMeasurementUnitsScore=(totalMeasurementEntities.length==0?0:(2 * Math.log(totalMeasurementEntities.length)))
                             var score = totalMatchingEntities.length + totalMeasurementUnitsScore;
 
-                            var prepositions = extractPrepositions(source.matchingEntities, source.text);
+                            var prepositions =[];// extractPrepositions(source.matchingEntities, source.text);
                             score += 3 * prepositions.length
 
 
