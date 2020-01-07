@@ -16,7 +16,6 @@ var prepositionEntitiesMapping = {
 }
 
 
-
 var questionAnswering = {
 
     createQuestionIndex: function (elasticUrl, indexName, callback) {
@@ -58,11 +57,11 @@ var questionAnswering = {
 
         var docs = [];
         var tokens = [];
-        var tokenWords=[]
+        var tokenWords = []
         var tokenEntities = {};
         var allShouldEntityHits = [];
         var aggregatedHits = [];
-        var nonEntentityTokens=[];
+        var nonEntentityTokens = [];
         ;
         var measurementEntities = []
 
@@ -85,7 +84,7 @@ var questionAnswering = {
                         if (body.error)
                             return callbackSeries(body.error);
                         tokens = body.tokens;
-                        tokens.forEach(function(tokenObj){
+                        tokens.forEach(function (tokenObj) {
                             tokenWords.push(tokenObj.token)
                             nonEntentityTokens.push(tokenObj.token)
                         })
@@ -94,118 +93,128 @@ var questionAnswering = {
                 },
 
 
-      //find entities containing tokens in their synonyms
+                //find entities containing tokens in their synonyms
                 function (callbackSeries) {
-
+                    var msearchStr = ""
                     var i = 0;
-                    var queryString=""
-                   tokens.forEach( function (tokenObj) {
-                       if(queryString.length>0)
-                           queryString+=" ";
-                       queryString+=tokenObj.token
+                    var queryString = ""
+                    tokens.forEach(function (tokenObj) {
+                        queryString = tokenObj.token
 
-                   })
 
-                            var query = {
-                                "query": {
-                                    "query_string": {
-                                        "query": queryString,
-                                        "default_operator": "OR",
-                                        "fields": ["synonyms"],
-
-                                    }
-                                },size:1000
+                    msearchStr += JSON.stringify({index: globalOptions.thesaurusIndex})+"\n"
+                    msearchStr += JSON.stringify({
+                        "query": {
+                            "query_string": {
+                                "query": queryString,
+                                "default_operator": "OR",
+                                "fields": ["synonyms"],
 
                             }
-                            var options = {
-                                method: 'POST',
-                                url: globalOptions.elasticUrl + globalOptions.thesaurusIndex + "/_search",
-                                json: query
-                            };
-                            request(options, function (error, response, body) {
-                                if (error)
-                                    return callbackSeries(error);
-                                if (body.error)
-                                    return callbackSeries(body.error);
-                                var hits = body.hits.hits;
+                        }, size: 1000
 
-                             //  var  entityDocs={}
-                                hits.forEach(function (hit) {
-                                    if(!tokenEntities[hit._source.internal_id])
-                                        tokenEntities[hit._source.internal_id]={internal_id:hit._source.internal_id,documents:[],countEntityWords:0};
-                                  var countEntityWords=0;
-                                    hit._source.documents.forEach(function(document){
+                    })+"\n"
+                    })
+                    var options = {
+                        method: 'POST',
+                        url: globalOptions.elasticUrl + "/_msearch",
+                        body: msearchStr,
+                        encoding: null,
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                    };
+                    request(options, function (error, response, body) {
+                        if (error)
+                            return callbackSeries(error);
+                        if (body.error)
+                            return callbackSeries(body.error);
 
-                                        document.entityOffsets.forEach(function(offset){
-                                            var p;
-                                            if((p=tokenWords.indexOf(offset.syn))>0) {
-                                                countEntityWords += 1;
-                                             nonEntentityTokens.splice(p,1);
-                                            }
-                                        })
-                                      if( countEntityWords>0) {
-                                          tokenEntities[hit._source.internal_id].documents.push(document.id)
+                        var json = JSON.parse(response.body);
+                        var responses = json.responses;
+                        responses.forEach(function(response,responseIndex) {
+                            var token=tokens[responseIndex];
+                            var hits = response.hits.hits;
 
-                                      }
+                            //  var  entityDocs={}
+
+                            hits.forEach(function (hit) {
+                                if (!tokenEntities[hit._source.internal_id])
+                                    tokenEntities[hit._source.internal_id] = {internal_id: hit._source.internal_id, documents: [], countEntityWords: 0};
+                                var countEntityWords = 0;
+                                hit._source.documents.forEach(function (document) {
+
+                                    document.entityOffsets.forEach(function (offset) {
+                                        var p;
+                                        if ((p = tokenWords.indexOf(offset.syn)) > -1) {
+                                            countEntityWords += 1;
+                                            var q=-1;
+                                            if((q=nonEntentityTokens.indexOf(token.token))>-1)
+                                            nonEntentityTokens.splice(q,1)
 
 
+                                        }
                                     })
+                                    if (countEntityWords > 0) {
+                                        tokenEntities[hit._source.internal_id].documents.push(document.id)
 
-
-                                    if (measurementEntitiesMapping[hit._source.internal_id]) {
-                                        measurementEntities = measurementEntities.concat(measurementEntitiesMapping[hit._source.internal_id])
                                     }
-                                })
-                                i++;
-                                return callbackSeries()
 
+
+                                })
+
+
+                                if (measurementEntitiesMapping[hit._source.internal_id]) {
+                                    measurementEntities = measurementEntities.concat(measurementEntitiesMapping[hit._source.internal_id])
+                                }
                             })
 
+                        })
+                        i++;
+                        return callbackSeries()
 
+                    })
 
 
                 },
 
 
-
-
-
-
                 // query corpus with all documents matching entities with tokens
-            //matching also mesaurment units boosted
-           // and tokens with no entities as plain text search
+                //matching also mesaurment units boosted
+                // and tokens with no entities as plain text search
                 function (callbackSeries) {
                     var entityIdShoulds = []
                     measurementEntities.forEach(function (measurementEntity) {
                         entityIdShoulds.push({
-                            term: {"entities_measurement_units.id": {query: measurementEntity, boost: 3}}
+                          //  term: {"entities_measurement_units.id": measurementEntity}
+                          match: {"entities_measurement_units.id": {query: measurementEntity, boost: 3}}
                         })
 
                     })
                     for (var key in tokenEntities) {
                         var entity = tokenEntities[key];
-                        var documents=entity.documents;
+                        var documents = entity.documents;
                         entityIdShoulds.push({
 
                             //  match: {"entities_thesaurus_ctg.id": {query: entity.internal_id, boost: entity.score}}
-                          //  match: {"entities_thesaurus_ctg.id": {query: entity.internal_id}}
-                            terms:{"_id":documents}
+                            //  match: {"entities_thesaurus_ctg.id": {query: entity.internal_id}}
+                            terms: {"_id": documents}
 
                         })
 
                     }
-                    nonEntentityTokens.forEach(function(token){
+                    nonEntentityTokens.forEach(function (token) {
                         entityIdShoulds.push(
-                        {
+                            {
 
-                            "match" : {
-                                "text" : {
-                                    "query" :token
+                                "match": {
+                                    "text": {
+                                        "query": token
+                                    }
                                 }
-                            }
 
 
-                        })
+                            })
 
                     })
 
@@ -241,13 +250,13 @@ var questionAnswering = {
                 // for each hit set questionEntities (more they are better will be the doc
                 function (callbackSeries) {
                     var questionEntities = Object.keys(tokenEntities);
-              //  console.log(questionEntities.toString())
+                    //  console.log(questionEntities.toString())
                     allShouldEntityHits.forEach(function (hit) {
                         hit._source.matchingEntities = [];
                         hit._source.matchingMeasurementEntities = [];
                         if (hit._source.entities_thesaurus_ctg) {
                             hit._source.entities_thesaurus_ctg.forEach(function (entity) {
-                       //  console.log(entity.id);
+                                //  console.log(entity.id);
                                 if (questionEntities.indexOf(entity.id) > -1)
                                     hit._source.matchingEntities.push(entity)
 
@@ -321,10 +330,10 @@ var questionAnswering = {
                             var totalMatchingEntities = source.matchingEntities.concat(chapterObj.matchingEntities).concat(docObj.matchingEntities)
                             var totalMeasurementEntities = source.matchingMeasurementEntities
 
-                            totalMeasurementUnitsScore=(totalMeasurementEntities.length==0?0:(2 * Math.log(totalMeasurementEntities.length)))
+                            totalMeasurementUnitsScore = (totalMeasurementEntities.length == 0 ? 0 : (2 * Math.log(totalMeasurementEntities.length)))
                             var score = totalMatchingEntities.length + totalMeasurementUnitsScore;
 
-                            var prepositions =[];// extractPrepositions(source.matchingEntities, source.text);
+                            var prepositions = [];// extractPrepositions(source.matchingEntities, source.text);
                             score += 3 * prepositions.length
 
 

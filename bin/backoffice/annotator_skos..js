@@ -56,7 +56,17 @@ var annotator_skos = {
                     })
 
                 },
+                function (callbackSeries) {//if ! globalOptions.append delete thesaurus field in corpus index and set mappings
+                    if (!globalOptions.append)
+                        return callbackSeries();
+                    annotator_skos.prepareCorpusIndexForEntities(globalOptions, function (err, result) {
+                        globalOptions.append = false;
+                        if (err)
+                            return callbackSeries(err);
+                        callbackSeries();
+                    })
 
+                },
 
                 function (callbackSeries) {// update corpus index with entities
                     annotator_skos.updateCorpusIndexWithEntities(globalOptions, entities, function (err, result) {
@@ -76,16 +86,7 @@ var annotator_skos = {
                     })
                 },
 
-                function (callbackSeries) {//if ! globalOptions.append delete thesaurus field in corpus index and set mappings
-                    if (!globalOptions.append)
-                        return callbackSeries();
-                    annotator_skos.prepareCorpusIndexForEntities(globalOptions, function (err, result) {
-                        if (err)
-                            return callbackSeries(err);
-                        callbackSeries();
-                    })
 
-                },
             ],
 
             // at the end
@@ -304,13 +305,13 @@ var annotator_skos = {
             },
 
             function (callbackSeries) {// create /update mappings for entity field
-                if (globalOptions.append)
-                    return callbackSeries();
+
                 var json = {
                     [globalOptions.corpusIndex]: {
                         "properties": {
                             ["entities_" + globalOptions.thesaurusIndex]: {
                                 //   "type": "keyword"
+                              //  "type": "nested",
                                 "properties": {
 
                                     id: {type: "keyword"},
@@ -358,255 +359,260 @@ var annotator_skos = {
     },
     updateCorpusIndexWithEntities: function (globalOptions, entities, callback) {
 
-                    var documentsEntitiesMap = {};
-                    entities.forEach(function (entity) {
-                        if(entity.id.indexOf("Component-Ring")>-1)
-                            var x=3;
-                        if (!entity.documents)
-                            return;
-                        entity.documents.forEach(function (doc) {
+        var documentsEntitiesMap = {};
+        entities.forEach(function (entity) {
+            if (entity.id.indexOf("Component-Ring") > -1)
+                var x = 3;
+            if (!entity.documents)
+                return;
+            entity.documents.forEach(function (doc) {
 
-                            if (!documentsEntitiesMap[doc.id])
-                                documentsEntitiesMap[doc.id] = []
+                if (!documentsEntitiesMap[doc.id])
+                    documentsEntitiesMap[doc.id] = []
 
-                            documentsEntitiesMap[doc.id].push({id: entity.internal_id, offsets: doc.entityOffsets})
+                documentsEntitiesMap[doc.id].push({id: entity.internal_id, offsets: doc.entityOffsets})
 
-                        })
-                    })
-                    var documentKeys = Object.keys(documentsEntitiesMap);
-                    if (documentKeys.length == 0)
-                        return callback();
+            })
+        })
+        var documentKeys = Object.keys(documentsEntitiesMap);
+        if (documentKeys.length == 0)
+            return callback();
 
-                    var fetchSize = 200;
-                    var slicedDocumentKeys = [];
-                    var p = 0;
-                    var q = 0;
+        var fetchSize = 10000;
+        var slicedDocumentKeys = [];
+        var p = 0;
+        var q = 0;
         while (p < documentKeys.length) {
-                        q = p + fetchSize;
+            q = p + fetchSize;
 
-                        slicedDocumentKeys.push(documentKeys.slice(p, q));
-                        p = q;
+            slicedDocumentKeys.push(documentKeys.slice(p, q));
+            p = q;
 
-                    }
+        }
 
-                    async.eachSeries(slicedDocumentKeys, function (documentKeys, callbackEach) {
-                        var ndjsonStr = ""
-                        var serialize = ndjson.serialize();
-                        serialize.on('data', function (line) {
-                            ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
-                        })
-
-
-                        for (var docId in documentsEntitiesMap) {
-
-                            var entities = documentsEntitiesMap[docId];
-                            var newobj = "";
+        async.eachSeries(slicedDocumentKeys, function (documentKeys, callbackEach) {
+            var ndjsonStr = ""
+            var serialize = ndjson.serialize();
+            serialize.on('data', function (line) {
+                ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
+            })
 
 
-                            newobj = JSON.stringify(entities);
-                           var  queryString = entities;
-                            var elasticQuery = {
-                                "doc": {
-                                    ["entities_" + globalOptions.thesaurusIndex]: queryString
-                                }
-                            }
-                            /*    var script = {
-                                    "script": "entities=ctx._source.entities." + globalOptions.thesaurusIndex +
-                                        "for (int i=0;i<entities.size();i++) { item=entities[i]; if (item['x'] == x_id) { ctx._source.b[i] = newobj} };",
-                                    "params": {
-                                        "x_id": "c1",
-                                        "newobj": entities
-                                    },
-                                    "lang": "groovy"
-                                }*/
+            for (var docId in documentsEntitiesMap) {
 
-                            serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
-                            serialize.write(elasticQuery)
+                var entities = documentsEntitiesMap[docId];
 
+
+                /*  var queryString = entities;
+                var elasticQuery = {
+                      "doc": {
+                          ["entities_" + globalOptions.thesaurusIndex]: queryString
+                      }
+                  }*/
+                serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
+                var script0 =  {"script":{"source":"if(ctx._source.entities_thesaurus_ctg instanceof List!=true){ctx._source.entities_thesaurus_ctg=[]}"  },
+                    "lang":"painless"
+                }
+                serialize.write(script0)
+
+                entities.forEach(function (entity) {
+
+                    var entityStr=JSON.stringify(entity).replace(/"/g,"'").replace(/\{/g,"[").replace(/\}/g,"]")
+               //   console.log(entityStr)
+                    var x=docId;
+                    var script = {
+                        "script": {
+                            "source": "ctx._source.entities_" + globalOptions.thesaurusIndex + ".add(params.entity)",
+                            "lang": "painless",
+                            "params":{entity:entity}
 
                         }
-                        serialize.end();
-
-                        var options = {
-                            method: 'POST',
-                            body: ndjsonStr,
-                            headers: {
-                                'content-type': 'application/json'
-                            },
-                            url: globalOptions.elasticUrl + "_bulk"
-                        };
-
-                        request(options, function (error, response, body) {
-                            if (error)
-                                return callbackEach(error);
-                            const indexer = require('./indexer..js')
-                            elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
-                                if (err)
-                                    return callbackSeries(err);
-                                var message = "updated " + result.length + " records in index " + globalOptions.thesaurusIndex;
-                                socket.message(message)
-                                return callbackEach()
-
-                            })
-                        })
-                    }, function (err) {
-                        if (err)
-                            return callback(err)
-
-                        callback();
-                    })
+                    }
+                    var line0 = JSON.stringify({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
+                    var line1 = JSON.stringify(script)
+                    serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
+                    serialize.write(script)
+                })
 
 
+            }
+            serialize.end();
 
+            var options = {
+                method: 'POST',
+                body: ndjsonStr,
+                headers: {
+                    'content-type': 'application/json'
+                },
+                url: globalOptions.elasticUrl + "_bulk"
+            };
+
+            request(options, function (error, response, body) {
+                if (error)
+                    return callbackEach(error);
+                const indexer = require('./indexer..js')
+                elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
+                    if (err)
+                        return callbackEach(err);
+                    var message = "updated " + result.length + " records in index " + globalOptions.thesaurusIndex;
+                    socket.message(message)
+                    return callbackEach()
+
+                })
+            })
+        }, function (err) {
+            if (err)
+                return callback(err)
+
+            callback();
+        })
 
 
     },
     indexThesaurus: function (globalOptions, entities, callback) {
-            async.series([
-                function (callbackSeries) {
+        async.series([
+            function (callbackSeries) {
 
-                    if (!globalOptions.thesaurusIndex)
-                        return callbackSeries();
-                    if (globalOptions.append)
-                        return callbackSeries();
 
-                    var options = {
-                        method: 'HEAD',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
-                    };
-                    request(options, function (error, response, body) {
-                        if (error)
-                            return callbackSeries(error);
-                        if (response.statusCode != 200)
+                if (!globalOptions.append)
+                    return callbackSeries();
+
+                var options = {
+                    method: 'HEAD',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
+                };
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackSeries(error);
+                    if (response.statusCode != 200)
+                        callbackSeries();
+                    else {
+                        var options = {
+                            method: 'DELETE',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
+                        };
+                        request(options, function (error, response, body) {
+                            if (error)
+                                return callbackSeries(error);
+                            var message = "delete index :" + globalOptions.thesaurusIndex;
+                            console.log(message);
+                            socket.message(message);
                             callbackSeries();
-                        else {
-                            var options = {
-                                method: 'DELETE',
-                                headers: {
-                                    'content-type': 'application/json'
+                        })
+                    }
+                })
+            },
+
+            // create thesaurus index
+            function (callbackSeries) {
+
+                if (!globalOptions.append)
+                    return callbackSeries();
+
+                var json = {
+                    "mappings": {
+                        [globalOptions.thesaurusIndex]: {
+                            "properties": {
+                                "internal_id": {
+                                    "type": "keyword"
                                 },
-                                url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
-                            };
-                            request(options, function (error, response, body) {
-                                if (error)
-                                    return callbackSeries(error);
-                                var message = "delete index :" + globalOptions.thesaurusIndex;
-                                console.log(message);
-                                socket.message(message);
-                                callbackSeries();
-                            })
-                        }
-                    })
-                },
-
-                // create thesaurus index
-                function (callbackSeries) {
-                    if (!globalOptions.thesaurusIndex)
-                        return callbackSeries();
-                    if (globalOptions.append)
-                        return callbackSeries();
-
-                    var json = {
-                        "mappings": {
-                            [globalOptions.thesaurusIndex]: {
-                                "properties": {
-                                    "internal_id": {
-                                        "type": "keyword"
-                                    },
-                                    "id": {
-                                        "type": "keyword"
-                                    },
-                                    "synonyms": {
-                                        "type": "text"
-                                    },
-                                    "documents": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "keyword"
-                                            },
-                                            "score": {
-                                                "type": "float"
-                                            },
-                                            "index": {
-                                                "type": "keyword"
-                                            }
+                                "id": {
+                                    "type": "keyword"
+                                },
+                                "synonyms": {
+                                    "type": "text"
+                                },
+                                "documents": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "keyword"
+                                        },
+                                        "score": {
+                                            "type": "float"
+                                        },
+                                        "index": {
+                                            "type": "keyword"
                                         }
                                     }
-                                },
+                                }
+                            },
 
-                            }
                         }
                     }
-
-                    var options = {
-                        json: json,
-                        method: 'PUT',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
-                    };
-                    request(options, function (error, response, body) {
-                        if (error)
-                            return callbackSeries(error);
-                        console.log("index thesaurus_" + globalOptions.thesaurusIndex + " created")
-                        socket.message("index thesaurus_" + globalOptions.thesaurusIndex + " created")
-                        callbackSeries();
-                    })
                 }
-                ,
+
+                var options = {
+                    json: json,
+                    method: 'PUT',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    url: globalOptions.elasticUrl + globalOptions.thesaurusIndex
+                };
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackSeries(error);
+                    console.log("index thesaurus_" + globalOptions.thesaurusIndex + " created")
+                    socket.message("index thesaurus_" + globalOptions.thesaurusIndex + " created")
+                    callbackSeries();
+                })
+            }
+            ,
 
 
-                function (callbackSeries) {  // indexEntities
+            function (callbackSeries) {  // indexEntities
 
-                    if (!globalOptions.indexEntities)
-                        return callbackSeries();
+                if (!globalOptions.indexEntities)
+                    return callbackSeries();
 
-                    console.log("indexing entities ");
-                    socket.message("indexing entities");
-                    var ndJson = ""
-                    var serialize = ndjson.serialize();
-                    serialize.on('data', function (line) {
-                        ndJson += line; // line is a line of stringified JSON with a newline delimiter at the end
-                    })
+                console.log("indexing entities ");
+                socket.message("indexing entities");
+                var ndJson = ""
+                var serialize = ndjson.serialize();
+                serialize.on('data', function (line) {
+                    ndJson += line; // line is a line of stringified JSON with a newline delimiter at the end
+                })
 
-                    entities.forEach(function (entity) {
-                       /* var array = entity.id.split("#");
-                        if (array.length == 2)
-                            entity.internal_id = array[1]*/
+                entities.forEach(function (entity) {
+                    /* var array = entity.id.split("#");
+                     if (array.length == 2)
+                         entity.internal_id = array[1]*/
 
-                        if(entity.id.indexOf("Component-Ring")>-1)
-                            var x=3;
-                        var newElasticId = Math.round(Math.random() * 10000000)
-                        serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
-                        serialize.write(entity)
-                    })
-                    serialize.end();
-                    var options = {
-                        method: 'POST',
-                        body: ndJson,
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        url: globalOptions.elasticUrl + "/_bulk"
-                    };
-                    request(options, function (error, response, body) {
-                        if (error)
-                            return callbackSeries(error);
-                        var json = JSON.parse(response.body);
-                        callbackSeries();
+                    if (entity.id.indexOf("Component-Ring") > -1)
+                        var x = 3;
+                    var newElasticId = Math.round(Math.random() * 10000000)
+                    serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
+                    serialize.write(entity)
+                })
+                serialize.end();
+                var options = {
+                    method: 'POST',
+                    body: ndJson,
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    url: globalOptions.elasticUrl + "/_bulk"
+                };
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackSeries(error);
+                    var json = JSON.parse(response.body);
+                    callbackSeries();
 
 
-                    })
-                }], function (err) {
-                if (err)
-                    return callback(err);
-                return callback(null, entities);
-            })
-        }
+                })
+            }], function (err) {
+            if (err)
+                return callback(err);
+            return callback(null, entities);
+        })
+    }
 
     ,
 
@@ -619,7 +625,7 @@ var annotator_skos = {
                 return callback(err);
             var entities = result;
             socket.message("extracted " + entities.length + "entities  from thesaurus from file " + thesaurusConfig.skosXmlPath)
-            var fetchSize = 2000
+            var fetchSize = 50
             var options = {
                 corpusIndex: index,
                 thesaurusIndex: thesaurusIndexName,
@@ -642,8 +648,10 @@ var annotator_skos = {
             var i = 0;
             socket.message("Starting annotation of index " + options.corpusIndex + "with thesaurus " + options.thesaurusIndex)
             async.eachSeries(slicedData, function (slice, callbackEach) {
-                    if (i > 0)
+                    if (i == 0)
                         options.append = true
+                    else
+                        options.append = false
                     annotator_skos.annotate(options, slice, function (err, result) {
                         if (err) {
                             console.log("ERROR :" + err)

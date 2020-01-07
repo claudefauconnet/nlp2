@@ -1,0 +1,118 @@
+{
+  "general": {
+    "description": "photos",
+    "label": "Photos",
+    "indexName": "photos"
+  },
+  "connector": {
+    "type": "sql",
+    "subType": "mysql",
+    "connOptions": {
+      "host": "localhost",
+      "port": "7202",
+      "user": "bailletarchives",
+      "password": "nodeApp55",
+      "database": "phototheque",
+      "table": "phototheque"
+    },
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "photos": {
+        "properties": {
+          "indexCIJW": {
+            "type": "keyword"
+          },
+          "versement_relié": {
+            "type": "text"
+          },
+          "ancienne_cote": {
+            "type": "text"
+          },
+          "lien": {
+            "type": "keyword"
+          },
+          "photographe": {
+            "type": "text"
+          },
+          "agence": {
+            "type": "text"
+          },
+          "droit_auteur": {
+            "type": "keyword"
+          },
+          "droit_image": {
+            "type": "keyword"
+          },
+          "contenu": {
+            "type": "text"
+          },
+          "temoin_ref": {
+            "type": "text"
+          },
+          "date": {
+            "type": "date"
+          },
+          "lieu": {
+            "type": "text"
+          },
+          "description": {
+            "type": "text"
+          },
+          "local": {
+            "type": "keyword"
+          },
+          "support": {
+            "type": "keyword"
+          },
+          "dateMaj": {
+            "type": "date"
+          },
+          "redacteur": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "indexCIJW": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "lien": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "date": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "lieu": {
+        "cssClass": "excerpt"
+      }
+    }
+  ],
+  "indexation": {
+    "elasticUrl": "http://92.222.116.179:7201/",
+    "deleteOldIndex": "yes"
+  },
+  "thesauri": {
+    "thesaurus_unesco": {
+      "name": "thesaurus_unesco",
+      "skosXmlPath": "D:\\NLP\\unescothes.rdf",
+      "highlightFields": [
+        "attachment.content"
+      ],
+      "extractedLangages": "en,fr,es",
+      "outputLangage": "fr"
+    }
+  }
+}
