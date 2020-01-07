@@ -409,11 +409,11 @@ var annotator_skos = {
                           ["entities_" + globalOptions.thesaurusIndex]: queryString
                       }
                   }*/
-                serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
-                var script0 =  {"script":{"source":"if(ctx._source.entities_thesaurus_ctg instanceof List!=true){ctx._source.entities_thesaurus_ctg=[]}"  },
+            //    serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
+            /*    var script0 =  {"script":{"source":"if(ctx._source.entities_thesaurus_ctg instanceof List!=true){ctx._source.entities_thesaurus_ctg=[]}"  },
                     "lang":"painless"
                 }
-                serialize.write(script0)
+                serialize.write(script0)*/
 
                 entities.forEach(function (entity) {
 
@@ -422,7 +422,7 @@ var annotator_skos = {
                     var x=docId;
                     var script = {
                         "script": {
-                            "source": "ctx._source.entities_" + globalOptions.thesaurusIndex + ".add(params.entity)",
+                            "source": "if(ctx._source.entities_"+ globalOptions.thesaurusIndex + " instanceof List!=true){ctx._source.entities_"+ globalOptions.thesaurusIndex + "=[]} ctx._source.entities_" + globalOptions.thesaurusIndex + ".add(params.entity)",
                             "lang": "painless",
                             "params":{entity:entity}
 
