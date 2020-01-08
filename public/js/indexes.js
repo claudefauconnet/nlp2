@@ -184,6 +184,7 @@ var indexes = (function () {
             url: appConfig.elasticUrl,
             data: payload,
             dataType: "json",
+            timeout: 1000*3600*24*3, //3 days //Set your timeout value in milliseconds or 0 for unlimited
             success: function (data, textStatus, jqXHR) {
 
                 $("#messageDiv").html("done")

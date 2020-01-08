@@ -9,6 +9,7 @@ var ndjson = require('ndjson');
 const socket = require('../../routes/socket.js');
 const elasticRestProxy = require('../elasticRestProxy..js');
 const skosReader = require('./skosReader..js');
+var totalAnnotations = 0;
 var annotator_skos = {
 
 
@@ -57,7 +58,7 @@ var annotator_skos = {
 
                 },
                 function (callbackSeries) {//if ! globalOptions.append delete thesaurus field in corpus index and set mappings
-                    if (!globalOptions.append)
+                    if (globalOptions.append)
                         return callbackSeries();
                     annotator_skos.prepareCorpusIndexForEntities(globalOptions, function (err, result) {
                         globalOptions.append = false;
@@ -75,16 +76,6 @@ var annotator_skos = {
                         callbackSeries();
                     })
                 }
-                ,
-                function (callbackSeries) {
-                    if (!globalOptions.thesaurusIndex)
-                        return callbackSeries();
-                    annotator_skos.indexThesaurus(globalOptions, entities, function (err, result) {
-                        if (err)
-                            return callbackSeries(err);
-                        callbackSeries();
-                    })
-                },
 
 
             ],
@@ -197,9 +188,9 @@ var annotator_skos = {
                 return callbackSeries(error);
             var json = JSON.parse(response.body);
             var responses = json.responses;
-            var totalAnnotations = 0
+
             responses.forEach(function s(response, responseIndex) {
-                entities[queriedEntities[responseIndex]].documents = [];
+                entities[queriedEntities[responseIndex]].documentsMap = {};
                 if (response.error) {
                     console.log(JSON.stringify(response.error.root_cause))
                     socket.message(JSON.stringify(response.error.root_cause))
@@ -214,8 +205,8 @@ var annotator_skos = {
                 hits.forEach(function (hit) {
                     var document = {id: hit._id, index: hit._index, score: hit._score};
 
-
-                    entities[queriedEntities[responseIndex]].documents.push(document);
+                    if (!entities[queriedEntities[responseIndex]].documentsMap[document.id])
+                        entities[queriedEntities[responseIndex]].documentsMap[document.id] = document;
                     totalAnnotations += 1;
                     var offsets = [];
 
@@ -261,7 +252,9 @@ var annotator_skos = {
 
                 })
             })
-            console.log("total Annotations " + totalAnnotations + " on " + entities.length + " entities ");
+            var message="total Annotations " + totalAnnotations + " on " + entities.length + " entities ";
+            console.log(message);
+            socket.message(message);
             callback(null, entities);
         })
 
@@ -311,7 +304,7 @@ var annotator_skos = {
                         "properties": {
                             ["entities_" + globalOptions.thesaurusIndex]: {
                                 //   "type": "keyword"
-                              //  "type": "nested",
+                                //  "type": "nested",
                                 "properties": {
 
                                     id: {type: "keyword"},
@@ -361,18 +354,17 @@ var annotator_skos = {
 
         var documentsEntitiesMap = {};
         entities.forEach(function (entity) {
-            if (entity.id.indexOf("Component-Ring") > -1)
-                var x = 3;
-            if (!entity.documents)
-                return;
-            entity.documents.forEach(function (doc) {
 
+            if (!entity.documentsMap)
+                return;
+            for (var docId in entity.documentsMap) {
+                var doc = entity.documentsMap[docId];
                 if (!documentsEntitiesMap[doc.id])
                     documentsEntitiesMap[doc.id] = []
 
                 documentsEntitiesMap[doc.id].push({id: entity.internal_id, offsets: doc.entityOffsets})
 
-            })
+            }
         })
         var documentKeys = Object.keys(documentsEntitiesMap);
         if (documentKeys.length == 0)
@@ -403,33 +395,18 @@ var annotator_skos = {
                 var entities = documentsEntitiesMap[docId];
 
 
-                /*  var queryString = entities;
-                var elasticQuery = {
-                      "doc": {
-                          ["entities_" + globalOptions.thesaurusIndex]: queryString
-                      }
-                  }*/
-            //    serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
-            /*    var script0 =  {"script":{"source":"if(ctx._source.entities_thesaurus_ctg instanceof List!=true){ctx._source.entities_thesaurus_ctg=[]}"  },
-                    "lang":"painless"
-                }
-                serialize.write(script0)*/
-
                 entities.forEach(function (entity) {
 
-                    var entityStr=JSON.stringify(entity).replace(/"/g,"'").replace(/\{/g,"[").replace(/\}/g,"]")
-               //   console.log(entityStr)
-                    var x=docId;
+
                     var script = {
                         "script": {
-                            "source": "if(ctx._source.entities_"+ globalOptions.thesaurusIndex + " instanceof List!=true){ctx._source.entities_"+ globalOptions.thesaurusIndex + "=[]} ctx._source.entities_" + globalOptions.thesaurusIndex + ".add(params.entity)",
+                            "source": "if(ctx._source.entities_" + globalOptions.thesaurusIndex + " instanceof List!=true){ctx._source.entities_" + globalOptions.thesaurusIndex + "=[]} ctx._source.entities_" + globalOptions.thesaurusIndex + ".add(params.entity)",
                             "lang": "painless",
-                            "params":{entity:entity}
+                            "params": {entity: entity}
 
                         }
                     }
-                    var line0 = JSON.stringify({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
-                    var line1 = JSON.stringify(script)
+
                     serialize.write({update: {_id: docId, _index: globalOptions.corpusIndex, _type: globalOptions.corpusIndex}})
                     serialize.write(script)
                 })
@@ -444,7 +421,7 @@ var annotator_skos = {
                 headers: {
                     'content-type': 'application/json'
                 },
-                url: globalOptions.elasticUrl + "_bulk"
+                url: globalOptions.elasticUrl + "_bulk?refresh=wait_for"
             };
 
             request(options, function (error, response, body) {
@@ -454,8 +431,7 @@ var annotator_skos = {
                 elasticRestProxy.checkBulkQueryResponse(body, function (err, result) {
                     if (err)
                         return callbackEach(err);
-                    var message = "updated " + result.length + " records in index " + globalOptions.thesaurusIndex;
-                    socket.message(message)
+
                     return callbackEach()
 
                 })
@@ -470,12 +446,11 @@ var annotator_skos = {
 
     },
     indexThesaurus: function (globalOptions, entities, callback) {
+
         async.series([
             function (callbackSeries) {
 
 
-                if (!globalOptions.append)
-                    return callbackSeries();
 
                 var options = {
                     method: 'HEAD',
@@ -507,13 +482,12 @@ var annotator_skos = {
                         })
                     }
                 })
-            },
-
+            }
+            ,
             // create thesaurus index
             function (callbackSeries) {
 
-                if (!globalOptions.append)
-                    return callbackSeries();
+
 
                 var json = {
                     "mappings": {
@@ -565,49 +539,75 @@ var annotator_skos = {
             }
             ,
 
-
             function (callbackSeries) {  // indexEntities
 
-                if (!globalOptions.indexEntities)
-                    return callbackSeries();
+
 
                 console.log("indexing entities ");
                 socket.message("indexing entities");
-                var ndJson = ""
-                var serialize = ndjson.serialize();
-                serialize.on('data', function (line) {
-                    ndJson += line; // line is a line of stringified JSON with a newline delimiter at the end
+
+                var slicedData = [];
+                var fetchSize = 100;
+                var p = 0;
+                var q = 0;
+                do {
+                    q = p + fetchSize;
+                    slicedData.push(entities.slice(p, q));
+                    p = q;
+                } while (p < entities.length)
+
+                var totalEntities = 0
+                async.eachSeries(slicedData, function (slice, callbackEach) {
+                    var ndJson = ""
+                    var serialize = ndjson.serialize();
+                    serialize.on('data', function (line) {
+                        ndJson += line; // line is a line of stringified JSON with a newline delimiter at the end
+                    })
+
+                    slice.forEach(function (entity) {
+                        if(entity.internal_id=="Equipment-Topsides-Valve")
+                            var xx=3
+                        entity.documents=[]
+                        if(entity.documentsMap) {
+                            for (var key in entity.documentsMap) {
+                                entity.documents.push(entity.documentsMap[key])
+                            }
+                            delete entity.documentsMap;
+                            var newElasticId = Math.round(Math.random() * 10000000)
+                            serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
+                            serialize.write(entity);
+                        }
+
+                    })
+                    serialize.end();
+                    var options = {
+                        method: 'POST',
+                        body: ndJson,
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        url: globalOptions.elasticUrl + "/_bulk?refresh=wait_for"
+                    };
+                    request(options, function (error, response, body) {
+                        if (error)
+                            return callbackEach(error);
+                        var json = JSON.parse(response.body);
+                        var message = "indexed " + (totalEntities += slice.length) + " in index  thesaurus_" + globalOptions.thesaurusIndex;
+                        console.log(message);
+                        socket.message(message)
+                        callbackEach();
+
+
+                    })
+                }, function (err) {
+                    if (err)
+                        return callback();
+                    callback()
                 })
-
-                entities.forEach(function (entity) {
-                    /* var array = entity.id.split("#");
-                     if (array.length == 2)
-                         entity.internal_id = array[1]*/
-
-                    if (entity.id.indexOf("Component-Ring") > -1)
-                        var x = 3;
-                    var newElasticId = Math.round(Math.random() * 10000000)
-                    serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
-                    serialize.write(entity)
-                })
-                serialize.end();
-                var options = {
-                    method: 'POST',
-                    body: ndJson,
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    url: globalOptions.elasticUrl + "/_bulk"
-                };
-                request(options, function (error, response, body) {
-                    if (error)
-                        return callbackSeries(error);
-                    var json = JSON.parse(response.body);
-                    callbackSeries();
+            },
 
 
-                })
-            }], function (err) {
+        ], function (err) {
             if (err)
                 return callback(err);
             return callback(null, entities);
@@ -646,29 +646,40 @@ var annotator_skos = {
 
 
             var i = 0;
+            totalAnnotations = 0;
             socket.message("Starting annotation of index " + options.corpusIndex + "with thesaurus " + options.thesaurusIndex)
             async.eachSeries(slicedData, function (slice, callbackEach) {
-                    if (i == 0)
-                        options.append = true
-                    else
-                        options.append = false
-                    annotator_skos.annotate(options, slice, function (err, result) {
-                        if (err) {
-                            console.log("ERROR :" + err)
-                            return callbackEach(err);
-                        }
-                        i++;
-                        socket.message("extracted  entities  from " + fetchSize * i + " documents")
+                if (i == 0)
+                    options.append = false
+                else
+                    options.append = true
+                annotator_skos.annotate(options, slice, function (err, result) {
+                    if (err) {
+                        console.log("ERROR :" + err)
+                        return callbackEach(err);
+                    }
+                    i++;
+                    socket.message("extracted  entities  from " + fetchSize * i + " documents")
 
-                        return callbackEach();
+                    return callbackEach();
+                })
+            }, function (err) {
+                if (err)
+                    return callback(err);
+
+                if (options.thesaurusIndex) {
+
+                    annotator_skos.indexThesaurus(options, entities, function (err, result) {
+                        if (err)
+                            return callback(err);
+                        socket.message("Finished annotation of index " + options.corpusIndex + "with thesaurus " + options.thesaurusIndex)
+                        callback(null, "ALL DONE")
                     })
-                }, function (err) {
-                    if (err)
-                        return callback(err);
+                } else {
                     socket.message("Finished annotation of index " + options.corpusIndex + "with thesaurus " + options.thesaurusIndex)
                     callback(null, "ALL DONE")
                 }
-            )
+            })
 
 
         })

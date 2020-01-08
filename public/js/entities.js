@@ -460,7 +460,7 @@ var Entities = (function () {
             })
         }
         self.setHitEntitiesHiglight = function (hit, entities) {
-            var measurementUnitsEntities=["time-day","time-sec"]
+            var measurementUnitsEntities = ["time-day", "time-sec"]
             var fields = {};
             var entityNames = []
             entities.forEach(function (entity) {
@@ -471,8 +471,8 @@ var Entities = (function () {
                         fields[offset.field] = {entities: [], offsets: {}}
                     fields[offset.field].entities.push(entity.id);
                     var entityIndex = entityNames.indexOf(entity.id);
-                    if(measurementUnitsEntities.indexOf(entity.id)>-1)
-                        entityIndex=-1
+                    if (measurementUnitsEntities.indexOf(entity.id) > -1)
+                        entityIndex = -1
 
 
                     if (!fields[offset.field].offsets[offset.start]) {// une seule entite par offset et par field
@@ -490,10 +490,10 @@ var Entities = (function () {
                 var offsets = fields[field].offsets;
 
                 var content
-                if( hit._source[field])
-                 content = hit._source[field];
+                if (hit._source[field])
+                    content = hit._source[field];
                 else {
-                    var array=field.split(".")
+                    var array = field.split(".")
                     content = hit._source[array[0]][array[1]];//attachment.content
                 }
                 if (!content) {
@@ -516,15 +516,15 @@ var Entities = (function () {
                         var offset = offsets[key];
                         var chunk = content.slice(p, offset.start);
                         fieldChunks.push(chunk);
-                       chunk = content.slice( offset.start ,offset.end);
-                       if(chunk.indexOf("<em")>-1)
-                           var x=3
+                        chunk = content.slice(offset.start, offset.end);
+                        if (chunk.indexOf("<em") > -1)
+                            var x = 3
 
-                       chunk="<em class='E_"+offset.entityIndexes[0]+"'>"+chunk+"</em>"
+                        chunk = "<em class='E_" + offset.entityIndexes[0] + "'>" + chunk + "</em>"
                         fieldChunks.push(chunk);
                         p = offset.end
                     })
-                    var chunk = content.slice( p,content.length);
+                    var chunk = content.slice(p, content.length);
                     fieldChunks.push(chunk);
 
                     var str = ""
@@ -532,11 +532,11 @@ var Entities = (function () {
                         str += chunk;
                     })
 
-                    if( hit._source[field])
-                         hit._source[field]=str;
+                    if (hit._source[field])
+                        hit._source[field] = str;
                     else {
-                        var array=field.split(".")
-                         hit._source[array[0]][array[1]]=str;//attachment.content
+                        var array = field.split(".")
+                        hit._source[array[0]][array[1]] = str;//attachment.content
                     }
 
                 }
@@ -546,7 +546,6 @@ var Entities = (function () {
 
             return hit;
         }
-
 
 
         self.showEntityExtracts = function (emClass) {
@@ -562,16 +561,50 @@ var Entities = (function () {
             do {
                 q = html.indexOf(emClass, p);
                 if (q > -1) {
-                    extracts.push(html.substring(Math.max(0, q - 40), Math.min(html.length - 1, q + 40)) + "...<br>");
+                    extracts.push(html.substring(Math.max(0, q - 40), Math.min(html.length - 1, q + 40)) + "");
                     p = q + 2;
                 }
             } while (q > -1)
             var str = "";
             extracts.forEach(function (extract) {
-                str += "..." + extract + "..."
+                str += "..." + extract + "...<hr>"
             })
 
             $("#entityExtractDiv").html(str)
+        }
+
+
+        self.getEntitiesLegendDiv = function () {
+            if (!context.currententityNames)
+                return "";
+            var html = "<div id='entities_legendDiv' style='display:flex;flex-direction:column; border: solid 1px;border-color: #8f8b8a; border-radius: 5px;width: 200px'>";
+            html += "<div onclick='Entities.showEntitiesLegend();'>Entities ...</div>"
+            html += "<div id='entities_legendList'></div>";
+
+            html += "</div>"
+            return html
+        }
+
+        self.showEntitiesLegend = function () {
+            var html = $("#entities_legendList").html();
+            if (html == "") {
+                context.currententityNames.forEach(function (entity, entityIndex) {
+                    html += "<em  class='E_" + entityIndex + "'>" + entity + "</em>&nbsp;";
+                })
+                $("#entities_legendList").html(html)
+                $("em[class^='E_']").bind("click", function () {
+                    var x = $(this)
+                    var emClass = $(this).attr('class');
+                    // var index = parseInt(emClass.substring(emClass.lastIndexOf("_") + 1))
+                    Entities.showEntityExtracts(emClass)
+
+                })
+            } else {
+                $("#entities_legendList").html("")
+
+            }
+            $("#entityExtractDiv").html("");
+
         }
 
         return self;

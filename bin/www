@@ -21,6 +21,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+server.timeout = 1000*3600*24*3;// 3 days
 var io = require('socket.io')(server, {path: '/socket.io'});
 //var io = require('socket.io')(server);
 io.sockets.on('connection', function (client) {

@@ -66,6 +66,8 @@ var annotator_regex = {
                     if (error)
                         return callbackIter(error);
                     var hits = body.hits.hits;
+
+
                     var annotatedHits = [];
                     async.series([
 

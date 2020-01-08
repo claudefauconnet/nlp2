@@ -73,7 +73,7 @@
   "thesauri": {
     "thesaurus_unesco": {
       "name": "thesaurus_unesco",
-      "skosXmlPath": "D:\\NLP\\unescothes.rdf",
+      "skosXmlPath": "D:\\\\NLP\\\\unescothes.rdf",
       "highlightFields": [
         "attachment.content"
       ],

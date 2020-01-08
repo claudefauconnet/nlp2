@@ -46,7 +46,7 @@ var indexer = {
                 },
 
                 function (callbackSeries) {
-                    var message = "strarting indexation index :" + index
+                    var message = "starting indexation index :" + index
                     socket.message(message);
                     callbackSeries();
                 },
@@ -244,8 +244,11 @@ var indexer = {
                     if (!config.thesauri)
                         return callbackSeries();
 
-                    var thesauri = Object.keys(config.thesauri)
+                    var thesauri = Object.keys(config.thesauri);
+                    var i=0;
                     async.eachSeries(thesauri, function (thesaurus, callbackEach) {
+                        if(i++>0)
+                           return  callbackEach
                         var thesaurusConfig = config.thesauri[thesaurus];
                         annotator_skos.annotateCorpusFromRDFfile(thesaurusConfig, index,elasticUrl, function (err, result) {
                             if (err)

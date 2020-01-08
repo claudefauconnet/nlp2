@@ -25,16 +25,7 @@ var ui = (function () {
 
 
     }
-    self.getEntitiesLegendDiv = function () {
-        if (!context.currententityNames)
-            return "";
-        var html = "<div style='display:flex;flex-direction:column; border: solid;1px; border-radius: 5px;width: 200px'>Entities"
-        context.currententityNames.forEach(function (entity, entityIndex) {
-            html += "<em  class='E_" + entityIndex + "'>" + entity + "</em>&nbsp;";
-        })
-        html += "</div>"
-        return html
-    }
+
 
     self.showHitDetails = function (hit) {
         var displayConfig = context.indexConfigs[hit._index].display;
@@ -46,9 +37,9 @@ var ui = (function () {
         }
         var hitHtml = self.getHitHtml(hit, displayConfig, "details")
 
-        var entitieLegendHtml = self.getEntitiesLegendDiv();
-        var html="<div id='entityExtractDiv'></div>"
-        html+= "<div style='display:flex;flex-direction:row' >" +entitieLegendHtml+"</div>"
+        var entitieLegendHtml = Entities.getEntitiesLegendDiv();
+        var html=""
+        html+= "<div style='display:flex;flex-direction:row;background-color:#e0dddd ' >" +entitieLegendHtml+"<div id='entityExtractDiv'></div></div>"
         html +="<div id='detailsContentDiv'> <b> Source : </b><span class='title'>" + indexLabel + "</span><hr> "
         html += hitHtml+"</div>"
         html += "</div>";
@@ -58,13 +49,7 @@ var ui = (function () {
         $(".dialogDiv").css("top", " 100px");
         $("#dialogDiv").dialog("open")
 
-        $("em[class^='E_']").bind("click", function () {
-            var x = $(this)
-            var emClass = $(this).attr('class');
-           // var index = parseInt(emClass.substring(emClass.lastIndexOf("_") + 1))
-            Entities.showEntityExtracts(emClass)
 
-        })
 
     }
 
