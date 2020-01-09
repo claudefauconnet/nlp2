@@ -2,17 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/bin/backoffice/annotator_spacy..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_regex..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/annotator_regex..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_skos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/annotator_skos..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/indexer..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/indexer..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/sources/bordereaux.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/bordereaux.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/backoffice/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/entities.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/entities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/indexes.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/indexes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/ui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_entities..js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -63,7 +57,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
+  <component name="RunManager">
     <configuration name="annotator_regex..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_regex..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
@@ -73,22 +67,19 @@
     <configuration name="annotator_skos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_skos..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
+    <configuration name="annotator_spacy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/bin/backoffice/annotator_spacy..js" working-dir="$PROJECT_DIR$/bin/backoffice">
+      <method v="2" />
+    </configuration>
     <configuration name="entities.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="entities.js" working-dir="$PROJECT_DIR$/public/js">
-      <method v="2" />
-    </configuration>
-    <configuration name="questionAnswering..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="questionAnswering..js" working-dir="$PROJECT_DIR$/bin">
-      <method v="2" />
-    </configuration>
-    <configuration name="unitsExtractor..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="unitsExtractor..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.annotator_spacy..js" />
         <item itemvalue="Node.js.annotator_regex..js" />
         <item itemvalue="Node.js.annotator_skos..js" />
         <item itemvalue="Node.js.annotator_skosOld..js" />
         <item itemvalue="Node.js.entities.js" />
-        <item itemvalue="Node.js.questionAnswering..js" />
       </list>
     </recent_temporary>
   </component>
@@ -106,7 +97,7 @@
       <workItem from="1577961328476" duration="59514000" />
       <workItem from="1578158965724" duration="57019000" />
       <workItem from="1578424956528" duration="17096000" />
-      <workItem from="1578483602972" duration="8176000" />
+      <workItem from="1578483602972" duration="14755000" />
     </task>
     <servers />
   </component>
@@ -150,14 +141,21 @@
           <option name="timeStamp" value="579" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_regex..js</url>
-          <line>335</line>
-          <option name="timeStamp" value="583" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/routes/index.js</url>
           <line>169</line>
           <option name="timeStamp" value="600" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_spacy..js</url>
+          <line>286</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="634" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_spacy..js</url>
+          <line>284</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="635" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
