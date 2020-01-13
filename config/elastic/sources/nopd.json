@@ -1,0 +1,468 @@
+{
+  "general": {
+    "description": "nopd",
+    "label": "nopd",
+    "indexName": "nopd"
+  },
+  "connector": {
+    "type": "json",
+    "subType": "object",
+    "filePath": "D:\\NLP\\nopd\\nopd.json",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "nopd": {
+        "properties": {
+          "cores": {
+            "properties": {
+              "datesyncNPD": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbCoreDateUpdated": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbCoreIntervalBottom": {
+                "type": "float"
+              },
+              "wlbCoreIntervalTop": {
+                "type": "float"
+              },
+              "wlbCoreIntervalUom": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbCoreNumber": {
+                "type": "float"
+              },
+              "wlbCoreSampleAvailable": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbNPDIDWellbore": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbName": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbNumberOfCores": {
+                "type": "float"
+              },
+              "wlbTotalCoreLength": {
+                "type": "float"
+              }
+            }
+          },
+          "datesyncNPD": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "formations": {
+            "properties": {
+              "datesyncNPD": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "isuWellboreUpdatedDate": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "lsuBottomDepth": {
+                "type": "float"
+              },
+              "lsuLevel": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "lsuName": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "lsuNameParent": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "lsuNpdidLithoStrat": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "lsuNpdidLithoStratParent": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "lsuTopDepth": {
+                "type": "float"
+              },
+              "wlbName": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbNpdidWellbore": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "fuidSamples": {
+            "properties": {
+              "datesyncNPD": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbNPDIDWellbore": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbName": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbOilSampleBottomDepth": {
+                "type": "float"
+              },
+              "wlbOilSampleDateUpdated": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbOilSampleFluidType": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbOilSampleTestDate": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbOilSampleTestNumber": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbOilSampleTestType": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "wlbOilSampleTopDepth": {
+                "type": "float"
+              },
+              "wlbOilSampledateReceivedDate": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "wlbAgeAtTd": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbAgeWithHc1": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbCompletionDate": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbContent": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbDrillingOperator": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbEntryDate": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbProductionLicence": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbPurpose": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbReentry": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbStatus": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "wlbWellboreName": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "wlbWellboreName": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbEntryDate": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbCompletionDate": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbDrillingOperator": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbProductionLicence": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbPurpose": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbContent": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbReentry": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbStatus": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbAgeAtTd": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "wlbAgeWithHc1": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "datesyncNPD": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "formations": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "fuidSamples": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "cores": {
+        "cssClass": "text"
+      }
+    }
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "no",
+    "applythesauri": "no"
+  }
+}

@@ -44,7 +44,7 @@
             "type": "text"
           },
           "tables": {
-            "type": "text"
+            "type": "object"
           }
         }
       }
@@ -53,12 +53,12 @@
   "display": [
     {
       "paragraphId": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "chapterId": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
@@ -73,12 +73,12 @@
     },
     {
       "docTitle": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "chapter": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
@@ -88,17 +88,17 @@
     },
     {
       "chapterTocNumber": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "text": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     },
     {
       "tables": {
-        "cssClass": "excerpt"
+        "cssClass": "text"
       }
     }
   ],
