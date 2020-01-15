@@ -201,7 +201,7 @@ var _documentCrawler = {
             var id = "D" +incrementRecordId;
             requestOptions = {
                 method: 'PUT',
-                url: elasticUrl + index + "/" + type + "/" + id,
+                url: elasticUrl + index + "/" + type + "/" + id+"?refresh=wait_for",
                 json: {
                     "content": fileContent,
                     "path": encodeURIComponent(file),

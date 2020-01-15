@@ -1,0 +1,3825 @@
+[
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "#",
+    "internal_id": ""
+  },
+  {
+    "text": "acidic igneous material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_material",
+    "synonyms": [
+      "acidic igneous material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+    "internal_id": "compound material-igneous material-acidic igneous material"
+  },
+  {
+    "text": "acidic igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+    "synonyms": [
+      "acidic igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_material",
+    "internal_id": "igneous material-acidic igneous material-igneous rock-acidic igneous rock"
+  },
+  {
+    "text": "alkali feldspar granite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_granite",
+    "synonyms": [
+      "alkali feldspar granite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_granite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+    "internal_id": "acidic igneous rock-granitoid-alkali feldspar granite"
+  },
+  {
+    "text": "alkali feldspar rhyolite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_rhyolite",
+    "synonyms": [
+      "alkali feldspar rhyolite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_rhyolite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rhyolitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/rhyolitoid",
+    "internal_id": "acidic igneous rock-rhyolitoid-alkali feldspar rhyolite"
+  },
+  {
+    "text": "alkali feldspar syenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenite",
+    "synonyms": [
+      "alkali feldspar syenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenitic_rock",
+    "internal_id": "syenitoid-alkali feldspar syenitic rock-alkali feldspar syenite"
+  },
+  {
+    "text": "alkali feldspar syenitic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenitic_rock",
+    "synonyms": [
+      "alkali feldspar syenitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid",
+    "internal_id": "phaneritic igneous rock-syenitoid-alkali feldspar syenitic rock"
+  },
+  {
+    "text": "alkali feldspar trachyte",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachyte",
+    "synonyms": [
+      "alkali feldspar trachyte"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachyte",
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachytic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachytic_rock",
+    "internal_id": "trachytoid-alkali feldspar trachytic rock-alkali feldspar trachyte"
+  },
+  {
+    "text": "alkali feldspar trachytic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachytic_rock",
+    "synonyms": [
+      "alkali feldspar trachytic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachytic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid",
+    "internal_id": "fine grained igneous rock-trachytoid-alkali feldspar trachytic rock"
+  },
+  {
+    "text": "alkali olivine basalt",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/alkali-olivine_basalt",
+    "synonyms": [
+      "alkali olivine basalt"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali-olivine_basalt",
+      "http://resource.geosciml.org/classifier/cgi/lithology/basalt",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/basalt",
+    "internal_id": "fine grained igneous rock-basalt-alkali olivine basalt"
+  },
+  {
+    "text": "amphibolite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/amphibolite",
+    "synonyms": [
+      "amphibolite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/amphibolite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-amphibolite"
+  },
+  {
+    "text": "andesite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/andesite",
+    "synonyms": [
+      "andesite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/andesite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock",
+    "internal_id": "intermediate composition igneous material-intermediate composition igneous rock-fine grained igneous rock-andesite"
+  },
+  {
+    "text": "anorthosite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/anorthosite",
+    "synonyms": [
+      "anorthosite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/anorthosite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/anorthositic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/anorthositic_rock",
+    "internal_id": "phaneritic igneous rock-anorthositic rock-anorthosite"
+  },
+  {
+    "text": "anorthositic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/anorthositic_rock",
+    "synonyms": [
+      "anorthositic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/anorthositic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-anorthositic rock"
+  },
+  {
+    "text": "anthracite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/anthracite_coal",
+    "synonyms": [
+      "anthracite",
+      "High rank coal"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/anthracite_coal",
+      "http://resource.geosciml.org/classifier/cgi/lithology/coal",
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/coal",
+    "internal_id": "organic rich sedimentary rock-coal-anthracite"
+  },
+  {
+    "text": "anthropogenic material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/anthropogenic_material",
+    "synonyms": [
+      "anthropogenic material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/anthropogenic_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+    "internal_id": "compound material-anthropogenic material"
+  },
+  {
+    "text": "anthropogenic unconsolidated material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/anthropogenic_unconsolidated_material",
+    "synonyms": [
+      "anthropogenic unconsolidated material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/anthropogenic_unconsolidated_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/unconsolidated_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/anthropogenic_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/anthropogenic_material",
+    "internal_id": "compound material-anthropogenic material-unconsolidated material-anthropogenic unconsolidated material"
+  },
+  {
+    "text": "aphanite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/aphanite",
+    "synonyms": [
+      "aphanite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/aphanite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+    "internal_id": "compound material-rock-aphanite"
+  },
+  {
+    "text": "aplite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/aplite",
+    "synonyms": [
+      "aplite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/aplite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-aplite"
+  },
+  {
+    "text": "arenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/arenite",
+    "synonyms": [
+      "arenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/arenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sandstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sandstone",
+    "internal_id": "clastic sedimentary rock-sandstone-arenite"
+  },
+  {
+    "text": "ash and lapilli",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/ash_and_lapilli",
+    "synonyms": [
+      "ash and lapilli"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/ash_and_lapilli",
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephra",
+      "http://resource.geosciml.org/classifier/cgi/lithology/natural_unconsolidated_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/tephra",
+    "internal_id": "natural unconsolidated material-tephra-ash and lapilli"
+  },
+  {
+    "text": "ash breccia bomb or block tephra",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/ash_breccia_bomb_or_block_tephra",
+    "synonyms": [
+      "ash breccia bomb or block tephra"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/ash_breccia_bomb_or_block_tephra",
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephra",
+      "http://resource.geosciml.org/classifier/cgi/lithology/natural_unconsolidated_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/tephra",
+    "internal_id": "natural unconsolidated material-tephra-ash breccia bomb or block tephra"
+  },
+  {
+    "text": "ash tuff lapillistone and lapilli tuff",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/ash_tuff_lapillistone_and_lapilli_tuff",
+    "synonyms": [
+      "ash tuff lapillistone and lapilli tuff"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/ash_tuff_lapillistone_and_lapilli_tuff",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_rock",
+    "internal_id": "pyroclastic material-pyroclastic rock-ash tuff lapillistone and lapilli tuff"
+  },
+  {
+    "text": "basalt",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/basalt",
+    "synonyms": [
+      "basalt"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/basalt",
+      "http://resource.geosciml.org/classifier/cgi/lithology/basic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+    "internal_id": "igneous rock-fine grained igneous rock-basic igneous rock-basalt"
+  },
+  {
+    "text": "basanite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/basanite",
+    "synonyms": [
+      "basanite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/basanite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+    "internal_id": "fine grained igneous rock-tephritoid-basanite"
+  },
+  {
+    "text": "basanitic foidite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/basanitic_foidite",
+    "synonyms": [
+      "basanitic foidite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/basanitic_foidite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+    "internal_id": "fine grained igneous rock-foiditoid-basanitic foidite"
+  },
+  {
+    "text": "basic igneous material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/basic_igneous_material",
+    "synonyms": [
+      "basic igneous material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/basic_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+    "internal_id": "compound material-igneous material-basic igneous material"
+  },
+  {
+    "text": "basic igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/basic_igneous_rock",
+    "synonyms": [
+      "basic igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/basic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/basic_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-basic igneous material-basic igneous rock"
+  },
+  {
+    "text": "bauxite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/bauxite",
+    "synonyms": [
+      "bauxite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/bauxite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/material_formed_in_surficial_environment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/material_formed_in_surficial_environment",
+    "internal_id": "composite genesis material-material formed in surficial environment-bauxite"
+  },
+  {
+    "text": "biogenic sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_sediment",
+    "synonyms": [
+      "biogenic sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+    "internal_id": "sedimentary material-sediment-biogenic sediment"
+  },
+  {
+    "text": "biogenic silica sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_silica_sedimentary_rock",
+    "synonyms": [
+      "biogenic silica sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_silica_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_rock",
+    "internal_id": "non clastic siliceous sedimentary material-non clastic siliceous sedimentary rock-biogenic silica sedimentary rock"
+  },
+  {
+    "text": "bituminous coal",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/bituminous_coal",
+    "synonyms": [
+      "bituminous coal",
+      "medium rank coal"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/bituminous_coal",
+      "http://resource.geosciml.org/classifier/cgi/lithology/coal",
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/coal",
+    "internal_id": "organic rich sedimentary rock-coal-bituminous coal"
+  },
+  {
+    "text": "boninite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/boninite",
+    "synonyms": [
+      "boninite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/boninite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/high_magnesium_fine_grained_igneous_rocks",
+      "http://resource.geosciml.org/classifier/cgi/lithology/andesite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/andesite",
+    "internal_id": "intermediate composition igneous rock-andesite-high magnesium fine grained igneous rock-boninite"
+  },
+  {
+    "text": "boulder gravel size sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/boulder_gravel_size_sediment",
+    "synonyms": [
+      "boulder gravel size sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/boulder_gravel_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+    "internal_id": "sediment-gravel size sediment-boulder gravel size sediment"
+  },
+  {
+    "text": "boundstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/boundstone",
+    "synonyms": [
+      "boundstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/boundstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-boundstone"
+  },
+  {
+    "text": "breccia",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/breccia",
+    "synonyms": [
+      "breccia"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/breccia",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+    "internal_id": "compound material-breccia"
+  },
+  {
+    "text": "breccia gouge series",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/breccia_gouge_series",
+    "synonyms": [
+      "breccia gouge series"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/breccia_gouge_series",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fault_related_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fault_related_material",
+    "internal_id": "composite genesis material-fault related material-breccia gouge series"
+  },
+  {
+    "text": "calcareous carbonate sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sediment",
+    "synonyms": [
+      "calcareous carbonate sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_material",
+    "internal_id": "carbonate sedimentary material-calcareous carbonate sedimentary material-carbonate sediment-calcareous carbonate sediment"
+  },
+  {
+    "text": "calcareous carbonate sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_material",
+    "synonyms": [
+      "calcareous carbonate sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material",
+    "internal_id": "sedimentary material-carbonate sedimentary material-calcareous carbonate sedimentary material"
+  },
+  {
+    "text": "calcareous carbonate sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_rock",
+    "synonyms": [
+      "calcareous carbonate sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-calcareous carbonate sedimentary material-calcareous carbonate sedimentary rock"
+  },
+  {
+    "text": "carbonate mud",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_mud",
+    "synonyms": [
+      "carbonate mud",
+      "marl"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_mud",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+    "internal_id": "sediment-carbonate sediment-mud size sediment-carbonate mud"
+  },
+  {
+    "text": "carbonate mudstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_mudstone",
+    "synonyms": [
+      "carbonate mudstone",
+      "marlstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-generic mudstone-carbonate mudstone"
+  },
+  {
+    "text": "carbonate ooze",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_ooze",
+    "synonyms": [
+      "carbonate ooze"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_ooze",
+      "http://resource.geosciml.org/classifier/cgi/lithology/ooze",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_mud",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_mud",
+    "internal_id": "carbonate sediment-carbonate mud-ooze-carbonate ooze"
+  },
+  {
+    "text": "carbonate rich mud",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_rich_mud",
+    "synonyms": [
+      "carbonate rich mud",
+      "marl",
+      "carbonate rich loess"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_rich_mud",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+    "internal_id": "sediment-mud size sediment-carbonate rich mud"
+  },
+  {
+    "text": "carbonate rich mudstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_rich_mudstone",
+    "synonyms": [
+      "carbonate rich mudstone",
+      "marlstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_rich_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+    "internal_id": "sedimentary rock-generic mudstone-carbonate rich mudstone"
+  },
+  {
+    "text": "carbonate sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+    "synonyms": [
+      "carbonate sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+    "internal_id": "sedimentary material-sediment-carbonate sedimentary material-carbonate sediment"
+  },
+  {
+    "text": "carbonate sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material",
+    "synonyms": [
+      "carbonate sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "internal_id": "compound material-sedimentary material-carbonate sedimentary material"
+  },
+  {
+    "text": "carbonate sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "synonyms": [
+      "carbonate sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+    "internal_id": "sedimentary material-sedimentary rock-carbonate sedimentary material-carbonate sedimentary rock"
+  },
+  {
+    "text": "carbonate wackestone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_wackestone",
+    "synonyms": [
+      "carbonate wackestone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_wackestone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-carbonate wackestone"
+  },
+  {
+    "text": "carbonatite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/carbonatite",
+    "synonyms": [
+      "carbonatite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonatite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/exotic_composition_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/exotic_composition_igneous_rock",
+    "internal_id": "igneous rock-exotic composition igneous rock-carbonatite"
+  },
+  {
+    "text": "cataclasite series",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/cataclasite_series",
+    "synonyms": [
+      "cataclasite series"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/cataclasite_series",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fault_related_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+    "internal_id": "rock-composite genesis rock-fault related material-cataclasite series"
+  },
+  {
+    "text": "chalk",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/chalk",
+    "synonyms": [
+      "chalk"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/chalk",
+      "http://resource.geosciml.org/classifier/cgi/lithology/limestone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/limestone",
+    "internal_id": "pure carbonate sedimentary rock-limestone-chalk"
+  },
+  {
+    "text": "chemical sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material",
+    "synonyms": [
+      "chemical sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "internal_id": "compound material-sedimentary material-chemical sedimentary material"
+  },
+  {
+    "text": "chlorite actinolite epidote metamorphic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/chlorite_actinolite_epidote_metamorphic_rock",
+    "synonyms": [
+      "chlorite actinolite epidote metamorphic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/chlorite_actinolite_epidote_metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-chlorite actinolite epidote metamorphic rock"
+  },
+  {
+    "text": "conglomerate",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_conglomerate",
+    "synonyms": [
+      "conglomerate",
+      "conglomeratic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_conglomerate",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_conglomerate",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/generic_conglomerate",
+    "internal_id": "sedimentary rock-generic conglomerate-clastic sedimentary rock-conglomerate"
+  },
+  {
+    "text": "mudstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_mudstone",
+    "synonyms": [
+      "mudstone",
+      "clastic mudstone",
+      "mudrock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+    "internal_id": "clastic sedimentary material-clastic sedimentary rock-generic mudstone-mudstone"
+  },
+  {
+    "text": "sandstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sandstone",
+    "synonyms": [
+      "sandstone",
+      "sandy rock",
+      "clastic sandstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sandstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_sandstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+    "internal_id": "clastic sedimentary material-clastic sedimentary rock-generic sandstone-sandstone"
+  },
+  {
+    "text": "clastic sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+    "synonyms": [
+      "clastic sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+    "internal_id": "sedimentary material-sediment-clastic sedimentary material-clastic sediment"
+  },
+  {
+    "text": "clastic sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_material",
+    "synonyms": [
+      "clastic sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "internal_id": "compound material-sedimentary material-clastic sedimentary material"
+  },
+  {
+    "text": "clastic sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+    "synonyms": [
+      "clastic sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_material",
+    "internal_id": "sedimentary material-clastic sedimentary material-sedimentary rock-clastic sedimentary rock"
+  },
+  {
+    "text": "clay",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/clay",
+    "synonyms": [
+      "clay"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/clay",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/mud",
+    "internal_id": "clastic sediment-mud-clay"
+  },
+  {
+    "text": "claystone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/claystone",
+    "synonyms": [
+      "claystone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/claystone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_mudstone",
+    "internal_id": "clastic sedimentary rock-mudstone-claystone"
+  },
+  {
+    "text": "coal",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/coal",
+    "synonyms": [
+      "coal"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/coal",
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_rock",
+    "internal_id": "sedimentary rock-organic rich sedimentary rock-coal"
+  },
+  {
+    "text": "cobble gravel size sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/cobble_gravel_size_sediment",
+    "synonyms": [
+      "cobble gravel size sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/cobble_gravel_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+    "internal_id": "sediment-gravel size sediment-cobble gravel size sediment"
+  },
+  {
+    "text": "composite genesis material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+    "synonyms": [
+      "composite genesis material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+    "internal_id": "compound material-composite genesis material"
+  },
+  {
+    "text": "composite genesis rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+    "synonyms": [
+      "composite genesis rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+    "internal_id": "compound material-rock-composite genesis material-composite genesis rock"
+  },
+  {
+    "text": "compound material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+    "synonyms": [
+      "compound material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology",
+    "internal_id": "compound material"
+  },
+  {
+    "text": "crystalline carbonate",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/crystalline_carbonate",
+    "synonyms": [
+      "crystalline carbonate"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/crystalline_carbonate",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-crystalline carbonate"
+  },
+  {
+    "text": "dacite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/dacite",
+    "synonyms": [
+      "dacite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/dacite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+    "internal_id": "acidic igneous material-acidic igneous rock-fine grained igneous rock-dacite"
+  },
+  {
+    "text": "diamictite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/diamictite",
+    "synonyms": [
+      "diamictite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/diamictite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock",
+    "internal_id": "clastic sedimentary material-clastic sedimentary rock-diamictite"
+  },
+  {
+    "text": "diamicton",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/diamicton",
+    "synonyms": [
+      "diamicton"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/diamicton",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+    "internal_id": "sediment-clastic sediment-diamicton"
+  },
+  {
+    "text": "diorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/diorite",
+    "synonyms": [
+      "diorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/diorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dioritic_rock",
+    "internal_id": "dioritoid-dioritic rock-diorite"
+  },
+  {
+    "text": "dioritic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/dioritic_rock",
+    "synonyms": [
+      "dioritic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid",
+    "internal_id": "intermediate composition igneous rock-dioritoid-dioritic rock"
+  },
+  {
+    "text": "dioritoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid",
+    "synonyms": [
+      "dioritoid"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock",
+    "internal_id": "intermediate composition igneous material-intermediate composition igneous rock-phaneritic igneous rock-dioritoid"
+  },
+  {
+    "text": "doleritic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/doleritic_rock",
+    "synonyms": [
+      "doleritic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/doleritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-doleritic rock"
+  },
+  {
+    "text": "dolomitic or magnesian sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_material",
+    "synonyms": [
+      "dolomitic or magnesian sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material",
+    "internal_id": "sedimentary material-carbonate sedimentary material-dolomitic or magnesian sedimentary material"
+  },
+  {
+    "text": "dolomitic or magnesian sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_rock",
+    "synonyms": [
+      "dolomitic or magnesian sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_material",
+    "internal_id": "carbonate sedimentary material-dolomitic or magnesian sedimentary material-carbonate sedimentary rock-dolomitic or magnesian sedimentary rock"
+  },
+  {
+    "text": "dolomitic sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_sediment",
+    "synonyms": [
+      "dolomitic sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_material",
+    "internal_id": "carbonate sedimentary material-dolomitic or magnesian sedimentary material-carbonate sediment-dolomitic sediment"
+  },
+  {
+    "text": "dolomite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/dolostone",
+    "synonyms": [
+      "dolomite",
+      "dolostone",
+      "pure dolomitic or magnesian carbonate sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolostone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock",
+    "internal_id": "carbonate sedimentary rock-pure carbonate sedimentary rock-dolomitic or magnesian sedimentary rock-dolomite"
+  },
+  {
+    "text": "duricrust",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/duricrust",
+    "synonyms": [
+      "duricrust"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/duricrust",
+      "http://resource.geosciml.org/classifier/cgi/lithology/material_formed_in_surficial_environment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+    "internal_id": "rock-composite genesis rock-material formed in surficial environment-duricrust"
+  },
+  {
+    "text": "eclogite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/eclogite",
+    "synonyms": [
+      "eclogite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/eclogite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-eclogite"
+  },
+  {
+    "text": "evaporite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/evaporite",
+    "synonyms": [
+      "evaporite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/evaporite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material",
+    "internal_id": "sedimentary material-chemical sedimentary material-evaporite"
+  },
+  {
+    "text": "exotic alkaline rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/exotic_alkaline_rock",
+    "synonyms": [
+      "exotic alkaline rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/exotic_alkaline_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/exotic_composition_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/exotic_composition_igneous_rock",
+    "internal_id": "igneous rock-exotic composition igneous rock-exotic alkaline rock"
+  },
+  {
+    "text": "exotic composition igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/exotic_composition_igneous_rock",
+    "synonyms": [
+      "exotic composition igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/exotic_composition_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-exotic composition igneous rock"
+  },
+  {
+    "text": "exotic evaporite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/exotic_evaporite",
+    "synonyms": [
+      "exotic evaporite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/exotic_evaporite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/evaporite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/evaporite",
+    "internal_id": "chemical sedimentary material-evaporite-exotic evaporite"
+  },
+  {
+    "text": "fault related material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/fault_related_material",
+    "synonyms": [
+      "fault related material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/fault_related_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+    "internal_id": "compound material-composite genesis material-fault related material"
+  },
+  {
+    "text": "fine grained igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+    "synonyms": [
+      "fine grained igneous rock",
+      "volcanic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-fine grained igneous rock"
+  },
+  {
+    "text": "foid bearing alkali feldspar syenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_alkali_feldspar_syenite",
+    "synonyms": [
+      "foid bearing alkali feldspar syenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_alkali_feldspar_syenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenitic_rock",
+    "internal_id": "syenitoid-alkali feldspar syenitic rock-foid bearing alkali feldspar syenite"
+  },
+  {
+    "text": "foid bearing alkali feldspar trachyte",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_alkali_feldspar_trachyte",
+    "synonyms": [
+      "foid bearing alkali feldspar trachyte"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_alkali_feldspar_trachyte",
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachytic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachytic_rock",
+    "internal_id": "trachytoid-alkali feldspar trachytic rock-foid bearing alkali feldspar trachyte"
+  },
+  {
+    "text": "foid bearing anorthosite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_anorthosite",
+    "synonyms": [
+      "foid bearing anorthosite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_anorthosite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/anorthositic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/anorthositic_rock",
+    "internal_id": "phaneritic igneous rock-anorthositic rock-foid bearing anorthosite"
+  },
+  {
+    "text": "foid bearing diorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_diorite",
+    "synonyms": [
+      "foid bearing diorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_diorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dioritic_rock",
+    "internal_id": "dioritoid-dioritic rock-foid bearing diorite"
+  },
+  {
+    "text": "foid bearing gabbro",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_gabbro",
+    "synonyms": [
+      "foid bearing gabbro"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_gabbro",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gabbroic_rock",
+    "internal_id": "gabbroid-gabbroic rock-foid bearing gabbro"
+  },
+  {
+    "text": "foid bearing latite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_latite",
+    "synonyms": [
+      "foid bearing latite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_latite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/latitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/latitic_rock",
+    "internal_id": "trachytoid-latitic rock-foid bearing latite"
+  },
+  {
+    "text": "foid bearing monzodiorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_monzodiorite",
+    "synonyms": [
+      "foid bearing monzodiorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_monzodiorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzodioritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzodioritic_rock",
+    "internal_id": "dioritoid-monzodioritic rock-foid bearing monzodiorite"
+  },
+  {
+    "text": "foid bearing monzogabbro",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_monzogabbro",
+    "synonyms": [
+      "foid bearing monzogabbro"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_monzogabbro",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbroic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbroic_rock",
+    "internal_id": "gabbroid-monzogabbroic rock-foid bearing monzogabbro"
+  },
+  {
+    "text": "foid bearing monzonite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_monzonite",
+    "synonyms": [
+      "foid bearing monzonite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_monzonite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzonitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzonitic_rock",
+    "internal_id": "syenitoid-monzonitic rock-foid bearing monzonite"
+  },
+  {
+    "text": "foid bearing syenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_syenite",
+    "synonyms": [
+      "foid bearing syenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_syenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/syenitic_rock",
+    "internal_id": "syenitoid-syenitic rock-foid bearing syenite"
+  },
+  {
+    "text": "foid bearing trachyte",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_trachyte",
+    "synonyms": [
+      "foid bearing trachyte"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_bearing_trachyte",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/trachytic_rock",
+    "internal_id": "trachytoid-trachytic rock-foid bearing trachyte"
+  },
+  {
+    "text": "foid diorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_diorite",
+    "synonyms": [
+      "foid diorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_diorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_dioritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foid_dioritoid",
+    "internal_id": "phaneritic igneous rock-foid dioritoid-foid diorite"
+  },
+  {
+    "text": "foid dioritoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_dioritoid",
+    "synonyms": [
+      "foid dioritoid"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_dioritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-foid dioritoid"
+  },
+  {
+    "text": "foid gabbro",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_gabbro",
+    "synonyms": [
+      "foid gabbro"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_gabbro",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_gabbroid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foid_gabbroid",
+    "internal_id": "phaneritic igneous rock-foid gabbroid-foid gabbro"
+  },
+  {
+    "text": "foid gabbroid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_gabbroid",
+    "synonyms": [
+      "foid gabbroid"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_gabbroid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-foid gabbroid"
+  },
+  {
+    "text": "foid monzodiorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_monzodiorite",
+    "synonyms": [
+      "foid monzodiorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_monzodiorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_dioritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foid_dioritoid",
+    "internal_id": "phaneritic igneous rock-foid dioritoid-foid monzodiorite"
+  },
+  {
+    "text": "foid monzogabbro",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_monzogabbro",
+    "synonyms": [
+      "foid monzogabbro"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_monzogabbro",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_gabbroid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foid_gabbroid",
+    "internal_id": "phaneritic igneous rock-foid gabbroid-foid monzogabbro"
+  },
+  {
+    "text": "foid monzosyenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_monzosyenite",
+    "synonyms": [
+      "foid monzosyenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_monzosyenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_syenitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foid_syenitoid",
+    "internal_id": "phaneritic igneous rock-foid syenitoid-foid monzosyenite"
+  },
+  {
+    "text": "foid syenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_syenite",
+    "synonyms": [
+      "foid syenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_syenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_syenitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foid_syenitoid",
+    "internal_id": "phaneritic igneous rock-foid syenitoid-foid syenite"
+  },
+  {
+    "text": "foid syenitoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foid_syenitoid",
+    "synonyms": [
+      "foid syenitoid"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foid_syenitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-foid syenitoid"
+  },
+  {
+    "text": "foidite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foidite",
+    "synonyms": [
+      "foidite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foidite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+    "internal_id": "fine grained igneous rock-foiditoid-foidite"
+  },
+  {
+    "text": "foiditoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+    "synonyms": [
+      "foiditoid",
+      "foiditic rock",
+      "foidite (sensu lato)"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+    "internal_id": "igneous rock-fine grained igneous rock-foiditoid"
+  },
+  {
+    "text": "foidolite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foidolite",
+    "synonyms": [
+      "foidolite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foidolite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-foidolite"
+  },
+  {
+    "text": "foliated metamorphic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+    "synonyms": [
+      "foliated metamorphic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-foliated metamorphic rock"
+  },
+  {
+    "text": "fragmental igneous material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_material",
+    "synonyms": [
+      "fragmental igneous material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+    "internal_id": "compound material-igneous material-fragmental igneous material"
+  },
+  {
+    "text": "fragmental igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_rock",
+    "synonyms": [
+      "fragmental igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_material",
+    "internal_id": "igneous material-fragmental igneous material-igneous rock-fragmental igneous rock"
+  },
+  {
+    "text": "framestone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/framestone",
+    "synonyms": [
+      "framestone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/framestone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-framestone"
+  },
+  {
+    "text": "gabbro",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/gabbro",
+    "synonyms": [
+      "gabbro"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbro",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gabbroic_rock",
+    "internal_id": "gabbroid-gabbroic rock-gabbro"
+  },
+  {
+    "text": "gabbroic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/gabbroic_rock",
+    "synonyms": [
+      "gabbroic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/basic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid",
+    "internal_id": "phaneritic igneous rock-gabbroid-basic igneous rock-gabbroic rock"
+  },
+  {
+    "text": "gabbroid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid",
+    "synonyms": [
+      "gabbroid"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-gabbroid"
+  },
+  {
+    "text": "generic conglomerate",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/generic_conglomerate",
+    "synonyms": [
+      "generic conglomerate"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_conglomerate",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+    "internal_id": "sedimentary material-sedimentary rock-generic conglomerate"
+  },
+  {
+    "text": "generic mudstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+    "synonyms": [
+      "generic mudstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+    "internal_id": "sedimentary material-sedimentary rock-generic mudstone"
+  },
+  {
+    "text": "generic sandstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/generic_sandstone",
+    "synonyms": [
+      "generic sandstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_sandstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+    "internal_id": "sedimentary material-sedimentary rock-generic sandstone"
+  },
+  {
+    "text": "glass rich igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/glass_rich_igneous_rock",
+    "synonyms": [
+      "glass rich igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/glass_rich_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-glass rich igneous rock"
+  },
+  {
+    "text": "glassy igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/glassy_igneous_rock",
+    "synonyms": [
+      "glassy igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/glassy_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/glass_rich_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/glass_rich_igneous_rock",
+    "internal_id": "igneous rock-glass rich igneous rock-glassy igneous rock"
+  },
+  {
+    "text": "glaucophane lawsonite epidote metamorphic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/glaucophane_lawsonite_epidote_metamorphic_rock",
+    "synonyms": [
+      "glaucophane lawsonite epidote metamorphic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/glaucophane_lawsonite_epidote_metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-glaucophane lawsonite epidote metamorphic rock"
+  },
+  {
+    "text": "gneiss",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/gneiss",
+    "synonyms": [
+      "gneiss"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/gneiss",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+    "internal_id": "metamorphic rock-foliated metamorphic rock-gneiss"
+  },
+  {
+    "text": "grainstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/grainstone",
+    "synonyms": [
+      "grainstone",
+      "carbonate grainstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/grainstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-grainstone"
+  },
+  {
+    "text": "granite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/granite",
+    "synonyms": [
+      "granite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/granite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+    "internal_id": "acidic igneous rock-granitoid-granite"
+  },
+  {
+    "text": "granitoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+    "synonyms": [
+      "granitoid",
+      "granitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+    "internal_id": "acidic igneous material-acidic igneous rock-phaneritic igneous rock-granitoid"
+  },
+  {
+    "text": "granodiorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/granodiorite",
+    "synonyms": [
+      "granodiorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/granodiorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+    "internal_id": "acidic igneous rock-granitoid-granodiorite"
+  },
+  {
+    "text": "granofels",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/granofels",
+    "synonyms": [
+      "granofels"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/granofels",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-granofels"
+  },
+  {
+    "text": "granulite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/granulite",
+    "synonyms": [
+      "granulite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/granulite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-granulite"
+  },
+  {
+    "text": "gravel",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/gravel",
+    "synonyms": [
+      "gravel"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/gravel",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+    "internal_id": "sediment-clastic sediment-gravel size sediment-gravel"
+  },
+  {
+    "text": "gravel size sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+    "synonyms": [
+      "gravel size sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+    "internal_id": "sedimentary material-sediment-gravel size sediment"
+  },
+  {
+    "text": "high magnesium fine grained igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/high_magnesium_fine_grained_igneous_rocks",
+    "synonyms": [
+      "high magnesium fine grained igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/high_magnesium_fine_grained_igneous_rocks",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+    "internal_id": "igneous rock-fine grained igneous rock-high magnesium fine grained igneous rock"
+  },
+  {
+    "text": "hornblendite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/hornblendite",
+    "synonyms": [
+      "hornblendite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/hornblendite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/ultramafic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-ultramafic igneous rock-hornblendite"
+  },
+  {
+    "text": "hornfels",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/hornfels",
+    "synonyms": [
+      "hornfels"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/hornfels",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granofels",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/granofels",
+    "internal_id": "metamorphic rock-granofels-hornfels"
+  },
+  {
+    "text": "hybrid sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/hybrid_sediment",
+    "synonyms": [
+      "hybrid sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/hybrid_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+    "internal_id": "sedimentary material-sediment-hybrid sediment"
+  },
+  {
+    "text": "hybrid sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/hybrid_sedimentary_rock",
+    "synonyms": [
+      "hybrid sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/hybrid_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+    "internal_id": "sedimentary material-sedimentary rock-hybrid sedimentary rock"
+  },
+  {
+    "text": "igneous material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+    "synonyms": [
+      "igneous material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+    "internal_id": "compound material-igneous material"
+  },
+  {
+    "text": "igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "synonyms": [
+      "igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+    "internal_id": "compound material-igneous material-rock-igneous rock"
+  },
+  {
+    "text": "impact generated material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/impact_generated_material",
+    "synonyms": [
+      "impact generated material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/impact_generated_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+    "internal_id": "compound material-composite genesis material-impact generated material"
+  },
+  {
+    "text": "impure calcareous carbonate sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/impure_calcareous_carbonate_sediment",
+    "synonyms": [
+      "impure calcareous carbonate sediment",
+      "calcareous marl"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_calcareous_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sediment",
+    "internal_id": "calcareous carbonate sedimentary material-calcareous carbonate sediment-impure carbonate sediment-impure calcareous carbonate sediment"
+  },
+  {
+    "text": "impure carbonate sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sediment",
+    "synonyms": [
+      "impure carbonate sediment",
+      "marl"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+    "internal_id": "sediment-carbonate sediment-impure carbonate sediment"
+  },
+  {
+    "text": "impure carbonate sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sedimentary_rock",
+    "synonyms": [
+      "impure carbonate sedimentary rock",
+      "marlstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-impure carbonate sedimentary rock"
+  },
+  {
+    "text": "impure dolomitic sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/impure_dolomitic_sediment",
+    "synonyms": [
+      "impure dolomitic sediment",
+      "dolomitic marl"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_dolomitic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_sediment",
+    "internal_id": "dolomitic or magnesian sedimentary material-dolomitic sediment-impure carbonate sediment-impure dolomitic sediment"
+  },
+  {
+    "text": "impure dolomite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/impure_dolostone",
+    "synonyms": [
+      "impure dolomite",
+      "impure dolomitic or magnesian carbonate sedimentary rock",
+      "impure dolostone",
+      "dolomitic marlstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_dolostone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sedimentary_rock",
+    "internal_id": "carbonate sedimentary rock-impure carbonate sedimentary rock-dolomitic or magnesian sedimentary rock-impure dolomite"
+  },
+  {
+    "text": "impure limestone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/impure_limestone",
+    "synonyms": [
+      "impure limestone",
+      "calcareous marlstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_limestone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/impure_carbonate_sedimentary_rock",
+    "internal_id": "carbonate sedimentary rock-impure carbonate sedimentary rock-calcareous carbonate sedimentary rock-impure limestone"
+  },
+  {
+    "text": "intermediate composition igneous material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_material",
+    "synonyms": [
+      "intermediate composition igneous material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material",
+    "internal_id": "compound material-igneous material-intermediate composition igneous material"
+  },
+  {
+    "text": "intermediate composition igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock",
+    "synonyms": [
+      "intermediate composition igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_material",
+    "internal_id": "igneous material-intermediate composition igneous material-igneous rock-intermediate composition igneous rock"
+  },
+  {
+    "text": "iron rich sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sediment",
+    "synonyms": [
+      "iron rich sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sedimentary_material",
+    "internal_id": "chemical sedimentary material-iron rich sedimentary material-sediment-iron rich sediment"
+  },
+  {
+    "text": "iron rich sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sedimentary_material",
+    "synonyms": [
+      "iron rich sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material",
+    "internal_id": "sedimentary material-chemical sedimentary material-iron rich sedimentary material"
+  },
+  {
+    "text": "iron rich sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sedimentary_rock",
+    "synonyms": [
+      "iron rich sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/iron_rich_sedimentary_material",
+    "internal_id": "chemical sedimentary material-iron rich sedimentary material-sedimentary rock-iron rich sedimentary rock"
+  },
+  {
+    "text": "kalsilitic and melilitic rocks",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/kalsilitic_and_melilitic_rock",
+    "synonyms": [
+      "kalsilitic and melilitic rocks"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/kalsilitic_and_melilitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/exotic_composition_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/exotic_composition_igneous_rock",
+    "internal_id": "igneous rock-exotic composition igneous rock-kalsilitic and melilitic rocks"
+  },
+  {
+    "text": "komatiitic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/komatiitic_rock",
+    "synonyms": [
+      "komatiitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/komatiitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/high_magnesium_fine_grained_igneous_rocks",
+      "http://resource.geosciml.org/classifier/cgi/lithology/ultramafic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/ultramafic_igneous_rock",
+    "internal_id": "igneous rock-ultramafic igneous rock-high magnesium fine grained igneous rock-komatiitic rock"
+  },
+  {
+    "text": "latite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/latite",
+    "synonyms": [
+      "latite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/latite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/latitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/latitic_rock",
+    "internal_id": "trachytoid-latitic rock-latite"
+  },
+  {
+    "text": "latitic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/latitic_rock",
+    "synonyms": [
+      "latitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/latitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid",
+    "internal_id": "fine grained igneous rock-trachytoid-latitic rock"
+  },
+  {
+    "text": "lignite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/lignite",
+    "synonyms": [
+      "lignite",
+      "low rank coal"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/lignite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/coal",
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/coal",
+    "internal_id": "organic rich sedimentary rock-coal-lignite"
+  },
+  {
+    "text": "limestone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/limestone",
+    "synonyms": [
+      "limestone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/limestone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock",
+    "internal_id": "carbonate sedimentary rock-pure carbonate sedimentary rock-calcareous carbonate sedimentary rock-limestone"
+  },
+  {
+    "text": "marble",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/marble",
+    "synonyms": [
+      "marble"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/marble",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-marble"
+  },
+  {
+    "text": "material formed in surficial environment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/material_formed_in_surficial_environment",
+    "synonyms": [
+      "material formed in surficial environment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/material_formed_in_surficial_environment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material",
+    "internal_id": "compound material-composite genesis material-material formed in surficial environment"
+  },
+  {
+    "text": "metamorphic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "synonyms": [
+      "metamorphic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+    "internal_id": "rock-composite genesis rock-metamorphic rock"
+  },
+  {
+    "text": "metasomatic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/metasomatic_rock",
+    "synonyms": [
+      "metasomatic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/metasomatic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock",
+    "internal_id": "rock-composite genesis rock-metasomatic rock"
+  },
+  {
+    "text": "mica schist",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/mica_schist",
+    "synonyms": [
+      "mica schist"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/mica_schist",
+      "http://resource.geosciml.org/classifier/cgi/lithology/schist",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/schist",
+    "internal_id": "foliated metamorphic rock-schist-mica schist"
+  },
+  {
+    "text": "migmatite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/migmatite",
+    "synonyms": [
+      "migmatite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/migmatite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-migmatite"
+  },
+  {
+    "text": "monzodiorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/monzodiorite",
+    "synonyms": [
+      "monzodiorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzodiorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzodioritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzodioritic_rock",
+    "internal_id": "dioritoid-monzodioritic rock-monzodiorite"
+  },
+  {
+    "text": "monzodioritic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/monzodioritic_rock",
+    "synonyms": [
+      "monzodioritic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzodioritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/intermediate_composition_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid",
+    "internal_id": "intermediate composition igneous rock-dioritoid-monzodioritic rock"
+  },
+  {
+    "text": "monzogabbro",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbro",
+    "synonyms": [
+      "monzogabbro"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbro",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbroic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbroic_rock",
+    "internal_id": "gabbroid-monzogabbroic rock-monzogabbro"
+  },
+  {
+    "text": "monzogabbroic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbroic_rock",
+    "synonyms": [
+      "monzogabbroic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbroic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid",
+    "internal_id": "phaneritic igneous rock-gabbroid-monzogabbroic rock"
+  },
+  {
+    "text": "monzogranite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/monzogranite",
+    "synonyms": [
+      "monzogranite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzogranite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/granite",
+    "internal_id": "granitoid-granite-monzogranite"
+  },
+  {
+    "text": "monzonite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/monzonite",
+    "synonyms": [
+      "monzonite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzonite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzonitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzonitic_rock",
+    "internal_id": "syenitoid-monzonitic rock-monzonite"
+  },
+  {
+    "text": "monzonitic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/monzonitic_rock",
+    "synonyms": [
+      "monzonitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzonitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid",
+    "internal_id": "phaneritic igneous rock-syenitoid-monzonitic rock"
+  },
+  {
+    "text": "mud",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/mud",
+    "synonyms": [
+      "mud"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+    "internal_id": "sediment-clastic sediment-mud size sediment-mud"
+  },
+  {
+    "text": "mud size sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+    "synonyms": [
+      "mud size sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+    "internal_id": "sedimentary material-sediment-mud size sediment"
+  },
+  {
+    "text": "mylonitic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/mylonitic_rock",
+    "synonyms": [
+      "mylonitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/mylonitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fault_related_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fault_related_material",
+    "internal_id": "composite genesis material-fault related material-foliated metamorphic rock-mylonitic rock"
+  },
+  {
+    "text": "natural unconsolidated material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/natural_unconsolidated_material",
+    "synonyms": [
+      "natural unconsolidated material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/natural_unconsolidated_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/unconsolidated_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/unconsolidated_material",
+    "internal_id": "compound material-unconsolidated material-natural unconsolidated material"
+  },
+  {
+    "text": "non clastic siliceous sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sediment",
+    "synonyms": [
+      "non clastic siliceous sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_material",
+    "internal_id": "sedimentary material-non clastic siliceous sedimentary material-sediment-non clastic siliceous sediment"
+  },
+  {
+    "text": "non clastic siliceous sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_material",
+    "synonyms": [
+      "non clastic siliceous sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "internal_id": "compound material-sedimentary material-non clastic siliceous sedimentary material"
+  },
+  {
+    "text": "non clastic siliceous sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_rock",
+    "synonyms": [
+      "non clastic siliceous sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/non_clastic_siliceous_sedimentary_material",
+    "internal_id": "sedimentary material-non clastic siliceous sedimentary material-sedimentary rock-non clastic siliceous sedimentary rock"
+  },
+  {
+    "text": "ooze",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/ooze",
+    "synonyms": [
+      "ooze",
+      "biogenic mud"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/ooze",
+      "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+    "internal_id": "sediment-mud size sediment-biogenic sediment-ooze"
+  },
+  {
+    "text": "organic bearing mudstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/organic_bearing_mudstone",
+    "synonyms": [
+      "organic bearing mudstone",
+      "oil shale"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_bearing_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+    "internal_id": "sedimentary rock-generic mudstone-organic bearing mudstone"
+  },
+  {
+    "text": "organic rich sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sediment",
+    "synonyms": [
+      "organic rich sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_sediment",
+    "internal_id": "sediment-biogenic sediment-organic rich sedimentary material-organic rich sediment"
+  },
+  {
+    "text": "organic rich sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_material",
+    "synonyms": [
+      "organic rich sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "internal_id": "compound material-sedimentary material-organic rich sedimentary material"
+  },
+  {
+    "text": "organic rich sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_rock",
+    "synonyms": [
+      "organic rich sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+    "internal_id": "sedimentary material-sedimentary rock-organic rich sedimentary material-organic rich sedimentary rock"
+  },
+  {
+    "text": "orthogneiss",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/orthogneiss",
+    "synonyms": [
+      "orthogneiss"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/orthogneiss",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gneiss",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gneiss",
+    "internal_id": "foliated metamorphic rock-gneiss-orthogneiss"
+  },
+  {
+    "text": "packstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/packstone",
+    "synonyms": [
+      "packstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/packstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-packstone"
+  },
+  {
+    "text": "paragneiss",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/paragneiss",
+    "synonyms": [
+      "paragneiss"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/paragneiss",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gneiss",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gneiss",
+    "internal_id": "foliated metamorphic rock-gneiss-paragneiss"
+  },
+  {
+    "text": "peat",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/peat",
+    "synonyms": [
+      "peat"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/peat",
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sediment",
+    "internal_id": "biogenic sediment-organic rich sediment-peat"
+  },
+  {
+    "text": "pebble gravel size sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pebble_gravel_size_sediment",
+    "synonyms": [
+      "pebble gravel size sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pebble_gravel_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gravel_size_sediment",
+    "internal_id": "sediment-gravel size sediment-pebble gravel size sediment"
+  },
+  {
+    "text": "pegmatite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pegmatite",
+    "synonyms": [
+      "pegmatite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pegmatite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-pegmatite"
+  },
+  {
+    "text": "peridotite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/peridotite",
+    "synonyms": [
+      "peridotite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/peridotite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/ultramafic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-ultramafic igneous rock-peridotite"
+  },
+  {
+    "text": "phaneritic igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "synonyms": [
+      "phaneritic igneous rock",
+      "coarse grained crystalline igneous rock",
+      "plutonic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-phaneritic igneous rock"
+  },
+  {
+    "text": "phonolite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phonolilte",
+    "synonyms": [
+      "phonolite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phonolilte",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phonolitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phonolitoid",
+    "internal_id": "fine grained igneous rock-phonolitoid-phonolite"
+  },
+  {
+    "text": "phonolitic basanite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phonolitic_basanite",
+    "synonyms": [
+      "phonolitic basanite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phonolitic_basanite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+    "internal_id": "fine grained igneous rock-tephritoid-phonolitic basanite"
+  },
+  {
+    "text": "phonolitic foidite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phonolitic_foidite",
+    "synonyms": [
+      "phonolitic foidite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phonolitic_foidite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+    "internal_id": "fine grained igneous rock-foiditoid-phonolitic foidite"
+  },
+  {
+    "text": "phonolitic tephrite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phonolitic_tephrite",
+    "synonyms": [
+      "phonolitic tephrite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phonolitic_tephrite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+    "internal_id": "fine grained igneous rock-tephritoid-phonolitic tephrite"
+  },
+  {
+    "text": "phonolitoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phonolitoid",
+    "synonyms": [
+      "phonolitoid",
+      "phonolitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phonolitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+    "internal_id": "igneous rock-fine grained igneous rock-phonolitoid"
+  },
+  {
+    "text": "phosphate rich sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phosphate_rich_sediment",
+    "synonyms": [
+      "phosphate rich sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phosphate_rich_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phosphate_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phosphate_rich_sedimentary_material",
+    "internal_id": "sedimentary material-phosphate rich sedimentary material-sediment-phosphate rich sediment"
+  },
+  {
+    "text": "phosphate rich sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phosphate_rich_sedimentary_material",
+    "synonyms": [
+      "phosphate rich sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phosphate_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "internal_id": "compound material-sedimentary material-phosphate rich sedimentary material"
+  },
+  {
+    "text": "phosphorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phosphorite",
+    "synonyms": [
+      "phosphorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phosphorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phosphate_rich_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phosphate_rich_sedimentary_material",
+    "internal_id": "sedimentary material-phosphate rich sedimentary material-sedimentary rock-phosphorite"
+  },
+  {
+    "text": "phyllite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phyllite",
+    "synonyms": [
+      "phyllite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phyllite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+    "internal_id": "metamorphic rock-foliated metamorphic rock-phyllite"
+  },
+  {
+    "text": "phyllonite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/phyllonite",
+    "synonyms": [
+      "phyllonite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/phyllonite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mylonitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fault_related_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/mylonitic_rock",
+    "internal_id": "fault related material-mylonitic rock-phyllonite"
+  },
+  {
+    "text": "porphyry",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/porphyry",
+    "synonyms": [
+      "porphyry"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/porphyry",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-porphyry"
+  },
+  {
+    "text": "pure calcareous carbonate sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pure_calcareous_carbonate_sediment",
+    "synonyms": [
+      "pure calcareous carbonate sediment",
+      "lime sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_calcareous_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/calcareous_carbonate_sediment",
+    "internal_id": "calcareous carbonate sedimentary material-calcareous carbonate sediment-pure carbonate sediment-pure calcareous carbonate sediment"
+  },
+  {
+    "text": "pure carbonate mudstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_mudstone",
+    "synonyms": [
+      "pure carbonate mudstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+    "internal_id": "sedimentary rock-generic mudstone-pure carbonate sedimentary rock-pure carbonate mudstone"
+  },
+  {
+    "text": "pure carbonate sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sediment",
+    "synonyms": [
+      "pure carbonate sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sediment",
+    "internal_id": "sediment-carbonate sediment-pure carbonate sediment"
+  },
+  {
+    "text": "pure carbonate sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock",
+    "synonyms": [
+      "pure carbonate sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/carbonate_sedimentary_rock",
+    "internal_id": "sedimentary rock-carbonate sedimentary rock-pure carbonate sedimentary rock"
+  },
+  {
+    "text": "pure dolomitic sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pure_dolomitic_sediment",
+    "synonyms": [
+      "pure dolomitic sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_dolomitic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_or_magnesian_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dolomitic_sediment",
+    "internal_id": "dolomitic or magnesian sedimentary material-dolomitic sediment-pure carbonate sediment-pure dolomitic sediment"
+  },
+  {
+    "text": "pyroclastic material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_material",
+    "synonyms": [
+      "pyroclastic material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_material",
+    "internal_id": "igneous material-fragmental igneous material-pyroclastic material"
+  },
+  {
+    "text": "pyroclastic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_rock",
+    "synonyms": [
+      "pyroclastic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fragmental_igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_material",
+    "internal_id": "fragmental igneous material-pyroclastic material-fragmental igneous rock-pyroclastic rock"
+  },
+  {
+    "text": "pyroxenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/pyroxenite",
+    "synonyms": [
+      "pyroxenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroxenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/ultramafic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-ultramafic igneous rock-pyroxenite"
+  },
+  {
+    "text": "quartz alkali feldspar syenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_alkali_feldspar_syenite",
+    "synonyms": [
+      "quartz alkali feldspar syenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_alkali_feldspar_syenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_syenitic_rock",
+    "internal_id": "syenitoid-alkali feldspar syenitic rock-quartz alkali feldspar syenite"
+  },
+  {
+    "text": "quartz alkali feldspar trachyte",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_alkali_feldspar_trachyte",
+    "synonyms": [
+      "quartz alkali feldspar trachyte"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_alkali_feldspar_trachyte",
+      "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachytic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/alkali_feldspar_trachytic_rock",
+    "internal_id": "trachytoid-alkali feldspar trachytic rock-quartz alkali feldspar trachyte"
+  },
+  {
+    "text": "quartz anorthosite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_anorthosite",
+    "synonyms": [
+      "quartz anorthosite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_anorthosite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/anorthositic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/anorthositic_rock",
+    "internal_id": "phaneritic igneous rock-anorthositic rock-quartz anorthosite"
+  },
+  {
+    "text": "quartz diorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_diorite",
+    "synonyms": [
+      "quartz diorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_diorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/dioritic_rock",
+    "internal_id": "dioritoid-dioritic rock-quartz diorite"
+  },
+  {
+    "text": "quartz gabbro",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_gabbro",
+    "synonyms": [
+      "quartz gabbro"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_gabbro",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/gabbroic_rock",
+    "internal_id": "gabbroid-gabbroic rock-quartz gabbro"
+  },
+  {
+    "text": "quartz latite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_latite",
+    "synonyms": [
+      "quartz latite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_latite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/latitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/latitic_rock",
+    "internal_id": "trachytoid-latitic rock-quartz latite"
+  },
+  {
+    "text": "quartz monzodiorite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_monzodiorite",
+    "synonyms": [
+      "quartz monzodiorite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_monzodiorite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzodioritic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/dioritoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzodioritic_rock",
+    "internal_id": "dioritoid-monzodioritic rock-quartz monzodiorite"
+  },
+  {
+    "text": "quartz monzogabbro",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_monzogabbro",
+    "synonyms": [
+      "quartz monzogabbro"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_monzogabbro",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbroic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/gabbroid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzogabbroic_rock",
+    "internal_id": "gabbroid-monzogabbroic rock-quartz monzogabbro"
+  },
+  {
+    "text": "quartz monzonite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_monzonite",
+    "synonyms": [
+      "quartz monzonite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_monzonite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/monzonitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/monzonitic_rock",
+    "internal_id": "syenitoid-monzonitic rock-quartz monzonite"
+  },
+  {
+    "text": "quartz rich igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_rich_igneous_rock",
+    "synonyms": [
+      "quartz rich igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_rich_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-acidic igneous rock-quartz rich igneous rock"
+  },
+  {
+    "text": "quartz syenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_syenite",
+    "synonyms": [
+      "quartz syenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_syenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/syenitic_rock",
+    "internal_id": "syenitoid-syenitic rock-quartz syenite"
+  },
+  {
+    "text": "quartz trachyte",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartz_trachyte",
+    "synonyms": [
+      "quartz trachyte"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartz_trachyte",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/trachytic_rock",
+    "internal_id": "trachytoid-trachytic rock-quartz trachyte"
+  },
+  {
+    "text": "quartzite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/quartzite",
+    "synonyms": [
+      "quartzite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/quartzite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-quartzite"
+  },
+  {
+    "text": "residual material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/residual_material",
+    "synonyms": [
+      "residual material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/residual_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/material_formed_in_surficial_environment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/material_formed_in_surficial_environment",
+    "internal_id": "composite genesis material-material formed in surficial environment-residual material"
+  },
+  {
+    "text": "rhyolite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/rhyolite",
+    "synonyms": [
+      "rhyolite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/rhyolite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rhyolitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/rhyolitoid",
+    "internal_id": "acidic igneous rock-rhyolitoid-rhyolite"
+  },
+  {
+    "text": "rhyolitoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/rhyolitoid",
+    "synonyms": [
+      "rhyolitoid",
+      "rhyolitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/rhyolitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock",
+    "internal_id": "acidic igneous material-acidic igneous rock-fine grained igneous rock-rhyolitoid"
+  },
+  {
+    "text": "rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+    "synonyms": [
+      "rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+    "internal_id": "compound material-rock"
+  },
+  {
+    "text": "gypsum or anhydrite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/rock_gypsum_or_anhydrite",
+    "synonyms": [
+      "gypsum or anhydrite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock_gypsum_or_anhydrite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/evaporite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/evaporite",
+    "internal_id": "chemical sedimentary material-evaporite-gypsum or anhydrite"
+  },
+  {
+    "text": "rock salt",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/rock_salt",
+    "synonyms": [
+      "rock salt"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock_salt",
+      "http://resource.geosciml.org/classifier/cgi/lithology/evaporite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/evaporite",
+    "internal_id": "chemical sedimentary material-evaporite-rock salt"
+  },
+  {
+    "text": "sand",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/sand",
+    "synonyms": [
+      "sand"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/sand",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sand_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment",
+    "internal_id": "sediment-clastic sediment-sand size sediment-sand"
+  },
+  {
+    "text": "sand size sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/sand_size_sediment",
+    "synonyms": [
+      "sand size sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/sand_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+    "internal_id": "sedimentary material-sediment-sand size sediment"
+  },
+  {
+    "text": "sapropel",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/sapropel",
+    "synonyms": [
+      "sapropel"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/sapropel",
+      "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/biogenic_sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/organic_rich_sediment",
+    "internal_id": "biogenic sediment-organic rich sediment-sapropel"
+  },
+  {
+    "text": "schist",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/schist",
+    "synonyms": [
+      "schist"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/schist",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+    "internal_id": "metamorphic rock-foliated metamorphic rock-schist"
+  },
+  {
+    "text": "sediment",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+    "synonyms": [
+      "sediment"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/natural_unconsolidated_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "internal_id": "compound material-sedimentary material-natural unconsolidated material-sediment"
+  },
+  {
+    "text": "sedimentary material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "synonyms": [
+      "sedimentary material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+    "internal_id": "compound material-sedimentary material"
+  },
+  {
+    "text": "sedimentary rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+    "synonyms": [
+      "sedimentary rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_material",
+    "internal_id": "compound material-sedimentary material-rock-sedimentary rock"
+  },
+  {
+    "text": "serpentinite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/serpentinite",
+    "synonyms": [
+      "serpentinite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/serpentinite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock",
+    "internal_id": "composite genesis rock-metamorphic rock-serpentinite"
+  },
+  {
+    "text": "shale",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/shale",
+    "synonyms": [
+      "shale"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/shale",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_mudstone",
+    "internal_id": "clastic sedimentary rock-mudstone-shale"
+  },
+  {
+    "text": "silicate mud",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/silicate_mud",
+    "synonyms": [
+      "silicate mud"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/silicate_mud",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment",
+    "internal_id": "sediment-mud size sediment-silicate mud"
+  },
+  {
+    "text": "silicate mudstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/silicate_mudstone",
+    "synonyms": [
+      "silicate mudstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/silicate_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/generic_mudstone",
+    "internal_id": "sedimentary rock-generic mudstone-silicate mudstone"
+  },
+  {
+    "text": "siliceous ooze",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/siliceous_ooze",
+    "synonyms": [
+      "siliceous ooze"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/siliceous_ooze",
+      "http://resource.geosciml.org/classifier/cgi/lithology/silicate_mud",
+      "http://resource.geosciml.org/classifier/cgi/lithology/ooze",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud_size_sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/ooze",
+    "internal_id": "mud size sediment-ooze-silicate mud-siliceous ooze"
+  },
+  {
+    "text": "silt",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/silt",
+    "synonyms": [
+      "silt",
+      "loess"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/silt",
+      "http://resource.geosciml.org/classifier/cgi/lithology/mud",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sediment"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/mud",
+    "internal_id": "clastic sediment-mud-silt"
+  },
+  {
+    "text": "siltstone",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/siltstone",
+    "synonyms": [
+      "siltstone",
+      "Silt bearing mudstone"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/siltstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_mudstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_mudstone",
+    "internal_id": "clastic sedimentary rock-mudstone-siltstone"
+  },
+  {
+    "text": "skarn",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/skarn",
+    "synonyms": [
+      "skarn",
+      "exoskarn",
+      "tactite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/skarn",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metasomatic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metasomatic_rock",
+    "internal_id": "composite genesis rock-metasomatic rock-skarn"
+  },
+  {
+    "text": "slate",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/slate",
+    "synonyms": [
+      "slate"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/slate",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metamorphic_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foliated_metamorphic_rock",
+    "internal_id": "metamorphic rock-foliated metamorphic rock-slate"
+  },
+  {
+    "text": "spilite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/spilite",
+    "synonyms": [
+      "spilite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/spilite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/metasomatic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/composite_genesis_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/metasomatic_rock",
+    "internal_id": "composite genesis rock-metasomatic rock-spilite"
+  },
+  {
+    "text": "syenite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/syenite",
+    "synonyms": [
+      "syenite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/syenitic_rock",
+    "internal_id": "syenitoid-syenitic rock-syenite"
+  },
+  {
+    "text": "syenitic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/syenitic_rock",
+    "synonyms": [
+      "syenitic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid",
+    "internal_id": "phaneritic igneous rock-syenitoid-syenitic rock"
+  },
+  {
+    "text": "syenitoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid",
+    "synonyms": [
+      "syenitoid"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phaneritic_igneous_rock",
+    "internal_id": "igneous rock-phaneritic igneous rock-syenitoid"
+  },
+  {
+    "text": "syenogranite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/syenogranite",
+    "synonyms": [
+      "syenogranite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/syenogranite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granitoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/granite",
+    "internal_id": "granitoid-granite-syenogranite"
+  },
+  {
+    "text": "tephra",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tephra",
+    "synonyms": [
+      "tephra"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephra",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/natural_unconsolidated_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/unconsolidated_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/natural_unconsolidated_material",
+    "internal_id": "unconsolidated material-natural unconsolidated material-pyroclastic material-tephra"
+  },
+  {
+    "text": "tephrite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tephrite",
+    "synonyms": [
+      "tephrite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephrite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+    "internal_id": "fine grained igneous rock-tephritoid-tephrite"
+  },
+  {
+    "text": "tephritic foidite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tephritic_foidite",
+    "synonyms": [
+      "tephritic foidite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephritic_foidite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/foiditoid",
+    "internal_id": "fine grained igneous rock-foiditoid-tephritic foidite"
+  },
+  {
+    "text": "tephritic phonolite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tephritic_phonolite",
+    "synonyms": [
+      "tephritic phonolite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephritic_phonolite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/phonolitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/phonolitoid",
+    "internal_id": "fine grained igneous rock-phonolitoid-tephritic phonolite"
+  },
+  {
+    "text": "tephritoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+    "synonyms": [
+      "tephritoid",
+      "tephritic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tephritoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+    "internal_id": "igneous rock-fine grained igneous rock-tephritoid"
+  },
+  {
+    "text": "tholeiitic basalt",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tholeiitic_basalt",
+    "synonyms": [
+      "tholeiitic basalt"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tholeiitic_basalt",
+      "http://resource.geosciml.org/classifier/cgi/lithology/basalt",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/basalt",
+    "internal_id": "fine grained igneous rock-basalt-tholeiitic basalt"
+  },
+  {
+    "text": "tonalite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tonalite",
+    "synonyms": [
+      "tonalite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tonalite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/acidic_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/granitoid",
+    "internal_id": "acidic igneous rock-granitoid-tonalite"
+  },
+  {
+    "text": "trachyte",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/trachyte",
+    "synonyms": [
+      "trachyte"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachyte",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/trachytic_rock",
+    "internal_id": "trachytoid-trachytic rock-trachyte"
+  },
+  {
+    "text": "trachytic rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/trachytic_rock",
+    "synonyms": [
+      "trachytic rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid",
+    "internal_id": "fine grained igneous rock-trachytoid-trachytic rock"
+  },
+  {
+    "text": "trachytoid",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid",
+    "synonyms": [
+      "trachytoid"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/trachytoid",
+      "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/fine_grained_igneous_rock",
+    "internal_id": "igneous rock-fine grained igneous rock-trachytoid"
+  },
+  {
+    "text": "travertine",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/travertine",
+    "synonyms": [
+      "travertine"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/travertine",
+      "http://resource.geosciml.org/classifier/cgi/lithology/chemical_sedimentary_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/limestone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pure_carbonate_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/limestone",
+    "internal_id": "pure carbonate sedimentary rock-limestone-chemical sedimentary material-travertine"
+  },
+  {
+    "text": "tuff breccia agglomerate or pyroclastic breccia",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tuff_breccia_agglomerate_or_pyroclastic_breccia",
+    "synonyms": [
+      "tuff breccia agglomerate or pyroclastic breccia"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tuff_breccia_agglomerate_or_pyroclastic_breccia",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/pyroclastic_rock",
+    "internal_id": "pyroclastic material-pyroclastic rock-tuff breccia agglomerate or pyroclastic breccia"
+  },
+  {
+    "text": "tuffite",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/tuffite",
+    "synonyms": [
+      "tuffite"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/tuffite",
+      "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/rock",
+    "internal_id": "compound material-rock-tuffite"
+  },
+  {
+    "text": "ultrabasic igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/ultrabasic_igneous_rock",
+    "synonyms": [
+      "ultrabasic igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/ultrabasic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-ultrabasic igneous rock"
+  },
+  {
+    "text": "ultramafic igneous rock",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/ultramafic_igneous_rock",
+    "synonyms": [
+      "ultramafic igneous rock"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/ultramafic_igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+      "http://resource.geosciml.org/classifier/cgi/lithology/igneous_material"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/igneous_rock",
+    "internal_id": "igneous material-igneous rock-ultramafic igneous rock"
+  },
+  {
+    "text": "unconsolidated material",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/unconsolidated_material",
+    "synonyms": [
+      "unconsolidated material"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/unconsolidated_material",
+      "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+      "http://resource.geosciml.org/classifierScheme/cgi/2016.01/simplelithology"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/compound_material",
+    "internal_id": "compound material-unconsolidated material"
+  },
+  {
+    "text": "wacke",
+    "id": "http://resource.geosciml.org/classifier/cgi/lithology/wacke",
+    "synonyms": [
+      "wacke"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/lithology/wacke",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sandstone",
+      "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sedimentary_rock"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/cgi/lithology/clastic_sandstone",
+    "internal_id": "clastic sedimentary rock-sandstone-wacke"
+  }
+]

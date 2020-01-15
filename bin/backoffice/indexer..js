@@ -130,7 +130,7 @@ var indexer = {
                     var options = {
                         method: 'PUT',
                         description: "create index",
-                        url: elasticUrl + index + "/",
+                        url: elasticUrl + index ,
                         json: json
                     };
 
@@ -246,14 +246,13 @@ var indexer = {
 
                     var thesauri = Object.keys(config.thesauri);
                     var i=0;
-                    async.eachSeries(thesauri, function (thesaurus, callbackEach) {
-                        if(i++>0)
-                           return  callbackEach
+                    async.eachSeries(thesauri, function (thesaurus, callbackEach2) {
+
                         var thesaurusConfig = config.thesauri[thesaurus];
                         annotator_skos.annotateCorpusFromRDFfile(thesaurusConfig, index,elasticUrl, function (err, result) {
                             if (err)
-                                return callbackEach(err);
-                            callbackEach()
+                                return callbackEach2(err);
+                            callbackEach2()
                         });
                     }, function (err) {
                         if (err)
@@ -295,7 +294,7 @@ var indexer = {
                     headers: {
                         'content-type': 'application/json'
                     },
-                    url: elasticUrl + index
+                    url: elasticUrl + index+"/"
                 };
                 request(options, function (error, response, body) {
                     if (error)

@@ -1,0 +1,434 @@
+[
+  {
+    "text": "Base of Devonian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/BaseMiddleMississippian",
+    "synonyms": [
+      "Base of Devonian",
+      "Base of Visean",
+      "Middle Mississippian",
+      "Base of Lochkovian",
+      "Base of Lower Devonian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/BaseMiddleMississippian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Devonian"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Devonian",
+    "internal_id": "Base of Devonian"
+  },
+  {
+    "text": "Early/Lower Devonian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Givetian",
+    "synonyms": [
+      "Early/Lower Devonian",
+      "Base of Frasnian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Givetian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Devonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperDevonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperDevonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleDevonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Devonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleDevonian"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/MiddleDevonian",
+    "internal_id": "Early/Lower Devonian"
+  },
+  {
+    "text": "Base of Middle Ordovician",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Darriwilian",
+    "synonyms": [
+      "Base of Middle Ordovician",
+      "Base of Sandbian",
+      "Base of Dapingian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Darriwilian",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperOrdovician",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperOrdovician",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperOrdovician",
+      "http://resource.geosciml.org/classifier/ics/ischart/Ordovician",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleOrdovician"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/MiddleOrdovician",
+    "internal_id": "Base of Middle Ordovician"
+  },
+  {
+    "text": "Base of Phanerozoic",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/BasePhanerozoic",
+    "synonyms": [
+      "Base of Phanerozoic",
+      "Base of Fortunian",
+      "Base of Cambrian",
+      "Base of Terreneuvian",
+      "Base of Paleozoic"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/BasePhanerozoic",
+      ""
+    ],
+    "parent": "#",
+    "internal_id": "Base of Phanerozoic"
+  },
+  {
+    "text": "Neoproterozoic",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/CambrianStage3",
+    "synonyms": [
+      "Neoproterozoic"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/CambrianStage3",
+      "http://resource.geosciml.org/classifier/ics/ischart/CambrianSeries2",
+      "http://resource.geosciml.org/classifier/ics/ischart/Terreneuvian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Terreneuvian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Proterozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Neoproterozoic"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Neoproterozoic",
+    "internal_id": "Neoproterozoic"
+  },
+  {
+    "text": "Mesoarchean",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/BaseProterozoic",
+    "synonyms": [
+      "Mesoarchean",
+      "Base of Siderian",
+      "Base of Paleoproterozoic"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/BaseProterozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Archean",
+      "http://resource.geosciml.org/classifier/ics/ischart/Archean"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Archean",
+    "internal_id": "Mesoarchean"
+  },
+  {
+    "text": "Base of Drumian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Orosirian",
+    "synonyms": [
+      "Base of Drumian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Orosirian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleoproterozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Mesoproterozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Precambrian",
+      "http://resource.geosciml.org/classifier/ics/ischart/CambrianSeries3"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/CambrianSeries3",
+    "internal_id": "Base of Drumian"
+  },
+  {
+    "text": "Ludfordian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Tremadocian",
+    "synonyms": [
+      "Ludfordian",
+      "Base of Paibian",
+      "Base of Sheinwoodian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Tremadocian",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerOrdovician",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/CambrianSeries2",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cambrian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cambrian",
+      "http://resource.geosciml.org/classifier/ics/ischart/CambrianSeries3",
+      "http://resource.geosciml.org/classifier/ics/ischart/Furongian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cambrian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Ordovician",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerOrdovician",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Llandovery",
+      "http://resource.geosciml.org/classifier/ics/ischart/Llandovery",
+      "http://resource.geosciml.org/classifier/ics/ischart/Silurian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Llandovery",
+      "http://resource.geosciml.org/classifier/ics/ischart/Silurian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Ludlow"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Ludlow",
+    "internal_id": "Ludfordian"
+  },
+  {
+    "text": "Lochkovian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Pridoli",
+    "synonyms": [
+      "Lochkovian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Pridoli",
+      "http://resource.geosciml.org/classifier/ics/ischart/Silurian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Ludlow",
+      "http://resource.geosciml.org/classifier/ics/ischart/Silurian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerDevonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Mississippian"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Mississippian",
+    "internal_id": "Lochkovian"
+  },
+  {
+    "text": "Base of Upper Pennsylvanian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/BasePennsylvanian",
+    "synonyms": [
+      "Base of Upper Pennsylvanian",
+      "Base of Lower Pennsylvanian",
+      "Base of Bashkirian",
+      "Early Mississippian",
+      "Base of Kasimovian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/BasePennsylvanian",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleMississippian",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerMississippian"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/LowerMississippian",
+    "internal_id": "Base of Upper Pennsylvanian"
+  },
+  {
+    "text": "Upper Mississippian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Kasimovian",
+    "synonyms": [
+      "Upper Mississippian",
+      "Base of Asselian",
+      "Base of Cisuralian",
+      "Middle Pennsylvanian",
+      "Base of Moscovian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Kasimovian",
+      null,
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperPennsylvanian",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddlePennsylvanian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pennsylvanian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pennsylvanian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Mississippian"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Mississippian",
+    "internal_id": "Upper Mississippian"
+  },
+  {
+    "text": "Danian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Selandian",
+    "synonyms": [
+      "Danian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Selandian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerCretaceous"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/LowerCretaceous",
+    "internal_id": "Danian"
+  },
+  {
+    "text": "Tithonian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Santonian",
+    "synonyms": [
+      "Tithonian",
+      "Base of Lower Cretaceous",
+      "Base of Berriasian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Santonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperCretaceous",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperCretaceous",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperCretaceous",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerCretaceous",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerCretaceous",
+      null
+    ],
+    "parent": "#",
+    "internal_id": "Tithonian"
+  },
+  {
+    "text": "Base of Toarcian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Bathonian",
+    "synonyms": [
+      "Base of Toarcian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Bathonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerJurassic"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/LowerJurassic",
+    "internal_id": "Base of Toarcian"
+  },
+  {
+    "text": "Late/Upper Triassic",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Rhaetian",
+    "synonyms": [
+      "Late/Upper Triassic",
+      "Base of Hettangian",
+      "Base of Lower Jurassic",
+      "Base of Carnian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Rhaetian",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperTriassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperTriassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Triassic"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Triassic",
+    "internal_id": "Late/Upper Triassic"
+  },
+  {
+    "text": "Toarcian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Olenekian",
+    "synonyms": [
+      "Toarcian",
+      "Base of Anisian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Olenekian",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleTriassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerTriassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleTriassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Jurassic"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Jurassic",
+    "internal_id": "Toarcian"
+  },
+  {
+    "text": "Jurassic",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Berriasian",
+    "synonyms": [
+      "Jurassic"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Berriasian",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerCretaceous"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/LowerCretaceous",
+    "internal_id": "Jurassic"
+  },
+  {
+    "text": "Base of Lutetian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Kimmeridgian",
+    "synonyms": [
+      "Base of Lutetian",
+      "Base of Oxfordian",
+      "Base of Ypresian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Kimmeridgian",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Mesozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Jurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddleJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperJurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Jurassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Mesozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleogene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Eocene"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Eocene",
+    "internal_id": "Base of Lutetian"
+  },
+  {
+    "text": "Serravallian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/MiddlePleistocene",
+    "synonyms": [
+      "Serravallian",
+      "Ionian",
+      "Base of Pleistocene",
+      "Base of Gelasian",
+      "Base of Zanclean"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/MiddlePleistocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pleistocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pleistocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pleistocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Quaternary",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pleistocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Quaternary",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cenozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pliocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pliocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Neogene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Miocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Miocene"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Miocene",
+    "internal_id": "Serravallian"
+  },
+  {
+    "text": "Permian",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Priabonian",
+    "synonyms": [
+      "Permian",
+      "Base of Rupelian",
+      "Base of Miocene",
+      "Base of Aquitanian",
+      "Base of Wuchiapingian",
+      "Base of Roadian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Priabonian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Eocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cenozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Neogene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Miocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Oligocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Oligocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleogene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Eocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Eocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cenozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleocene",
+      "http://resource.geosciml.org/classifier/ics/ischart/Phanerozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cretaceous",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cretaceous",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerCretaceous",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerCretaceous",
+      "http://resource.geosciml.org/classifier/ics/ischart/Phanerozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/UpperTriassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Mesozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Triassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Lopingian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Permian",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerTriassic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Guadalupian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Guadalupian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Guadalupian"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Guadalupian",
+    "internal_id": "Permian"
+  },
+  {
+    "text": "Boundaries in the International Chronostratigraphic Chart",
+    "id": "http://resource.geosciml.org/classifier/ics/ischart/Artinskian",
+    "synonyms": [
+      "Boundaries in the International Chronostratigraphic Chart",
+      "Early Pennsylvanian"
+    ],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/ics/ischart/Artinskian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cisuralian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Paleozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cisuralian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Permian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Cisuralian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Carboniferous",
+      "http://resource.geosciml.org/classifier/ics/ischart/Pennsylvanian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Carboniferous",
+      "http://resource.geosciml.org/classifier/ics/ischart/LowerPennsylvanian",
+      "http://resource.geosciml.org/classifier/ics/ischart/Phanerozoic",
+      "http://resource.geosciml.org/classifier/ics/ischart/Furongian"
+    ],
+    "parent": "http://resource.geosciml.org/classifier/ics/ischart/Furongian",
+    "internal_id": "Boundaries in the International Chronostratigraphic Chart"
+  }
+]

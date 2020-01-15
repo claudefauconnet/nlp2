@@ -240,7 +240,7 @@ var annotator_regex = {
                                 headers: {
                                     'content-type': 'application/json'
                                 },
-                                url: globalOptions.elasticUrl + "_bulk"
+                                url: globalOptions.elasticUrl + "_bulk&refresh=wait_for"
                             };
 
                             request(options, function (error, response, body) {

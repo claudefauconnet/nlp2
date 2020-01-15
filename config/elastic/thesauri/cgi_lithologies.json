@@ -1,0 +1,9 @@
+{
+  "name": "cgi_lithologies",
+  "skosXmlPath": "D:\\NLP\\cgi\\simplelithology.rdf",
+  "highlightFields": [
+    "attachment.content"
+  ],
+  "extractedLangages": "en",
+  "outputLangage": "en"
+}

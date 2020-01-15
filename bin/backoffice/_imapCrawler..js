@@ -46,7 +46,7 @@ var imapCrawler = {
             headers: {
                 'content-type': 'application/json'
             },
-            url: config.indexation.elasticUrl+"_bulk"
+            url: config.indexation.elasticUrl+"_bulk?refresh=wait_for"
         };
 
         request(options, function (error, response, body) {

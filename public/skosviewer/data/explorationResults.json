@@ -1,0 +1,123 @@
+[
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/mineral-occurrences",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/mineral-occurrences",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/mineral-resource-defined",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/mineral-resource-defined",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/positive-feasibility-study",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/positive-feasibility-study",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/favorable-geological-environment",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/favorable-geological-environment",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/mineral-reserve-defined",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/mineral-reserve-defined",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/mineral-resource-indicated",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/mineral-resource-indicated",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/negative-feasibility-study",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/negative-feasibility-study",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/identification-anomalous-area",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/identification-anomalous-area",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/mineralized-zone-identified",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/mineralized-zone-identified",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/geochemical-anomaly",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/geochemical-anomaly",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  },
+  {
+    "text": "?",
+    "id": "http://resource.geosciml.org/classifier/cgi/exploration-result/geophysical-anomaly",
+    "synonyms": [],
+    "ancestors": [
+      "http://resource.geosciml.org/classifier/cgi/exploration-result/geophysical-anomaly",
+      "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result"
+    ],
+    "parent": "http://resource.geosciml.org/classifierscheme/cgi/2016.01/exploration-result",
+    "internal_id": ""
+  }
+]

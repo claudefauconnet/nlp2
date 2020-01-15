@@ -231,7 +231,7 @@ var sinequaResultVis = (function () {
                 if (key == entity2)
                     return;
 
-                if (!uniqueEdges[key + "_" + entity2] && !uniqueEdges[entity2 + "_" + key])
+                if (!(uniqueEdges[key + "_" + entity2] && uniqueEdges[entity2 + "_" + key]))
                     uniqueEdges[key + "_" + entity2] = {from:key,to:entity2,count:1}
                 else
                     uniqueEdges[key + "_" + entity2].count += 1

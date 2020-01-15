@@ -1,7 +1,8 @@
 var fs = require('fs');
-var saxStream = require("sax").createStream(true)
-var skosReader={
+var sax= require("sax")
+var skosReader = {
     rdfToJsTree: function (sourcePath, options, callback) {
+        var saxStream = sax.createStream(true)
         var xmlnsRootLength = -1
         if (!options)
             options = {
@@ -17,8 +18,9 @@ var skosReader={
             var ancestorsMap = {};
             var domains = {};
             var i = 0;
+
             for (var key in conceptsMap) {
-                if(Object.keys(conceptsMap[key].prefLabels).length>0) {
+                if (Object.keys(conceptsMap[key].prefLabels).length > 0) {
                     //identitification of xmlnsRootLength (position of # or last / in the uri)
                     if (i++ < 5) {
                         var p = key.indexOf("#");
@@ -30,8 +32,7 @@ var skosReader={
                             xmlnsRootLength = p + 1
                         else if (xmlnsRootLength != (p + 1))
                             return callback("Cannot continue uri has not the same xmlns:" + key)
-                    }
-                    else {
+                    } else {
                         if (xmlnsRootLength == -1)
                             return callback("Cannot determine xmlnsRootLength")
                     }
@@ -39,8 +40,7 @@ var skosReader={
 
                 var concept = conceptsMap[key];
 
-                if (concept.id.indexOf("C00131") > -1)
-                    var x = 3;
+
                 var obj = {
                     text: (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"]),
                     id: concept.id,
@@ -83,7 +83,7 @@ var skosReader={
                     if (concept.broaders.length == 0) {
 
                         obj.parent = concept.topConcepts[concept.topConcepts.length - 1];
-                        obj.ancestors=concept.topConcepts;
+                        obj.ancestors = concept.topConcepts;
                     }
                 } else if (concept.schemes.length > 0) {// && concept.topConcepts.indexOf("http://eurovoc.europa.eu/candidates")<0) {
                     if (concept.broaders.length == 0) {
@@ -127,8 +127,7 @@ var skosReader={
                 if (!concept.text) {
                     concept.text = "?"
                 }
-                if (key.indexOf("Surge System") > -1)
-                    var x = 3
+
                 recurseAncestors(concept)
 
                 var str = "";
@@ -140,7 +139,7 @@ var skosReader={
                     if (!treeMap[ancestorId])
                         return;
                     var ancestorName = treeMap[ancestorId].text
-                    if(ancestorName=="?")
+                    if (ancestorName == "?")
                         return;
                     if (str.indexOf(ancestorName) == 0)
                         return;//cf thesaurus-ctg ids
@@ -171,8 +170,10 @@ var skosReader={
         var conceptsMap = {}
         var currentConcept = null;
         var currentTagName = null;
-
-
+        var currentParentTagName = "";
+        var stop = false;
+        var countConcepts = 0;
+        var countConceptsEnd = 0;
         saxStream.on("error", function (e) {
             // unhandled errors will throw, since this is a proper node
             // event emitter.
@@ -186,11 +187,17 @@ var skosReader={
             var x = node;
 
 
+            if (node.name == "skos:Collection")
+                stop = true;
             if (conceptTagNames.indexOf(node.name) > -1) {
+
+                countConcepts += 1
                 currentConcept = {};
                 var id = node.attributes["rdf:about"];
-                if (id.indexOf("COL001") > -1)
-                    var x = 3
+if(!id) {
+    currentConcept=null;
+    return;
+}
                 currentConcept.id = id;
                 currentConcept.prefLabels = {};
                 currentConcept.altLabels = [];
@@ -201,45 +208,46 @@ var skosReader={
                 currentConcept.topConcepts = [];
 
             }
-            if (node.name == "skos:prefLabel") {
+            if(currentConcept) {
+                if (node.name == "skos:prefLabel") {
 
-                var lang = node.attributes["xml:lang"];
-                if (options.extractedLangages.indexOf(lang) > -1) {
-                    currentTagName = "prefLabels_" + lang
+                    var lang = node.attributes["xml:lang"];
+                    if (options.extractedLangages.indexOf(lang) > -1) {
+                        currentTagName = "prefLabels_" + lang
+                    }
+
+                }
+                if (node.name == "skos:altLabel") {
+                    var lang = node.attributes["xml:lang"];
+                    if (options.extractedLangages.indexOf(lang) > -1) {
+                        currentTagName = "altLabels_" + lang
+                    }
+
                 }
 
-            }
-            if (node.name == "skos:altLabel") {
-                var lang = node.attributes["xml:lang"];
-                if (options.extractedLangages.indexOf(lang) > -1) {
-                    currentTagName = "altLabels_" + lang
+                if (node.name == "skos:topConceptOf") {
+                    var type = node.attributes["rdf:resource"]
+                    currentConcept.topConcepts.push(type);
+                } else if (node.name == "rdf:type") {
+                    var type = node.attributes["rdf:resource"]
+                    if (type.indexOf("ConceptScheme") > -1) {
+                        currentConcept.isConceptScheme = true;
+                    }
+                } else if (node.name == "skos:inScheme") {
+                    currentConcept.schemes.push(node.attributes["rdf:resource"]);
+                } else if (node.name == "skos:broader") {
+                    currentConcept.broaders.push(node.attributes["rdf:resource"]);
+                } else if (node.name == "skos:narrower") {
+                    currentConcept.narrowers.push(node.attributes["rdf:resource"]);
+                } else if (node.name == "skos:related") {
+                    currentConcept.relateds.push(node.attributes["rdf:resource"]);
+
                 }
+                /*   if (node.name == "iso-thes:superGroup") {
+                       currentConcept.broaders.push(node.attributes["rdf:resource"]);
+                   }*/
 
             }
-
-            if (node.name == "skos:topConceptOf") {
-                var type = node.attributes["rdf:resource"]
-                currentConcept.topConcepts.push(type);
-            } else if (node.name == "rdf:type") {
-                var type = node.attributes["rdf:resource"]
-                if (type.indexOf("ConceptScheme") > -1) {
-                    currentConcept.isConceptScheme = true;
-                }
-            } else if (node.name == "skos:inScheme") {
-                currentConcept.schemes.push(node.attributes["rdf:resource"]);
-            } else if (node.name == "skos:broader") {
-                currentConcept.broaders.push(node.attributes["rdf:resource"]);
-            } else if (node.name == "skos:narrower") {
-                currentConcept.narrowers.push(node.attributes["rdf:resource"]);
-            } else if (node.name == "skos:related") {
-                currentConcept.relateds.push(node.attributes["rdf:resource"]);
-
-            }
-            /*   if (node.name == "iso-thes:superGroup") {
-                   currentConcept.broaders.push(node.attributes["rdf:resource"]);
-               }*/
-
-
         })
 
         saxStream.on("text", function (text) {
@@ -263,13 +271,18 @@ var skosReader={
             if (!currentConcept)
                 return;
             if (conceptTagNames.indexOf(node) > -1) {
-                conceptsMap[currentConcept.id] = currentConcept;
+                countConceptsEnd += 1
+
+                if (!stop)
+                    conceptsMap[currentConcept.id] = currentConcept;
+
             }
         })
         saxStream.on("end", function (node) {
 
             var conceptsArray = processMap(conceptsMap);
             callback(null, conceptsArray)
+
         })
 
         if (fs.existsSync(sourcePath)) {
@@ -283,9 +296,12 @@ var skosReader={
     },
 
 
-
-
-
 }
-
-module.exports=skosReader
+/*
+skosReader.rdfToJsTree("D:\\NLP\\cgi\\isc2017.rdf", {outputLangage: "en", extractedLangages: "en"}, function (err, result) {
+    if (err)
+        return console.log(err);
+    fs.writeFileSync("D:\\NLP\\cgi\\isc2017.json", JSON.stringify(result, null, 2))
+})
+*/
+module.exports = skosReader

@@ -1,0 +1,188 @@
+{
+  "general": {
+    "description": "bailletarchives",
+    "label": "bailletarchives",
+    "indexName": "bailletarchives"
+  },
+  "connector": {
+    "type": "sql",
+    "subType": "mysql",
+    "connOptions": {
+      "host": "localhost",
+      "user": "root",
+      "password": "vi0lon",
+      "database": "bailletarchivesfin2019",
+      "table": "versement"
+    },
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "bailletarchives": {
+        "properties": {
+          "numVersement": {
+            "type": "text"
+          },
+          "intitule": {
+            "type": "text"
+          },
+          "centreArchive": {
+            "type": "keyword"
+          },
+          "commentaires": {
+            "type": "text"
+          },
+          "auteurVersement": {
+            "type": "text"
+          },
+          "receptionnePar": {
+            "type": "text"
+          },
+          "dateVersement": {
+            "type": "date"
+          },
+          "ancienNumVersement": {
+            "type": "text"
+          },
+          "etatTraitement": {
+            "type": "keyword"
+          },
+          "etatTraitementAuteur": {
+            "type": "text"
+          },
+          "etatTraitementDate": {
+            "type": "date"
+          },
+          "nature": {
+            "type": "keyword"
+          },
+          "cotesExtremesBoites": {
+            "type": "text"
+          },
+          "cotesExtremesDossiersNiveauUn": {
+            "type": "text"
+          },
+          "nbBoites": {
+            "type": "integer"
+          },
+          "metrage": {
+            "type": "integer"
+          },
+          "volumeGO": {
+            "type": "integer"
+          },
+          "nbreElements": {
+            "type": "integer"
+          },
+          "id": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "numVersement": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "intitule": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "centreArchive": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "commentaires": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "auteurVersement": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "receptionnePar": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "dateVersement": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "ancienNumVersement": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "etatTraitement": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "etatTraitementAuteur": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "etatTraitementDate": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "nature": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "cotesExtremesBoites": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "cotesExtremesDossiersNiveauUn": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "nbBoites": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "metrage": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "volumeGO": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "nbreElements": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "id": {
+        "cssClass": "text"
+      }
+    }
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes",
+    "applythesauri": "no"
+  }
+}

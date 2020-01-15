@@ -1,0 +1,88 @@
+{
+  "general": {
+    "description": "corpuscgi",
+    "label": "corpuscgi",
+    "indexName": "corpuscgi"
+  },
+  "connector": {
+    "type": "book",
+    "dirPath": "D:\\NLP\\cgi\\corpus",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "corpuscgi": {
+        "properties": {
+          "title": {
+            "type": "text"
+          },
+          "page": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "page": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "attachment.content": {
+        "cssClass": "text"
+      }
+    }
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes",
+    "applythesauri": "yes"
+  },
+  "thesauri": {
+    "cgi_lithologies": {
+      "name": "cgi_lithologies",
+      "skosXmlPath": "D:\\\\NLP\\\\cgi\\\\simplelithology.rdf",
+      "highlightFields": [
+        "attachment.content"
+      ],
+      "extractedLangages": "en",
+      "outputLangage": "en"
+    },
+    "cgi_environment": {
+      "name": "cgi_environment",
+      "skosXmlPath": "D:\\\\NLP\\\\cgi\\\\eventenvironment.rdf",
+      "highlightFields": [
+        "attachment.content"
+      ],
+      "extractedLangages": "en",
+      "outputLangage": "en"
+    },
+    "cgi_processus": {
+      "name": "cgi_processus",
+      "skosXmlPath": "D:\\\\NLP\\\\cgi\\\\eventprocess.rdf",
+      "highlightFields": [
+        "attachment.content"
+      ],
+      "extractedLangages": "en",
+      "outputLangage": "en"
+    },
+    "cgi_geol_time": {
+      "name": "cgi_geol_time",
+      "skosXmlPath": "D:\\\\NLP\\\\cgi\\\\isc2014.rdf",
+      "highlightFields": [
+        "attachment.content"
+      ],
+      "extractedLangages": "en",
+      "outputLangage": "en"
+    }
+  }
+}

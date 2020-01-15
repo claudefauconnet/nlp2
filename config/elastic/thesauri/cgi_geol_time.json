@@ -1,0 +1,9 @@
+{
+  "name": "cgi_geol_time",
+  "skosXmlPath": "D:\\\\NLP\\\\cgi\\\\isc2014.rdf",
+  "highlightFields": [
+    "attachment.content"
+  ],
+  "extractedLangages": "en",
+  "outputLangage": "en"
+}

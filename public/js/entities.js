@@ -51,96 +51,90 @@ var Entities = (function () {
             context.allowedThesauri = allowedThesauri;
 
         }
-        self.showThesaurusEntities = function (thesaurusName, aggregation, callback) {
+        self.showThesaurusEntities = function (thesaurusName, aggregation) {
 
 
             context.allowedThesauri[thesaurusName] = {foundEntities: aggregation.buckets};
             context.currentThesaurus = thesaurusName;
+            var jsTreeArray = [];
 
-            async.series([
-                // get ancestors from entities in docs
-                function (callbackSeries) {
-                    for (var thesaurusName in context.allowedThesauri) {
-                        var entities = context.allowedThesauri[thesaurusName].foundEntities;
-                        entities.sort(function (a, b) {
-                            if (a.key > b.key)
-                                return 1;
-                            if (b.key > a.key)
-                                return -1;
-                            return 0;
-                        });
+            // get ancestors from entities in docs
 
 
-                        var map = {};
-                        entities.forEach(function (entity, indexEntities) {
-                            var ancestors = entity.key.split("-");
-                            var id = "";
-                            var parent = ""
-                            ancestors.forEach(function (ancestor, indexAncestor) {
-                                parent = id;
-                                if (indexAncestor > 0)
-                                    id += "-"
-                                id += ancestor
-                                if (!map[id]) {
-                                    var node = {text: ancestor, id: id, count: entity.doc_count, data: {thesaurusName: thesaurusName, descendants: []}}
-                                    if (indexAncestor > 0) {
-                                        node.parent = parent
-                                    } else {
-                                        node.parent = "#"
-                                    }
+            var entities = aggregation.buckets;
+            if (!entities)
+                return [];
 
-                                    map[id] = node
-                                } else {
+            entities.sort(function (a, b) {
+                if (a.key > b.key)
+                    return 1;
+                if (b.key > a.key)
+                    return -1;
+                return 0;
+            });
 
-                                }
 
-                            })
+            var map = {};
+            entities.forEach(function (entity, indexEntities) {
+                var ancestors = entity.key.split("-");
+                var id = "";
+                var parent = ""
+                ancestors.forEach(function (ancestor, indexAncestor) {
+                    parent = id;
+                    if (indexAncestor > 0)
+                        id += "-"
+                    id += ancestor
+                    if (!map[id]) {
+                        var node = {text: ancestor, id: id, count: entity.doc_count, data: {thesaurusName: thesaurusName, descendants: []}}
+                        if (indexAncestor > 0) {
+                            node.parent = parent
+                        } else {
+                            node.parent = thesaurusName
+                        }
 
-                        })
-                        self.jsTreeNodesMap = map;
-
+                        map[id] = node
+                    } else {
 
                     }
-                    return callbackSeries();
-                },
-                // setDescendants
-                function (callbackSeries) {
-                    var keys = Object.keys(self.jsTreeNodesMap);
-                    for (var key1 in self.jsTreeNodesMap) {
 
-                        keys.forEach(function (key2) {
-                            if (key2 != key1) {
-                                var p = key2.indexOf(key1 + "-");
-                                if (p > -1)
-                                    self.jsTreeNodesMap[key1].data.descendants.push(key2)
-
-                            }
-                        })
-
-
-                    }
-                    return callbackSeries();
-                },
-
-                // draw tree
-                function (callbackSeries) {
-                    var jsTreeArray = [];
-                    for (var key in self.jsTreeNodesMap) {
-                        var obj = self.jsTreeNodesMap[key];
-                        obj.text += " " + obj.count
-                        jsTreeArray.push(self.jsTreeNodesMap[key])
-                    }
-                    $("#entitiesWrapperDiv").css("visibility", "visible");
-                    Entities.drawJsTree("jstreeDiv", jsTreeArray)
-                    return callbackSeries();
-                }
-
-            ], function (err) {
-                if (err)
-                    return callback(err);
-
+                })
 
             })
+
+
+            // setDescendants
+
+            var keys = Object.keys(map);
+            for (var key1 in map) {
+
+                keys.forEach(function (key2) {
+                    if (key2 != key1) {
+                        var p = key2.indexOf(key1 + "-");
+                        if (p > -1)
+                            map[key1].data.descendants.push(key2)
+
+                    }
+                })
+
+            }
+
+
+            // prepare tree data
+
+
+            jsTreeArray.push({text: thesaurusName, id: thesaurusName, parent: "#"})
+            for (var key in map) {
+                var obj = map[key];
+                obj.text += " " + obj.count
+                jsTreeArray.push(map[key])
+            }
+
+            for (var key in map) {
+                if (!self.jsTreeNodesMap[key])
+                    self.jsTreeNodesMap[key] = map[key];
+            }
+
+            return jsTreeArray;
         }
 
 

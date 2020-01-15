@@ -1,0 +1,9 @@
+{
+  "name": "cgi_environment",
+  "skosXmlPath": "D:\\NLP\\cgi\\eventenvironment.rdf",
+  "highlightFields": [
+    "attachment.content"
+  ],
+  "extractedLangages": "en",
+  "outputLangage": "en"
+}

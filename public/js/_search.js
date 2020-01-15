@@ -164,9 +164,14 @@ var Search = (function () {
                             self.setResultsCountByIndex(result.aggregations.indexesCountDocs);
 
                             self.thesauri = {}
+                            var jsTreeArray=[]
                            for(var thesaurus in context.allowedThesauri) {
-                                Entities.showThesaurusEntities(thesaurus, result.aggregations["entities_" + thesaurus]);
+                               var thesaurusJsTreeArray=Entities.showThesaurusEntities(thesaurus, result.aggregations["entities_" + thesaurus]);
+                               jsTreeArray=jsTreeArray.concat(thesaurusJsTreeArray)
+
                             }
+                            $("#entitiesWrapperDiv").css("visibility", "visible");
+                            Entities.drawJsTree("jstreeDiv", jsTreeArray)
 
 
                             context.currentHits = result.hits.hits;

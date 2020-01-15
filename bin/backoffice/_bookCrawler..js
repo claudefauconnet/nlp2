@@ -7,7 +7,7 @@ const ndjson = require('ndjson');
 const path = require('path');
 const fs = require('fs');
 
-const maxDocSize = 20000000;
+const maxDocSize = 100000000;
 const acceptedExtensions = ["pdf", "PDF"];
 
 var bookCrawler = {

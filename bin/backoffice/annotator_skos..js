@@ -160,19 +160,25 @@ var annotator_skos = {
         serialize.on('data', function (line) {
             ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
         })
-
+var nElasticQueries=0
         var queriedEntities = [];
+        if(entities.length==0)
+           return  callback(null, entities);
         entities.forEach(function (entity, entityIndex) {
             if (entity.elasticQuery) {
 
                 queriedEntities.push(entityIndex)
                 serialize.write({index: globalOptions.corpusIndex})
                 serialize.write(entity.elasticQuery)
+                nElasticQueries+=1
+
 
             }
         })
         serialize.end();
 
+        if(nElasticQueries==0)
+            return callback(null,[]);
         var options = {
             method: 'POST',
             body: ndjsonStr,
@@ -187,7 +193,14 @@ var annotator_skos = {
             if (error)
                 return callbackSeries(error);
             var json = JSON.parse(response.body);
+            if(json.error) {
+                var x=str;
+                return callback(json.error);
+            }
             var responses = json.responses;
+
+            if(!responses || !responses.forEach)
+                var x=3
 
             responses.forEach(function s(response, responseIndex) {
                 entities[queriedEntities[responseIndex]].documentsMap = {};
@@ -278,7 +291,7 @@ var annotator_skos = {
                     headers: {
                         'content-type': 'application/json'
                     },
-                    url: globalOptions.elasticUrl + globalOptions.corpusIndex + "/_update_by_query?conflicts=proceed"
+                    url: globalOptions.elasticUrl + globalOptions.corpusIndex + "/_update_by_query?conflicts=proceed&refresh=true"
                 };
 
                 request(options, function (error, response, body) {
@@ -565,8 +578,7 @@ var annotator_skos = {
                     })
 
                     slice.forEach(function (entity) {
-                        if(entity.internal_id=="Equipment-Topsides-Valve")
-                            var xx=3
+
                         entity.documents=[]
                         if(entity.documentsMap) {
                             for (var key in entity.documentsMap) {
@@ -649,6 +661,8 @@ var annotator_skos = {
             totalAnnotations = 0;
             socket.message("Starting annotation of index " + options.corpusIndex + "with thesaurus " + options.thesaurusIndex)
             async.eachSeries(slicedData, function (slice, callbackEach) {
+                if(slice.length==0)
+                    return callbackEach();
                 if (i == 0)
                     options.append = false
                 else

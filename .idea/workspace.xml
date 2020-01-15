@@ -2,13 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/bin/backoffice/nopd..js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/pierre/data/responseTime.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/pierre/data/rotor.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/pierre/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/pierre/sinequaResultVis.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/others/atd_stats..js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/others/tulsaToSkos..js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/skosviewer/data/explorationResults.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/skosviewer/data/isc2017.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/skosviewer/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/skosviewer/skosviewer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/sources/gmec_par.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/gmec_par.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/_bookCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_bookCrawler..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/_documentCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_documentCrawler..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/_imapCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_imapCrawler..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/_sqlCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_sqlCrawler..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_regex..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/annotator_regex..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_skos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/annotator_skos..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/indexer..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/indexer..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/_search.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/_search.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/entities.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/entities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pierre/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/pierre/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pierre/sinequaResultVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/pierre/sinequaResultVis.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/stats.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,9 +37,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="JS module" />
         <option value="HTML File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -36,18 +51,20 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/pierre/data" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bailletArchives" />
     <property name="restartRequiresConfirmation" value="false" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\bin\others" />
+      <recent name="D:\GitHub\nlp2\public\js" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\skosviewer\data" />
       <recent name="D:\GitHub\nlp2\public\pierre\data" />
       <recent name="D:\GitHub\nlp2\bin\backoffice" />
       <recent name="D:\GitHub\nlp2\bin" />
       <recent name="D:\GitHub\nlp2\public" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\js" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -63,28 +80,28 @@
     </option>
   </component>
   <component name="RunManager" selected="Node.js.bin\www">
-    <configuration name="annotator_regex..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_regex..js" working-dir="$PROJECT_DIR$/bin/backoffice">
-      <method v="2" />
-    </configuration>
-    <configuration name="annotator_skosOld..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/bin/backoffice/annotator_skosOld..js" working-dir="$PROJECT_DIR$/bin/backoffice">
-      <method v="2" />
-    </configuration>
     <configuration name="annotator_skos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_skos..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
-    <configuration name="annotator_spacy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/bin/backoffice/annotator_spacy..js" working-dir="$PROJECT_DIR$/bin/backoffice">
+    <configuration name="atd_stats..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/bin/others/atd_stats..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
     <configuration name="nopd..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="nopd..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
+    <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
+      <method v="2" />
+    </configuration>
+    <configuration name="tulsaToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="tulsaToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.nopd..js" />
-        <item itemvalue="Node.js.annotator_spacy..js" />
-        <item itemvalue="Node.js.annotator_regex..js" />
         <item itemvalue="Node.js.annotator_skos..js" />
-        <item itemvalue="Node.js.annotator_skosOld..js" />
+        <item itemvalue="Node.js.skosReader..js" />
+        <item itemvalue="Node.js.tulsaToSkos..js" />
+        <item itemvalue="Node.js.atd_stats..js" />
+        <item itemvalue="Node.js.nopd..js" />
       </list>
     </recent_temporary>
   </component>
@@ -103,7 +120,8 @@
       <workItem from="1578158965724" duration="57019000" />
       <workItem from="1578424956528" duration="17096000" />
       <workItem from="1578483602972" duration="15008000" />
-      <workItem from="1578639290766" duration="37520000" />
+      <workItem from="1578639290766" duration="41508000" />
+      <workItem from="1578909681881" duration="38841000" />
     </task>
     <servers />
   </component>
@@ -128,21 +146,80 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/pierre/sinequaResultVis.js</url>
-          <line>251</line>
-          <properties lambdaOrdinal="-1" />
+          <line>252</line>
           <option name="timeStamp" value="726" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/pierre/sinequaResultVis.js</url>
-          <line>43</line>
-          <properties lambdaOrdinal="-1" />
+          <line>44</line>
           <option name="timeStamp" value="729" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/pierre/sinequaResultVis.js</url>
-          <line>182</line>
-          <properties lambdaOrdinal="-1" />
+          <line>183</line>
           <option name="timeStamp" value="730" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/atd_stats..js</url>
+          <line>93</line>
+          <option name="timeStamp" value="731" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/atd_stats..js</url>
+          <line>89</line>
+          <option name="timeStamp" value="732" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/atd_stats..js</url>
+          <line>102</line>
+          <option name="timeStamp" value="733" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/atd_stats..js</url>
+          <line>137</line>
+          <option name="timeStamp" value="736" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/pierre/sinequaResultVis.js</url>
+          <line>173</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="737" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/_documentCrawler..js</url>
+          <line>159</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="842" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/_documentCrawler..js</url>
+          <line>149</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="843" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/_documentCrawler..js</url>
+          <line>138</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="844" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/_documentCrawler..js</url>
+          <line>127</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="845" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_skos..js</url>
+          <line>664</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="877" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_skos..js</url>
+          <line>197</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="883" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
