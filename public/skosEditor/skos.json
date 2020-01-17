@@ -1,0 +1,34 @@
+{
+  "title": "thesaurus",
+  "type": "array",
+  "id": "thesaurus",
+  "items": {
+    "title": "Concept",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "prefLabels": {
+        "type": "array",
+        "items": {
+          "title": "prefLabel",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "lang": {
+              "type": "string",
+              "enum": [
+                "en",
+                "fr",
+                "sp"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

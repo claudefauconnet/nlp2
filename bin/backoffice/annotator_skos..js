@@ -632,7 +632,7 @@ var nElasticQueries=0
     annotateCorpusFromRDFfile: function (thesaurusConfig, index, elasticUrl, callback) {
         var thesaurusIndexName = thesaurusConfig.name.toLowerCase()
         socket.message("Parsing  thesaurus " + thesaurusIndexName + " from file " + thesaurusConfig.skosXmlPath)
-        skosReader.rdfToJsTree(thesaurusConfig.skosXmlPath, thesaurusConfig, function (err, result) {
+        skosReader.rdfToAnnotator(thesaurusConfig.skosXmlPath, thesaurusConfig, function (err, result) {
             if (err)
                 return callback(err);
             var entities = result;

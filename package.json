@@ -23,6 +23,7 @@
     "imap": "^0.8.19",
     "jade": "~1.11.0",
     "js2xmlparser": "^4.0.0",
+    "jsoneditor": "^8.1.2",
     "libmime": "^4.2.1",
     "logger": "0.0.1",
     "machine_learning": "^0.1.1",

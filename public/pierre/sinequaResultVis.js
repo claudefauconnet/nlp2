@@ -203,10 +203,10 @@ var sinequaResultVis = (function () {
 
 
         var edges = [];
-        var allEntities = getDocumentsEntitiesAssociations(data.docs);
+    //    var allEntities = getDocumentsEntitiesAssociations(data.docs);
 
-//        var docEntities = getDocEntities(data.docs);
-//var allEntities = getEntitiesMap(data.extracts,docEntities);
+      var docEntities = getDocEntities(data.docs);
+     var allEntities = getEntitiesMap(data.extracts,docEntities);
 
 
         var entityColors = {}

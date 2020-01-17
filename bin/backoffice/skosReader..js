@@ -1,171 +1,42 @@
 var fs = require('fs');
-var sax= require("sax")
+var sax = require("sax")
 var skosReader = {
-    rdfToJsTree: function (sourcePath, options, callback) {
-        var saxStream = sax.createStream(true)
-        var xmlnsRootLength = -1
+    rdfToAnnotator: function (sourcePath, options, callback) {
         if (!options)
             options = {
-                outputLangage: "fr",
-                uri_candidates: "http://eurovoc.europa.eu/candidates",
-                uri_domains: "http://eurovoc.europa.eu/domains"
+                outputLangage: "en",
+                extractedLangages: "en",
             }
 
-        function processMap(conceptsMap) {
+        skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
+            if (err)
+                return callback(err);
+            var conceptsArray = skosReader.mapToAnnotator(conceptsMap, options);
+            return callback(null, conceptsArray);
+        })
 
-            var treeMap = {};
-            var schemesMap = {};
-            var ancestorsMap = {};
-            var domains = {};
-            var i = 0;
+    },
 
-            for (var key in conceptsMap) {
-                if (Object.keys(conceptsMap[key].prefLabels).length > 0) {
-                    //identitification of xmlnsRootLength (position of # or last / in the uri)
-                    if (i++ < 5) {
-                        var p = key.indexOf("#");
-                        if (p < 0)
-                            p = key.lastIndexOf("/")
-                        if (p < 0)
-                            return callback("Cannot analyze concept uri :" + key)
-                        if (xmlnsRootLength == -1)
-                            xmlnsRootLength = p + 1
-                        else if (xmlnsRootLength != (p + 1))
-                            return callback("Cannot continue uri has not the same xmlns:" + key)
-                    } else {
-                        if (xmlnsRootLength == -1)
-                            return callback("Cannot determine xmlnsRootLength")
-                    }
-                }
+    rdfToEditor: function (sourcePath, options, callback) {
 
-                var concept = conceptsMap[key];
-
-
-                var obj = {
-                    text: (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"]),
-                    id: concept.id,
-                    synonyms: [],
-                    ancestors: [],
-                    parent: "#"
-
-                }
-
-                if (options.uri_candidates && concept.id.indexOf(options.uri_candidates) == 0)
-                    obj.text = "CANDIDATES"
-
-                for (var key2 in concept.prefLabels) {
-                    if (Array.isArray(concept.prefLabels[key2])) {
-                        concept.prefLabels[key2].forEach(function (str) {
-                            obj.synonyms.push(str);
-                        })
-                    } else {
-                        obj.synonyms.push(concept.prefLabels[key2]);
-                    }
-
-                }
-
-                concept.altLabels.forEach(function (str) {
-                    obj.synonyms.push(str);
-                })
-
-
-// indentification des domaines
-                if (options.uri_domains && concept.schemes.length == 1 && concept.schemes.indexOf(options.uri_domains) > -1) {
-                    var domainKey = concept.prefLabels[options.outputLangage].substring(0, 2);
-                    domains[domainKey] = concept.id
-                }
-
-                if (concept.broaders.length > 0) {
-                    obj.parent = concept.broaders[concept.broaders.length - 1];
-                    obj.ancestors = concept.broaders;
-                }
-                if (concept.topConcepts.length > 0) {
-                    if (concept.broaders.length == 0) {
-
-                        obj.parent = concept.topConcepts[concept.topConcepts.length - 1];
-                        obj.ancestors = concept.topConcepts;
-                    }
-                } else if (concept.schemes.length > 0) {// && concept.topConcepts.indexOf("http://eurovoc.europa.eu/candidates")<0) {
-                    if (concept.broaders.length == 0) {
-                        obj.parent = concept.schemes[concept.schemes.length - 1];
-                        obj.ancestors = concept.schemes;
-                    }
-                }
-                treeMap[concept.id] = obj
+        if (!options)
+            options = {
+                outputLangage: "en",
+                extractedLangages: "en,fr,sp",
             }
 
-// gestion de la hierarchie des parents
-            for (var key in treeMap) {
+        skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
+            if (err)
+                return callback(err);
+            var conceptsArray = skosReader.mapToSkosEditor(conceptsMap, options);
+            return callback(null, conceptsArray);
+        })
 
-                concept = treeMap[key];
-                if (concept.ancestors) {
-                    concept.ancestors.forEach(function (ancestor, index) {
-                        if (index < concept.ancestors.length && treeMap[ancestor] && treeMap[ancestor].parent == "#")
-                            treeMap[ancestor].parent = concept.ancestors[index + 1];
-                    })
-                }
-            }
+    },
 
-// rattachemenet aux domaines (premier niveau)
-
-
-            function recurseAncestors(node) {
-                if (node.parent) {
-                    //  node.ancestors.splice(0, 0, node.parent);
-                    if (treeMap[node.parent] && treeMap[node.parent].parent) {
-                        node.ancestors.push(treeMap[node.parent].parent);
-                        recurseAncestors(treeMap[node.parent].parent)
-                    }
-
-                }
-
-            }
-
-            for (var key in treeMap) {
-                var concept = treeMap[key];
-
-                if (!concept.text) {
-                    concept.text = "?"
-                }
-
-                recurseAncestors(concept)
-
-                var str = "";
-                var allAncestors = concept.ancestors;
-                allAncestors.splice(0, 0, key)
-                allAncestors.forEach(function (ancestorId, index) {
-
-
-                    if (!treeMap[ancestorId])
-                        return;
-                    var ancestorName = treeMap[ancestorId].text
-                    if (ancestorName == "?")
-                        return;
-                    if (str.indexOf(ancestorName) == 0)
-                        return;//cf thesaurus-ctg ids
-
-
-                    if (str != "")
-                        ancestorName += "-"
-                    str = ancestorName + str;
-                })
-
-
-                concept.internal_id = str;
-
-            }
-
-
-            var conceptsArray = []
-            for (var key in treeMap) {
-                if (!treeMap[key].parent)
-                    treeMap[key].parent = "#"
-
-                conceptsArray.push(treeMap[key])
-            }
-            return conceptsArray;
-        }
-
+    parseRdfXml: function (sourcePath, options, callback) {
+        var saxStream = sax.createStream(true)
+        var xmlnsRootLength = -1
         var conceptTagNames = ["rdf:Description", "skos:ConceptScheme", "skos:Concept", "iso-thes:ConceptGroup"]
         var conceptsMap = {}
         var currentConcept = null;
@@ -194,10 +65,10 @@ var skosReader = {
                 countConcepts += 1
                 currentConcept = {};
                 var id = node.attributes["rdf:about"];
-if(!id) {
-    currentConcept=null;
-    return;
-}
+                if (!id) {
+                    currentConcept = null;
+                    return;
+                }
                 currentConcept.id = id;
                 currentConcept.prefLabels = {};
                 currentConcept.altLabels = [];
@@ -208,7 +79,7 @@ if(!id) {
                 currentConcept.topConcepts = [];
 
             }
-            if(currentConcept) {
+            if (currentConcept) {
                 if (node.name == "skos:prefLabel") {
 
                     var lang = node.attributes["xml:lang"];
@@ -219,6 +90,10 @@ if(!id) {
                 }
                 if (node.name == "skos:altLabel") {
                     var lang = node.attributes["xml:lang"];
+                    if (!lang) {
+                        currentTagName = "altLabels_" + "NO_LANG"
+                    }
+
                     if (options.extractedLangages.indexOf(lang) > -1) {
                         currentTagName = "altLabels_" + lang
                     }
@@ -280,8 +155,7 @@ if(!id) {
         })
         saxStream.on("end", function (node) {
 
-            var conceptsArray = processMap(conceptsMap);
-            callback(null, conceptsArray)
+            callback(null, conceptsMap)
 
         })
 
@@ -295,13 +169,296 @@ if(!id) {
 
     },
 
+    mapToAnnotator: function (conceptsMap, options) {
+
+        var treeMap = {};
+        var schemesMap = {};
+        var ancestorsMap = {};
+        var domains = {};
+        var i = 0;
+
+        for (var key in conceptsMap) {
+            if (Object.keys(conceptsMap[key].prefLabels).length > 0) {
+                //identitification of xmlnsRootLength (position of # or last / in the uri)
+                if (i++ < 5) {
+                    var p = key.indexOf("#");
+                    if (p < 0)
+                        p = key.lastIndexOf("/")
+                    if (p < 0)
+                        return callback("Cannot analyze concept uri :" + key)
+                    if (xmlnsRootLength == -1)
+                        xmlnsRootLength = p + 1
+                    else if (xmlnsRootLength != (p + 1))
+                        return callback("Cannot continue uri has not the same xmlns:" + key)
+                } else {
+                    if (xmlnsRootLength == -1)
+                        return callback("Cannot determine xmlnsRootLength")
+                }
+            }
+
+            var concept = conceptsMap[key];
+
+
+            var obj = {
+                text: (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"]),
+                id: concept.id,
+                synonyms: [],
+                ancestors: [],
+                parent: "#"
+
+            }
+
+            if (options.uri_candidates && concept.id.indexOf(options.uri_candidates) == 0)
+                obj.text = "CANDIDATES"
+
+            for (var key2 in concept.prefLabels) {
+                if (Array.isArray(concept.prefLabels[key2])) {
+                    concept.prefLabels[key2].forEach(function (str) {
+                        obj.synonyms.push(str);
+                    })
+                } else {
+                    obj.synonyms.push(concept.prefLabels[key2]);
+                }
+
+            }
+
+            concept.altLabels.forEach(function (str) {
+                obj.synonyms.push(str);
+            })
+
+
+// indentification des domaines
+            if (options.uri_domains && concept.schemes.length == 1 && concept.schemes.indexOf(options.uri_domains) > -1) {
+                var domainKey = concept.prefLabels[options.outputLangage].substring(0, 2);
+                domains[domainKey] = concept.id
+            }
+
+            if (concept.broaders.length > 0) {
+                obj.parent = concept.broaders[concept.broaders.length - 1];
+                obj.ancestors = concept.broaders;
+            }
+            if (concept.topConcepts.length > 0) {
+                if (concept.broaders.length == 0) {
+
+                    obj.parent = concept.topConcepts[concept.topConcepts.length - 1];
+                    obj.ancestors = concept.topConcepts;
+                }
+            } else if (concept.schemes.length > 0) {// && concept.topConcepts.indexOf("http://eurovoc.europa.eu/candidates")<0) {
+                if (concept.broaders.length == 0) {
+                    obj.parent = concept.schemes[concept.schemes.length - 1];
+                    obj.ancestors = concept.schemes;
+                }
+            }
+            treeMap[concept.id] = obj
+        }
+
+// gestion de la hierarchie des parents
+        for (var key in treeMap) {
+
+            concept = treeMap[key];
+            if (concept.ancestors) {
+                concept.ancestors.forEach(function (ancestor, index) {
+                    if (index < concept.ancestors.length && treeMap[ancestor] && treeMap[ancestor].parent == "#")
+                        treeMap[ancestor].parent = concept.ancestors[index + 1];
+                })
+            }
+        }
+
+// rattachemenet aux domaines (premier niveau)
+
+
+        function recurseAncestors(node) {
+            if (node.parent) {
+                //  node.ancestors.splice(0, 0, node.parent);
+                if (treeMap[node.parent] && treeMap[node.parent].parent) {
+                    node.ancestors.push(treeMap[node.parent].parent);
+                    recurseAncestors(treeMap[node.parent].parent)
+                }
+
+            }
+
+        }
+
+        for (var key in treeMap) {
+            var concept = treeMap[key];
+
+            if (!concept.text) {
+                concept.text = "?"
+            }
+
+            recurseAncestors(concept)
+
+            var str = "";
+            var allAncestors = concept.ancestors;
+            allAncestors.splice(0, 0, key)
+            allAncestors.forEach(function (ancestorId, index) {
+
+
+                if (!treeMap[ancestorId])
+                    return;
+                var ancestorName = treeMap[ancestorId].text
+                if (ancestorName == "?")
+                    return;
+                if (str.indexOf(ancestorName) == 0)
+                    return;//cf thesaurus-ctg ids
+
+
+                if (str != "")
+                    ancestorName += "-"
+                str = ancestorName + str;
+            })
+
+
+            concept.internal_id = str;
+
+        }
+
+
+        var conceptsArray = []
+        for (var key in treeMap) {
+            if (!treeMap[key].parent)
+                treeMap[key].parent = "#"
+
+            conceptsArray.push(treeMap[key])
+        }
+        return conceptsArray;
+    },
+
+
+    mapToSkosEditor: function (conceptsMap, options) {
+        var conceptsArray = []
+        for (var id in conceptsMap) {
+            var obj = {data: {}}
+            var concept = conceptsMap[id];
+
+
+            if (concept.broaders.length > 0) {
+                obj.parent = concept.broaders[0];
+            } else {
+                obj.parent = "#"
+
+            }
+            obj.text = (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"]);
+            obj.id = concept.id;
+            var prefLabelsArray = [];
+            for (var key in concept.prefLabels) {
+                prefLabelsArray.push({
+                    lang: key,
+                    value: concept.prefLabels[key]
+                })
+            }
+
+
+
+
+            obj.data.prefLabels = prefLabelsArray;
+            obj.data.altLabels = concept.altLabels;
+            obj.data.relateds = concept.relateds;
+            obj.data.broaders = concept.broaders;
+            obj.data.id = concept.id;
+            conceptsArray.push(obj)
+
+        }
+        return conceptsArray;
+    },
+
+    skosEditorToRdf: function (rdfPath, conceptsArray, options, callback) {
+
+
+
+        var uriRoot = ""// "http://PetroleumAbstractsThesaurus/"
+        var str = "";
+        str += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+            "<rdf:RDF xmlns:skos=\"http://www.w3.org/2004/02/skos/core#\"  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">"
+
+
+        var js2xmlparser = require("js2xmlparser");
+        conceptsArray.forEach(function (concept, index) {
+            var objArray = [];
+
+
+
+
+            concept.prefLabels.forEach(function (prefLabel, index2) {
+                objArray.push({
+                        "skos:prefLabel": {
+                            "@": {
+                                "xml:lang": prefLabel.lang
+                            },
+                            "#": prefLabel.value
+                        }
+                    }
+                )
+            })
+
+
+            concept.altLabels.forEach(function (altLabel) {
+                objArray.push({
+                    "skos:altLabel": {
+                        "@": {
+                            "xml:lang": altLabel.lang
+                        },
+                        "#": altLabel.value
+                    }
+                })
+            })
+
+            concept.broaders.forEach(function (broader, index2) {
+                objArray.push({
+                        "skos:broader": {
+                            "@":
+                                {
+                                    "rdf:resource":
+                                        uriRoot + broader
+                                }
+                        }
+                    }
+                )
+            })
+
+
+            concept.relateds.forEach(function (related) {
+                objArray.push({
+                    "skos:related": {
+                        "@":
+                            {
+                                "rdf:resource":
+                                    uriRoot + related
+                            }
+                    }
+                })
+            })
+
+            if (concept.prefLabels.length > 1)
+                var x = 3
+            var obj = {
+
+                "@": {
+                    "rdf:about": uriRoot + concept.id
+                }, objArray
+            }
+           var xml= js2xmlparser.parse("skos:Concept",  obj).substring(22) + "\n";
+            str +=xml
+        })
+
+        str=str.replace(/<objArray>\n/gm,"").replace(/<\/objArray>\n/gm,"")
+        str += "</rdf:RDF>"
+
+
+        fs.writeFileSync(rdfPath, str)
+        return callback(null, "done")
+
+    }
+
 
 }
 /*
-skosReader.rdfToJsTree("D:\\NLP\\cgi\\isc2017.rdf", {outputLangage: "en", extractedLangages: "en"}, function (err, result) {
+skosReader.rdfToAnnotator("D:\\NLP\\cgi\\eventprocess.rdf", {outputLangage: "en", extractedLangages: "en"}, function (err, result) {
     if (err)
         return console.log(err);
-    fs.writeFileSync("D:\\NLP\\cgi\\isc2017.json", JSON.stringify(result, null, 2))
+    fs.writeFileSync("D:\\NLP\\cgi\\eventprocess.json", JSON.stringify(result, null, 2))
 })
 */
+
+
 module.exports = skosReader

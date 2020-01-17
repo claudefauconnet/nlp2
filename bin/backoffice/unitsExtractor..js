@@ -8,7 +8,7 @@ const elasticRestProxy = require('../elasticRestProxy..js')
 var unitsExtractor = {
 
 
-    rdfToJsTree: function (sourcePath, options, callback) {
+    rdfToAnnotator: function (sourcePath, options, callback) {
         var conceptsArray = [];
         var xmlnsRootLength = -1
         if (!options)
@@ -103,7 +103,7 @@ var unitsExtractor = {
 }
 var xmlPath = "D:\\NLP\\measurement-unit.xml";
 
-unitsExtractor.rdfToJsTree(xmlPath, {}, function (err, result) {
+unitsExtractor.rdfToAnnotator(xmlPath, {}, function (err, result) {
     var x = result;
     fs.writeFileSync(xmlPath+".json",JSON.stringify(result,null,2))
 

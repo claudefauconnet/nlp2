@@ -12,7 +12,7 @@ const elasticRestProxy = require('../elasticRestProxy..js')
 var annotator_skosOld = {
 
 
-    rdfToJsTree: function (sourcePath, options, callback) {
+    rdfToAnnotator: function (sourcePath, options, callback) {
         var xmlnsRootLength = -1
         if (!options)
             options = {
@@ -924,7 +924,7 @@ var annotator_skosOld = {
     annotateCorpusFromRDFfile: function (thesaurusConfig, index, elasticUrl, callback) {
         var thesaurusIndexName = thesaurusConfig.name.toLowerCase()
         socket.message("Parsing  thesaurus " + thesaurusIndexName + " from file " + thesaurusConfig.skosXmlPath)
-        annotator_skosOld.rdfToJsTree(thesaurusConfig.skosXmlPath, thesaurusConfig, function (err, result) {
+        annotator_skosOld.rdfToAnnotator(thesaurusConfig.skosXmlPath, thesaurusConfig, function (err, result) {
             if (err)
                 return callback(err);
             var entities = result;
@@ -1094,7 +1094,7 @@ if (false) {
     var rdfXmlPath = "D:\\NLP\\unescothes.rdf"
 
 
-    annotator_skosOld.rdfToJsTree(rdfXmlPath, options, function (err, result) {
+    annotator_skosOld.rdfToAnnotator(rdfXmlPath, options, function (err, result) {
         var str = JSON.stringify(result, null, 2);
         fs.writeFileSync(jstreeJsonPath, str);
     })

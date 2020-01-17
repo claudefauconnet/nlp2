@@ -10,22 +10,21 @@ var logger = require("../bin/logger..js");
 var indexer = require("../bin/backoffice/indexer..js")
 var imapMailExtractor = require("../bin/backoffice/imapMailExtractor.");
 var jobScheduler = require("../bin/backoffice/jobScheduler.")
-var statistics=require("../bin/backoffice/statistics.")
-var questionAnswering=require("../bin/questionAnswering.");
-var annotator_skos=require("../bin/backoffice/annotator_skos.");
-
+var statistics = require("../bin/backoffice/statistics.")
+var questionAnswering = require("../bin/questionAnswering.");
+var annotator_skos = require("../bin/backoffice/annotator_skos.");
+var skosReader = require("../bin/backoffice/skosReader..js");
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('index', {title: 'Express'});
 });
 
 
-
 router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
         if (req.body.executeQuery) {
             var queryObj = JSON.parse(req.body.executeQuery);
-            var indexesStr="";
+            var indexesStr = "";
             var indexes = JSON.parse(req.body.indexes);
             if (Array.isArray(indexes)) {
                 indexes.forEach(function (index, p) {
@@ -35,7 +34,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                 })
             } else
                 indexesStr = indexes
-            elasticRestProxy.executePostQuery(indexesStr+"/_search", queryObj, function (error, result) {
+            elasticRestProxy.executePostQuery(indexesStr + "/_search", queryObj, function (error, result) {
                 logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
                 processResponse(response, error, result);
 
@@ -128,26 +127,25 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         }
 
 
+        if (req.body && req.body.getAllThesaurusConfig) {
+            configLoader.getAllThesaurusConfig(function (error, result) {
+                processResponse(response, error, result);
+            })
+        }
 
-    if (req.body && req.body.getAllThesaurusConfig) {
-        configLoader.getAllThesaurusConfig(function (error, result) {
-            processResponse(response, error, result);
-        })
-    }
-
-    if (req.body && req.body.saveThesaurusConfig) {
-        configLoader.saveThesaurusConfig(req.body.name,req.body.content, function (error, result) {
-            processResponse(response, error, result);
-        })
-    }
-    if (req.body && req.body.getUserThesauri) {
-        configLoader.getUserThesaurus(JSON.parse(req.body.userGroups),function (error, result) {
+        if (req.body && req.body.saveThesaurusConfig) {
+            configLoader.saveThesaurusConfig(req.body.name, req.body.content, function (error, result) {
+                processResponse(response, error, result);
+            })
+        }
+        if (req.body && req.body.getUserThesauri) {
+            configLoader.getUserThesaurus(JSON.parse(req.body.userGroups), function (error, result) {
                 return processResponse(response, error, result);
-        })
-    }
+            })
+        }
 
 
-    if (req.body && req.body.jobScheduler) {
+        if (req.body && req.body.jobScheduler) {
             if (req.body.run) {
                 jobScheduler.run(function (error, result) {
                     processResponse(response, error, result);
@@ -166,18 +164,8 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             })
 
         }
-    if(req.body.annotateCorpusFromRDFfile){
-        annotator_skos.annotateCorpusFromRDFfile(JSON.parse(req.body.thesaurusConfig), req.body.index,req.body.elasticUrl, function (err, result) {
-            processResponse(response, err, result)
-
-        })
-
-    }
-
-
-
-        if(req.body.answerQuestion){
-            questionAnswering.processQuestion(req.body.question,JSON.parse(req.body.options),function (err, result) {
+        if (req.body.annotateCorpusFromRDFfile) {
+            annotator_skos.annotateCorpusFromRDFfile(JSON.parse(req.body.thesaurusConfig), req.body.index, req.body.elasticUrl, function (err, result) {
                 processResponse(response, err, result)
 
             })
@@ -185,15 +173,35 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         }
 
 
+        if (req.body.answerQuestion) {
+            questionAnswering.processQuestion(req.body.question, JSON.parse(req.body.options), function (err, result) {
+                processResponse(response, err, result)
+
+            })
+
+        }
+
+
+        if (req.body.rdfToEditor) {
+            skosReader.rdfToEditor(req.body.rdfPath, JSON.parse(req.body.options), function (err, result) {
+                processResponse(response, err, result)
+            })
+        }
+        if (req.body.skosEditorToRdf) {
+            skosReader.skosEditorToRdf(req.body.rdfPath,JSON.parse(req.body.data) ,JSON.parse(req.body.options), function (err, result) {
+                processResponse(response, err, result)
+            })
+        }
+
+
     },
     router.get('/heatMap', function (req, res, next) {
-var elasticQuery=JSON.parse(req.query.query);
+        var elasticQuery = JSON.parse(req.query.query);
 
-        statistics.getEntitiesMatrix( null,elasticQuery,function (err, result) {
+        statistics.getEntitiesMatrix(null, elasticQuery, function (err, result) {
             processResponse(res, err, result)
         })
     })
-
 )
 
 

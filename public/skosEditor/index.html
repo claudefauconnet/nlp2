@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>CSS Integration JSON Editor Example</title>
+
+    <!-- Foundation CSS framework (Bootstrap and jQueryUI also supported) -->
+    <link rel='stylesheet' href='//cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css'>
+    <!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
+    <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+
+
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+  <!--  <link rel="stylesheet" href="../js/backoffice/jstree/proton/style.css"/>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <script src="js/json-editor.js"></script>
+    <script src="js/simpleSkosEditor.js"></script>
+
+    <script>
+        // Set the default CSS theme and icon library globally
+        JSONEditor.defaults.theme = 'foundation5';
+        JSONEditor.defaults.iconlib = 'fontawesome4';
+    </script>
+
+    <style>
+        body {
+            font-size: 16px;
+        }
+        .panel{
+            margin-bottom: 1rem;
+            padding: .2rem;
+        }
+
+    </style>
+</head>
+<body>
+<div class='row'>
+
+</div>
+<div style="display: flex;flex-direction: row">
+    <div style='width:300px'>
+        thesaurus (rdf)<br>
+        <input id="skosInput" value="D:\NLP\cgi\eventprocess.rdf" size="20">
+        <input type="button" onclick="skosEditor.loadNewThesaurus()" value="New"></input>
+        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput').val())"  value="Edit"></input>
+    <!--    <input  type="button" onclick="skosEditor.saveThesaurus($('#skosInput').val())">Save</input>-->
+        <input  type="button" onclick="skosEditor.saveThesaurus()"  value="Save"></input>
+        <div id="treeDiv"></div>
+    </div>
+    <div style='width:800px'>
+        <div class='medium-12-columns'>
+            <span id='valid_indicator' class='label'></span>
+        </div>
+        <div id='editor_holder' class='medium-12 columns'></div>
+    </div>
+</div>
+
+
+</body>
+</html>
