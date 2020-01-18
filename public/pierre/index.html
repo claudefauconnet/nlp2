@@ -14,56 +14,74 @@
     <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>
 
     <script src="sinequaResultVis.js"></script>
-<script>
+    <script>
 
 
-    $(function () {
-        var sliderMin=10;
-        var sliderMax=10000
-        $("#slider").slider({
-            min: 10,
-            max: 10000,
-            step: 10,
-            slide: function (event, ui) {
-                var value = ui.value;
-                var jsonResult=$("#jsonResultSelect").val();
-                sinequaResultVis.showSinequaResult(jsonResult,value);
-                var value = $( "#slider" ).slider( "value" );
-                var minv = Math.log(sliderMin);
-                var maxv = Math.log(sliderMax);
+        $(function () {
 
-                // calculate adjustment factor
-                var scale = (maxv-minv) / (sliderMax-sliderMin);
 
-              value=Math.exp(minv + scale*(value-sliderMin));
-                $("#sliderValueSpan").html(value)
 
-            }
-        });
-    })
-</script>
+            $("#slider").slider({
+                min: sinequaResultVis.sliderIndexMin,
+                max: sinequaResultVis.sliderIndexMax,
+                step: 10,
+                slide: function (event, ui) {
+                    var value = ui.value;
 
-<style>
+                    var edges=sinequaResultVis.sliderEdges.slice(0, value)
+                    sinequaResultVis.drawSubset(edges);
 
-#graphDiv{
 
-    width:1800px;
-    height: 1200px;
-}
 
-</style>
+                }
+            });
+           /*    var sliderMin = 10;
+            var sliderMax = 10000;
+            $("#slider").slider({
+                min: 10,
+                max: 10000,
+                step: 10,
+                slide: function (event, ui) {
+                    var value = ui.value;
+                    var jsonResult = $("#jsonResultSelect").val();
+                    sinequaResultVis.showSinequaResult(jsonResult, value);
+                    var value = $("#slider").slider("value");
+                    var minv = Math.log(sliderMin);
+                    var maxv = Math.log(sliderMax);
+
+                    // calculate adjustment factor
+                    var scale = (maxv - minv) / (sliderMax - sliderMin);
+
+                    value = Math.exp(minv + scale * (value - sliderMin));
+                    $("#sliderValueSpan").html(value)
+
+                }
+            });*/
+        })
+    </script>
+
+    <style>
+
+        #graphDiv {
+
+            width: 800px;
+            height: 800px;
+        }
+
+    </style>
 
 </head>
 <body>
 <select id="jsonResultSelect" onchange="sinequaResultVis.showSinequaResult($(this).val())">
-
     <option></option>
+    <option>Response_JSON_DEVPlugin.json</option>
     <option>responseTime.json</option>
     <option>rotor.json</option>
 
 
 </select>
-&nbsp; entities distance&nbsp; <span id="sliderValueSpan"></span> <div id="slider" style="width:600px;height: 10px"></div>
+&nbsp; entities distance&nbsp; <span id="sliderValueSpan"></span>
+<div id="slider" style="width:600px;height: 10px"></div>
 <br>
 <div id="graphDiv"></div>
 

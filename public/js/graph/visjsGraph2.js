@@ -24,7 +24,11 @@ var visjsGraph = (function () {
             height: "" + $("#graphDiv").height() + "px",
             nodes: {
                 shape: 'dot',
-                size: 12
+                size: 12,
+               // scaling:{min:6,max:20}
+            },
+            edges:{
+              //  scaling:{min:1,max:8}
             }
         };
 
@@ -71,7 +75,7 @@ var visjsGraph = (function () {
                 edge.fromNode = self.data.nodes.get(edge.from);
                 edge.toNode = self.data.nodes.get(edge.to);
                 var point = params.pointer.DOM;
-                graphController.onEdgeClicked(edge, point)
+                sinequaResultVis.onEdgeClicked(edge, point)
             }
 
             }).on("zoom", function (params) {
@@ -134,6 +138,7 @@ var visjsGraph = (function () {
 
 
     self.onScaleChange = function () {
+        return;
         var scale = self.network.getScale();
         if (!self.currentScale || Math.abs(scale - self.currentScale) > .01) {
 

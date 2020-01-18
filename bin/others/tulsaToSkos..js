@@ -14,15 +14,54 @@ var tulsaToSkos = {
         lines.forEach(function (line, index) {
             if (index > 20000000)
                 return;
-            var obj = {
-                type: line.substring(0, 6).trim(),
-                term: line.substring(6, 32).trim(),
-                id: line.substring(32, 41).trim(),
+            var obj
+            var type=  line.substring(0, 6).trim();
+            if(type=="DS") {
+                obj = {
+                    type: type,
+                    term: line.substring(6, 32).trim(),
+                    id: line.substring(32, 41).trim(),
+                    scheme: line.substring(32, 33),
+                    line: index
+                }
+            }else{
+                obj = {
+                    type: type,
+                    term: line.substring(6, 41).trim(),
+                    line: index
+                }
             }
-            jsonArray.push(obj);
+            if(obj.type=="DS") {
+
+                jsonArray.push(obj);
+            }
 
 
         })
+        
+        jsonArray.sort(function(a,b){
+
+            if(a.scheme>b.scheme)
+                return 1;
+            if(a.scheme<b.scheme)
+                return -1;
+            return 0;
+
+        })
+
+        var str=""
+        jsonArray.forEach(function(item,i){
+
+            if((i>0 && item.scheme!=jsonArray[i-1].scheme)|| i==jsonArray.length-1) {
+                fs.writeFileSync("D:\\NLP\\Tulsa_" + jsonArray[i - 1].scheme + ".txt", str, null, 2)
+                str=""
+            }
+            else
+
+              str+=item.type+"\t"+item.term+"\t"+item.id+"\t"+item.scheme+"\t"+item.line+"\n"
+
+        })
+        
         var entity = null;
         var schemes = ["common word",
             "geographic area",

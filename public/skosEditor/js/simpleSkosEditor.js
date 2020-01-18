@@ -177,7 +177,34 @@ skosEditor = (function () {
         }
 
     }
-    self.saveThesaurus = function (rdfPath) {
+    self.initNewThesaurus = function (rdfPath) {
+        $("#skosInput").val("")
+        $("#skosInput").val("")
+        var thesaurusName=prompt("enter thesaurus name","" );
+        if(!thesaurusName ||thesaurusName=="")
+            return;
+        self.rdfUri=prompt("enter thesaurus uri","http:souslesens/skosEditor/" );
+
+        if(!self.rdfUri || self.rdfUri=="")
+            return;
+        var id=self.rdfUri+thesaurusName
+        var jsTreeData=[
+            {id: id,
+                text:thesaurusName,
+                parent:"#",
+                data:{
+                id:id,
+                    prefLabels:[],
+                    altLabels:[],
+                    broaders:[],
+                    related:[],
+                }}
+        ]
+        self.drawJsTree  ("treeDiv", jsTreeData);
+
+    }
+
+        self.saveThesaurus = function (rdfPath) {
         self.synchronizePreviousData();
 
 
