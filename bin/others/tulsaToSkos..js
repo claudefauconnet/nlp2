@@ -97,9 +97,26 @@ var tulsaToSkos = {
         var entity = null
         var entitiesMap = {};
 
+        function padWithLeadingZeros(string) {
+            return new Array(5 - string.length).join("0") + string;
+        }
+
+        function unicodeCharEscape(charCode) {
+            return "\\u" + padWithLeadingZeros(charCode.toString(16));
+        }
+
+        function unicodeEscape(string) {
+            return string.split("")
+                .map(function (char) {
+                    var charCode = char.charCodeAt(0);
+                    return charCode > 127 ? unicodeCharEscape(charCode) : char;
+                })
+                .join("");
+        }
 
         jsonArray.forEach(function (item, indexItem) {
 
+            item.term = unicodeEscape(item.term).replace(/&/g, " ").replace(/'/g, " ")
             if (item.type == "DS") {
                 if (entity != null) {
                     //   entitiesArray.push(entity);
@@ -107,6 +124,7 @@ var tulsaToSkos = {
                 }
 
                 // var scheme = schemes[parseInt(item.scheme) - 1]
+
                 entity = {
                     prefLabel: item.term,
                     id: item.line,
@@ -118,8 +136,6 @@ var tulsaToSkos = {
                 }
             }
 
-            if (entity.prefLabel == "TESTING")
-                var x = 3
 
             if (item.type == "BT") {
                 if (entity.broaders.indexOf(item.term) < 0)
@@ -187,79 +203,66 @@ var tulsaToSkos = {
 
     , generateRdf: function (entitiesMap) {
 
+
         var entitiesArray = []
         for (var key in entitiesMap) {
             entitiesArray.push(entitiesMap[key])
         }
-     //   async.eachSeries(tulsaToSkos.topConcepts, function (scheme, callbackSeries) {
+
+       // async.eachSeries(["all"], function (scheme, callbackSeries) {
+          async.eachSeries(tulsaToSkos.topConcepts, function (scheme, callbackSeries) {
 
 
-        var scheme="all"
+            //  var scheme = "all"
             var str = "";
             str += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<rdf:RDF xmlns:skos=\"http://www.w3.org/2004/02/skos/core#\"  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">"
 
-            str += "<skos:ConceptScheme rdf:about=\"http://PetroleumAbstractsThesaurus/" + scheme + "\">"
-            str += "<skos:prefLabel xml:lang='en'>" + scheme + "</skos:prefLabel>"
+            str += "<skos:ConceptScheme rdf:about='http://PetroleumAbstractsThesaurus/" + scheme + "'>"
+            str += "  <skos:prefLabel xml:lang='en'>" + scheme + "</skos:prefLabel>"
             str += "</skos:ConceptScheme>";
 
 
-            var js2xmlparser = require("js2xmlparser");
-
-
             entitiesArray.forEach(function (entity, index) {
-//nsole.log(entity.inScheme)
 
-                if (!entity.inScheme )
-                    return;
+                if (scheme == "all") {
+                    if (!entity.inScheme)
+                        return;
+                }else {
 
-
-                var obj = {
-
-                    "@": {
-                        "rdf:about": "http://PetroleumAbstractsThesaurus/" + entity.prefLabel
-                    },
-
-                    "skos:prefLabel": {
-                        "@": {
-                            "xml:lang": "en"
-                        },
-                        "#": entity.prefLabel
-                    },
-
-                    "skos:inScheme": {"@": {"rdf:resource": "http://PetroleumAbstractsThesaurus/" + entity.inScheme}}
-
+                    if (entity.inScheme != scheme)
+                        return;
                 }
 
-                if (entity.broader)
-                    obj["skos:broader"] = {"@": {"rdf:resource": "http://PetroleumAbstractsThesaurus/" + entity.broader}};
+
+                str += "<skos:Concept rdf:about='http://PetroleumAbstractsThesaurus/" + entity.prefLabel + "'>\n"
+                str += "  <skos:inScheme rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.inScheme + "'/>\n"
+
+                str += "  <skos:prefLabel xml:lang='en'>" + entity.prefLabel + "</skos:prefLabel>\n"
 
                 entity.altLabels.forEach(function (altLabel) {
-                    obj["skos:altLabel"] = {
-                        "@": {
-                            "xml:lang": "en"
-                        },
-                        "#": altLabel
-                    }
+                    str += "  <skos:altLabel xml:lang='en'>" + altLabel.replace(/&/g, " ") + "</skos:altLabel>\n"
                 })
+
+                if (entity.broader)
+                    str += "  <skos:broader rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.broader + "'/>\n"
+
+
                 entity.relateds.forEach(function (related) {
-                    obj["skos:related"] = {
-                        "#": "http://PetroleumAbstractsThesaurus/" + related
-                    }
+                    str += "  <skos:related rdf:resource='http://PetroleumAbstractsThesaurus/" + related + "'/>\n"
                 })
+                str += "</skos:Concept>\n"
 
-
-                str += js2xmlparser.parse("skos:Concept", obj).substring(22) + "\n";
-          })
+            })
             str += "</rdf:RDF>"
 
 
             fs.writeFileSync("D:\\NLP\\Tulsa_" + scheme + ".rdf", str);
-        //    return callbackSeries();
+            return callbackSeries();
 
         }, function (err) {
             console.log("done")
-      //  })
+        })
 
 
     }

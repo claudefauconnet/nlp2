@@ -83,6 +83,9 @@ var skosReader = {
                 if (node.name == "skos:prefLabel") {
 
                     var lang = node.attributes["xml:lang"];
+                    if (!lang) {
+                        currentTagName = "prefLabels_" + "X"
+                    }
                     if (options.extractedLangages.indexOf(lang) > -1) {
                         currentTagName = "prefLabels_" + lang
                     }
@@ -91,7 +94,7 @@ var skosReader = {
                 if (node.name == "skos:altLabel") {
                     var lang = node.attributes["xml:lang"];
                     if (!lang) {
-                        currentTagName = "altLabels_" + "NO_LANG"
+                        currentTagName = "altLabels_" + "X"
                     }
 
                     if (options.extractedLangages.indexOf(lang) > -1) {
@@ -349,7 +352,7 @@ var skosReader = {
                 obj.parent = "#"
 
             }
-            obj.text = (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"]);
+            obj.text = (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"] || concept.prefLabels["X"]);
             obj.id = concept.id;
             var prefLabelsArray = [];
             for (var key in concept.prefLabels) {
@@ -368,7 +371,7 @@ var skosReader = {
                 })
             }
 
-            if(concept.altLabels.length>0)
+            if(concept.relateds.length>0)
                 var x=3
 
             obj.data.prefLabels = prefLabelsArray;

@@ -16,6 +16,7 @@ skosEditor = (function () {
         //   plugins.push("types");
         plugins.push("contextmenu");
         plugins.push("dnd");
+        plugins.push("search");
 
         if ($('#' + treeDiv).jstree)
             $('#' + treeDiv).jstree("destroy")
@@ -60,6 +61,7 @@ skosEditor = (function () {
 
     }
     self.synchronizePreviousData = function () {
+       var json= skosEditor.getConceptData();
         if (!self.editor)
             return;
         if (!skosEditor.context.previousNode)
@@ -121,96 +123,231 @@ skosEditor = (function () {
     }
 
     self.editConcept = function (conceptData) {
+        self.context.conceptData=conceptData
         self.context.currentState = "toForm"
 
-        var html = "<div class='concept'>"
-        html += "<form name='conceptDetails'>"
+
+        function setAbout(conceptData) {
+            var html = "<div class='container concept-item' >" +
+                "  <div class='row'>" +
+                "    <div class='col-sm-3'>" +
+                "       <label for='concept_about_value'><h6>about</h6></label> " +
+                "    </div>" +
+                "    <div class='col-lg'>" +
+                "      <input id='concept_about_value' value='" + conceptData.id + "' size='80'>" +
+                "   </div>" +
+                "</div>" +
+                "</div>"
+            return html;
+        }
 
 
-        ""
+        function setPrefLabels(conceptData) {
+            var html = "   <div class='concept-group'> <h6><span class='title'> prefLabels</span> <button onclick='skosEditor.addToConceptPrefLabels()'>+</button> </h6>"
+            conceptData.prefLabels.forEach(function (prefLabel, index) {
+                html += "<div class='container concept-item' >"
+
+                html += "  <div class='row'>" +
+
+                    "    <div class='col'>" +
+                    "      <input  id='concept_prefLabel_lang_" + index + "' value='" + prefLabel.lang + "' size='5'>" +
+                    "   </div>" +
+
+
+                    "    <div class='col'>" +
+                    "      <input    id='concept_prefLabel_value_" + index + "' value='" + prefLabel.value + "' size='50'>" +
+                    "   </div>" +
+                    "    <div class='col'>" +
+                    "       <button  onclick=skosEditor.removeFromConcept('prefLabels',"+index+")> -</button>" +
+                    "    </div>" +
+                    "</div>"
+                html += "</div>"
+            })
+            html += "</div>"
+            return html;
+        }
+
+
+        function setAltLabels(conceptData) {
+
+
+            var html = "   <div class='concept-group'> <h6><span class='title'> altLabels</span> <button  onclick='skosEditor.addToConceptAltLabels()'>+</button></h6> "
+            conceptData.altLabels.forEach(function (altLabel, index) {
+                html += "<div class='container concept-item' >"
+
+                html += "  <div class='row'>" +
+
+                    "    <div class='col'>" +
+                    "      <input  id='concept_altLabel_lang_" + index + "' value='" + altLabel.lang + "' size='5'>" +
+                    "   </div>" +
+
+                    "    <div class='col'>" +
+                    "      <input    id='concept_altLabel_value_" + index + "' value='" + altLabel.value + "' size='50'>" +
+                    "   </div>" +
+
+                    "    <div class='col'>" +
+                    "       <button  onclick=skosEditor.removeFromConcept('altLabels',"+index+")> -</button>" +
+                    "    </div>" +
+                    "</div>"
+                html += "</div>"
+
+            })
+            html += "</div>"
+
+            return html;
+        }
+
+        function setRelated(conceptData) {
+            var html = "   <div class='concept-group'> <h6><span class='title'> related</span> <button  onclick='skosEditor.addToConceptRelateds()'>+</button></h6> "
+            conceptData.relateds.forEach(function (related, index) {
+                html += "<div class='container concept-item' >"
+
+                html += "  <div class='row'>" +
+                    "    <div class='col'>" +
+                    "      <input  id='concept_related_" + index + "' value='" + related + "' size='60'>" +
+                    "   </div>" +
+
+                    "    <div class='col'>" +
+                    "       <button  onclick=skosEditor.removeFromConcept('relateds',"+index+")> -</button>" +
+                    "    </div>" +
+                    "</div>"
+                html += "</div>"
+            })
+
+
+            html += "</div>"
+            return html;
+        }
 
 
 
-        html += "<div class='container concept-item' >" +
-            "  <div class='row'>" +
-            "    <div class='col-sm-3'>" +
-            "       <label for='concept_about_value'>about</label> " +
-            "    </div>" +
-            "    <div class='col-lg'>" +
-            "      <input id='concept_about_value' value='" + conceptData.id + "' size='50'>" +
-            "   </div>" +
-            "</div>" +
-            "</div>"
-
-
-        html += "   <div class='concept-group'> <span class='title'> prefLabels</span> <button>+</button> "
-        conceptData.prefLabels.forEach(function (prefLabel, index) {
+    function setBroaders(conceptData) {
+        var html = "   <div class='concept-group'><h6> <span class='title'> broader</span> <button  onclick='skosEditor.addToConceptBroaders()'>+</button></h6> "
+        conceptData.broaders.forEach(function (broader, index) {
             html += "<div class='container concept-item' >"
 
             html += "  <div class='row'>" +
                 "    <div class='col'>" +
-                "       <label for='concept_prefLabel_lang_" + index + "'>lang</label> " +
-                "    </div>" +
-                "    <div class='col'>" +
-                "      <input  id='concept_prefLabel_lang_" + index + "' value='" + prefLabel.lang + "' size='5'>" +
+                "      <input  id='concept_broader_" + index + "' value='" + broader + "' size='60'>" +
                 "   </div>" +
-
                 "    <div class='col'>" +
-                "       <label for='concept_prefLabel_value_" + index + "'>value</label> " +
+                "       <button  onclick=skosEditor.removeFromConcept('broaders',"+index+")> -</button>" +
                 "    </div>" +
-                "    <div class='col'>" +
-                "      <input    id='concept_prefLabel_value_" + index + "' value='" + prefLabel.value + "' size='50'>" +
-                "   </div>" +
                 "</div>"
             html += "</div>"
         })
+
+
         html += "</div>"
+        return html;
+    }
 
 
-        html += "   <div class='concept-group'> <span class='title'> altLabels</span> <button>+</button> "
-        conceptData.altLabels.forEach(function (altLabel, index) {
-            html += "<div class='container concept-item' >"
-
-            html += "  <div class='row'>" +
-                "    <div class='col'>" +
-                "       <label for='concept_altLabel_lang_" + index + "'>lang</label> " +
-                "    </div>" +
-                "    <div class='col'>" +
-                "      <input  id='concept_altLabel_lang_" + index + "' value='" + altLabel.lang + "' size='5'>" +
-                "   </div>" +
-
-                "    <div class='col'>" +
-                "       <label for='concept_altLabel_value_" + index + "'>value</label> " +
-                "    </div>" +
-                "    <div class='col'>" +
-                "      <input    id='concept_altLabel_value_" + index + "' value='" + altLabel.value + "' size='50'>" +
-                "   </div>" +
-                "</div>"
-            html += "</div>"
-
-        })
-        html += "</div>"
-
-        html += "   <div class='concept-group'> <span class='title'> related</span> <button>+</button> "
-        conceptData.relateds.forEach(function (related, index) {
-            html += "<div class='container concept-item' >"
-
-            html += "  <div class='row'>" +
-                "    <div class='col'>" +
-                "       <label for='concept_related_" + index + "'>lang</label> " +
-                "    </div>" +
-                "    <div class='col'>" +
-                "      <input  id='concept_related_" + index + "' value='" + related + "' size='5'>" +
-                "   </div>" +
-                "</div>"
-            html += "</div>"
-        })
-        html += "</div>"
+    var html = "<div class='concept'>"
+    html += "<form name='conceptDetails'>"
+    html += setAbout(conceptData);
+        html += setBroaders(conceptData);
+        html += setPrefLabels(conceptData);
+        html += setAltLabels(conceptData);
+        html += setRelated(conceptData);
 
         html += "</div>"
         html += "</form>";
 
+
+
         $("#editor_holder").html(html)
+
+
+
+    }
+
+
+    self.addToConceptPrefLabels=function(){
+        self.context.conceptData.prefLabels.splice(0,0,{lang:"en",value:""})
+       var  conceptData= self.context.conceptData
+        self.editConcept  (conceptData) ;
+    }
+    self.addToConceptAltLabels=function(){
+        self.context.conceptData.altLabels.splice(0,0,{lang:"en",value:""})
+        var  conceptData= self.context.conceptData
+        self.editConcept  (conceptData) ;
+    }
+    self.addToConceptBroaders=function(){
+        self.context.conceptData.broaders.splice(0,0,"")
+        var  conceptData= self.context.conceptData
+        self.editConcept  (conceptData) ;
+    }
+    self.addToConceptRelateds=function(){
+        self.context.conceptData.relateds.splice(0,0,"")
+        var  conceptData= self.context.conceptData
+        self.editConcept  (conceptData) ;
+    }
+
+
+    self.removeFromConcept=function(type,index){
+        self.context.conceptData[type].splice(index,1)
+        var  conceptData= self.context.conceptData
+        self.editConcept  (conceptData) ;
+    }
+
+
+
+    self.getConceptData=function(){
+        var  conceptData={about:"",prefLabels:[],altLabels:[], broaders:[],altLabels:[],relateds:[]}
+        $("input").each(function(a,b){
+           var id =$(this).attr("id")
+
+            var value =$(this).val()
+            if(id && id.indexOf("concept_")>-1){
+                var array=id.split("_");
+                var type=array[1]
+                if( type=="about")
+                    conceptData.about==value;
+                if( type=="altLabel") {
+                    conceptData.altLabels.push(value);
+                }
+                if( type=="prefLabel") {
+                    conceptData.prefLabels.push(value);
+                }
+                if( type=="related")
+                    conceptData.relateds.push(value);
+                if( type=="broader")
+                    conceptData.broaders.push(value);
+
+            }
+
+
+        })
+        var altLabels=[]
+        var lang=""
+        conceptData.altLabels.forEach(function(item,index){
+            if(index%2==0){
+                lang=item;
+            }
+            else{
+                altLabels.push({lang:lang,value:item})
+            }
+        })
+        conceptData.altLabels=altLabels;
+
+
+        var prefLabels=[]
+        var lang=""
+        conceptData.prefLabels.forEach(function(item,index){
+            if(index%2==0){
+                lang=item;
+            }
+            if(index%1==0){
+                prefLabels.push({lang:lang,value:item})
+            }
+        })
+        conceptData.prefLabels=prefLabels;
+
+        return conceptData;
+
+
+
     }
 
     self.editConceptX = function (conceptData) {
