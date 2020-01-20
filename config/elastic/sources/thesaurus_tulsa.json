@@ -1,0 +1,107 @@
+{
+  "general": {
+    "description": "thesaurus_tulsa",
+    "label": "thesaurus_tulsa",
+    "indexName": "thesaurus_tulsa"
+  },
+  "connector": {
+    "type": "json",
+    "subType": "object",
+    "filePath": "!!!!",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "thesaurus_tulsa": {
+        "properties": {
+          "ancestors": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "documents": {
+            "properties": {
+              "id": {
+                "type": "keyword"
+              },
+              "index": {
+                "type": "keyword"
+              },
+              "score": {
+                "type": "float"
+              }
+            }
+          },
+          "id": {
+            "type": "keyword"
+          },
+          "internal_id": {
+            "type": "keyword"
+          },
+          "parent": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "synonyms": {
+            "type": "text"
+          },
+          "text": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "creation_date": "1579436087660",
+        "number_of_shards": "5",
+        "number_of_replicas": "1",
+        "uuid": "AbU73Je3Rm24W357_-WYaQ",
+        "version": {
+          "created": "6010199"
+        },
+        "provided_name": "thesaurus_tulsa"
+      }
+    }
+  },
+  "display": [
+    {
+      "id": {
+        "cssClass": "text"
+      }
+    }
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "yes",
+    "applythesauri": "yes"
+  },
+  "thesauri": {
+    "cgi_lithologies": {
+      "name": "cgi_lithologies",
+      "skosXmlPath": "D:\\NLP\\cgi\\simplelithology.rdf",
+      "highlightFields": [
+        "attachment.content"
+      ],
+      "extractedLangages": "en",
+      "outputLangage": "en"
+    }
+  }
+}

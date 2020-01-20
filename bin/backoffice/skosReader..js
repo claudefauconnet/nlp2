@@ -36,7 +36,7 @@ var skosReader = {
 
     parseRdfXml: function (sourcePath, options, callback) {
         var saxStream = sax.createStream(true)
-        var xmlnsRootLength = -1
+
         var conceptTagNames = ["rdf:Description", "skos:ConceptScheme", "skos:Concept", "iso-thes:ConceptGroup"]
         var conceptsMap = {}
         var currentConcept = null;
@@ -71,7 +71,7 @@ var skosReader = {
                 }
                 currentConcept.id = id;
                 currentConcept.prefLabels = {};
-                currentConcept.altLabels = [];
+                currentConcept.altLabels = {};
                 currentConcept.schemes = [];
                 currentConcept.relateds = [];
                 currentConcept.narrowers = [];
@@ -131,10 +131,17 @@ var skosReader = {
             if (currentTagName) {
                 if (currentTagName.indexOf("prefLabels_") == 0) {
                     var array = currentTagName.split("_")
+                    if(text=="Donges")
+                        var x=3
 
                     currentConcept[array[0]][array[1]] = text;
                 } else if (currentTagName.indexOf("altLabels_") == 0) {
-                    currentConcept.altLabels.push(text)
+                    var array = currentTagName.split("_")
+                        if(!currentConcept[array[0]][array[1]])
+                            currentConcept[array[0]][array[1]]=[];
+                        currentConcept[array[0]][array[1]].push(text)
+
+
                 }
             }
 
@@ -170,7 +177,7 @@ var skosReader = {
     },
 
     mapToAnnotator: function (conceptsMap, options) {
-
+        var xmlnsRootLength = -1
         var treeMap = {};
         var schemesMap = {};
         var ancestorsMap = {};
@@ -222,9 +229,12 @@ var skosReader = {
 
             }
 
-            concept.altLabels.forEach(function (str) {
-                obj.synonyms.push(str);
-            })
+            for (var key2 in concept.altLabels) {
+                concept.altLabels[key2].forEach(function(item){
+                    obj.synonyms.push(item);
+                })
+
+            }
 
 
 // indentification des domaines
@@ -334,6 +344,7 @@ var skosReader = {
 
             if (concept.broaders.length > 0) {
                 obj.parent = concept.broaders[0];
+
             } else {
                 obj.parent = "#"
 
@@ -347,23 +358,35 @@ var skosReader = {
                     value: concept.prefLabels[key]
                 })
             }
+            var altLabelsArray = [];
+            for (var key in concept.altLabels) {
+                concept.altLabels[key].forEach(function(item) {
+                    altLabelsArray.push({
+                        lang: key,
+                        value: item
+                    })
+                })
+            }
 
-
-
+            if(concept.altLabels.length>0)
+                var x=3
 
             obj.data.prefLabels = prefLabelsArray;
-            obj.data.altLabels = concept.altLabels;
+            obj.data.altLabels = altLabelsArray;
+
             obj.data.relateds = concept.relateds;
             obj.data.broaders = concept.broaders;
             obj.data.id = concept.id;
-            conceptsArray.push(obj)
+            if (obj.parent!="#" && !conceptsMap[obj.parent])
+                var x = 2;
+            else
+                conceptsArray.push(obj)
 
         }
         return conceptsArray;
     },
 
     skosEditorToRdf: function (rdfPath, conceptsArray, options, callback) {
-
 
 
         var uriRoot = ""// "http://PetroleumAbstractsThesaurus/"
@@ -375,8 +398,6 @@ var skosReader = {
         var js2xmlparser = require("js2xmlparser");
         conceptsArray.forEach(function (concept, index) {
             var objArray = [];
-
-
 
 
             concept.prefLabels.forEach(function (prefLabel, index2) {
@@ -437,11 +458,11 @@ var skosReader = {
                     "rdf:about": uriRoot + concept.id
                 }, objArray
             }
-           var xml= js2xmlparser.parse("skos:Concept",  obj).substring(22) + "\n";
-            str +=xml
+            var xml = js2xmlparser.parse("skos:Concept", obj).substring(22) + "\n";
+            str += xml
         })
 
-        str=str.replace(/<objArray>\n/gm,"").replace(/<\/objArray>\n/gm,"")
+        str = str.replace(/<objArray>\n/gm, "").replace(/<\/objArray>\n/gm, "")
         str += "</rdf:RDF>"
 
 

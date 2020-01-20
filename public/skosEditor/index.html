@@ -5,20 +5,52 @@
     <title>CSS Integration JSON Editor Example</title>
 
     <!-- Foundation CSS framework (Bootstrap and jQueryUI also supported) -->
-    <link rel='stylesheet' href='//cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css'>
+    <!--link rel='stylesheet' href='//cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css'-->>
     <!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
     <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
 
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Multiselect - Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.2/multiple-select.min.css">
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
     <script src="../js/jquery/jquery.min.js"></script>
     <script src="../js/jquery/jquery-ui.min.js"></script>
     <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
 
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+
+    <!-- Multiselect - Latest compiled and minified JavaScript -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.2/multiple-select.min.js"></script>
+
+
+
+
+
+
+
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
-  <!--  <link rel="stylesheet" href="../js/backoffice/jstree/proton/style.css"/>-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-    <script src="js/json-editor.js"></script>
+  <!--  <link rel="stylesheet" href="../js/backoffice/jstree/proton/style.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>-->
+    <script src="js/jstree.js"></script>
+    <!--script src="js/json-editor.js"></script-->
     <script src="js/simpleSkosEditor.js"></script>
 
     <script>
@@ -36,6 +68,40 @@
             padding: .2rem;
         }
 
+        .WWconcept_details{
+          margin:3px;
+            padding: 3px;
+        }
+        .WWconcept_lang{
+          width: 10px;
+        }
+        .WWconcept_value{
+            width: 50px;
+        }
+        .WWconcept_row{
+            display: flex;
+            flex-direction: row;
+            align-items:center;
+        }
+        .concept-item{
+            border-radius: 5px;
+            border: #372806 solid 1px;
+            margin: 3px;
+            padding: 3px;
+           /* width: 900px;*/
+            background-color:white;
+
+        }
+        .concept-group{
+            border-radius: 5px;
+            border: #372806 solid 1px;
+            background-color:#dde;
+            margin: 3px;
+            padding: 3px;
+
+
+        }
+
     </style>
 </head>
 <body>
@@ -46,7 +112,7 @@
     <div style='width:200px'></div>
     <div style='width:300px'>
         thesaurus (rdf)<br>
-        <input id="skosInput" value="D:\NLP\cgi\eventprocess.rdf" size="30"><br>
+        <input id="skosInput" value="D:\NLP\Tulsa_EARTH AND SPACE CONCEPTS.rdf" size="30"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus()" value="New"></input>
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput').val())"  value="Edit"></input>
     <!--    <input  type="button" onclick="skosEditor.saveThesaurus($('#skosInput').val())">Save</input>-->

@@ -3,7 +3,8 @@ var sinequaResultVis = (function () {
 
     self.sliderIndexMin = 20;
     self.sliderIndexMax = 300;
-    self.minWindowOffset = 10
+    self.minWindowOffset = 10;
+    self.graphDivPosition = {};
     self.palette = [
         "#0072d5",
         '#FF7D07',
@@ -23,22 +24,53 @@ var sinequaResultVis = (function () {
         '#B3B005',
     ],
 
-        self.showSinequaResult = function (fileName, windowOffset) {
 
-            $.getJSON("data/" + fileName, function (json) {
-
-                console.log(json); // this will show the info it in firebug console
-                var data = {entities: json.chart_data, docStats: json.doc_stats, extracts: json.extracts, question: json.internalqueryanalysis, only_extracts: json.only_extracts};
-                if (!windowOffset) {
-                    windowOffset = self.minWindowOffset
-                    //  $("#slider").slider("value", minWindowOffset)
-                }
-                self.drawGraph(data, windowOffset);
-
-            });
-
+        self.entitiesColors = {
+            "entity6": "#0072d5",
+            "entity9": '#FF7D07',
+            "entity13": "#c00000",
+            "entity14": '#FFD900',
+            "entity22": '#B354B3',
+            "entity23": "#a6f1ff",
+            "entity24": "#007aa4",
+            "entity25": "#584f99",
+            "entity26": "#cd4850",
+            "entity27": "#005d96",
+            "entity28": "#ffc6ff",
+            "entity33": '#007DFF',
+            "entity36": "#ffc36f",
+            "entity37": "#ff6983",
+            "entity38": "#7fef11",
+            "entity42": '#B3B005',
+            "entity43": "#0072d5",
+            "entity47": '#FF7D07',
+            "entity70": "#c00000",
+            "entity71": '#FFD900',
+            "entity72": '#B354B3',
+            "entity73": "#a6f1ff",
+            "entity74": "#007aa4",
+            "entity75": "#584f99",
+            "entity76": "#cd4850",
 
         }
+
+
+    self.showSinequaResult = function (fileName, windowOffset) {
+
+
+        $.getJSON("data/" + fileName, function (json) {
+
+            var data = {entities: json.chart_data, docStats: json.doc_stats, extracts: json.extracts, question: json.internalqueryanalysis, only_extracts: json.only_extracts};
+            if (!windowOffset) {
+                windowOffset = self.minWindowOffset
+                //  $("#slider").slider("value", minWindowOffset)
+            }
+            self.drawGraph(data, windowOffset);
+
+        });
+
+
+    }
 
     self.drawGraph = function (data, windowOffset) {
         var types = {}
@@ -268,21 +300,19 @@ var sinequaResultVis = (function () {
 
             var nodes = [];
             var edges = [];
-            var edgesMap={}
+            var edgesMap = {}
             for (var key in allEntitiesMap) {
                 if (key != "") {
                     var entity = allEntitiesMap[key];
                     if (entity.extracts.length > 0) {
                         var type = entity.extracts[0].type;
-                        if (!entityColors[type]) {
-                            entityColors[type] = self.palette[Object.keys(entityColors).length]
-                        }
-                        var color = entityColors[type];
+
+                        var color = self.entitiesColors[type];
 
                         var node = {
                             label: key,
                             shape: "dot",
-                           value: entity.extractIds.length,
+                            value: entity.extractIds.length,
                             id: key,
                             color: color
 
@@ -290,27 +320,26 @@ var sinequaResultVis = (function () {
                         nodes.push(node)
 
 
-
                         for (var key2 in entity.associations) {
                             var id = (getHashNumber(key) * getHashNumber(key2)) / 100000
 
-                            if(!edgesMap[id]) {
+                            if (!edgesMap[id]) {
                                 edgesMap[id] = {
                                     from: key,
                                     to: key2,
-                                    value:0,
-                                    data:{extracts:[]}
+                                    value: 0,
+                                    data: {extracts: []}
 
                                 }
                             }
-                            edgesMap[id].value+= entity.associations[key2].freq;
-                            edgesMap[id].data.extracts.push(entity.associations.extract)
+                            edgesMap[id].value += entity.associations[key2].freq;
+                            edgesMap[id].data.extracts.push(entity.associations[key2].extract)
 
                         }
                     }
                 }
             }
-            for(var id in edgesMap){
+            for (var id in edgesMap) {
                 edges.push(edgesMap[id])
             }
 
@@ -324,6 +353,7 @@ var sinequaResultVis = (function () {
         //    var docEntities = getDocEntities(data.docs);
         // var allEntities = getEntitiesMapFromExtracts(data.extracts);
 
+        self.onlyExtracts = data.only_extracts
         var allEntities = getEntitiesMapFromOnlyExtracts(data.only_extracts);
         allEntities = setEntitiesAssociations(allEntities);
         self.visJsData = getVisjData(allEntities);
@@ -336,26 +366,22 @@ var sinequaResultVis = (function () {
                 return 1;
             return 0;
         })
-        self.sliderEdges =  self.visJsData.edges;
+        self.sliderEdges = self.visJsData.edges;
         self.sliderEdges.index = self.sliderIndexMin;
-        var edges=  self.visJsData.edges.slice(0, self.sliderIndexMin)
+        var edges = self.visJsData.edges.slice(0, self.sliderIndexMin)
 
         self.drawSubset(edges);
 
 
-
-
-
-
     }
 
-    self.drawSubset=function(edges){
-        var uniqueNodes=[];
-        var nodes=[]
-        self.visJsData.nodes.forEach(function(node){
-            edges.forEach(function(edge){
-                if(edge.from==node.id || edge.to==node.id)
-                    if(uniqueNodes.indexOf(node.id)<0) {
+    self.drawSubset = function (edges) {
+        var uniqueNodes = [];
+        var nodes = []
+        self.visJsData.nodes.forEach(function (node) {
+            edges.forEach(function (edge) {
+                if (edge.from == node.id || edge.to == node.id)
+                    if (uniqueNodes.indexOf(node.id) < 0) {
                         uniqueNodes.push(node.id);
                         nodes.push(node);
                     }
@@ -366,8 +392,31 @@ var sinequaResultVis = (function () {
         visjsGraph.draw("graphDiv", {nodes: nodes, edges: edges}, {})
     }
 
-    self.onEdgeClicked=function(edge,point){
-        var xx=3
+    self.onEdgeHover = function (edge, point) {
+        var xx = 3
+        var extractIndexes = edge.data.extracts;
+        var str = "";
+        var extractIndexesDone = []
+        extractIndexes.forEach(function (extractIndex, index) {
+            if (extractIndexesDone.indexOf(extractIndex) < 0) {
+                extractIndexesDone.push(extractIndex)
+                if (str.length > 0)
+                    str += "<hr>"
+                str += sinequaResultVis.onlyExtracts[extractIndex].sentence
+            }
+        })
+
+
+        $("#graphPopover").html(str)
+        $("#graphPopover").css("display", "block");
+        $("#graphPopover").css("position", "absolute")
+        $("#graphPopover").css("left", point.x + sinequaResultVis.graphDivPosition.x)
+        $("#graphPopover").css("top", point.y + sinequaResultVis.graphDivPosition.y)
+
+    }
+
+    self.onEdgeBlur = function () {
+        $("#graphPopover").css("display", "none");
     }
 
 

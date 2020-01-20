@@ -20,6 +20,7 @@ var visjsGraph = (function () {
             edges: new vis.DataSet(visjsData.edges)
         };
         var options = {
+            interaction:{hover:true},
             width: "" + $("#graphDiv").width() + "px",
             height: "" + $("#graphDiv").height() + "px",
             nodes: {
@@ -74,14 +75,28 @@ var visjsGraph = (function () {
                 var edge = self.data.edges.get(edgeId);
                 edge.fromNode = self.data.nodes.get(edge.from);
                 edge.toNode = self.data.nodes.get(edge.to);
-                var point = params.pointer.DOM;
-                sinequaResultVis.onEdgeClicked(edge, point)
+
             }
 
             }).on("zoom", function (params) {
             self.onScaleChange()
 
-        });
+        }).on("hoverEdge", function (params) {
+            var edgeId = params.edge;
+            var edge = self.data.edges.get(edgeId);
+            edge.fromNode = self.data.nodes.get(edge.from);
+            edge.toNode = self.data.nodes.get(edge.to);
+            var point = params.pointer.DOM;
+            sinequaResultVis.onEdgeHover(edge, point)
+
+
+        }).on("blurEdge", function (params) {
+
+            sinequaResultVis.onEdgeBlur()
+
+
+        })
+
 
 
         /*   window.setTimeout(function () {

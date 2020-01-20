@@ -2,7 +2,7 @@
   "name": "cgi_lithologies",
   "skosXmlPath": "D:\\NLP\\cgi\\simplelithology.rdf",
   "highlightFields": [
-    "attachment.content"
+    "synonyms"
   ],
   "extractedLangages": "en",
   "outputLangage": "en"

@@ -160,25 +160,25 @@ var annotator_skos = {
         serialize.on('data', function (line) {
             ndjsonStr += line; // line is a line of stringified JSON with a newline delimiter at the end
         })
-var nElasticQueries=0
+        var nElasticQueries = 0
         var queriedEntities = [];
-        if(entities.length==0)
-           return  callback(null, entities);
+        if (entities.length == 0)
+            return callback(null, entities);
         entities.forEach(function (entity, entityIndex) {
             if (entity.elasticQuery) {
 
                 queriedEntities.push(entityIndex)
                 serialize.write({index: globalOptions.corpusIndex})
                 serialize.write(entity.elasticQuery)
-                nElasticQueries+=1
+                nElasticQueries += 1
 
 
             }
         })
         serialize.end();
 
-        if(nElasticQueries==0)
-            return callback(null,[]);
+        if (nElasticQueries == 0)
+            return callback(null, []);
         var options = {
             method: 'POST',
             body: ndjsonStr,
@@ -193,14 +193,14 @@ var nElasticQueries=0
             if (error)
                 return callbackSeries(error);
             var json = JSON.parse(response.body);
-            if(json.error) {
-                var x=str;
+            if (json.error) {
+                var x = str;
                 return callback(json.error);
             }
             var responses = json.responses;
 
-            if(!responses || !responses.forEach)
-                var x=3
+            if (!responses || !responses.forEach)
+                var x = 3
 
             responses.forEach(function s(response, responseIndex) {
                 entities[queriedEntities[responseIndex]].documentsMap = {};
@@ -265,7 +265,7 @@ var nElasticQueries=0
 
                 })
             })
-            var message="total Annotations " + totalAnnotations + " on " + entities.length + " entities ";
+            var message = "total Annotations " + totalAnnotations + " on " + entities.length + " entities ";
             console.log(message);
             socket.message(message);
             callback(null, entities);
@@ -464,7 +464,6 @@ var nElasticQueries=0
             function (callbackSeries) {
 
 
-
                 var options = {
                     method: 'HEAD',
                     headers: {
@@ -499,7 +498,6 @@ var nElasticQueries=0
             ,
             // create thesaurus index
             function (callbackSeries) {
-
 
 
                 var json = {
@@ -555,7 +553,6 @@ var nElasticQueries=0
             function (callbackSeries) {  // indexEntities
 
 
-
                 console.log("indexing entities ");
                 socket.message("indexing entities");
 
@@ -579,13 +576,17 @@ var nElasticQueries=0
 
                     slice.forEach(function (entity) {
 
-                        entity.documents=[]
-                        if(entity.documentsMap) {
+                        entity.documents = []
+                        if (entity.documentsMap) {
                             for (var key in entity.documentsMap) {
                                 entity.documents.push(entity.documentsMap[key])
                             }
                             delete entity.documentsMap;
                             var newElasticId = Math.round(Math.random() * 10000000)
+                            serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
+                            serialize.write(entity);
+                        }
+                        else if (globalOptions.indexEntitiesWithhoutDocs){
                             serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
                             serialize.write(entity);
                         }
@@ -661,7 +662,7 @@ var nElasticQueries=0
             totalAnnotations = 0;
             socket.message("Starting annotation of index " + options.corpusIndex + "with thesaurus " + options.thesaurusIndex)
             async.eachSeries(slicedData, function (slice, callbackEach) {
-                if(slice.length==0)
+                if (slice.length == 0)
                     return callbackEach();
                 if (i == 0)
                     options.append = false
@@ -701,6 +702,35 @@ var nElasticQueries=0
 
 
 }
+
+
+if (false) {
+    var thesaurusConfig = {
+        "name": "thesaurus_tulsa_geology",
+        "skosXmlPath": "D:\\NLP\\Tulsa_geology.rdf",
+        "extractedLangages": "en",
+        "outputLangage": "en"
+    }
+
+    skosReader.rdfToAnnotator(thesaurusConfig.skosXmlPath, thesaurusConfig, function (err, result) {
+        if (err)
+            return console.log(err);
+        var entities = result;
+        socket.message("extracted " + entities.length + "entities  from thesaurus from file " + thesaurusConfig.skosXmlPath)
+        var options = {
+            thesaurusIndex: thesaurusConfig.name,
+            elasticUrl: "http://localhost:9200/",
+            indexEntitiesWithhoutDocs:true
+
+        }
+        annotator_skos.indexThesaurus(options, entities, function (err, result) {
+            if (err)
+                return console.log(err);
+        })
+
+    })
+}
+
 
 module.exports = annotator_skos;
 
