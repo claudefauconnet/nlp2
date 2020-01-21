@@ -513,6 +513,9 @@ var annotator_skos = {
                                 "synonyms": {
                                     "type": "text"
                                 },
+                                "schemes": {
+                                    "type": "keywords"
+                                },
                                 "documents": {
                                     "properties": {
                                         "id": {
@@ -706,8 +709,8 @@ var annotator_skos = {
 
 if (false) {
     var thesaurusConfig = {
-        "name": "thesaurus_tulsa_geology",
-        "skosXmlPath": "D:\\NLP\\Tulsa_geology.rdf",
+        "name": "thesaurus_tulsa",
+        "skosXmlPath": "D:\\NLP\\Tulsa_all.rdf",
         "extractedLangages": "en",
         "outputLangage": "en"
     }

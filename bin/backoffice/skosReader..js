@@ -214,7 +214,8 @@ var skosReader = {
                 id: concept.id,
                 synonyms: [],
                 ancestors: [],
-                parent: "#"
+                parent: "#",
+                schemes:concept.schemes
 
             }
 

@@ -1,90 +1,160 @@
-var fs=require('fs');
-var request=require('request');
+var fs = require('fs');
+var request = require('request');
+var async = require('async')
 
-var elasticUrl="http://localhost:9200/";
-var tulsaComparator={
-
-
-    matchWithTehesaurus:function(thesaurus){
+var elasticUrl = "http://localhost:9200/";
+var tulsaComparator = {
 
 
-        var query={
-            "query": {
-             "match_all":{}
-             /*  "bool": {
-                    "must": [
-                        {
-                            "query_string": {
-                                "query": "documents.index:thesaurus_tulsa",
+    getEpEntitiesArray: function () {
+        var epEntitiesPath = "D:\\Total\\2020\\Stephanie\\tulsaEntitesByDomains.txt";
+        var epEntitiesStr = "" + fs.readFileSync(epEntitiesPath);
 
-                                "default_operator": "AND"
-                            }
-                        }
-
-                    ]
-                }*/
+        var array = epEntitiesStr.split("\n");
+        var epEntities = [];
+        array.forEach(function (line, index) {
+            var array2 = line.trim().split("\t")
+            if (index > 0)
+                epEntities.push({domain: array2[0], term: array2[1]})
+        })
+        return epEntities
+    },
+    getTulsaHits: function (query, callback) {
+        var allHits = []
+        var fetchHitsLength = 1
+        var offset = 0;
+        var fetchSize = 2000
+        async.whilst(
+            function (callbackTest) {//test
+                return callbackTest(null, fetchHitsLength > 0);
             },
-            "from": 0,
-            "size": 2000,
-            "_source":["text","documents.entityOffsets.syn"]
+            function (callbackWhilst) {//iterate
+                var query = {
+                    query: query,
+                    "from": offset,
+                    "size": fetchSize,
+                    // "_source": ["text", "documents.entityOffsets.syn"]
+
+                }
+                var options = {
+                    method: 'POST',
+                    json: query,
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    url: elasticUrl + "thesaurus_tulsa" + "/_search"
+                };
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackWhilst(error);
+                    if (!body.hits)
+                        return callback(null, allHits);
+                    var hits = body.hits.hits;
+                    fetchHitsLength = hits.length;
+
+                    allHits = allHits.concat(hits);
+                    offset += fetchSize
+
+
+                    callbackWhilst();
+
+
+                })
+            }, function (err) {
+                if (err)
+                    return callback(err);
+                return callback(null, allHits)
+
+            })
+    },
+
+
+    matchTulsaAllWithEPentities: function (thesaurus) {
+
+
+        var query = {
+
+            "match_all": {}
+            /*  "bool": {
+                   "must": [
+                       {
+                           "query_string": {
+                               "query": "documents.index:thesaurus_tulsa",
+
+                               "default_operator": "AND"
+                           }
+                       }
+
+                   ]
+               }*/
+
 
         }
-        var options = {
-            method: 'POST',
-            json: query,
-            headers: {
-                'content-type': 'application/json'
-            },
-            url: elasticUrl + thesaurus+"/_search"
-        };
-        request(options, function (error, response, body) {
-            if (error)
-                return callback(error);
+        tulsaComparator.getTulsaHits(query, function (err, result) {
 
-          var  hits=body.hits.hits;
+            var tulsaEntitiesHits = result;
+            var epEntities = tulsaComparator.getEpEntitiesArray();
+
+            tulsaTerms = []
+
+            tulsaEntitiesHits.forEach(function (hit, index) {
+
+                var tulsaTerm = hit._source.text;
+                tulsaTerms.push(tulsaTerm)
 
 
-          hits.forEach(function(hit){
-              var str="";
-              var thesaurusEntity=hit._source.text;
-              var tulsaEntity=""
-              if(hit._source.documents ){
-                  hit._source.documents.forEach(function(doc) {
-                      if (doc.entityOffsets) {
+            })
+            var EPterms = [];
+            epEntities.forEach(function (epEntity) {
+                EPterms.push(epEntity.term)
+                var p;
+                if ((p = tulsaTerms.indexOf(epEntity.term)) > -1)
+                    if (tulsaEntitiesHits[p]._source) {
 
-                        doc.entityOffsets.forEach(function (offset) {
-                            if(tulsaEntity.indexOf(offset.syn)<0)
-                              tulsaEntity+= offset.syn;
-                          })
-                      }
-                  })
-          }
-              str+=thesaurusEntity+"\t"+tulsaEntity+"\n"
-              console.log(str)
+                        epEntity.tulsaScheme = tulsaEntitiesHits[p]._source.schemes[0]
 
-          })
+                        epEntity.tulsaSynonyms = tulsaEntitiesHits[p]._source.synonyms.toString()
+                    }
+
+            })
+
+            TulsaNonEPentities = []
+            tulsaEntitiesHits.forEach(function (hit, index) {
+                var tulsaTerm = hit._source.text;
+                if(EPterms.indexOf(tulsaTerm)<0)
+                    TulsaNonEPentities.push({term:tulsaTerm,scheme:hit._source.schemes[0]})
+                else
+                    var x=3;
+
+            })
+            var str="";
+            TulsaNonEPentities.forEach(function(item){
+                str += item.term + "\t" + item.scheme+"\n"
+            })
+            fs.writeFileSync("D:\\Total\\2020\\Stephanie\\tulsaEntitiesNonEP.txt", str);
+
+
+
+            var str = ""
+            epEntities.forEach(function (epEntity, index) {
+                str += index + "\t" + epEntity.domain + "\t" + epEntity.term + "\t" + epEntity.tulsaScheme + "\t" + epEntity.tulsaSynonyms + "\n"
+            })
+
+            fs.writeFileSync("D:\\Total\\2020\\Stephanie\\tulsaEntitesByDomainsMatched.txt", str);
+
 
 
 
         })
 
 
-
-
-
-
-
     }
-
-
-
 
 
 }
 
 
+module.exports = tulsaComparator
 
-module.exports=tulsaComparator
 
-
-tulsaComparator.matchWithTehesaurus("cgi_lithologies")
+tulsaComparator.matchTulsaAllWithEPentities("thesaurus_tulsa")

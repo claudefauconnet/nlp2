@@ -13,7 +13,8 @@ var tulsaToSkos = {
         "PHENOMENON",
         "PROCESS",
         "PROPERTY",
-        "WORLD"
+        "WORLD",
+        "MATERIAL"
     ]
     ,
 
@@ -52,8 +53,6 @@ var tulsaToSkos = {
                 }
 
 
-                if (obj.term == "WORLD")
-                    var x = 3
             } else {
                 obj = {
                     type: type,
@@ -116,8 +115,15 @@ var tulsaToSkos = {
 
         jsonArray.forEach(function (item, indexItem) {
 
+            if (item.term && item.term.indexOf("ADDED") > -1)
+                return;
             item.term = unicodeEscape(item.term).replace(/&/g, " ").replace(/'/g, " ")
+            // remove dates and annotations  see Format of PA Thesauri USE...
+            item.term = item.term.replace(/.*\(\d+\-*\d*\)\s*/g, "");
+            item.term = item.term.replace("/", " ");
+
             if (item.type == "DS") {
+
                 if (entity != null) {
                     //   entitiesArray.push(entity);
                     entitiesMap[entity.prefLabel] = entity;
@@ -171,9 +177,58 @@ var tulsaToSkos = {
     ,
 
 
-    setEntitiesNarrowers: function (entitiesMap) {
+    setEntitiesNarrowersScheme: function (entitiesMap) {
 
         function recurse(parent, currentScheme) {
+
+            if (parent == "TESTING")
+                var x = 3
+            if (!entitiesMap[parent] || !entitiesMap[parent].narrowers)
+                return;
+            entitiesMap[parent].narrowers.forEach(function (narrower) {
+                entitiesMap[narrower].inScheme = currentScheme;
+                recurse(narrower, currentScheme)
+            })
+
+        }
+
+        tulsaToSkos.topConcepts.forEach(function (topConcept) {
+            entitiesMap[topConcept].inScheme = topConcept;
+            recurse(topConcept, topConcept)
+        })
+        return entitiesMap;
+    },
+
+    setEntitiesBoadersScheme: function (entitiesMap) {
+
+        function recurseParent(node) {
+
+            if (node.inScheme)
+                return node.inScheme;
+            if (tulsaToSkos.topConcepts.indexOf(node.broader) > -1)
+                return node.broader
+
+            else {
+                if (node.broader) {
+                   return recurseParent(entitiesMap[node.broader])
+                } else
+                    return null;
+            }
+        }
+
+        for (var key in entitiesMap) {
+            if (key == "TIP SCREENOUT FRACTURING")
+                var x = 3
+            var entity = entitiesMap[key];
+            var scheme = recurseParent(entity);
+            if (scheme)
+                entity.inScheme = scheme;
+
+        }
+
+        function recurse(parent, currentScheme) {
+            if (parent == "TIP SCREENOUT FRACTURING")
+                var x = 3
             if (parent == "TESTING")
                 var x = 3
             if (!entitiesMap[parent] || !entitiesMap[parent].narrowers)
@@ -209,8 +264,8 @@ var tulsaToSkos = {
             entitiesArray.push(entitiesMap[key])
         }
 
-       // async.eachSeries(["all"], function (scheme, callbackSeries) {
-          async.eachSeries(tulsaToSkos.topConcepts, function (scheme, callbackSeries) {
+        async.eachSeries(["all"], function (scheme, callbackSeries) {
+         //   async.eachSeries(tulsaToSkos.topConcepts, function (scheme, callbackSeries) {
 
 
             //  var scheme = "all"
@@ -228,7 +283,7 @@ var tulsaToSkos = {
                 if (scheme == "all") {
                     if (!entity.inScheme)
                         return;
-                }else {
+                } else {
 
                     if (entity.inScheme != scheme)
                         return;
@@ -276,6 +331,9 @@ var jsonArray = tulsaToSkos.parseTxt();
 
 var entitiesMap = tulsaToSkos.setEntitiesByBroaders(jsonArray)
 
-var entitiesMap = tulsaToSkos.setEntitiesNarrowers(entitiesMap)
+var entitiesMap = tulsaToSkos.setEntitiesNarrowersScheme(entitiesMap);
+
+var entitiesMap = tulsaToSkos.setEntitiesBoadersScheme(entitiesMap);
+
 
 tulsaToSkos.generateRdf(entitiesMap)
