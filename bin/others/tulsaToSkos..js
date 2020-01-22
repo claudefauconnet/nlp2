@@ -263,7 +263,8 @@ var tulsaToSkos = {
         for (var key in entitiesMap) {
             entitiesArray.push(entitiesMap[key])
         }
-
+console.log(entitiesArray.length);
+        var stats={}
         async.eachSeries(["all"], function (scheme, callbackSeries) {
          //   async.eachSeries(tulsaToSkos.topConcepts, function (scheme, callbackSeries) {
 
@@ -279,6 +280,18 @@ var tulsaToSkos = {
 
 
             entitiesArray.forEach(function (entity, index) {
+
+
+              if(!entity.inScheme){
+                  if(!stats["noScheme"])
+                      stats["noScheme"]=0
+                  stats["noScheme"]+=1
+              }else{
+                  if(!stats[entity.inScheme])
+                      stats[entity.inScheme]=0
+                  stats[entity.inScheme]+=1
+              }
+
 
                 if (scheme == "all") {
                     if (!entity.inScheme)
@@ -317,6 +330,8 @@ var tulsaToSkos = {
 
         }, function (err) {
             console.log("done")
+
+            console.log(JSON.stringify(stats,null,2))
         })
 
 

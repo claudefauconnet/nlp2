@@ -26,31 +26,49 @@ var sinequaResultVis = (function () {
 
 
         self.entitiesColors = {
-            "entity6": "#0072d5",
-            "entity9": '#FF7D07',
-            "entity13": "#c00000",
-            "entity14": '#FFD900',
-            "entity22": '#B354B3',
-            "entity23": "#a6f1ff",
-            "entity24": "#007aa4",
-            "entity25": "#584f99",
-            "entity26": "#cd4850",
-            "entity27": "#005d96",
-            "entity28": "#ffc6ff",
-            "entity33": '#007DFF',
-            "entity36": "#ffc36f",
-            "entity37": "#ff6983",
-            "entity38": "#7fef11",
-            "entity42": '#B3B005',
-            "entity43": "#0072d5",
-            "entity47": '#FF7D07',
-            "entity70": "#c00000",
-            "entity71": '#FFD900',
-            "entity72": '#B354B3',
-            "entity73": "#a6f1ff",
-            "entity74": "#007aa4",
-            "entity75": "#584f99",
-            "entity76": "#cd4850",
+            "entity45": "#E2F2C1",
+            "entity15": "#B9E3F7",
+            "entity22": "#91D3F7",
+            "entity23": "#FFD000",
+            "entity27": "#E29A9A",
+            "entity24": "#F5B8F9",
+            "entity1": "#F99393",
+            "entity16": "#91F7C1",
+            "entity25": "#BCD2FF",
+            "entity28": "#91F7C1",
+            "entity26": "#A1E2A7",
+            "entity18": "#EDC4B4",
+            "entity20": "#C9F8FF",
+            "entity46": "#E2F2C1",
+            "entity51": "#E2F2C1",
+            "entity52": "#E2F2C1",
+
+            /*   "entity45": "#E2F2C1",
+               "entity6": "#0072d5",
+               "entity9": '#FF7D07',
+               "entity13": "#c00000",
+               "entity14": '#FFD900',
+               "entity22": '#B354B3',
+               "entity23": "#a6f1ff",
+               "entity24": "#007aa4",
+               "entity25": "#584f99",
+               "entity26": "#cd4850",
+               "entity27": "#005d96",
+               "entity28": "#ffc6ff",
+               "entity33": '#007DFF',
+               "entity36": "#ffc36f",
+               "entity37": "#ff6983",
+               "entity38": "#7fef11",
+               "entity42": '#B3B005',
+               "entity43": "#0072d5",
+               "entity47": '#FF7D07',
+               "entity70": "#c00000",
+               "entity71": '#FFD900',
+               "entity72": '#B354B3',
+               "entity73": "#a6f1ff",
+               "entity74": "#007aa4",
+               "entity75": "#584f99",
+               "entity76": "#cd4850",*/
 
         }
 
@@ -60,7 +78,7 @@ var sinequaResultVis = (function () {
 
         $.getJSON("data/" + fileName, function (json) {
 
-            var data = {entities: json.chart_data, docStats: json.doc_stats, extracts: json.extracts, question: json.internalqueryanalysis, only_extracts: json.only_extracts};
+            var data = {chart_data: json.chart_data, docStats: json.doc_stats, extracts: json.extracts, question: json.internalqueryanalysis, only_extracts: json.only_extracts};
             if (!windowOffset) {
                 windowOffset = self.minWindowOffset
                 //  $("#slider").slider("value", minWindowOffset)
@@ -267,8 +285,9 @@ var sinequaResultVis = (function () {
                         extracts1.forEach(function (extract1) {
                             if (extracts2.indexOf(extract1) > -1) {
                                 if (!allEntitiesMap[key].associations[key2])
-                                    allEntitiesMap[key].associations[key2] = {extract: extract1, freq: 0}
+                                    allEntitiesMap[key].associations[key2] = {extracts: [], freq: 0}
                                 allEntitiesMap[key].associations[key2].freq += 1;
+                                allEntitiesMap[key].associations[key2].extracts.push(extract1);
                             } else {
                                 var x = 3
                             }
@@ -281,6 +300,43 @@ var sinequaResultVis = (function () {
             }
 
             return allEntitiesMap;
+
+        }
+
+        // max score des extracts de l'assocation
+        setAssociationsScore = function (allEntitiesMap, only_extracts) {
+
+
+            for (var key1 in allEntitiesMap) {
+                for (var key2 in allEntitiesMap[key1].associations) {
+                    var association = allEntitiesMap[key1].associations[key2];
+                    var extracts = association.extracts;
+                    var scoreMax = 0
+                    extracts.forEach(function (extractId) {
+                        var extractObj = only_extracts[extractId];
+                        scoreMax = Math.max(scoreMax, extractObj.finalscore)
+
+                    })
+                    allEntitiesMap[key1].associations[key2].scoreMax = scoreMax
+                }
+            }
+            return allEntitiesMap;
+        }
+
+        setEntitiesScore = function (allEntitiesMap, chart_data) {
+            scoreMap = {}
+            chart_data.forEach(function (type) {
+                type.values.forEach(function (entity) {
+                    var name = entity.name;
+                    name = /.*>(.*)<.*/.exec(name)[1]
+                    var value = entity.value;
+                    allEntitiesMap[name].score = value;
+                })
+
+            })
+
+            return allEntitiesMap;
+
 
         }
 
@@ -312,7 +368,7 @@ var sinequaResultVis = (function () {
                         var node = {
                             label: key,
                             shape: "dot",
-                            value: entity.extractIds.length,
+                            value: entity.score,
                             id: key,
                             color: color
 
@@ -322,18 +378,18 @@ var sinequaResultVis = (function () {
 
                         for (var key2 in entity.associations) {
                             var id = (getHashNumber(key) * getHashNumber(key2)) / 100000
-
+                            var score = entity.associations[key2].scoreMax;
                             if (!edgesMap[id]) {
                                 edgesMap[id] = {
                                     from: key,
                                     to: key2,
-                                    value: 0,
+                                    value: score,
                                     data: {extracts: []}
 
                                 }
                             }
-                            edgesMap[id].value += entity.associations[key2].freq;
-                            edgesMap[id].data.extracts.push(entity.associations[key2].extract)
+                            //   edgesMap[id].value += entity.associations[key2].freq;
+                            edgesMap[id].data.extracts = entity.associations[key2].extracts;
 
                         }
                     }
@@ -356,6 +412,8 @@ var sinequaResultVis = (function () {
         self.onlyExtracts = data.only_extracts
         var allEntities = getEntitiesMapFromOnlyExtracts(data.only_extracts);
         allEntities = setEntitiesAssociations(allEntities);
+        allEntities = setEntitiesScore(allEntities, data.chart_data)
+        allEntities = setAssociationsScore(allEntities, data.only_extracts)
         self.visJsData = getVisjData(allEntities);
 
 
@@ -410,8 +468,8 @@ var sinequaResultVis = (function () {
         $("#graphPopover").html(str)
         $("#graphPopover").css("display", "block");
         $("#graphPopover").css("position", "absolute")
-        $("#graphPopover").css("left", point.x + sinequaResultVis.graphDivPosition.x)
-        $("#graphPopover").css("top", point.y + sinequaResultVis.graphDivPosition.y)
+        /*    $("#graphPopover").css("left", point.x + sinequaResultVis.graphDivPosition.x)
+            $("#graphPopover").css("top", point.y + sinequaResultVis.graphDivPosition.y)*/
 
     }
 

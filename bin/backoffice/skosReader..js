@@ -159,6 +159,7 @@ var skosReader = {
                 countConceptsEnd += 1
 
                 if (!stop)
+                    if(Object.keys(currentConcept.prefLabels).length>0)
                     conceptsMap[currentConcept.id] = currentConcept;
 
             }

@@ -19,7 +19,7 @@ var tulsaComparator = {
         })
         return epEntities
     },
-    getTulsaHits: function (query, callback) {
+    getThesaurusHits: function (thesaurus, _query, callback) {
         var allHits = []
         var fetchHitsLength = 1
         var offset = 0;
@@ -30,7 +30,7 @@ var tulsaComparator = {
             },
             function (callbackWhilst) {//iterate
                 var query = {
-                    query: query,
+                    query: _query,
                     "from": offset,
                     "size": fetchSize,
                     // "_source": ["text", "documents.entityOffsets.syn"]
@@ -42,7 +42,7 @@ var tulsaComparator = {
                     headers: {
                         'content-type': 'application/json'
                     },
-                    url: elasticUrl + "thesaurus_tulsa" + "/_search"
+                    url: elasticUrl + thesaurus + "/_search"
                 };
                 request(options, function (error, response, body) {
                     if (error)
@@ -69,9 +69,7 @@ var tulsaComparator = {
     },
 
 
-    matchTulsaAllWithEPentities: function (thesaurus) {
-
-
+    matchTulsaEP: function () {
         var query = {
 
             "match_all": {}
@@ -90,20 +88,17 @@ var tulsaComparator = {
 
 
         }
-        tulsaComparator.getTulsaHits(query, function (err, result) {
 
+        tulsaComparator.getThesaurusHits("thesaurus_tulsa", query, function (err, result) {
             var tulsaEntitiesHits = result;
             var epEntities = tulsaComparator.getEpEntitiesArray();
-
             tulsaTerms = []
-
             tulsaEntitiesHits.forEach(function (hit, index) {
-
                 var tulsaTerm = hit._source.text;
                 tulsaTerms.push(tulsaTerm)
-
-
             })
+
+
             var EPterms = [];
             epEntities.forEach(function (epEntity) {
                 EPterms.push(epEntity.term)
@@ -117,44 +112,122 @@ var tulsaComparator = {
                     }
 
             })
-
             TulsaNonEPentities = []
             tulsaEntitiesHits.forEach(function (hit, index) {
                 var tulsaTerm = hit._source.text;
-                if(EPterms.indexOf(tulsaTerm)<0)
-                    TulsaNonEPentities.push({term:tulsaTerm,scheme:hit._source.schemes[0]})
+                if (EPterms.indexOf(tulsaTerm) < 0)
+                    TulsaNonEPentities.push({term: tulsaTerm, scheme: hit._source.schemes[0]})
                 else
-                    var x=3;
-
+                    var x = 3;
             })
-            var str="";
-            TulsaNonEPentities.forEach(function(item){
-                str += item.term + "\t" + item.scheme+"\n"
+            var str = "";
+            TulsaNonEPentities.forEach(function (item) {
+                str += item.term + "\t" + item.scheme + "\n"
             })
             fs.writeFileSync("D:\\Total\\2020\\Stephanie\\tulsaEntitiesNonEP.txt", str);
-
-
-
             var str = ""
             epEntities.forEach(function (epEntity, index) {
                 str += index + "\t" + epEntity.domain + "\t" + epEntity.term + "\t" + epEntity.tulsaScheme + "\t" + epEntity.tulsaSynonyms + "\n"
             })
 
             fs.writeFileSync("D:\\Total\\2020\\Stephanie\\tulsaEntitesByDomainsMatched.txt", str);
+        })
+    },
 
 
+    matchCgiLitho_EP: function () {
+        var query = {
+
+            "match_all": {}
+        }
+
+        tulsaComparator.getThesaurusHits("cgi_lithologies", query, function (err, result) {
+            var cgiEntitiesHits = result;
+            var epEntities = tulsaComparator.getEpEntitiesArray();
+            cgiTerms = [];
+            EPterms = [];
+            cgiEntitiesHits.forEach(function (hit, index) {
+                var term = hit._source.text;
+                if (term)
+                    cgiTerms.push(term.toLowerCase());
+            })
+            epEntities.forEach(function (hit, index) {
+                var term = hit.term;
+                if (term)
+                    EPterms.push(term.toLowerCase());
+            })
+            var intersection = tulsaComparator.intersection(EPterms, cgiTerms)
+
+            var x = 3
 
 
         })
+    },
 
+
+    matchCgiLitho_TULSA: function () {
+        var queryTulsa = {
+
+          //  "match_all": {}
+            match:{schemes:  "MATERIAL"}
+        }
+        var queryCgi = {
+
+             "match_all": {}
+
+        }
+
+        tulsaComparator.getThesaurusHits("cgi_lithologies", queryCgi, function (err, resultCgi) {
+            tulsaComparator.getThesaurusHits("thesaurus_tulsa", queryTulsa, function (err, resultTulsa) {
+
+
+                cgiTerms = tulsaComparator.getThesaurusTerms(resultCgi);
+                tulsaterms = tulsaComparator.getThesaurusTerms(resultTulsa);
+
+                var intersection = tulsaComparator.intersection(tulsaterms, cgiTerms)
+
+                var x = 3
+
+
+            })
+        })
 
     }
+    ,
 
+    getThesaurusTerms: function (entities) {
+        var terms = []
+        entities.forEach(function (hit, index) {
+            var term = hit._source.text;
+            if (term)
+                terms.push(term.toLowerCase());
+        })
+        return terms;
+    },
 
+    intersection: function (array1, array2) {
+        return array1.filter(function (item) {
+            if (array2.indexOf(item) > -1)
+                return true;
+            return false
+
+        })
+
+    },
+    difference: function (array1, array2) {
+        return array1.filter(function (item) {
+            if (array2.indexOf(item) < 0)
+                return true;
+            return false
+
+        })
+
+    }
 }
-
 
 module.exports = tulsaComparator
 
 
-tulsaComparator.matchTulsaAllWithEPentities("thesaurus_tulsa")
+//tulsaComparator.matchTulsaEP()
+//tulsaComparator.matchCgiLitho_EP()
+tulsaComparator.matchCgiLitho_TULSA()
