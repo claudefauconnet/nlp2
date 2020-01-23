@@ -384,6 +384,7 @@ var sinequaResultVis = (function () {
                                     from: key,
                                     to: key2,
                                     value: score,
+                                    color:"#ddd",
                                     data: {extracts: []}
 
                                 }
