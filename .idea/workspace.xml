@@ -3,12 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/tulsaComparator..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/tulsaComparator..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/tulsaToSkos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/tulsaToSkos..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/quantumToSkos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/quantumToSkos..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/graph/drawCanvas.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/drawCanvas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/statistics.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/statistics.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/pierre/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/pierre/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/pierre/sinequaResultVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/pierre/sinequaResultVis.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/stats.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,9 +25,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="JS module" />
         <option value="HTML File" />
         <option value="JavaScript File" />
-        <option value="JS module" />
       </list>
     </option>
   </component>
@@ -70,14 +73,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
+  <component name="RunManager" selected="Node.js.quantumToSkos..js">
     <configuration name="annotator_skos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_skos..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
-    <configuration name="quantumToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="quantumToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
+    <configuration name="comparator.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="comparator.js" working-dir="$PROJECT_DIR$/public/skosEditor/js">
       <method v="2" />
     </configuration>
-    <configuration name="sinequaResultVis.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="sinequaResultVis.js" working-dir="$PROJECT_DIR$/public/pierre">
+    <configuration name="quantumToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="quantumToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
     <configuration name="tulsaComparator..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="tulsaComparator..js" working-dir="$PROJECT_DIR$/bin/others">
@@ -89,10 +92,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Node.js.quantumToSkos..js" />
+        <item itemvalue="Node.js.comparator.js" />
         <item itemvalue="Node.js.tulsaComparator..js" />
         <item itemvalue="Node.js.tulsaToSkos..js" />
         <item itemvalue="Node.js.annotator_skos..js" />
-        <item itemvalue="Node.js.sinequaResultVis.js" />
       </list>
     </recent_temporary>
   </component>
@@ -114,7 +117,7 @@
       <workItem from="1578639290766" duration="41508000" />
       <workItem from="1578909681881" duration="50943000" />
       <workItem from="1579171636631" duration="16855000" />
-      <workItem from="1579248347019" duration="113923000" />
+      <workItem from="1579248347019" duration="159341000" />
     </task>
     <servers />
   </component>
@@ -169,15 +172,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/pierre/sinequaResultVis.js</url>
-          <line>378</line>
+          <line>215</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1111" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/pierre/sinequaResultVis.js</url>
-          <line>330</line>
+          <line>167</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1112" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/skosEditor/js/comparator.js</url>
+          <line>196</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1113" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/skosEditor/js/comparator.js</url>
+          <line>193</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1114" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/quantumToSkos..js</url>
+          <line>153</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1115" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

@@ -98,8 +98,14 @@ lines.forEach(function (line, index) {
     if (cols.length != 5)
         return;
     var ancestors = cols[2].split("|");
+
     var parent = ancestors[ancestors.length - 2]
+    var grandparent = ancestors[ancestors.length - 3]
+    if(!grandparent ||grandparent=="")
+       // return;
     if (parent) {
+        if (parent == "")
+            return;
         if (parent == "Root")
             parent = null;
         else
@@ -135,6 +141,16 @@ lines.forEach(function (line, index) {
     entities.push(entity)
 
 })
+
+if(false) {
+    var dir="D:\\\\NLP\\\\cgi\\\\";
+ //   var dir="D:\\\\NLP\\\\";
+    var dirs = fs.readdirSync(dir);
+    dirs.forEach(function (file) {
+        if (file.indexOf(".rdf") > -1)
+            console.log("\"" + dir+file + "\",")
+    })
+}
 generateRdf(entities)
 var x = entities
 

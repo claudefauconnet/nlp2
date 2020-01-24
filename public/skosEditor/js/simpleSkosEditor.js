@@ -5,7 +5,46 @@ skosEditor = (function () {
     var elasticUrl = "../elastic";
 
     self.editor = null;
+    self.initThesaurusSelects=function(){
+        var thesaurusList=[
 
+
+            "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
+            "D:\\NLP\\geochemistry.rdf",
+            "D:\\NLP\\measurement-unit-skos.rdf",
+            "D:\\NLP\\quantum_F_all.rdf",
+            "D:\\NLP\\thesaurusIngenieur.rdf",
+            "D:\\NLP\\Tulsa_all.rdf",
+            "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
+            "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
+            "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
+            "D:\\NLP\\Tulsa_EQUIPMENT.rdf",
+            "D:\\NLP\\Tulsa_LIFE FORM.rdf",
+            "D:\\NLP\\Tulsa_MATERIAL.rdf",
+            "D:\\NLP\\Tulsa_OPERATING CONDITION.rdf",
+            "D:\\NLP\\Tulsa_PHENOMENON.rdf",
+            "D:\\NLP\\Tulsa_PROCESS.rdf",
+            "D:\\NLP\\Tulsa_PROPERTY.rdf",
+            "D:\\NLP\\Tulsa_WORLD.rdf",
+            "D:\\NLP\\unesco.rdf",
+            "D:\\NLP\\unescothes.rdf",
+
+            "D:\\NLP\\cgi\\eventenvironment.rdf",
+            "D:\\NLP\\cgi\\eventprocess.rdf",
+            "D:\\NLP\\cgi\\eventprocess2.rdf",
+            "D:\\NLP\\cgi\\explorationResults.rdf",
+            "D:\\NLP\\cgi\\isc2014.rdf",
+            "D:\\NLP\\cgi\\isc2017.rdf",
+            "D:\\NLP\\cgi\\lithology.rdf",
+            "D:\\NLP\\cgi\\simplelithology.rdf",
+
+
+
+        ];
+
+        common.fillSelectOptions("thesaurusSelect",thesaurusList,true);
+
+    }
 
     self.drawJsTree = function (treeDiv, jsTreeData) {
 
@@ -64,7 +103,7 @@ skosEditor = (function () {
 
         if (!skosEditor.context.previousNode)
             return;
-        var json= skosEditor.conceptEditor.getConceptData();
+        var json = skosEditor.conceptEditor.getConceptData();
 
         var node = skosEditor.context.previousNode;
         node.data = json;
@@ -85,6 +124,8 @@ skosEditor = (function () {
 
     self.loadThesaurus = function (rdfPath) {
         $("#editor_holder").html("");
+        $("#treeDiv").html("");
+        $("#countConcepts").html("")
         var payload = {
             rdfToEditor: 1,
             rdfPath: rdfPath,
@@ -101,8 +142,9 @@ skosEditor = (function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
-
+                $("#countConcepts").html(data.length)
                 $("#messageDiv").html("done")
+
                 data.forEach(function (item) {
                     item.icon = "concept-icon.png";
 
@@ -318,10 +360,9 @@ skosEditor = (function () {
     }
 
 
-
-    self.conceptEditor={
+    self.conceptEditor = {
         editConcept: function (conceptData) {
-            self.context.conceptData=conceptData
+            self.context.conceptData = conceptData
             self.context.currentState = "toForm"
 
 
@@ -356,7 +397,7 @@ skosEditor = (function () {
                         "      <input    id='concept_prefLabel_value_" + index + "' value='" + prefLabel.value + "' size='50'>" +
                         "   </div>" +
                         "    <div class='col'>" +
-                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('prefLabels',"+index+")> -</button>" +
+                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('prefLabels'," + index + ")> -</button>" +
                         "    </div>" +
                         "</div>"
                     html += "</div>"
@@ -382,7 +423,7 @@ skosEditor = (function () {
                         "   </div>" +
 
                         "    <div class='col'>" +
-                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('altLabels',"+index+")> -</button>" +
+                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('altLabels'," + index + ")> -</button>" +
                         "    </div>" +
                         "</div>"
                     html += "</div>"
@@ -404,7 +445,7 @@ skosEditor = (function () {
                         "   </div>" +
 
                         "    <div class='col'>" +
-                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('relateds',"+index+")> -</button>" +
+                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('relateds'," + index + ")> -</button>" +
                         "    </div>" +
                         "</div>"
                     html += "</div>"
@@ -414,7 +455,6 @@ skosEditor = (function () {
                 html += "</div>"
                 return html;
             }
-
 
 
             function setBroaders(conceptData) {
@@ -427,7 +467,7 @@ skosEditor = (function () {
                         "      <input  id='concept_broader_" + index + "' value='" + broader + "' size='60'>" +
                         "   </div>" +
                         "    <div class='col'>" +
-                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('broaders',"+index+")> -</button>" +
+                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('broaders'," + index + ")> -</button>" +
                         "    </div>" +
                         "</div>"
                     html += "</div>"
@@ -451,99 +491,93 @@ skosEditor = (function () {
             html += "</form>";
 
 
-
             $("#editor_holder").html(html)
-
 
 
         }
         ,
 
 
-        addToConceptPrefLabels:function(){
-            self.context.conceptData.prefLabels.splice(0,0,{lang:"en",value:""})
-            var  conceptData= self.context.conceptData
-            self.conceptEditor.editConcept  (conceptData) ;
+        addToConceptPrefLabels: function () {
+            self.context.conceptData.prefLabels.splice(0, 0, {lang: "en", value: ""})
+            var conceptData = self.context.conceptData
+            self.conceptEditor.editConcept(conceptData);
         },
-       addToConceptAltLabels:function() {
-           self.context.conceptData.altLabels.splice(0, 0, {lang: "en", value: ""})
-           var conceptData = self.context.conceptData
-           self.conceptEditor.editConcept(conceptData);
-       }
+        addToConceptAltLabels: function () {
+            self.context.conceptData.altLabels.splice(0, 0, {lang: "en", value: ""})
+            var conceptData = self.context.conceptData
+            self.conceptEditor.editConcept(conceptData);
+        }
         ,
-        addToConceptBroaders:function(){
-            self.context.conceptData.broaders.splice(0,0,"")
-            var  conceptData= self.context.conceptData
-            self.conceptEditor.editConcept  (conceptData) ;
+        addToConceptBroaders: function () {
+            self.context.conceptData.broaders.splice(0, 0, "")
+            var conceptData = self.context.conceptData
+            self.conceptEditor.editConcept(conceptData);
         },
-        addToConceptRelateds:function(){
-            self.context.conceptData.relateds.splice(0,0,"")
-            var  conceptData= self.context.conceptData
-            self.conceptEditor.editConcept  (conceptData) ;
-        },
-
-
-        removeFromConcept:function(type,index){
-            self.context.conceptData[type].splice(index,1)
-            var  conceptData= self.context.conceptData
-            self.conceptEditor.editConcept  (conceptData) ;
+        addToConceptRelateds: function () {
+            self.context.conceptData.relateds.splice(0, 0, "")
+            var conceptData = self.context.conceptData
+            self.conceptEditor.editConcept(conceptData);
         },
 
 
+        removeFromConcept: function (type, index) {
+            self.context.conceptData[type].splice(index, 1)
+            var conceptData = self.context.conceptData
+            self.conceptEditor.editConcept(conceptData);
+        },
 
-        getConceptData:function(){
-            var  conceptData={about:"",prefLabels:[],altLabels:[], broaders:[],altLabels:[],relateds:[]}
-            $("input").each(function(a,b){
-                var id =$(this).attr("id")
 
-                var value =$(this).val()
-                if(id && id.indexOf("concept_")>-1){
-                    var array=id.split("_");
-                    var type=array[1]
-                    if( type=="about")
-                        conceptData.id=value;
-                    if( type=="altLabel") {
+        getConceptData: function () {
+            var conceptData = {about: "", prefLabels: [], altLabels: [], broaders: [], altLabels: [], relateds: []}
+            $("input").each(function (a, b) {
+                var id = $(this).attr("id")
+
+                var value = $(this).val()
+                if (id && id.indexOf("concept_") > -1) {
+                    var array = id.split("_");
+                    var type = array[1]
+                    if (type == "about")
+                        conceptData.id = value;
+                    if (type == "altLabel") {
                         conceptData.altLabels.push(value);
                     }
-                    if( type=="prefLabel") {
+                    if (type == "prefLabel") {
                         conceptData.prefLabels.push(value);
                     }
-                    if( type=="related")
+                    if (type == "related")
                         conceptData.relateds.push(value);
-                    if( type=="broader")
+                    if (type == "broader")
                         conceptData.broaders.push(value);
 
                 }
 
 
             })
-            var altLabels=[]
-            var lang=""
-            conceptData.altLabels.forEach(function(item,index){
-                if(index%2==0){
-                    lang=item;
-                }
-                else{
-                    altLabels.push({lang:lang,value:item})
-                }
-            })
-            conceptData.altLabels=altLabels;
-
-
-            var prefLabels=[]
-            var lang=""
-            conceptData.prefLabels.forEach(function(item,index){
-                if(index%2==0){
-                    lang=item;
-                }
-                else{
-                    prefLabels.push({lang:lang,value:item})
+            var altLabels = []
+            var lang = ""
+            conceptData.altLabels.forEach(function (item, index) {
+                if (index % 2 == 0) {
+                    lang = item;
+                } else {
+                    altLabels.push({lang: lang, value: item})
                 }
             })
-            conceptData.prefLabels=prefLabels;
+            conceptData.altLabels = altLabels;
+
+
+            var prefLabels = []
+            var lang = ""
+            conceptData.prefLabels.forEach(function (item, index) {
+                if (index % 2 == 0) {
+                    lang = item;
+                } else {
+                    prefLabels.push({lang: lang, value: item})
+                }
+            })
+            conceptData.prefLabels = prefLabels;
 
             return conceptData;
-
 
 
         },

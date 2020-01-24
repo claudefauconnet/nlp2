@@ -43,6 +43,8 @@
     <script src="js/jstree.js"></script>
     <!--script src="js/json-editor.js"></script-->
     <script src="js/simpleSkosEditor.js"></script>
+    <script src="js/common.js"></script>
+
 
     <script>
         // Set the default CSS theme and icon library globally
@@ -109,7 +111,7 @@
     </style>
     <script>
         $(function () {
-
+            skosEditor.initThesaurusSelects()
             // var to = false;
             $('#treeSearchInput').keyup(function (e) {
                 if (e.keyCode == 13) {
@@ -134,15 +136,17 @@
     <div style='width:300px'>
         thesaurus (rdf)<br>
        <!-- <input type="file" id="skosInput2"  accept=".rdf,.xml">-->
-        <input id="skosInput" value="D:\NLP\Tulsa_EQUIPMENT.rdf" size="30"><br>
+        <select id= "thesaurusSelect" onclick="$('#skosInput').val($(this).val())">
+        <input id="skosInput" value="" size="50"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus()" value="New"></input>
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput').val())" value="Edit"></input>
         <!--    <input  type="button" onclick="skosEditor.saveThesaurus($('#skosInput').val())">Save</input>-->
         <input type="button" onclick="skosEditor.saveThesaurus()" value="Save"></input>
-        Search <input size='10' id="treeSearchInput">
+       concepts:<span id="countConcepts"></span><br> Search <input size='10' id="treeSearchInput">
         <div id="treeDiv" ></div>
     </div>
     <div style='width:800px'>
+        <div id="messageDiv"></div>
         <div class='medium-12-columns'>
             <span id='valid_indicator' class='label'></span>
         </div>

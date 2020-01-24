@@ -5,7 +5,7 @@ var sinequaResultVis = (function () {
     self.sliderIndexMax = 300;
     self.minWindowOffset = 10;
     self.graphDivPosition = {};
-    self.palette = [
+  /*  self.palette = [
         "#0072d5",
         '#FF7D07',
         "#c00000",
@@ -22,7 +22,7 @@ var sinequaResultVis = (function () {
         "#ff6983",
         "#7fef11",
         '#B3B005',
-    ],
+    ],*/
 
 
         self.entitiesColors = {
@@ -42,34 +42,18 @@ var sinequaResultVis = (function () {
             "entity46": "#E2F2C1",
             "entity51": "#E2F2C1",
             "entity52": "#E2F2C1",
+            "entity14": "#E2F2C1",
+            "entity6": "#E2F2C1",
 
-            /*   "entity45": "#E2F2C1",
-               "entity6": "#0072d5",
-               "entity9": '#FF7D07',
-               "entity13": "#c00000",
-               "entity14": '#FFD900',
-               "entity22": '#B354B3',
-               "entity23": "#a6f1ff",
-               "entity24": "#007aa4",
-               "entity25": "#584f99",
-               "entity26": "#cd4850",
-               "entity27": "#005d96",
-               "entity28": "#ffc6ff",
-               "entity33": '#007DFF',
-               "entity36": "#ffc36f",
-               "entity37": "#ff6983",
-               "entity38": "#7fef11",
-               "entity42": '#B3B005',
-               "entity43": "#0072d5",
-               "entity47": '#FF7D07',
-               "entity70": "#c00000",
-               "entity71": '#FFD900',
-               "entity72": '#B354B3',
-               "entity73": "#a6f1ff",
-               "entity74": "#007aa4",
-               "entity75": "#584f99",
-               "entity76": "#cd4850",*/
 
+        }
+        self.addEntityStyles=function(){
+            for( var key in self.entitiesColors) {
+                $("<style>")
+                    .prop("type", "text/css")
+                    .html(".highlight-"+key+"{background-color:"+self.entitiesColors[key]+"}") .appendTo("head");
+
+            }
         }
 
 
@@ -93,150 +77,6 @@ var sinequaResultVis = (function () {
     self.drawGraph = function (data, windowOffset) {
         var types = {}
         var nodes = [];
-
-
-        function getEntitiesMapFromExtracts(extracts, docEntities) {
-
-            var allEntitiesMap = {};
-            extracts.forEach(function (extracts, rowIndex) {
-                extracts.extracts.forEach(function (extract, extractIndex) {
-
-                    var docId = extract.doc;
-                    var array;
-                    var extractEntities = [];
-                    var array;
-                    var ids = extract.ids.split(" ")
-                    ids.forEach(function (id) {
-                        if (id.indexOf("_") < 0)
-                            return;
-                        if (!allEntitiesMap[id])
-                            allEntitiesMap[id] = {extracts: [], associations: {}}
-
-                        allEntitiesMap[id].extracts.push(extractIndex)
-
-
-                    })
-
-
-                })
-            })
-            return allEntitiesMap
-        }
-
-
-        function getDocumentsEntitiesAssociations(docs) {
-            var docEntitiesMap = {};
-            var docEntitiesArray = [];
-            docs.forEach(function (doc) {
-                var docName = doc.docid.substring(doc.docid.indexOf("|") + 1)
-
-                docEntitiesMap[docName] = {}
-
-                var keys = Object.keys(doc);
-                var entityColors = {}
-                keys.forEach(function (key) {
-                    if (key.indexOf("entity") == 0) {
-                        if (!entityColors[key]) {
-                            entityColors[key] = self.palette[Object.keys(entityColors).length]
-                        }
-                        color = entityColors[key];
-
-                        var entityStr = doc[key];
-                        var offsetStr;
-                        var entityName;
-                        var array = entityStr.split(";")
-                        array.forEach(function (item, index) {
-                            if (index % 4 == 0) {
-                                entityName = item;
-                            }
-                            if (index % 2 == 0) {
-
-                                offsetStr = item;
-                            }
-
-
-                        })
-
-                        if (!docEntitiesMap[docName][entityName])
-                            docEntitiesMap[docName][entityName] = {color: color, offsets: []}
-                        var offsets = offsetStr.split(",")
-                        offsets.forEach(function (offset, index2) {
-                            if (index2 % 2 == 0)
-                                docEntitiesMap[docName][entityName].offsets.push(offsets)
-                        })
-
-
-                    }
-                })
-            })
-
-            var coocurrences = {}
-            for (var doc in docEntitiesMap) {
-
-                for (var entity1 in docEntitiesMap[doc]) {
-                    for (var entity2 in docEntitiesMap[doc]) {
-                        if (entity1 != entity2) {
-                            var offsets1 = docEntitiesMap[doc][entity1].offsets
-                            var offsets2 = docEntitiesMap[doc][entity2].offsets
-                            offsets1.forEach(function (offset1) {
-                                offset1 = parseInt(offset1)
-                                offsets2.forEach(function (offset2) {
-                                    offset2 = parseInt(offset2)
-
-                                    if ((offset1 - windowOffset) < offset2 && (offset1 + windowOffset) > offset2) {
-                                        if (!coocurrences[entity1])
-                                            coocurrences[entity1] = {color: docEntitiesMap[doc][entity1].color, coocurrences: []}
-                                        coocurrences[entity1].coocurrences.push(entity2)
-                                    }
-
-                                })
-
-                            })
-                        }
-
-                    }
-                }
-
-            }
-            return coocurrences;
-
-
-        }
-
-        getEntitiesNamesFromDocs = function (docs) {
-            var docEntitiesMap = {};
-            var docEntitiesArray = [];
-            docs.forEach(function (doc) {
-                    var docName = doc.docid.substring(doc.docid.indexOf("|") + 1)
-                    docEntitiesArray[docName] = []
-                    docEntitiesMap[docName] = {}
-
-                    var keys = Object.keys(doc);
-                    keys.forEach(function (key) {
-                        if (key.indexOf("entity") == 0) {
-                            var entityStr = doc[key];
-                            var array = entityStr.split(";")
-                            array.forEach(function (item, index) {
-                                if (index % 4 == 0) {
-                                    var entityName = item;
-                                    if (!docEntitiesMap[docName][key])
-                                        docEntitiesMap[docName][key] = entityName;
-                                    if (docEntitiesArray[docName].indexOf(entityName) < 0)
-                                        docEntitiesArray[docName].push(item)
-
-                                }
-                            })
-                        }
-                    })
-
-
-                }
-            )
-
-            return {map: docEntitiesMap, array: docEntitiesArray}
-
-
-        }
 
 
         getEntitiesMapFromOnlyExtracts = function (onlyExtracts) {
@@ -269,11 +109,10 @@ var sinequaResultVis = (function () {
                 }
             })
 
-
-            return allEntitiesMap
-
-
+            return allEntitiesMap;
         }
+
+
         setEntitiesAssociations = function (allEntitiesMap) {
             for (var key in allEntitiesMap) {
                 var extracts1 = allEntitiesMap[key].extractIds;
@@ -298,7 +137,7 @@ var sinequaResultVis = (function () {
                 }
 
             }
-
+self.allEntitiesMap=allEntitiesMap;
             return allEntitiesMap;
 
         }
@@ -384,7 +223,7 @@ var sinequaResultVis = (function () {
                                     from: key,
                                     to: key2,
                                     value: score,
-                                    color:"#ddd",
+                                    color: "#ddd",
                                     data: {extracts: []}
 
                                 }
@@ -404,13 +243,29 @@ var sinequaResultVis = (function () {
             return {nodes: nodes, edges: edges}
         }
 
+        self.drawSubset = function (edges) {
+            var uniqueNodes = [];
+            var nodes = []
+            self.visJsData.nodes.forEach(function (node) {
+                edges.forEach(function (edge) {
+                    if (edge.from == node.id || edge.to == node.id)
+                        if (uniqueNodes.indexOf(node.id) < 0) {
+                            uniqueNodes.push(node.id);
+                            nodes.push(node);
+                        }
 
-        //    var allEntities = getDocumentsEntitiesAssociations(data.docs);
+                })
 
-        //    var docEntities = getDocEntities(data.docs);
-        // var allEntities = getEntitiesMapFromExtracts(data.extracts);
+            })
+            visjsGraph.draw("graphDiv", {nodes: nodes, edges: edges}, {})
+        }
+
+
 
         self.onlyExtracts = data.only_extracts
+
+        self.showEntities(data.chart_data);
+
         var allEntities = getEntitiesMapFromOnlyExtracts(data.only_extracts);
         allEntities = setEntitiesAssociations(allEntities);
         allEntities = setEntitiesScore(allEntities, data.chart_data)
@@ -434,22 +289,53 @@ var sinequaResultVis = (function () {
 
     }
 
-    self.drawSubset = function (edges) {
-        var uniqueNodes = [];
-        var nodes = []
-        self.visJsData.nodes.forEach(function (node) {
-            edges.forEach(function (edge) {
-                if (edge.from == node.id || edge.to == node.id)
-                    if (uniqueNodes.indexOf(node.id) < 0) {
-                        uniqueNodes.push(node.id);
-                        nodes.push(node);
-                    }
 
+    self.showEntities=function(chart_data){
+            var html="";
+        html+="<div style='display: flex;flex-direction: column' >"
+        chart_data.forEach(function(cat){
+var  type=cat.value;
+            var color=self.entitiesColors[type];
+            html+="<div style='display: flex;flex-direction: row;margin: 5px'><span> "+cat.cat+"</span>"
+            cat.values.forEach(function(value) {
+                var array=/(.*)(class=')(.*>)(.*)(<.*)/.exec(value.name);
+                var strClick=" onclick='sinequaResultVis.onBandeauEntityClick(\""+array[4]+"\")' ";
+
+                var str=array[1]+strClick+array[2]+"bandeauEntity "+array[3]+array[4]+array[5]
+
+
+                html += str
             })
-
+            html+="</div>";
         })
-        visjsGraph.draw("graphDiv", {nodes: nodes, edges: edges}, {})
+        html+="</div>";
+        $("#entitiesBandeau").html(html)
+
     }
+
+
+
+    self.showNodeGraph=function(node){
+        var newEdges = []
+        self.visJsData.edges.forEach(function (edge) {
+            if (edge.from == node.id || edge.to == node.id)
+                newEdges.push(edge)
+        })
+        var x = newEdges;
+        self.drawSubset(newEdges)
+    }
+
+    self.onBandeauEntityClick=function(id){
+       var xx= self.allEntitiesMap
+        self.showNodeGraph({id:id});
+    }
+
+    self.onNodeClicked = function (node, point) {
+        self.showNodeGraph(node);
+
+
+    }
+
 
     self.onEdgeHover = function (edge, point) {
         var xx = 3
@@ -464,7 +350,6 @@ var sinequaResultVis = (function () {
                 str += sinequaResultVis.onlyExtracts[extractIndex].sentence
             }
         })
-
 
         $("#graphPopover").html(str)
         $("#graphPopover").css("display", "block");

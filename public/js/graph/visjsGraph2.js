@@ -63,8 +63,8 @@ var visjsGraph = (function () {
                 var options={
                     ctrlKey:(params.event.srcEvent.ctrlKey?1:0)
                 }
+                sinequaResultVis.onNodeClicked(node, point)
 
-               graphController.onNodeClicked(node, point,options)
 
 
             }

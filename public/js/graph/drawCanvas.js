@@ -9,12 +9,12 @@ var drawCanvas = (function () {
         var onclickFn = null;
         var onMouseOverFn=null;
 
-        var totalWidth;
+       var totalWidth;
         var totalHeight;
 
         var canvas;
         var context;
-        var canvasData = [];
+
         var currentZoomTransform = {x: 0, y: 0, k: 1};
         var zoom = null;
 
@@ -60,10 +60,11 @@ var drawCanvas = (function () {
         ]
 
 
-        function onClick(point, obj) {
+        function onClick(point, obj,event) {
 
             if (onclickFn)
-                onclickFn(point, obj)
+                onclickFn(point, obj,event)
+            event.stopPropagation();
           /*  if (obj.data) {
                 $("#graphInfos").html(obj.data.name);
             }*/
@@ -72,6 +73,7 @@ var drawCanvas = (function () {
         function    onMouseOver(point, obj){
             if (onMouseOverFn) {
                 onMouseOverFn(point, obj)
+                event.stopPropagation();
             }
         }
 
@@ -86,6 +88,7 @@ var drawCanvas = (function () {
             self.draw();
             context.fill();
             context.restore();
+            event.stopPropagation();
         }
 
         function clicked() {
@@ -96,7 +99,7 @@ var drawCanvas = (function () {
             point[0] = (point[0] - currentZoomTransform.x) / currentZoomTransform.k
             point[1] = (point[1] - currentZoomTransform.y) / currentZoomTransform.k
             var node;
-            canvasData.forEach(function (rect) {
+            drawCanvas.canvasData.forEach(function (rect) {
 
 
                 if (rect.x < point[0] && (rect.x + rect.w) > point[0]) {
@@ -105,7 +108,7 @@ var drawCanvas = (function () {
                     }
                 }
             })
-            onClick(realPoint, node)
+            onClick(realPoint, node,d3.event)
         }
 
         function moved() {
@@ -117,7 +120,7 @@ var drawCanvas = (function () {
             point[0] = (point[0] - currentZoomTransform.x) / currentZoomTransform.k
             point[1] = (point[1] - currentZoomTransform.y) / currentZoomTransform.k
             var node;
-            canvasData.forEach(function (rect) {
+            drawCanvas.canvasData.forEach(function (rect) {
 
                 if (rect.x < point[0] && (rect.x + rect.w) > point[0]) {
                     if (rect.y < point[1] && (rect.y + rect.h) > point[1]) {
@@ -138,6 +141,8 @@ var drawCanvas = (function () {
 
 
         function initCanvas(graphDiv) {
+            totalWidth = $(graphDiv).width() - 50;
+            totalHeight = $(graphDiv).height() - 50;
             $(graphDiv).html("");
             currentZoomTransform = {x: 0, y: 0, k: 1};
             canvas = d3.select(graphDiv)
@@ -163,7 +168,7 @@ var drawCanvas = (function () {
         self.draw = function (data, options, callback) {
             clearCanvas();
             if (!data)
-                data = canvasData;
+                data = drawCanvas.canvasData;
             if (!options)
                 options = {};
 
@@ -256,7 +261,7 @@ var drawCanvas = (function () {
                 return zoomed(transform);
             }
             var selectedRectIndex = null
-            canvasData.forEach(function (rect, index) {
+            drawCanvas.canvasData.forEach(function (rect, index) {
                 if (rect.nature == "magasin" && rect.data && rect.data.name == magasin)
                     return selectedRectIndex = index;
 
@@ -266,7 +271,7 @@ var drawCanvas = (function () {
         }
 
         self.zoomOnObjectIndex = function (index, zoomlevel, position) {
-            var rect = canvasData[index]
+            var rect = drawCanvas.canvasData[index]
             /*   var transform = {
                    x: (selectedRect.x - 100),
                    y: selectedRect.y,
@@ -288,139 +293,31 @@ var drawCanvas = (function () {
             //   zoom.scaleTo(canvas,zoomExtent[0])
         }
 
-        self.drawAll = function (options, callback) {
-            if (!options)
-                options = {};
 
-
-            var url = "./heatMap"
-            if (options.query) {
-                var queryStr = encodeURIComponent(JSON.stringify(options.query))
-                url += "?query=" + queryStr
-            }
+        self.drawData=function(canvasData,options,callback){
+            self.highlighted = null;
+            self.canvasData = canvasData;
             if (options.onclickFn)
                 onclickFn = options.onclickFn;
             if (options.onMouseOverFn)
                 onMouseOverFn = options.onMouseOverFn;
 
-            d3.json(url).then(function (data) {
 
-                totalWidth = $(graphDiv).width() - 50;
-                totalHeight = $(graphDiv).height() - 50;
-                canvasData = self.bindData(data);
-                self.highlighted = null;
-                self.canvasData = canvasData;
-                self.rawData = data;
-                initCanvas("#graphDiv");
+            //  self.rawData = data;
+            initCanvas("#graphDiv");
 
 
-                self.draw(canvasData, null, function (err, result) {
-                    if (callback)
-                        return callback(err)
-                });
-
-
-            })
-        }
-
-
-        /******************************************************************************************************************************/
-        /*************************************************Bind data**************************************************************/
-        /******************************************************************************************************************************/
-        /******************************************************************************************************************************/
-
-        self.bindData = function (data, options, callback) {
-
-            var interpolateViridisColours = d3.scaleSequential(d3.interpolateYlOrRd).domain([1, Math.log(data.max)]);
-
-            var canvasData = [];
-            var margin = 100;
-            var x = margin;
-            var y = margin;
-            var w = Math.round((totalWidth - margin) / data.data.length);
-            data.data.forEach(function (line, lineIndex) {
-                var x = 100;
-                line.forEach(function (row, rowIndex) {
-                    if(rowIndex>lineIndex)
-                        return;
-                    var bgColor = "#aaa"
-                    if (row > 0)
-                        bgColor = interpolateViridisColours(Math.log(row))
-                    if(row==20)
-                        xx=3
-                    var rect = {
-                        type: "rect",
-                        x: x,
-                        y: y,
-                        w: w,
-                        h: w,
-                        bgColor: bgColor,
-                        //   lineWidth:1,
-                        coords: {x: lineIndex, y: rowIndex}
-
-                    }
-                    canvasData.push(rect);
-                    x += w
-                })
-
-
-                y += w
-            })
-
-            var y0 = margin;
-            var x0 = margin;
-            data.labels.forEach(function (label, index) {
-                var p=label.indexOf("-");
-                if(p>0)
-                   label= label.substring(0,p)
-
-                if (index == 0 || data.labels[index - 1].substring(0, 3) != label.substring(0, 3)) {
-                    var line = {
-                        type: "line",
-                        x1: 0,
-                        y1: y0 + (index * w),
-                        x2: totalWidth,
-                        y2: y0 + (index * w),
-                        lineWidth: "2px"
-                    }
-                    canvasData.push(line);
-
-                    canvasData.push({
-                        type: "text",
-                        text: label,
-                        textAlign: "end",
-                        font: "14px courrier normal",
-                        color: "black",
-                        x: margin - 5,
-                        y: y0 + (index * w) + 10,
-                    })
-                    //vert
-
-                    var line = {
-                        type: "line",
-                        x1: x0 + (index * w),
-                        y1: 0,
-                        x2: x0 + (index * w),
-                        y2: totalHeight,
-                        lineWidth: "2px"
-                    }
-                    canvasData.push(line);
-
-                    canvasData.push({
-                        type: "text",
-                        text: label,
-                        textAlign: "start",
-                        font: "14px courrier normal",
-                        stroke: "black",
-                        x: x0 + (index * w) + 10,
-                        y:margin-5,
-                        vertical: true
-                    })
-                }
+            self.draw(canvasData, options, function (err, result) {
+                if (callback)
+                    return callback(err)
             });
 
-            return canvasData;
+
+
         }
+
+
+
 
         return self;
     }

@@ -38,6 +38,8 @@
                 x: $("#graphDiv").position().left,
                 y: $("#graphDiv").position().top
             }
+
+            sinequaResultVis.addEntityStyles();
             /*    var sliderMin = 10;
              var sliderMax = 10000;
              $("#slider").slider({
@@ -68,7 +70,7 @@
         #graphDiv {
 
             width: 800px;
-            height: 800px;
+            height: 500px;
         }
 
         #graphPopover {
@@ -84,31 +86,17 @@
             font-weight: bold;
 
         }
-        .highlight-entity6{background-color:#0072d5}
-        .highlight-entity9{background-color:#FF7D07}
-        .highlight-entity13{background-color:#c00000}
-        .highlight-entity14{background-color:#FFD900}
-        .highlight-entity22{background-color:#B354B3}
-        .highlight-entity23{background-color:#a6f1ff}
-        .highlight-entity24{background-color:#007aa4}
-        .highlight-entity25{background-color:#584f99}
-        .highlight-entity26{background-color:#cd4850}
-        .highlight-entity27{background-color:#005d96}
-        .highlight-entity28{background-color:#ffc6ff}
-        .highlight-entity33{background-color:#007DFF}
-        .highlight-entity36{background-color:#ffc36f}
-        .highlight-entity37{background-color:#ff6983}
-        .highlight-entity38{background-color:#7fef11}
-        .highlight-entity42{background-color:#B3B005}
-        .highlight-entity43{background-color:#0072d5}
-        .highlight-entity47{background-color:#FF7D07}
-        .highlight-entity70{background-color:#c00000}
-        .highlight-entity71{background-color:#FFD900}
-        .highlight-entity72{background-color:#B354B3}
-        .highlight-entity73{background-color:#a6f1ff}
-        .highlight-entity74{background-color:#007aa4}
-        .highlight-entity75{background-color:#584f99}
-        .highlight-entity76{background-color:#cd4850}
+        .bandeauEntity{
+            border: none;
+            border-radius: 3px;
+            padding: 5px;
+            margin-left: 10px;
+
+
+        }
+
+
+
     </style>
 
 </head>
@@ -123,6 +111,8 @@
 
 
 </select>
+
+<div id="entitiesBandeau"></div>
 &nbsp; entities distance&nbsp; <span id="sliderValueSpan"></span>
 <div id="slider" style="width:600px;height: 10px"></div>
 <br>

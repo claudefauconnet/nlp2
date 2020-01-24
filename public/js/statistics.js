@@ -120,8 +120,117 @@ var statistics = (function () {
     self.drawHeatMap = function () {
         self.clear();
         self.getEntitiesQuery(function (err, result) {
-            drawCanvas.drawAll({onclickFn: statistics.onRectClick, onMouseOverFn: statistics.onRectMouseOver, query: result});
+            var url = "./heatMap"
+            if (result) {
+                var queryStr = encodeURIComponent(JSON.stringify(result))
+                url += "?query=" + queryStr
+            }
+
+
+            d3.json(url).then(function (data) {
+                var canvasData=  self.bindData(data, options);
+                drawCanvas.drawData(canvasData, {onclickFn: statistics.onRectClick, onMouseOverFn: statistics.onRectMouseOver});
+            })
         })
+    }
+
+    /******************************************************************************************************************************/
+    /*************************************************Bind data**************************************************************/
+    /******************************************************************************************************************************/
+    /******************************************************************************************************************************/
+
+    self.bindData = function (data, options, callback) {
+
+        var interpolateViridisColours = d3.scaleSequential(d3.interpolateYlOrRd).domain([1, Math.log(data.max)]);
+
+        var canvasData = [];
+        var margin = 100;
+        var x = margin;
+        var y = margin;
+        var w = Math.round((totalWidth - margin) / data.data.length);
+        data.data.forEach(function (line, lineIndex) {
+            var x = 100;
+            line.forEach(function (row, rowIndex) {
+                if(rowIndex>lineIndex)
+                    return;
+                var bgColor = "#aaa"
+                if (row > 0)
+                    bgColor = interpolateViridisColours(Math.log(row))
+                if(row==20)
+                    xx=3
+                var rect = {
+                    type: "rect",
+                    x: x,
+                    y: y,
+                    w: w,
+                    h: w,
+                    bgColor: bgColor,
+                    //   lineWidth:1,
+                    coords: {x: lineIndex, y: rowIndex}
+
+                }
+                canvasData.push(rect);
+                x += w
+            })
+
+
+            y += w
+        })
+
+        var y0 = margin;
+        var x0 = margin;
+        data.labels.forEach(function (label, index) {
+            var p=label.indexOf("-");
+            if(p>0)
+                label= label.substring(0,p)
+
+            if (index == 0 || data.labels[index - 1].substring(0, 3) != label.substring(0, 3)) {
+                var line = {
+                    type: "line",
+                    x1: 0,
+                    y1: y0 + (index * w),
+                    x2: totalWidth,
+                    y2: y0 + (index * w),
+                    lineWidth: "2px"
+                }
+                canvasData.push(line);
+
+                canvasData.push({
+                    type: "text",
+                    text: label,
+                    textAlign: "end",
+                    font: "14px courrier normal",
+                    color: "black",
+                    x: margin - 5,
+                    y: y0 + (index * w) + 10,
+                })
+                //vert
+
+                var line = {
+                    type: "line",
+                    x1: x0 + (index * w),
+                    y1: 0,
+                    x2: x0 + (index * w),
+                    y2: totalHeight,
+                    lineWidth: "2px"
+                }
+                canvasData.push(line);
+
+
+                canvasData.push({
+                    type: "text",
+                    text: label,
+                    textAlign: "start",
+                    font: "14px courrier normal",
+                    stroke: "black",
+                    x: x0 + (index * w) + 10,
+                    y:margin-5,
+                    vertical: true
+                })
+            }
+        });
+
+        return canvasData;
     }
 
     self.drawGraph = function () {

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Souslesens Skos comparator</title>
+
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../js/others/d3/d3.v5.js" charset="utf-8"></script>
+    <script src="../js/others/async.js" charset="utf-8"></script>
+    <script src="../js/graph/drawCanvas.js"></script>
+    <script src="js/comparator.js"></script>
+    <script src="js/common.js"></script>
+
+    <script src="../js/context.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+
+    <script src="js/jstree.js"></script>
+    <script>
+        var totalWidth, totalHeight;
+        $(function () {
+            totalWidth = $("#graphDiv").width();
+            totalHeight = $("#graphDiv").height();
+            comparator.initThesaurusSelects()
+        })
+    </script>
+</head>
+<body>
+<div>
+    <select id= "thesaurusSelect1" onclick="$('#thesaurus1').val($(this).val())"><input id="thesaurus1" value="" size="80"><br>
+    </select>  <select  id= "thesaurusSelect2" onclick="$('#thesaurus2').val($(this).val())"></select><input id="thesaurus2" value="" size="80">
+
+
+
+
+    <button onclick="comparator.drawMap($('#thesaurus1').val(),$('#thesaurus2').val())">OK</button>
+</div>
+<div style="display: flex;flex-direction: row">
+    <div id="graphDiv" style="width:900px;height: 900px"></div>
+    <div id="infosDiv" style="width:300px;height: 900px">
+        <div id="jsTreeDivH" style="width:250px;height: 300px;overflow:auto;"></div>
+        <div id="jsTreeDivV" style="width:250px;height: 300px;overflow:auto;"></div>
+    </div>
+</div>
+</body>
+</html>
