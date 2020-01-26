@@ -6,41 +6,7 @@ skosEditor = (function () {
 
     self.editor = null;
     self.initThesaurusSelects=function(){
-        var thesaurusList=[
 
-
-            "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
-            "D:\\NLP\\geochemistry.rdf",
-            "D:\\NLP\\measurement-unit-skos.rdf",
-            "D:\\NLP\\quantum_F_all.rdf",
-            "D:\\NLP\\thesaurusIngenieur.rdf",
-            "D:\\NLP\\Tulsa_all.rdf",
-            "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
-            "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
-            "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
-            "D:\\NLP\\Tulsa_EQUIPMENT.rdf",
-            "D:\\NLP\\Tulsa_LIFE FORM.rdf",
-            "D:\\NLP\\Tulsa_MATERIAL.rdf",
-            "D:\\NLP\\Tulsa_OPERATING CONDITION.rdf",
-            "D:\\NLP\\Tulsa_PHENOMENON.rdf",
-            "D:\\NLP\\Tulsa_PROCESS.rdf",
-            "D:\\NLP\\Tulsa_PROPERTY.rdf",
-            "D:\\NLP\\Tulsa_WORLD.rdf",
-            "D:\\NLP\\unesco.rdf",
-            "D:\\NLP\\unescothes.rdf",
-
-            "D:\\NLP\\cgi\\eventenvironment.rdf",
-            "D:\\NLP\\cgi\\eventprocess.rdf",
-            "D:\\NLP\\cgi\\eventprocess2.rdf",
-            "D:\\NLP\\cgi\\explorationResults.rdf",
-            "D:\\NLP\\cgi\\isc2014.rdf",
-            "D:\\NLP\\cgi\\isc2017.rdf",
-            "D:\\NLP\\cgi\\lithology.rdf",
-            "D:\\NLP\\cgi\\simplelithology.rdf",
-
-
-
-        ];
 
         common.fillSelectOptions("thesaurusSelect",thesaurusList,true);
 
@@ -361,7 +327,12 @@ skosEditor = (function () {
 
 
     self.conceptEditor = {
-        editConcept: function (conceptData) {
+        editConcept: function (conceptData,options) {
+
+            if(!options)
+                options={};
+
+
             self.context.conceptData = conceptData
             self.context.currentState = "toForm"
 
@@ -382,7 +353,7 @@ skosEditor = (function () {
 
 
             function setPrefLabels(conceptData) {
-                var html = "   <div class='concept-group'> <h6><span class='title'> prefLabels</span> <button onclick='skosEditor.conceptEditor.addToConceptPrefLabels()'>+</button> </h6>"
+                var html = "   <div class='concept-group'> <h6><span class='title'> prefLabels</span> <button  class='concept_button' onclick='skosEditor.conceptEditor.addToConceptPrefLabels()'>+</button> </h6>"
                 conceptData.prefLabels.forEach(function (prefLabel, index) {
                     html += "<div class='container concept-item' >"
 
@@ -397,7 +368,7 @@ skosEditor = (function () {
                         "      <input    id='concept_prefLabel_value_" + index + "' value='" + prefLabel.value + "' size='50'>" +
                         "   </div>" +
                         "    <div class='col'>" +
-                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('prefLabels'," + index + ")> -</button>" +
+                        "       <button   class='concept_button' onclick=skosEditor.conceptEditor.removeFromConcept('prefLabels'," + index + ")> -</button>" +
                         "    </div>" +
                         "</div>"
                     html += "</div>"
@@ -408,7 +379,7 @@ skosEditor = (function () {
 
             function setAltLabels(conceptData) {
 
-                var html = "   <div class='concept-group'> <h6><span class='title'> altLabels</span> <button  onclick='skosEditor.conceptEditor.addToConceptAltLabels()'>+</button></h6> "
+                var html = "   <div class='concept-group'> <h6><span class='title'> altLabels</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptAltLabels()'>+</button></h6> "
                 conceptData.altLabels.forEach(function (altLabel, index) {
                     html += "<div class='container concept-item' >"
 
@@ -423,7 +394,7 @@ skosEditor = (function () {
                         "   </div>" +
 
                         "    <div class='col'>" +
-                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('altLabels'," + index + ")> -</button>" +
+                        "       <button   class='concept_button' onclick=skosEditor.conceptEditor.removeFromConcept('altLabels'," + index + ")> -</button>" +
                         "    </div>" +
                         "</div>"
                     html += "</div>"
@@ -435,7 +406,7 @@ skosEditor = (function () {
             }
 
             function setRelated(conceptData) {
-                var html = "   <div class='concept-group'> <h6><span class='title'> related</span> <button  onclick='skosEditor.conceptEditor.addToConceptRelateds()'>+</button></h6> "
+                var html = "   <div class='concept-group'> <h6><span class='title'> related</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptRelateds()'>+</button></h6> "
                 conceptData.relateds.forEach(function (related, index) {
                     html += "<div class='container concept-item' >"
 
@@ -445,7 +416,7 @@ skosEditor = (function () {
                         "   </div>" +
 
                         "    <div class='col'>" +
-                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('relateds'," + index + ")> -</button>" +
+                        "       <button   class='concept_button' onclick=skosEditor.conceptEditor.removeFromConcept('relateds'," + index + ")> -</button>" +
                         "    </div>" +
                         "</div>"
                     html += "</div>"
@@ -458,7 +429,7 @@ skosEditor = (function () {
 
 
             function setBroaders(conceptData) {
-                var html = "   <div class='concept-group'><h6> <span class='title'> broader</span> <button  onclick='skosEditor.conceptEditor.addToConceptBroaders()'>+</button></h6> "
+                var html = "   <div class='concept-group'><h6> <span class='title'> broader</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptBroaders()'>+</button></h6> "
                 conceptData.broaders.forEach(function (broader, index) {
                     html += "<div class='container concept-item' >"
 
@@ -467,7 +438,7 @@ skosEditor = (function () {
                         "      <input  id='concept_broader_" + index + "' value='" + broader + "' size='60'>" +
                         "   </div>" +
                         "    <div class='col'>" +
-                        "       <button  onclick=skosEditor.conceptEditor.removeFromConcept('broaders'," + index + ")> -</button>" +
+                        "       <button  class='concept_button' onclick=skosEditor.conceptEditor.removeFromConcept('broaders'," + index + ")> -</button>" +
                         "    </div>" +
                         "</div>"
                     html += "</div>"
@@ -491,7 +462,10 @@ skosEditor = (function () {
             html += "</form>";
 
 
-            $("#editor_holder").html(html)
+            $("#editor_holder").html(html);
+            if(options.readOnly){
+           $(".concept_button").css("display","none")
+            }
 
 
         }

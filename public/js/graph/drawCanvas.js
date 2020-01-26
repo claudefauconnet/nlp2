@@ -30,7 +30,7 @@ var drawCanvas = (function () {
         var oldNumVersement = "";
         var nMagByLine = 10;
 
-        var zoomExtent = [0.2, 10]
+        var zoomExtent = [0.5, 10]
 
 
         var highlightAttrs = {
@@ -81,7 +81,7 @@ var drawCanvas = (function () {
             if (!transform)
                 transform = d3.event.transform;
             context.save();
-            context.clearRect(0, 0, totalWidth, totalWidth);
+            context.clearRect(0, 0, totalWidth+200, totalWidth+200);
             context.translate(transform.x, transform.y);
             context.scale(transform.k, transform.k);
             currentZoomTransform = transform
@@ -141,8 +141,8 @@ var drawCanvas = (function () {
 
 
         function initCanvas(graphDiv) {
-            totalWidth = $(graphDiv).width() - 50;
-            totalHeight = $(graphDiv).height() - 50;
+            totalWidth = $(graphDiv).width()// - 50;
+            totalHeight = $(graphDiv).height()// - 50;
             $(graphDiv).html("");
             currentZoomTransform = {x: 0, y: 0, k: 1};
             canvas = d3.select(graphDiv)
@@ -240,58 +240,7 @@ var drawCanvas = (function () {
         }
 
 
-        self.setMagasinsButtons = function () {
-            var strMagasins = ""
-            var magasins = self.magasinsToDraw;
-            magasins.splice(0, 0, "tous")
-            magasins.forEach(function (magasin) {
-                strMagasins += "<span style='font-size: 18px;font-weight: bold;margin: 3px;padding:3px;border-style: solid ; border-width: 1px' onclick=magasinsD3Canvas.zoomOnMagasin('" + magasin + "')>" + magasin + "</span>"
 
-            })
-            $("#magasinButtonsDiv").html(strMagasins)
-        }
-
-
-        self.zoomOnMagasin = function (magasin) {
-            self.highlighted = null;
-            if (magasin == "tous") {
-                var transform = d3.zoomIdentity;
-                transform.k = 0.3
-
-                return zoomed(transform);
-            }
-            var selectedRectIndex = null
-            drawCanvas.canvasData.forEach(function (rect, index) {
-                if (rect.nature == "magasin" && rect.data && rect.data.name == magasin)
-                    return selectedRectIndex = index;
-
-            })
-            self.zoomOnObjectIndex(selectedRectIndex, 0.8, [100, 50])
-
-        }
-
-        self.zoomOnObjectIndex = function (index, zoomlevel, position) {
-            var rect = drawCanvas.canvasData[index]
-            /*   var transform = {
-                   x: (selectedRect.x - 100),
-                   y: selectedRect.y,
-
-               };*/
-            d3.zoomIdentity.k = zoomlevel;
-
-            zoomed(d3.zoomIdentity);
-            zoom.translateTo(canvas, rect.x, rect.y, position)
-        }
-
-
-        self.zoomOut = function () {
-            var transform = d3.zoomIdentity;
-            transform.k = 0.3
-
-            return zoomed(transform);
-            //  zoom.translateTo(canvas, 0,0,[100,100] )
-            //   zoom.scaleTo(canvas,zoomExtent[0])
-        }
 
 
         self.drawData=function(canvasData,options,callback){
@@ -311,8 +260,6 @@ var drawCanvas = (function () {
                 if (callback)
                     return callback(err)
             });
-
-
 
         }
 

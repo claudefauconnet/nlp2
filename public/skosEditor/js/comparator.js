@@ -11,40 +11,7 @@ var comparator = (function () {
 
 
     self.initThesaurusSelects = function () {
-        var thesaurusList = [
 
-
-            "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
-            "D:\\NLP\\geochemistry.rdf",
-            "D:\\NLP\\measurement-unit-skos.rdf",
-            "D:\\NLP\\quantum_F_all.rdf",
-            "D:\\NLP\\thesaurusIngenieur.rdf",
-            "D:\\NLP\\Tulsa_all.rdf",
-            "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
-            "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
-            "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
-            "D:\\NLP\\Tulsa_EQUIPMENT.rdf",
-            "D:\\NLP\\Tulsa_LIFE FORM.rdf",
-            "D:\\NLP\\Tulsa_MATERIAL.rdf",
-            "D:\\NLP\\Tulsa_OPERATING CONDITION.rdf",
-            "D:\\NLP\\Tulsa_PHENOMENON.rdf",
-            "D:\\NLP\\Tulsa_PROCESS.rdf",
-            "D:\\NLP\\Tulsa_PROPERTY.rdf",
-            "D:\\NLP\\Tulsa_WORLD.rdf",
-            "D:\\NLP\\unesco.rdf",
-            "D:\\NLP\\unescothes.rdf",
-
-            "D:\\NLP\\cgi\\eventenvironment.rdf",
-            "D:\\NLP\\cgi\\eventprocess.rdf",
-            "D:\\NLP\\cgi\\eventprocess2.rdf",
-            "D:\\NLP\\cgi\\explorationResults.rdf",
-            "D:\\NLP\\cgi\\isc2014.rdf",
-            "D:\\NLP\\cgi\\isc2017.rdf",
-            "D:\\NLP\\cgi\\lithology.rdf",
-            "D:\\NLP\\cgi\\simplelithology.rdf",
-
-
-        ];
 
         common.fillSelectOptions("thesaurusSelect1", thesaurusList, true);
         common.fillSelectOptions("thesaurusSelect2", thesaurusList, true);
@@ -92,9 +59,12 @@ var comparator = (function () {
             self.conceptsMap[child.id] = child;
             if (commonConcepts) {
                 child.commonConceptCount = 0;
+                child.commonConcepts = [];
                 commonConcepts.forEach(function (commonConcept) {
-                    if (commonConcept.indexOf(child.id) > -1)
+                    if (commonConcept.indexOf(child.id) > -1) {
                         child.commonConceptCount += 1;
+                        child.commonConcepts.push(commonConcept)
+                    }
                 })
             }
 
@@ -112,6 +82,11 @@ var comparator = (function () {
                 self.conceptsMap[child.parent].children.push(child);
                 if (commonConcepts) {
                     self.conceptsMap[child.parent].commonConceptCount += child.commonConceptCount;
+                    child.commonConcepts.forEach(function (commonConcept) {
+                        if (self.conceptsMap[child.parent].commonConcepts.indexOf(commonConcept) < 0)
+                            self.conceptsMap[child.parent].commonConcepts.push(commonConcept)
+                    })
+
                 }
             }
         })
@@ -192,6 +167,7 @@ var comparator = (function () {
                 function (callbackSeries) {
 
                     var commonConcepts = self.getCommonConcepts(self.dataH, self.dataV);
+                    self.commonConcepts = commonConcepts;
                     self.treeV = self.getTree(self.dataV, commonConcepts);
                     self.treeH = self.getTree(self.dataH, commonConcepts);
                     var canvasData = self.bindData(self.treeV, self.treeH);
@@ -266,13 +242,29 @@ var comparator = (function () {
         return subTree;
     }
 
+    self.getIntersectionCommonConcepts = function (hId, vId) {
+        var vConcept = self.conceptsMap[vId];
+        var hConcept = self.conceptsMap[hId];
+
+        var selCommonConcepts = [];
+
+        vConcept.commonConcepts.forEach(function (commonConceptV) {
+            hConcept.commonConcepts.forEach(function (commonConceptH) {
+                if (commonConceptV == commonConceptH) {
+                    selCommonConcepts.push(commonConceptV)
+                }
+            })
+        })
+        return selCommonConcepts;
+    }
 
     self.onClickRect = function (point, obj, event) {
         if (!obj || !obj.id)
             return;
 
         function showRectJsTree(obj) {
-
+            $("#jstreeTtitleH").html("")
+            $("#jstreeTtitleV").html("")
             var jsTreeData = [{
                 text: "vertical",
                 parent: "#",
@@ -287,6 +279,8 @@ var comparator = (function () {
             var subTreeV = self.getNodeSubjsTree(self.treeV, obj.id.v, "#")
             var subTreeH = self.getNodeSubjsTree(self.treeH, obj.id.h, "#");
 
+            $("#jstreeTtitleH").html($('#thesaurus2').val())
+            $("#jstreeTtitleV").html($('#thesaurus1').val())
 
             /*    jsTreeData=jsTreeData.concat(subTreeV);
                 jsTreeData=jsTreeData.concat(subTreeH);
@@ -298,8 +292,28 @@ var comparator = (function () {
 
         }
 
+        function setSelectionCommonConcepts(vId, hId) {
+            $("#CommonConceptsDiv").html("");
+
+
+            var selCommonConcepts = self.getIntersectionCommonConcepts(hId, vId)
+            var html = "<ul>";
+
+            selCommonConcepts.forEach(function (commonConcept) {
+                var array = commonConcept.split(" | ")
+                html += "<li onclick=\"comparator.onIntersectionCommonConceptsClick('" + array[0] + "','" + array[1] + "')\">" + commonConcept + "</li>"
+            })
+            html += "</ul>";
+            $("#CommonConceptsDiv").html(html)
+            $("#CommonConceptsCount").html(selCommonConcepts.length)
+
+
+        }
+
+        setSelectionCommonConcepts(obj.id.v, obj.id.h);
+
         var subTreeV = self.getNodeChildrenSubTree(self.treeV, obj.id.v)
-        var subTreeH = self.getNodeChildrenSubTree(self.treeH, obj.id.h)
+        var subTreeH = self.getNodeChildrenSubTree(self.treeH, obj.id.h);
 
 
         if (event.ctrlKey) {
@@ -319,10 +333,7 @@ var comparator = (function () {
         } else {
 
 
-
-
-
-                return showRectJsTree(obj)
+            return showRectJsTree(obj)
 
 
             return;
@@ -375,7 +386,7 @@ var comparator = (function () {
 
         if (!nodeV.children || !nodeH.children)
             return []
-        var interpolateColorFn = d3.scaleSequential(d3.interpolateYlOrRd).domain([0, (self.getMaxCommonConceptCount(nodeH) * self.getMaxCommonConceptCount(nodeH))]);
+        var interpolateColorFn = d3.scaleSequential(d3.interpolateYlOrRd).domain([1, Math.log(self.commonConcepts.length / 2)]);
 
         var canvasData = [];
         self.commonIntersections = {}
@@ -383,8 +394,8 @@ var comparator = (function () {
         var x = margin;
         var y = margin;
 
-        var w = Math.round((totalWidth - margin-30) / nodeH.children.length)
-        var h = Math.round((totalHeight - margin-30) / nodeV.children.length)
+        var w = Math.round((totalWidth - margin - 30) / nodeH.children.length)
+        var h = Math.round((totalHeight - margin - 30) / nodeV.children.length)
         nodeV.children.forEach(function (conceptV, lineIndex) {
 
             x = margin
@@ -392,11 +403,11 @@ var comparator = (function () {
 
             nodeH.children.forEach(function (conceptH, rowIndex) {
 
-                var bgColor = "#aaa"
-
-
-                var commonConceptCount = conceptH.commonConceptCount * conceptV.commonConceptCount;
-                bgColor = interpolateColorFn(commonConceptCount)
+                var intersectionCommonConcepts = self.getIntersectionCommonConcepts(conceptH.id, conceptV.id)// conceptH.commonConceptCount * conceptV.commonConceptCount;
+                var commonConceptCount = intersectionCommonConcepts.length
+                var bgColor = "#eee"
+                if (commonConceptCount > 0)
+                    bgColor = interpolateColorFn(Math.log(commonConceptCount))
 
                 var rect = {
                     type: "rect",
@@ -406,6 +417,7 @@ var comparator = (function () {
                     h: h,
                     bgColor: bgColor,
                     lineWidth: 1,
+                    color: "#aaa",
                     coords: {x: rowIndex, y: lineIndex, level: 0},
                     id: {h: conceptH.data.id, v: conceptV.data.id, ancestors: []}
 
@@ -527,8 +539,8 @@ var comparator = (function () {
            plugins.push("sort");
            //   plugins.push("types");
            plugins.push("contextmenu");
-           plugins.push("dnd");
-           plugins.push("search");*/
+           plugins.push("dnd");*/
+        plugins.push("search");
 
         if ($('#' + treeDiv).jstree)
             $('#' + treeDiv).jstree("destroy")
@@ -543,7 +555,7 @@ var comparator = (function () {
                     "icon": "concept-icon.png"
                 },
                 "default": {
-                   // "icon": "concept-icon.png"
+                    // "icon": "concept-icon.png"
                 }
             }
             ,
@@ -552,10 +564,100 @@ var comparator = (function () {
                 "case_sensitive": false,
                 "show_only_matches": true
             }
-        }).on("select_node.jstree",
+        }).on("select_node.jstree", true,
             function (evt, obj) {
+                $('#editor_holder').animate({'zoom': .7}, 'slow');
+                var data = comparator.conceptsMap[obj.node.id].data
+                skosEditor.conceptEditor.editConcept(data, {readOnly: true})
+
+            }).on('loaded.jstree', function () {
+            //  $('#' + treeDiv).jstree('open_all');
+        })
+        ;
+    }
+
+
+    self.onIntersectionCommonConceptsClick = function (commonConceptH, commonConceptV) {
+        self.commonConceptH = commonConceptH;
+        self.commonConceptV = commonConceptV;
+
+        function scrollToSelectdNode(jstreeDiv, callback) {
+            var node = $('#' + jstreeDiv).jstree('get_selected', true)[0];
+            var ancestors = node.parents;
+            ancestors.push(node.id);
+            var y = 0;
+            ancestors.forEach(function (ancestor) {
+                var node = $('#' + jstreeDiv).jstree(true).get_node(ancestor);
+                if (node && node.li_attr) {
+                    var li = node.li_attr.id;
+                    var liElt = document.getElementById(li);
+                    y += $(liElt).offset().top;
+                }
 
             })
+            y -= $('#' + jstreeDiv).scrollTop()
+            $('#' + jstreeDiv).scrollTop(y - 150)
+            callback()
+        }
+
+        async.series([
+
+            function (callbackSeries) {
+
+                $('#jsTreeDivV').jstree("deselect_all");
+                callbackSeries();
+            },
+            function (callbackSeries) {
+                $('#jsTreeDivV').jstree("deselect_all");
+                callbackSeries();
+            },
+            function (callbackSeries) {
+                $('#jsTreeDivV').jstree('select_node', commonConceptV);
+                callbackSeries();
+            },
+            function (callbackSeries) {
+                $("#jsTreeDivV").jstree("open_node", commonConceptV, function (e, d) {
+                    for (var i = 0; i < e.parents.length; i++) {
+                        $("#jsTreeDivV").jstree('open_node', e.parents[i]);
+
+                    }
+                    callbackSeries();
+                })
+            },
+            function (callbackSeries) {
+                $('#jsTreeDivH').jstree('select_node', commonConceptH);
+                callbackSeries();
+            },
+            function (callbackSeries) {
+                $("#jsTreeDivH").jstree("open_node", commonConceptH, function (e, d) {
+                    for (var i = 0; i < e.parents.length; i++) {
+                        $("#jsTreeDivH").jstree('open_node', e.parents[i]);
+
+                    }
+                    callbackSeries();
+                })
+
+
+            },
+            function (callbackSeries) {
+                scrollToSelectdNode("jsTreeDivH", function (err) {
+                    callbackSeries();
+                })
+
+            },
+            function (callbackSeries) {
+                scrollToSelectdNode("jsTreeDivV", function (err) {
+                    callbackSeries();
+                })
+
+
+            }
+
+
+        ], function (err) {
+
+
+        })
     }
     return self;
 
