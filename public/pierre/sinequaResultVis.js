@@ -3,7 +3,7 @@ var sinequaResultVis = (function () {
 
     self.sliderIndexMin = 20;
     self.sliderIndexMax = 300;
-    self.minWindowOffset = 10;
+    self.minWindowOffset = 20;
     self.graphDivPosition = {};
   /*  self.palette = [
         "#0072d5",
