@@ -100,8 +100,8 @@ var jsTreeEditor=(function(){
         var subTreeV = self.getNodeSubjsTree(self.treeV, obj.id.v, "#")
         var subTreeH = self.getNodeSubjsTree(self.treeH, obj.id.h, "#");
 
-        $("#jstreeTtitleH").html($('#thesaurus2').val())
-        $("#jstreeTtitleV").html($('#thesaurus1').val())
+        $("#jstreeTtitleH").html($('#thesaurusH').val())
+        $("#jstreeTtitleV").html($('#thesaurusV').val())
 
         /*    jsTreeData=jsTreeData.concat(subTreeV);
             jsTreeData=jsTreeData.concat(subTreeH);

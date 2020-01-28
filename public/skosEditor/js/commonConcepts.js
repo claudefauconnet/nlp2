@@ -101,12 +101,16 @@ var commonConcepts=(function(){
 
 
     self.onIntersectionCommonConceptsClick = function (commonConceptH, commonConceptV) {
+        comparator.displayPopupDiv();
         var vConcept = comparator.conceptsMap[commonConceptV];
         var hConcept = comparator.conceptsMap[commonConceptH];
-        skosEditor.conceptEditor.editConcept(vConcept.data, "editorDivVId",{readOnly: true})
-        skosEditor.conceptEditor.editConcept(hConcept.data, "editorDivHId",{readOnly: true});
-        $(".myClass").css("background-color", "#00FFFF");
-        $(".myClass").css("background-color", "#00FFFF");
+        var textHColor=$("#thesaurusH").css("background-color");
+        var textVColor=$("#thesaurusV").css("background-color");
+        $("#jstreeTtitleH").html($('#thesaurusH').val())
+        $("#jstreeTtitleV").html($('#thesaurusV').val())
+        skosEditor.conceptEditor.editConcept(vConcept.data, "editorDivVId",{readOnly: true,bgColor:textVColor})
+        skosEditor.conceptEditor.editConcept(hConcept.data, "editorDivHId",{readOnly: true,bgColor:textHColor});
+
         $("#editorDivVId").animate({'zoom': .7}, 'slow');
         $("#editorDivHId").animate({'zoom': .7}, 'slow');
         return;

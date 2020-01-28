@@ -3,65 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/xsdToSkos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/xsdToSkos..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/backoffice.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/backoffice.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/_search.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/_search.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/annotations.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/annotations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/authentification.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/authentification.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/asyncDialog.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/asyncDialog.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/configEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/configEditor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/context.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/context.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/imapUI.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/imapUI.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jobScheduler.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jobScheduler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jquery.json-editor.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jquery.json-editor.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/30px.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/30px.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/32px.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/32px.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-bold-webfont.eot" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-bold-webfont.eot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-bold-webfont.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-bold-webfont.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-bold-webfont.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-bold-webfont.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-bold-webfont.woff" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-bold-webfont.woff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-extralight-webfont.eot" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-extralight-webfont.eot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-extralight-webfont.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-extralight-webfont.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-extralight-webfont.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-extralight-webfont.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-extralight-webfont.woff" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-extralight-webfont.woff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-regular-webfont.eot" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-regular-webfont.eot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-regular-webfont.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-regular-webfont.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-regular-webfont.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-regular-webfont.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/fonts/titillium/titilliumweb-regular-webfont.woff" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/fonts/titillium/titilliumweb-regular-webfont.woff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/style.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/style.min.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/jstree/proton/throbber.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/jstree/proton/throbber.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/others/jsonform.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/others/jsonform.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/others/jsv.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/others/jsv.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/others/underscore.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/others/underscore.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/profiles.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/profiles.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/vocabularies/Entities.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/vocabularies/Entities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/vocabularies/TMA.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/vocabularies/TMA.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/backoffice/vocabularies/Thesaurus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchBackoffice/vocabularies/Thesaurus.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/context.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/context.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/entities.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/entities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/indexes.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/indexes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/questions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/questions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/statistics.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/statistics.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/pierre/data/Response_JSON_DEVPlugin.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/pierre/data/Response_JSON_SearchProfile.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/pierre/data/antisurgeExtracts.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/pierre/data/responseTime.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/pierre/data/rotor.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/pierre/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/pierre/sinequaResultVis.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/comparator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/jsTreeEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/jsTreeEditor.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -168,7 +114,7 @@
       <workItem from="1578909681881" duration="50943000" />
       <workItem from="1579171636631" duration="16855000" />
       <workItem from="1579248347019" duration="164446000" />
-      <workItem from="1579943080519" duration="74352000" />
+      <workItem from="1579943080519" duration="78159000" />
     </task>
     <servers />
   </component>

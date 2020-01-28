@@ -62,12 +62,13 @@
         })
     </script>
     <style>
-       .conceptH{
-            background-color: #ddd4b0;
-       }
-       .conceptV{
-           background-color: peachpuff;
-       }
+        .conceptH {
+            background-color: #95a4bd;
+        }
+
+        .conceptV {
+            background-color: peachpuff;
+        }
     </style>
 
 
@@ -76,7 +77,7 @@
 <div>
     <div>&nbsp;</div>
     <select class='conceptV' id="thesaurusSelectV" onclick="$('#thesaurusV').val($(this).val())"></select><input class='conceptV' id="thesaurusV" value="" size="80"><br>
-     <select class='conceptH' id="thesaurusSelectH" onclick="$('#thesaurusH').val($(this).val())"></select><input  class='conceptH' id="thesaurusH" value="" size="80">
+    <select class='conceptH' id="thesaurusSelectH" onclick="$('#thesaurusH').val($(this).val())"></select><input class='conceptH' id="thesaurusH" value="" size="80">
 
 
     <button onclick="comparator.drawMap($('#thesaurusV').val(),$('#thesaurusH').val())">OK</button>
@@ -86,27 +87,26 @@
 <div style="display: flex;flex-direction: row">
     <div id="graphDiv" style="width:50%;height: 700px"></div>
 
-    <div id="CommonConceptsDiv" style="width:20%;height: 700px;overflow:auto;"></div>
-    <div id="infosDiv" style="display:flex;flex-direction:column;width:30%">
-      <!--  <span> Common Concepts   <span style='font-weight: bold' id='CommonConceptsCount'> </span></span>-->
-   <span style="font-weight: bold" id='jstreeTtitleH'> </span>
-        <div style="display: flex;flex-direction: row">
-            <div id='editorDivHId' style="height: 600px;width:500px;overflow: auto"></div>
+    <div id="CommonConceptsDiv" style="width:50%;height: 700px;overflow:auto;"></div>
+
+</div>
+
+
+<div id="popupDiv" style="position:absolute;display: none;flex-direction: column; background-color: white">
+    <div style="width:100%;height: 20px; background-color: #372806"  onclick="comparator.hidePopupDiv()">&nbsp; </div>
+    <div id="ConceptsEditorDiv" style="display:flex;flex-direction:column;width:700px;height:700px;">
+        <!--  <span> Common Concepts   <span style='font-weight: bold' id='CommonConceptsCount'> </span></span>-->
+        <span style="font-weight: bold" id='jstreeTtitleH'> </span>
+        <div style="display: flex;flex-direction: row; justify-content: center;">
+            <div id='editorDivHId' style="height: 600px;width:600px;overflow: auto"></div>
         </div>
         <span style="font-weight: bold" id='jstreeTtitleV'> </span>
-        <div style="display: flex;flex-direction: row">
-            <div id='editorDivVId' style="height:600px;width:500px;overflow: auto"></div>
+        <div style="display: flex;flex-direction: row; justify-content: center;">
+            <div id='editorDivVId' style="height:600px;width:600px;overflow: auto"></div>
         </div>
 
     </div>
-
-
 </div>
-<!--
-<div style="display: flex;flex-direction: column;width:100%;">
-
-    <div id="CommonConceptsDiv" style="width:100%;height: 300px;overflow:auto;"></div>
-</div>-->
 
 </body>
 </html>

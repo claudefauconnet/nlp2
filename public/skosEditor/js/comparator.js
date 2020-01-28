@@ -256,52 +256,52 @@ var comparator = (function () {
                 canvasData.push(rect);
 
                 if (rowIndex == 0) {
-                    var textColor=$("#thesaurusV").css("background-color");
+                    var bgColor=$("#thesaurusV").css("background-color");
                     canvasData.push({
                         type: "text",
                         text: conceptV.data.prefLabels[0].value,
                         textAlign: "end",
                         font: "12px  normal",
-                        color: textColor,
+                        color: "black",
                         x: margin - 15,
                         y: y + (h / 2),
                     })
-                    /*    canvasData.push({
+                     canvasData.push({
                             type: "rect",
                             x: margin - 13,
-                            y: y + (h / 2),
+                            y: y + (h / 2)-10,
                             w: 10,
                             h: 10,
-                            bgColor: "#ddd",
+                            bgColor: bgColor,
                             lineWidth: 1,
                             coords: {x: lineIndex, y: rowIndex, type: "V"}
-                        })*/
+                        })
 
                 }
 
                 if (lineIndex == 0) {
-                    var textColor=$("#thesaurusH").css("background-color");
+                    var bgColor=$("#thesaurusH").css("background-color");
                     canvasData.push({
                         type: "text",
                         text: conceptH.data.prefLabels[0].value,
                         textAlign: "start",
                         font: "12px  normal",
-                        color: textColor,
+                        color: "black",
                         x: x + (w / 2),
                         y: margin - 20,
                         vertical: true
                     })
-                    /*   canvasData.push({
+                     canvasData.push({
                            type: "rect",
-                           x: x + (w / 2),
+                           x: x + (w / 2)-10,
                            y: margin - 18,
                            w: 10,
                            h: 10,
-                           bgColor: "#ddd",
+                           bgColor: bgColor,
                            lineWidth: 1,
                            coords: {x: lineIndex, y: rowIndex, type: "H"},
 
-                       })*/
+                       })
 
                 }
 
@@ -361,6 +361,21 @@ var comparator = (function () {
 
         })
         return canvasData;
+    }
+    self.displayPopupDiv=function(){
+
+        $("#popupDiv").position({
+            my:        "center",
+            at:        "center",
+            of:        "#graphDiv", // or $("#otherdiv")
+            collision: "fit"
+        });
+        $("#popupDiv").css("display","flex")
+
+    }
+    self.hidePopupDiv=function(){
+        $("#popupDiv").css("display","none")
+
     }
 
 

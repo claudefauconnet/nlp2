@@ -479,6 +479,10 @@ skosEditor = (function () {
             if (options.readOnly) {
                 $(".concept_button").css("display", "none")
             }
+            if(options.bgColor){
+                $("#"+editorDivId+" .concept-group").css("background-color", options.bgColor);
+
+            }
 
 
         }
