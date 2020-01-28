@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/editor.css">
 
     <!-- Foundation CSS framework (Bootstrap and jQueryUI also supported) -->
-    <!--link rel='stylesheet' href='//cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css'-->>
+    <!--link rel='stylesheet' href='//cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css'-->
     <!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
     <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
 
@@ -90,6 +90,7 @@
 
         #treeDiv{
             height: 800px;
+            width:400px;
             overflow: auto;
 
         }
@@ -117,26 +118,26 @@
 <div class='row'>
 
 </div>
-<div style="display: flex;flex-direction: row">
-    <div style='width:200px'></div>
-    <div style='width:300px'>
+<div style="display: flex;flex-direction: row;justify-content:left" >
+    <div style='min-width:50px'></div>
+    <div style='max-width: 400px;'>
         thesaurus (rdf)<br>
-       <!-- <input type="file" id="skosInput2"  accept=".rdf,.xml">-->
-        <select id= "thesaurusSelect" onclick="$('#skosInput').val($(this).val())">
-        <input id="skosInput" value="" size="50"><br>
-        <input type="button" onclick="skosEditor.initNewThesaurus()" value="New"></input>
-        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput').val())" value="Edit"></input>
-        <!--    <input  type="button" onclick="skosEditor.saveThesaurus($('#skosInput').val())">Save</input>-->
-        <input type="button" onclick="skosEditor.saveThesaurus()" value="Save"></input>
+
+        <select id= "thesaurusSelect" onclick="$('#skosInput').val($(this).val())"></select>
+        <input id="skosInput" value="" size="40"><br>
+        <input type="button" onclick="skosEditor.initNewThesaurus()" value="New">
+        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput').val(),'editorDivId')" value="Edit">
+
+        <input type="button" onclick="skosEditor.saveThesaurus()" value="Save">
        concepts:<span id="countConcepts"></span><br> Search <input size='10' id="treeSearchInput">
         <div id="treeDiv" ></div>
     </div>
-    <div style='width:800px'>
-        <div id="messageDiv"></div>
+    <div style=' max-width: 800px; width: 750px;'>
+        <div> <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"> <span id="messageDiv"></span></div>
         <div class='medium-12-columns'>
             <span id='valid_indicator' class='label'></span>
         </div>
-        <div id='editor_holder' class='medium-12 columns'></div>
+        <div id='editorDivId' class='medium-12 columns'></div>
     </div>
 </div>
 

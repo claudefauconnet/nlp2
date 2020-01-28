@@ -5,10 +5,10 @@ skosEditor = (function () {
     var elasticUrl = "../elastic";
 
     self.editor = null;
-    self.initThesaurusSelects=function(){
+    self.initThesaurusSelects = function () {
 
 
-        common.fillSelectOptions("thesaurusSelect",thesaurusList,true);
+        common.fillSelectOptions("thesaurusSelect", thesaurusList, true);
 
     }
 
@@ -42,7 +42,7 @@ skosEditor = (function () {
                 skosEditor.synchronizePreviousData();
                 skosEditor.context.previousNode = obj.node;
                 var conceptData = obj.node.data;
-                skosEditor.conceptEditor.editConcept(conceptData);
+                skosEditor.conceptEditor.editConcept(conceptData,"editorDivId");
             })
             .on("rename_node.jstree Event",
                 function (event, obj) {
@@ -88,10 +88,12 @@ skosEditor = (function () {
 
     }
 
-    self.loadThesaurus = function (rdfPath) {
-        $("#editor_holder").html("");
+    self.loadThesaurus = function (rdfPath, editorDivId) {
+        $("#" + editorDivId).html("");
         $("#treeDiv").html("");
-        $("#countConcepts").html("")
+        $("#countConcepts").html("");
+        $("#waitImg").css("display", "block");
+
         var payload = {
             rdfToEditor: 1,
             rdfPath: rdfPath,
@@ -108,10 +110,13 @@ skosEditor = (function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
+                $("#waitImg").css("display", "none");
                 $("#countConcepts").html(data.length)
-                $("#messageDiv").html("done")
+                //   $("#messageDiv").html("done")
 
                 data.forEach(function (item) {
+                    if(item.parent=="xs:element_Kind_424")
+                        var x=3
                     item.icon = "concept-icon.png";
 
 
@@ -123,6 +128,7 @@ skosEditor = (function () {
             , error: function (err) {
                 $("#messageDiv").html("error" + err.responseText)
                 console.log(err.responseText)
+                $("#waitImg").css("display", "none");
 
 
             }
@@ -327,10 +333,17 @@ skosEditor = (function () {
 
 
     self.conceptEditor = {
-        editConcept: function (conceptData,options) {
+        currentEditorDivId:null,
+        editConcept: function (conceptData, editorDivId, options) {
+           if(editorDivId)
+               currentEditorDivId=editorDivId;
+           else
+               editorDivId=currentEditorDivId;
 
-            if(!options)
-                options={};
+            if (!conceptData)
+                return $("#" + editorDivId).html("");
+            if (!options)
+                options = {};
 
 
             self.context.conceptData = conceptData
@@ -338,13 +351,13 @@ skosEditor = (function () {
 
 
             function setAbout(conceptData) {
-                var html = "<div class='container concept-item' >" +
+                var html = "<div class='concept-group' >" +
                     "  <div class='row'>" +
                     "    <div class='col-sm-3'>" +
                     "       <label for='concept_about_value'><h6>about</h6></label> " +
                     "    </div>" +
                     "    <div class='col-lg'>" +
-                    "      <input id='concept_about_value' value='" + conceptData.id + "' size='80'>" +
+                    "      <input id='concept_about_value' value='" + conceptData.id + "' size='70'>" +
                     "   </div>" +
                     "</div>" +
                     "</div>"
@@ -412,7 +425,7 @@ skosEditor = (function () {
 
                     html += "  <div class='row'>" +
                         "    <div class='col'>" +
-                        "      <input  id='concept_related_" + index + "' value='" + related + "' size='60'>" +
+                        "      <input  id='concept_related_" + index + "' value='" + related + "' size='50'>" +
                         "   </div>" +
 
                         "    <div class='col'>" +
@@ -435,7 +448,7 @@ skosEditor = (function () {
 
                     html += "  <div class='row'>" +
                         "    <div class='col'>" +
-                        "      <input  id='concept_broader_" + index + "' value='" + broader + "' size='60'>" +
+                        "      <input  id='concept_broader_" + index + "' value='" + broader + "' size='70'>" +
                         "   </div>" +
                         "    <div class='col'>" +
                         "       <button  class='concept_button' onclick=skosEditor.conceptEditor.removeFromConcept('broaders'," + index + ")> -</button>" +
@@ -462,9 +475,9 @@ skosEditor = (function () {
             html += "</form>";
 
 
-            $("#editor_holder").html(html);
-            if(options.readOnly){
-           $(".concept_button").css("display","none")
+            $("#" + editorDivId).html(html);
+            if (options.readOnly) {
+                $(".concept_button").css("display", "none")
             }
 
 

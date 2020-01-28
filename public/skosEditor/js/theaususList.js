@@ -2,8 +2,10 @@ var thesaurusList=[
 
     "D:\\NLP\\thesaurusCTG-12_2019.rdf",
     "D:\\NLP\\quantum_F_all.rdf",
-
     "D:\\NLP\\Tulsa_all.rdf",
+    "---------Energistics-------",
+    "D:\\NLP\\energistics\\WellboreGeology.rdf",
+    "---------Tulsa-------",
     "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
     "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
     "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
@@ -15,7 +17,7 @@ var thesaurusList=[
     "D:\\NLP\\Tulsa_PROCESS.rdf",
     "D:\\NLP\\Tulsa_PROPERTY.rdf",
     "D:\\NLP\\Tulsa_WORLD.rdf",
-
+    "--------CGI---------",
 
 
     "D:\\NLP\\cgi\\eventenvironment.rdf",
@@ -26,7 +28,7 @@ var thesaurusList=[
     "D:\\NLP\\cgi\\isc2017.rdf",
     "D:\\NLP\\cgi\\lithology.rdf",
     "D:\\NLP\\cgi\\simplelithology.rdf",
-
+    "--------Others--------",
     "D:\\NLP\\unesco.rdf",
     "D:\\NLP\\unescothes.rdf",
     "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",

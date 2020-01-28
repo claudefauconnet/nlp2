@@ -61,42 +61,31 @@
             comparator.initThesaurusSelects()
         })
     </script>
-    <style>
-       .conceptH{
-            background-color: #ddd4b0;
-       }
-       .conceptV{
-           background-color: peachpuff;
-       }
-    </style>
-
-
 </head>
 <body>
 <div>
-    <div>&nbsp;</div>
-    <select class='conceptV' id="thesaurusSelectV" onclick="$('#thesaurusV').val($(this).val())"></select><input class='conceptV' id="thesaurusV" value="" size="80"><br>
-     <select class='conceptH' id="thesaurusSelectH" onclick="$('#thesaurusH').val($(this).val())"></select><input  class='conceptH' id="thesaurusH" value="" size="80">
+    <select id="thesaurusSelect1" onclick="$('#thesaurus1').val($(this).val())"><input id="thesaurus1" value="" size="80"> <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 25px"><br>
+    </select> <select id="thesaurusSelect2" onclick="$('#thesaurus2').val($(this).val())"></select><input id="thesaurus2" value="" size="80">
 
 
-    <button onclick="comparator.drawMap($('#thesaurusV').val(),$('#thesaurusH').val())">OK</button>
-    <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 25px"></div>
+    <button onclick="comparator.drawMap($('#thesaurus1').val(),$('#thesaurus2').val())">OK</button>
 </div>
 
 <div style="display: flex;flex-direction: row">
     <div id="graphDiv" style="width:50%;height: 700px"></div>
 
-    <div id="CommonConceptsDiv" style="width:20%;height: 700px;overflow:auto;"></div>
-    <div id="infosDiv" style="display:flex;flex-direction:column;width:30%">
-      <!--  <span> Common Concepts   <span style='font-weight: bold' id='CommonConceptsCount'> </span></span>-->
-   <span style="font-weight: bold" id='jstreeTtitleH'> </span>
+    <div id="infosDiv" style="display:flex;flex-direction:column;width:50%">
+
+   <!--     <span style="font-weight: bold" id='jstreeTtitleH'> </span>
         <div style="display: flex;flex-direction: row">
-            <div id='editorDivHId' style="height: 600px;width:500px;overflow: auto"></div>
+            <div id="jsTreeDivH" style="width:250px;height:400px;overflow:auto;"></div>
+            <div id='editorDivHId' style="height: 400px;width:500px;overflow: auto"></div>
         </div>
         <span style="font-weight: bold" id='jstreeTtitleV'> </span>
         <div style="display: flex;flex-direction: row">
-            <div id='editorDivVId' style="height:600px;width:500px;overflow: auto"></div>
-        </div>
+            <div id="jsTreeDivV" style="width:250px;height: 400px;overflow:auto;"></div>
+            <div id='editorDivVId' style="height: 400px;width:500px;overflow: auto"></div>
+        </div>-->
 
     </div>
 
@@ -104,7 +93,7 @@
 </div>
 <!--
 <div style="display: flex;flex-direction: column;width:100%;">
-
+    <span> Common Concepts   <span style='font-weight: bold' id='CommonConceptsCount'> </span></span>
     <div id="CommonConceptsDiv" style="width:100%;height: 300px;overflow:auto;"></div>
 </div>-->
 

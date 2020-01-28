@@ -65,6 +65,8 @@ var skosReader = {
                 countConcepts += 1
                 currentConcept = {};
                 var id = node.attributes["rdf:about"];
+               // console.log(id);
+
                 if (!id) {
                     currentConcept = null;
                     return;
@@ -129,6 +131,7 @@ var skosReader = {
         })
 
         saxStream.on("text", function (text) {
+
             if (!currentConcept)
                 return;
             if (currentTagName) {
@@ -343,6 +346,9 @@ var skosReader = {
     mapToSkosEditor: function (conceptsMap, options) {
         var conceptsArray = []
         for (var id in conceptsMap) {
+
+            if(id=="xs:element_Kind_424")
+                var x=3
             var obj = {data: {}}
             var concept = conceptsMap[id];
 
@@ -393,7 +399,8 @@ var skosReader = {
 
     skosEditorToRdf: function (rdfPath, conceptsArray, options, callback) {
 
-
+if(!options)
+    options={};
         var uriRoot = ""// "http://PetroleumAbstractsThesaurus/"
         var str = "";
         str += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -470,9 +477,8 @@ var skosReader = {
         str = str.replace(/<objArray>\n/gm, "").replace(/<\/objArray>\n/gm, "")
         str += "</rdf:RDF>"
 
-
         fs.writeFileSync(rdfPath, str)
-        return callback(null, "done")
+        return callback(null, "done "+rdfPath)
 
     }
 
