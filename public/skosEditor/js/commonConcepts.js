@@ -46,17 +46,21 @@ var commonConcepts=(function(){
 
     self.isCommonConcept = function (a, b) {
         var ok = false;
+        if(! a.prefLabels ||  !a.prefLabels)
+            return ok;
         a.prefLabels.forEach(function (prefLabelA) {
             b.prefLabels.forEach(function (prefLabelB) {
                 if (prefLabelA.value.toLowerCase() == prefLabelB.value.toLowerCase())
-                    return ok = true;
+                   ok = true;
+                return ok;
 
             })
         })
         a.altLabels.forEach(function (altLabelA) {
             b.altLabels.forEach(function (altLabelB) {
                 if (altLabelA.value.toLowerCase() == altLabelB.value.toLowerCase())
-                    return ok = true;
+                    ok = true;
+                return ok;
 
             })
         })
@@ -101,7 +105,7 @@ var commonConcepts=(function(){
 
 
     self.onIntersectionCommonConceptsClick = function (commonConceptH, commonConceptV) {
-        comparator.displayPopupDiv();
+        comparator.displayPopupDiv("popupDiv");
         var vConcept = comparator.conceptsMap[commonConceptV];
         var hConcept = comparator.conceptsMap[commonConceptH];
         var textHColor=$("#thesaurusH").css("background-color");

@@ -7,9 +7,9 @@ var drawCanvas = (function () {
         var contextRotation = 0;
         var angle90 = -Math.PI / 2
         var onclickFn = null;
-        var onMouseOverFn=null;
+        var onMouseOverFn = null;
 
-       var totalWidth;
+        var totalWidth;
         var totalHeight;
 
         var canvas;
@@ -60,17 +60,17 @@ var drawCanvas = (function () {
         ]
 
 
-        function onClick(point, obj,event) {
+        function onClick(point, obj, event) {
 
             if (onclickFn)
-                onclickFn(point, obj,event)
+                onclickFn(point, obj, event)
             event.stopPropagation();
-          /*  if (obj.data) {
-                $("#graphInfos").html(obj.data.name);
-            }*/
+            /*  if (obj.data) {
+                  $("#graphInfos").html(obj.data.name);
+              }*/
         }
 
-        function    onMouseOver(point, obj){
+        function onMouseOver(point, obj) {
             if (onMouseOverFn) {
                 onMouseOverFn(point, obj)
                 event.stopPropagation();
@@ -81,7 +81,7 @@ var drawCanvas = (function () {
             if (!transform)
                 transform = d3.event.transform;
             context.save();
-            context.clearRect(0, 0, totalWidth+200, totalWidth+200);
+            context.clearRect(0, 0, mapWidth + 200, mapHeight + 200);
             context.translate(transform.x, transform.y);
             context.scale(transform.k, transform.k);
             currentZoomTransform = transform
@@ -108,7 +108,7 @@ var drawCanvas = (function () {
                     }
                 }
             })
-            onClick(realPoint, node,d3.event)
+            onClick(realPoint, node, d3.event)
         }
 
         function moved() {
@@ -128,21 +128,18 @@ var drawCanvas = (function () {
                     }
                 }
             })
-            if(node) {
+            if (node) {
                 onMouseOver(realPoint, node)
-             //   $(this).css('cursor','pointer');
-            }
-            else
-              //  $(this).css('cursor','default');
-                $("#mouseOverDiv").css("visibility","hidden")
+                //   $(this).css('cursor','pointer');
+            } else
+            //  $(this).css('cursor','default');
+                $("#mouseOverDiv").css("visibility", "hidden")
         }
 
 
-
-
         function initCanvas(graphDiv) {
-            totalWidth = $(graphDiv).width()// - 50;
-            totalHeight = $(graphDiv).height()// - 50;
+            var totalWidth = $(graphDiv).width()// - 50;
+            var totalHeight = $(graphDiv).height()// - 50;
             $(graphDiv).html("");
             currentZoomTransform = {x: 0, y: 0, k: 1};
             canvas = d3.select(graphDiv)
@@ -220,10 +217,10 @@ var drawCanvas = (function () {
                     context.textAlign = d.textAlign || "center"
                     if (d.vertical) {
                         context.save();
-                        context.translate( d.x, d.y);
+                        context.translate(d.x, d.y);
                         context.rotate(angle90);
                         context.fillText(d.text, 0, 0);
-                    }else{
+                    } else {
                         context.fillText(d.text, d.x, d.y);
                     }
 
@@ -240,20 +237,20 @@ var drawCanvas = (function () {
         }
 
 
-
-
-
-        self.drawData=function(canvasData,options,callback){
+        self.drawData = function (canvasData, options, callback) {
             self.highlighted = null;
             self.canvasData = canvasData;
             if (options.onclickFn)
                 onclickFn = options.onclickFn;
             if (options.onMouseOverFn)
                 onMouseOverFn = options.onMouseOverFn;
+            var graphDiv = "graphDiv"
+            if (options.graphDiv)
+                graphDiv = options.graphDiv;
 
 
             //  self.rawData = data;
-            initCanvas("#graphDiv");
+            initCanvas("#" + graphDiv);
 
 
             self.draw(canvasData, options, function (err, result) {
@@ -262,8 +259,6 @@ var drawCanvas = (function () {
             });
 
         }
-
-
 
 
         return self;

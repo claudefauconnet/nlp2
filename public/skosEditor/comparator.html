@@ -40,6 +40,7 @@
     <script src="../js/others/d3/d3.v5.js" charset="utf-8"></script>
     <script src="../js/others/async.js" charset="utf-8"></script>
     <script src="../js/graph/drawCanvas.js"></script>
+    <script src="../js/graph/visjsGraph2.js"></script>
 
     <script src="../js/graph/drawCanvas.js"></script>
     <script src="js/simpleSkosEditor.js"></script>
@@ -47,17 +48,21 @@
     <script src="js/theaususList.js"></script>
     <script src="js/jsTreeEditor.js"></script>
     <script src="js/commonConcepts.js"></script>
+    <script src="js/graphDisplay.js"></script>
     <script src="js/comparator.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
+    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
 
     <script src="js/jstree.js"></script>
     <script>
-        var totalWidth, totalHeight;
+        var mapWidth, mapHeight;
         $(function () {
-            totalWidth = $("#graphDiv").width();
-            totalHeight = $("#graphDiv").height();
+            mapWidth = $("#mapDiv").width();
+            mapHeight = $("#mapDiv").height();
             comparator.initThesaurusSelects()
         })
     </script>
@@ -76,16 +81,19 @@
 <body>
 <div>
     <div>&nbsp;</div>
-    <select class='conceptV' id="thesaurusSelectV" onclick="$('#thesaurusV').val($(this).val())"></select><input class='conceptV' id="thesaurusV" value="" size="80"><br>
+    <select class='conceptV' id="thesaurusSelectV" onclick="$('#thesaurusV').val($(this).val())"></select><input class='conceptV' id="thesaurusV" value="" size="80">
+
+    <button onclick="comparator.draw('graph',$('#thesaurusV').val(),$('#thesaurusH').val())">Graph</button>
+    <br>
     <select class='conceptH' id="thesaurusSelectH" onclick="$('#thesaurusH').val($(this).val())"></select><input class='conceptH' id="thesaurusH" value="" size="80">
 
 
-    <button onclick="comparator.drawMap($('#thesaurusV').val(),$('#thesaurusH').val())">OK</button>
+    <button onclick="comparator.draw('map',$('#thesaurusV').val(),$('#thesaurusH').val())">Map</button>
     <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 25px"></div>
 </div>
 
 <div style="display: flex;flex-direction: row">
-    <div id="graphDiv" style="width:50%;height: 700px"></div>
+    <div id="mapDiv" style="width:50%;height: 700px"></div>
 
     <div id="CommonConceptsDiv" style="width:50%;height: 700px;overflow:auto;"></div>
 
@@ -93,7 +101,7 @@
 
 
 <div id="popupDiv" style="position:absolute;display: none;flex-direction: column; background-color: white">
-    <div style="width:100%;height: 20px; background-color: #372806"  onclick="comparator.hidePopupDiv()">&nbsp; </div>
+    <div style="width:100%;height: 20px; background-color: #372806" onclick="comparator.hidePopupDiv('popupDiv')">&nbsp;</div>
     <div id="ConceptsEditorDiv" style="display:flex;flex-direction:column;width:700px;height:700px;">
         <!--  <span> Common Concepts   <span style='font-weight: bold' id='CommonConceptsCount'> </span></span>-->
         <span style="font-weight: bold" id='jstreeTtitleH'> </span>
@@ -107,6 +115,24 @@
 
     </div>
 </div>
+<div id="popupLargeDiv" style="position:absolute;display: none;flex-direction: column; background-color: white">
+    <div style="width:100%;height: 20px; background-color: #372806" onclick="comparator.hidePopupDiv('popupLargeDiv')">&nbsp;</div>
+    <div style="width:100%;height: 50px; background-color: #95a4bd">&nbsp;
+        <input id="maxGraphLevels" size="2" value="6">
+        <select id="graphDisplay_type">
+            <option>commonEdgesAndParentsOnly</option>
+            <option>all</option>
+        </select>
 
+        <select id="graphDisplay_layout">
+            <option>normal</option>
+            <option>hierarchical</option>
+
+        </select>
+        <button onclick="graphDisplay.drawTreeGraph()">Graph</button>
+    </div>
+
+    <div id="graphDiv" style="min-width: 500px;min-height: 1000px"></div>
+</div>
 </body>
 </html>

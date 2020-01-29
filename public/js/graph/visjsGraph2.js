@@ -30,8 +30,20 @@ var visjsGraph = (function () {
             },
             edges:{
               //  scaling:{min:1,max:8}
-            }
+            },
+
         };
+
+        if(_options.layoutHierarchical){
+
+            options.layout= {
+                hierarchical: {
+
+                }
+            }
+
+        }
+
 
 
         self.network = new vis.Network(container, self.data, options);
@@ -87,12 +99,12 @@ var visjsGraph = (function () {
             edge.fromNode = self.data.nodes.get(edge.from);
             edge.toNode = self.data.nodes.get(edge.to);
             var point = params.pointer.DOM;
-            sinequaResultVis.onEdgeHover(edge, point)
+         //   sinequaResultVis.onEdgeHover(edge, point)
 
 
         }).on("blurEdge", function (params) {
 
-            sinequaResultVis.onEdgeBlur()
+          //  sinequaResultVis.onEdgeBlur()
 
 
         })

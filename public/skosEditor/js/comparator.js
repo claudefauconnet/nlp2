@@ -16,7 +16,8 @@ var comparator = (function () {
     }
 
 
-    self.drawMap = function (thesaurusV, thesaurusH) {
+    self.draw = function (outputType, thesaurusV, thesaurusH, type) {
+
         self.dataV = [];
         self.dataH = [];
         self.treeV = {};
@@ -34,11 +35,11 @@ var comparator = (function () {
         $("#editorDivVId").html("");
 
 
-
-
-
         async.series([
                 function (callbackSeries) {
+
+           if(!thesaurusV || thesaurusV=="")
+               return callbackSeries();
                     self.loadThesaurus(thesaurusV, function (err, result) {
                         if (err)
                             return callbackSeries(err)
@@ -49,6 +50,8 @@ var comparator = (function () {
                 }
                 ,
                 function (callbackSeries) {
+                    if(!thesaurusH || thesaurusH=="")
+                        return callbackSeries();
                     self.loadThesaurus(thesaurusH, function (err, result) {
                         if (err)
                             return callbackSeries(err)
@@ -64,14 +67,26 @@ var comparator = (function () {
                     self.commonConcepts = commonConcepts.getCommonConcepts(self.dataH, self.dataV);
 
                     self.treeV = self.buildTree(self.dataV, self.commonConcepts);
-                    commonConcepts.setAncestorsCommonConcepts(self.treeV, self.commonConcepts)
-                    self.treeH = self.buildTree(self.dataH, self.commonConcepts);
-                    commonConcepts.setAncestorsCommonConcepts(self.treeH, self.commonConcepts)
-                    var canvasData = self.bindData(self.treeV, self.treeH);
 
-                    drawCanvas.drawData(canvasData, {onclickFn: comparator.onMapClickRect, onMouseOverFn: comparator.onMapMouseOverRect}, function (err, result) {
-                        return callbackSeries();
-                    })
+                    self.treeH = self.buildTree(self.dataH, self.commonConcepts);
+
+
+                    if (outputType == 'map') {
+                        commonConcepts.setAncestorsCommonConcepts(self.treeV, self.commonConcepts)
+                        commonConcepts.setAncestorsCommonConcepts(self.treeH, self.commonConcepts);
+
+                        var canvasData = self.bindMapData(self.treeV, self.treeH);
+
+                        drawCanvas.drawData(canvasData, {graphDiv:"mapDiv",onclickFn: comparator.onMapClickRect, onMouseOverFn: comparator.onMapMouseOverRect}, function (err, result) {
+                            return callbackSeries();
+                        })
+                    } else if (outputType == 'graph') {
+
+                        comparator.displayPopupDiv("popupLargeDiv");
+
+
+                    }
+
 
                 }
 
@@ -85,6 +100,7 @@ var comparator = (function () {
 
     self.loadThesaurus = function (rdfPath, callback) {
         $("#graphDiv").html("");
+        $("#mapDiv").html("");
         self.conceptsMap = {};
 
         var payload = {
@@ -160,20 +176,10 @@ var comparator = (function () {
     }
 
 
-
-
-
-
-
-
-
-
-
     self.onMapClickRect = function (point, obj, event) {
         if (!obj || !obj.id)
             return;
         commonConcepts.showMapSelectionCommonConcepts(obj.id.v, obj.id.h);
-
 
 
         if (event.ctrlKey) {
@@ -184,20 +190,21 @@ var comparator = (function () {
 
             /*    var html = JSON.stringify(obj.id)
                 $("#infosDiv").html(html)*/
-            var newCanvasData = self.bindData(subTreeV, subTreeH);
-            if(!newCanvasData)
-                return ;
+            var newCanvasData = self.bindMapData(subTreeV, subTreeH);
+            if (!newCanvasData)
+                return;
             //  drawCanvas.canvasData = drawCanvas.canvasData.concat(newCanvasData);
+            $("#mapDiv").html("")
             $("#graphDiv").html("")
             drawCanvas.drawData(newCanvasData, {})
             ;
         } else {
 
-        //    return jsTreeEditor.showRectJsTree(obj)
+            //    return jsTreeEditor.showRectJsTree(obj)
 
 
             return;
-            // var newCanvasData = self.bindDataToRect(nodeV, nodeH, obj);
+            // var newCanvasData = self.bindMapDataToRect(nodeV, nodeH, obj);
 
         }
     }
@@ -206,15 +213,10 @@ var comparator = (function () {
     }
 
 
-
-
-
-
-    self.bindData = function (nodeV, nodeH) {
+    self.bindMapData = function (nodeV, nodeH) {
 
         if (!nodeV.children || !nodeH.children)
             return null
-
 
 
         var interpolateColorFn = d3.scaleSequential(d3.interpolateYlOrRd).domain([1, Math.log(self.commonConcepts.length / 2)]);
@@ -225,8 +227,8 @@ var comparator = (function () {
         var x = margin;
         var y = margin;
 
-        var w = Math.round((totalWidth - margin - 30) / nodeH.children.length)
-        var h = Math.round((totalHeight - margin - 30) / nodeV.children.length)
+        var w = Math.round((mapWidth - margin - 30) / nodeH.children.length)
+        var h = Math.round((mapHeight - margin - 30) / nodeV.children.length)
         nodeV.children.forEach(function (conceptV, lineIndex) {
 
             x = margin
@@ -256,7 +258,7 @@ var comparator = (function () {
                 canvasData.push(rect);
 
                 if (rowIndex == 0) {
-                    var bgColor=$("#thesaurusV").css("background-color");
+                    var bgColor = $("#thesaurusV").css("background-color");
                     canvasData.push({
                         type: "text",
                         text: conceptV.data.prefLabels[0].value,
@@ -266,21 +268,21 @@ var comparator = (function () {
                         x: margin - 15,
                         y: y + (h / 2),
                     })
-                     canvasData.push({
-                            type: "rect",
-                            x: margin - 13,
-                            y: y + (h / 2)-10,
-                            w: 10,
-                            h: 10,
-                            bgColor: bgColor,
-                            lineWidth: 1,
-                            coords: {x: lineIndex, y: rowIndex, type: "V"}
-                        })
+                    canvasData.push({
+                        type: "rect",
+                        x: margin - 13,
+                        y: y + (h / 2) - 10,
+                        w: 10,
+                        h: 10,
+                        bgColor: bgColor,
+                        lineWidth: 1,
+                        coords: {x: lineIndex, y: rowIndex, type: "V"}
+                    })
 
                 }
 
                 if (lineIndex == 0) {
-                    var bgColor=$("#thesaurusH").css("background-color");
+                    var bgColor = $("#thesaurusH").css("background-color");
                     canvasData.push({
                         type: "text",
                         text: conceptH.data.prefLabels[0].value,
@@ -291,21 +293,21 @@ var comparator = (function () {
                         y: margin - 20,
                         vertical: true
                     })
-                     canvasData.push({
-                           type: "rect",
-                           x: x + (w / 2)-10,
-                           y: margin - 18,
-                           w: 10,
-                           h: 10,
-                           bgColor: bgColor,
-                           lineWidth: 1,
-                           coords: {x: lineIndex, y: rowIndex, type: "H"},
+                    canvasData.push({
+                        type: "rect",
+                        x: x + (w / 2) - 10,
+                        y: margin - 18,
+                        w: 10,
+                        h: 10,
+                        bgColor: bgColor,
+                        lineWidth: 1,
+                        coords: {x: lineIndex, y: rowIndex, type: "H"},
 
-                       })
+                    })
 
                 }
 
-                /*     var innerRects = self.bindDataToRect(conceptV, conceptH, rect, interpolateColorFn);
+                /*     var innerRects = self.bindMapDataToRect(conceptV, conceptH, rect, interpolateColorFn);
                      canvasData = canvasData.concat(innerRects)*/
 
                 x += w
@@ -319,7 +321,7 @@ var comparator = (function () {
 
     }
 
-    self.bindDataToRect = function (nodeV, nodeH, toNode, interpolateColorFn) {
+    self.bindMapDataToRect = function (nodeV, nodeH, toNode, interpolateColorFn) {
         var canvasData = [];
         if (!nodeV.children || !nodeH.children)
             return []
@@ -353,7 +355,7 @@ var comparator = (function () {
                     id: {h: conceptH.data.id, v: conceptV.data.id, ancestors: []}
                 }
                 canvasData.push(rect);
-                /*    var innerRects = self.bindDataToRect(conceptV, conceptH, rect, interpolateColorFn);
+                /*    var innerRects = self.bindMapDataToRect(conceptV, conceptH, rect, interpolateColorFn);
                     canvasData = canvasData.concat(innerRects)*/
                 x += w;
             })
@@ -362,24 +364,26 @@ var comparator = (function () {
         })
         return canvasData;
     }
-    self.displayPopupDiv=function(){
 
-        $("#popupDiv").position({
-            my:        "center",
-            at:        "center",
-            of:        "#graphDiv", // or $("#otherdiv")
+
+
+
+
+    self.displayPopupDiv = function (popupDiv) {
+
+        $("#"+popupDiv).position({
+            my: "top",
+            at: "top",
+            of: "#mapDiv", // or $("#otherdiv")
             collision: "fit"
         });
-        $("#popupDiv").css("display","flex")
+        $("#"+popupDiv).css("display", "flex")
 
     }
-    self.hidePopupDiv=function(){
-        $("#popupDiv").css("display","none")
+    self.hidePopupDiv = function (popupDiv) {
+        $("#"+popupDiv).css("display", "none")
 
     }
-
-
-
 
 
     return self;
