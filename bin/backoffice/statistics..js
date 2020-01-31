@@ -2,16 +2,16 @@
 const request = require('request');
 const elasticRestProxy = require('../elasticRestProxy..js')
 var ml = require('machine_learning');
-var fs=require("fs");
+var fs = require("fs");
 var async = require('async')
 var statistics = {
 
 
     getEntitiesMatrix: function (thesaurus, query, callback) {
-        if(!thesaurus)
-            thesaurus="thesaurus_ctg";
-        if(!query)
-            query={
+        if (!thesaurus)
+            thesaurus = "thesaurus_ctg";
+        if (!query)
+            query = {
                 "match_all": {}
             };
         var aggrQuery = {
@@ -50,7 +50,7 @@ var statistics = {
 
         elasticRestProxy.executePostQuery(thesaurus + "/_search", aggrQuery, function (err, result) {
 
-            if(err)
+            if (err)
                 return callback(err);
             var buckets = result.aggregations["entities_"].buckets;
             var entities = {}
@@ -77,8 +77,7 @@ var statistics = {
                                     entities[key].relatedEntities[key2] = 1
                                 else
                                     entities[key].relatedEntities[key2] += 1
-                            }
-                            else{
+                            } else {
                                 entities[key].relatedEntities[key] = 1
                             }
 
@@ -89,7 +88,7 @@ var statistics = {
             }
             allValidEntities.sort();
 
-            var max=0;
+            var max = 0;
             var X = []
             var labels = []
             allValidEntities.forEach(function (key) {
@@ -98,15 +97,15 @@ var statistics = {
                 allValidEntities.forEach(function (key2) {
                     var count = 0;
                     if (entities[key].relatedEntities[key2])
-                        if(key.indexOf(key2)<0 && key2.indexOf(key) <0)// to avoid entities having parent synonyms included in child (ex :Component-ProtectionSytem)
-                        count = entities[key].relatedEntities[key2];
+                        if (key.indexOf(key2) < 0 && key2.indexOf(key) < 0)// to avoid entities having parent synonyms included in child (ex :Component-ProtectionSytem)
+                            count = entities[key].relatedEntities[key2];
 
                     x.push(count);
-                    max=Math.max(max,count)
+                    max = Math.max(max, count)
                 })
                 X.push(x);
             })
-            callback(null, {labels: labels, data: X,max:max})
+            callback(null, {labels: labels, data: X, max: max})
 
         })
 
@@ -251,9 +250,89 @@ var statistics = {
             })
 
         })
+    },
+
+
+    wordsToVect: function (wordsArray, separators, maxWordslength) {
+        var X = [];
+        var linesCanonicWords = [];
+
+        // extract unique canonic words
+        var allUniqueWordsMap = {};
+        wordsArray.forEach(function (line) {
+            var lineWords = line.split(separators);
+            var lineCanonicWords = [];
+            lineWords.forEach(function (word) {
+                var canonicWord = word.toLowerCase().trim();
+                lineCanonicWords.push(canonicWord);
+                var isNumber=/[0-9]+/.test(canonicWord)
+                if(isNumber)
+                    return;
+                if (!allUniqueWordsMap[canonicWord] && canonicWord!="" )
+                    allUniqueWordsMap[canonicWord]=0
+                allUniqueWordsMap[canonicWord]+=1
+
+            })
+            linesCanonicWords.push(lineCanonicWords)
+
+        })
+
+        // set unique canonic size and sort by frec desc
+        var allUniqueWords=Object.keys(allUniqueWordsMap);
+
+
+        allUniqueWords.sort(function (a, b) {
+            var aFreq=allUniqueWordsMap[a];
+            var bFreq=allUniqueWordsMap[b];
+            if (aFreq > bFreq)
+                return -1
+            if (aFreq < bFreq)
+                return 1
+            return 0;
+
+        });
+
+        if (allUniqueWords.length > maxWordslength)
+            allUniqueWords=  allUniqueWords.slice(0, maxWordslength)
+
+
+        //initialize  and fill matrix X
+var emptyLines=[]
+        linesCanonicWords.forEach(function (line, lineIndex) {
+            X.push([]);
+            allUniqueWords.forEach(function (word) {
+                X[lineIndex].push(0)
+            })
+            var lineEmpty=true;
+            allUniqueWords.forEach(function (word, wordIndex) {
+                if (line.indexOf(word) > 0) {
+                    X[lineIndex][wordIndex] += 1;
+                    lineEmpty=false;
+                }
+
+            })
+            if(lineEmpty)
+                emptyLines.push(lineIndex)
+
+
+        })
+
+        var X2=[]
+        X.forEach(function(x,lineIndex){
+            if(emptyLines.indexOf(lineIndex)<0){
+               X2.push(x)
+            }
+        })
+
+
+
+
+        //remove empty lines in X
+
+
+        return {X:X,words:allUniqueWords};
+
     }
-
-
 }
 
 module.exports = statistics;
@@ -305,10 +384,20 @@ if (false) {
     };
     statistics.getEntitiesMatrix("thesaurus_ctg", query, function (err, result) {
 
-        fs.writeFileSync("D:\\NLP\\heatMap.json",JSON.stringify(result));
+        fs.writeFileSync("D:\\NLP\\heatMap.json", JSON.stringify(result));
     })
 
 
+}
+
+if(true){
+
+    var filePath="D:\\telanthropia\\words.csv"
+var str=""+fs.readFileSync(filePath);
+    var wordsArray=str.split("\n")
+
+    var X=statistics.wordsToVect(wordsArray, ",", 30);
+    fs.writeFileSync("D:\\telanthropia\\wordVects.json",JSON.stringify(X))
 }
 
 

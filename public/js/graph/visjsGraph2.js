@@ -5,45 +5,44 @@ var visjsGraph = (function () {
     self.network = null;
     self.simulationTimeOut = 1000;
     self.data;
-    self.legendLabels=[];
-    self.context={};
+    self.legendLabels = [];
+    self.context = {};
     self.currentScale;
 
 
     var simulationOn = false;
 
     self.draw = function (divId, visjsData, _options, callback) {
-        self.legendLabels=self.legendLabels.concat(visjsData.labels)
+        self.legendLabels = self.legendLabels.concat(visjsData.labels)
         var container = document.getElementById(divId);
         self.data = {
             nodes: new vis.DataSet(visjsData.nodes),
             edges: new vis.DataSet(visjsData.edges)
         };
         var options = {
-            interaction:{hover:true},
+            interaction: {hover: true},
             width: "" + $("#graphDiv").width() + "px",
             height: "" + $("#graphDiv").height() + "px",
             nodes: {
                 shape: 'dot',
                 size: 12,
-               // scaling:{min:6,max:20}
+                // scaling:{min:6,max:20}
             },
-            edges:{
-              //  scaling:{min:1,max:8}
+            edges: {
+                //  scaling:{min:1,max:8}
             },
 
         };
+        if (_options.notSmoothEdges) {
+            options.edges.smooth = false;
+        }
+        if (_options.layoutHierarchical) {
 
-        if(_options.layoutHierarchical){
-
-            options.layout= {
-                hierarchical: {
-
-                }
+            options.layout = {
+                hierarchical: {}
             }
 
         }
-
 
 
         self.network = new vis.Network(container, self.data, options);
@@ -56,12 +55,15 @@ var visjsGraph = (function () {
 
         self.network.on("click", function (params) {
             if (params.edges.length == 0 && params.nodes.length == 0) {//simple click stop animation
-                if (simulationOn)
+
+                if ( simulationOn || _options.fixedLayout)
                     self.network.stopSimulation();
-                else
+                else {
+
                     self.network.startSimulation();
-                simulationOn = !simulationOn;
-            // graphController.hideNodePopover();
+                    simulationOn = !simulationOn;
+                }
+                // graphController.hideNodePopover();
             }
 
             // select node
@@ -72,11 +74,11 @@ var visjsGraph = (function () {
                 node._graphPosition = params.pointer.DOM;
                 var point = params.pointer.DOM;
                 self.context.currentNode = node;
-                var options={
-                    ctrlKey:(params.event.srcEvent.ctrlKey?1:0)
+                var options = {
+                    ctrlKey: (params.event.srcEvent.ctrlKey ? 1 : 0)
                 }
-                sinequaResultVis.onNodeClicked(node, point)
-
+                if(_options.onclickFn)
+                    _options.onclickFn(node, point)
 
 
             }
@@ -90,7 +92,7 @@ var visjsGraph = (function () {
 
             }
 
-            }).on("zoom", function (params) {
+        }).on("zoom", function (params) {
             self.onScaleChange()
 
         }).on("hoverEdge", function (params) {
@@ -99,16 +101,15 @@ var visjsGraph = (function () {
             edge.fromNode = self.data.nodes.get(edge.from);
             edge.toNode = self.data.nodes.get(edge.to);
             var point = params.pointer.DOM;
-         //   sinequaResultVis.onEdgeHover(edge, point)
+            //   sinequaResultVis.onEdgeHover(edge, point)
 
 
         }).on("blurEdge", function (params) {
 
-          //  sinequaResultVis.onEdgeBlur()
+            //  sinequaResultVis.onEdgeBlur()
 
 
         })
-
 
 
         /*   window.setTimeout(function () {
@@ -180,37 +181,37 @@ var visjsGraph = (function () {
 
             var nodes = self.data.nodes.get();
             nodes.forEach(function (node) {
-if(node.size) {
-    if(!node.originalSize)
-        node.originalSize= node.size
-    size = node.originalSize * scaleCoef
-}
-if(!node.hiddenLabel)
-    node.hiddenLabel=node.label
+                if (node.size) {
+                    if (!node.originalSize)
+                        node.originalSize = node.size
+                    size = node.originalSize * scaleCoef
+                }
+                if (!node.hiddenLabel)
+                    node.hiddenLabel = node.label
                 var shape = node.shape;
                 if (!shape)
                     shape = Config.visjs.defaultNodeShape;
                 if (shape != "box") {
 
                     if (scale > Config.visjs.showNodesLabelMinScale) {
-                        node.label= node.hiddenLabel;
-                        node.size= size;
-                        node.font={size: fontSize}
+                        node.label = node.hiddenLabel;
+                        node.size = size;
+                        node.font = {size: fontSize}
                         self.labelsVisible = true;
 
 
                     } else {
                         self.labelsVisible = false;
-                        node.label=null;
-                        node.size= size;
-                        node.font={size: fontSize}
+                        node.label = null;
+                        node.size = size;
+                        node.font = {size: fontSize}
 
                     }
 
                     //nodes.push(node);
                 }
             })
-         self.data.nodes.update(nodes)
+            self.data.nodes.update(nodes)
 
         }
         self.currentScale = scale;

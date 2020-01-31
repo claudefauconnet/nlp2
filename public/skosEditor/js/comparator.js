@@ -183,11 +183,12 @@ var comparator = (function () {
 
 
         if (event.ctrlKey) {
-            var subTreeV = jsTreeEditor.getNodeChildrenSubTree(self.treeV, obj.id.v)
+            var subTreeV = jsTreeEditor.getNodeChildrenSubTree(self.treeV, obj.id.v);
+            if (!subTreeV.children)
+                subTreeV=subTreeV
             var subTreeH = jsTreeEditor.getNodeChildrenSubTree(self.treeH, obj.id.h);
-            if (!subTreeH.children || !subTreeV.children)
-                return;
-
+            if (!subTreeH.children)
+                subTreeH=subTreeH
             /*    var html = JSON.stringify(obj.id)
                 $("#infosDiv").html(html)*/
             var newCanvasData = self.bindMapData(subTreeV, subTreeH);
@@ -196,7 +197,9 @@ var comparator = (function () {
             //  drawCanvas.canvasData = drawCanvas.canvasData.concat(newCanvasData);
             $("#mapDiv").html("")
             $("#graphDiv").html("")
-            drawCanvas.drawData(newCanvasData, {})
+            $("#CommonConceptsDiv").html("")
+
+            drawCanvas.drawData(newCanvasData, {graphDiv:"mapDiv",onclickFn: comparator.onMapClickRect, onMouseOverFn: comparator.onMapMouseOverRect})
             ;
         } else {
 

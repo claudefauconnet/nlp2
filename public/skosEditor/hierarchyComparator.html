@@ -93,25 +93,51 @@
 
         }
 
+        .thesaurusDiv{
+            width: 28%;
+            height: 900px;
+            margin: 5px;
+            padding: 5px;
+            border: #3de solid 1px;
+            overflow: auto;
+
+
+        }
+
     </style>
     <script>
         $(function () {
             skosEditor.initThesaurusSelects()
             // var to = false;
-            $('#treeSearchInput').keyup(function (e) {
-                if (e.keyCode == 13) {
-                    var v = $('#treeSearchInput').val();
-                    if (v == "")
-                        skosEditor.loadThesaurus($('#skosInput').val())
-                    else
-                        $('#treeDiv').jstree(true).search(v);
-                }
+            $('.treeSearchInput').keyup(function (e) {
 
-                /* if(to) { clearTimeout(to); }
-                 to = setTimeout(function () {
-                     var v = $('#treeSearchInput').val();
-                     $('#treeDiv').jstree(true).search(v);
-                 }, 250);*/
+                if (true) {
+                    for(var thesaurusIndex=1;thesaurusIndex<4;thesaurusIndex++){
+                        if( $('#treeDiv' + thesaurusIndex).jstree &&  $('#treeDiv' + thesaurusIndex).jstree(true) ){
+                            if (e.keyCode == 13) {
+                                var v = $(this).val();
+                                if (v != "")
+                                    $('#treeDiv' + thesaurusIndex).jstree(true).search(v);
+                                else
+                                    skosEditor.loadThesaurus($('#skosInput' + thesaurusIndex).val(), 'treeDiv' + thesaurusIndex, thesaurusIndex)
+                            }
+
+                        }
+
+                    }
+
+
+                } else {
+                    var id = $(this).attr("id")
+                    var thesaurusIndex = id.split("_")[1]
+                    if (e.keyCode == 13) {
+                        var v = $(this).val();
+                        if (v != "")
+                            $('#treeDiv' + thesaurusIndex).jstree(true).search(v);
+                        else
+                            skosEditor.loadThesaurus($('#skosInput' + thesaurusIndex).val(), 'treeDiv' + thesaurusIndex, thesaurusIndex)
+                    }
+                }
             });
         });
     </script>
@@ -121,8 +147,12 @@
 
 </div>
 <div style="display: flex;flex-direction: row;justify-content:left">
-    <div style='min-width:50px'></div>
-    <div style='max-width: 400px;'>
+    <div style='min-width:100px'>
+        <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"> <span id="messageDiv"></span></div>
+    </div>
+
+    <!-------------------------------------------------------- thesaurus 1---------------------------------------------------------------------->
+    <div class="thesaurusDiv">
         thesaurus (rdf)<br>
 
         <select id="thesaurusSelect1" onclick="$('#skosInput1').val($(this).val())"></select>
@@ -135,16 +165,49 @@
         <div id="treeDiv1"></div>
     </div>
 
+    <!-------------------------------------------------------- thesaurus 2---------------------------------------------------------------------->
+    <div class="thesaurusDiv">
+        thesaurus (rdf)<br>
 
-    <div style=' max-width: 800px; width: 750px;'>
-        <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"> <span id="messageDiv"></span></div>
-        <div class='medium-12-columns'>
-            <span id='valid_indicator' class='label'></span>
-        </div>
-        <div id='editorDivId' class='medium-12 columns'></div>
+        <select id="thesaurusSelect2" onclick="$('#skosInput2').val($(this).val())"></select>
+        <input id="skosInput2" value="" size="40"><br>
+        <input type="button" onclick="skosEditor.initNewThesaurus(2)" value="New">
+        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput2').val(),'editorDivId',2)" value="Edit">
+
+        <input type="button" onclick="skosEditor.saveThesaurus(2)" value="Save">
+        concepts:<span id="countConcepts2"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput_2">
+        <div id="treeDiv2"></div>
     </div>
+
+
+    <!-------------------------------------------------------- thesaurus 3---------------------------------------------------------------------->
+    <div class="thesaurusDiv">
+        thesaurus (rdf)<br>
+
+        <select id="thesaurusSelect3" onclick="$('#skosInput3').val($(this).val())"></select>
+        <input id="skosInput3" value="" size="40"><br>
+        <input type="button" onclick="skosEditor.initNewThesaurus(3)" value="New">
+        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput3').val(),'editorDivId',3)" value="Edit">
+
+        <input type="button" onclick="skosEditor.saveThesaurus(3)" value="Save">
+        concepts:<span id="countConcepts3"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput_3">
+        <div id="treeDiv3"></div>
+    </div>
+
+
+
 </div>
 
+<!-------------------------------------------------------- popup---------------------------------------------------------------------->
+
+<div id="popupDiv" style="position:absolute;display: none;top:100px;left:300px ;flex-direction: column; background-color: white">
+    <div style="width:100%;height: 20px; background-color: #372806" onclick="$('#popupDiv').css('display','none')">&nbsp;</div>
+
+    <span style="font-weight: bold" id='jstreeTtitle'> </span>
+    <div id='editorDivId' style="height: 600px;width:600px;overflow: auto"></div>
+
+
+</div>
 
 </body>
 </html>

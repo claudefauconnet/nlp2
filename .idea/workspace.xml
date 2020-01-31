@@ -3,11 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/graph/drawCanvas.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/drawCanvas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/statistics..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/statistics..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/comparator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,24 +41,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../telanthropia" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/skosEditor" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\skosEditor" />
-      <recent name="D:\GitHub\nlp2\public\pierre\data" />
-      <recent name="D:\GitHub\nlp2\config\elastic\sources" />
-      <recent name="D:\GitHub\nlp2\public\js\backoffice\jstree\proton" />
-      <recent name="D:\GitHub\nlp2\bin\backoffice\jsonEditor" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
       <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
       <recent name="D:\GitHub\nlp2\public\index2.html" />
       <recent name="D:\GitHub\nlp2\public\skosviewer" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\skosEditor" />
+      <recent name="D:\GitHub\nlp2\public\pierre\data" />
+      <recent name="D:\GitHub\nlp2\config\elastic\sources" />
+      <recent name="D:\GitHub\nlp2\public\js\backoffice\jstree\proton" />
+      <recent name="D:\GitHub\nlp2\bin\backoffice\jsonEditor" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -71,7 +74,7 @@
     </option>
   </component>
   <component name="RunManager" selected="Node.js.bin\www">
-    <configuration name="comparator.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="comparator.js" working-dir="$PROJECT_DIR$/public/skosEditor/js">
+    <configuration name="app.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="app.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="quantumToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="quantumToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
@@ -80,7 +83,7 @@
     <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
-    <configuration name="tulsaComparator..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="tulsaComparator..js" working-dir="$PROJECT_DIR$/bin/others">
+    <configuration name="statistics..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="statistics..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
     <configuration name="xsdToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="xsdToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
@@ -88,11 +91,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.app.js" />
+        <item itemvalue="Node.js.statistics..js" />
         <item itemvalue="Node.js.xsdToSkos..js" />
         <item itemvalue="Node.js.skosReader..js" />
         <item itemvalue="Node.js.quantumToSkos..js" />
-        <item itemvalue="Node.js.comparator.js" />
-        <item itemvalue="Node.js.tulsaComparator..js" />
       </list>
     </recent_temporary>
   </component>
@@ -116,7 +119,8 @@
       <workItem from="1579171636631" duration="16855000" />
       <workItem from="1579248347019" duration="164446000" />
       <workItem from="1579943080519" duration="84593000" />
-      <workItem from="1580303849684" duration="9994000" />
+      <workItem from="1580303849684" duration="25826000" />
+      <workItem from="1580478347303" duration="13006000" />
     </task>
     <servers />
   </component>

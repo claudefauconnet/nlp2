@@ -27,7 +27,13 @@ var graphDisplay = (function () {
         var options = {};
         if (layout == "hierarchical")
             options.layoutHierarchical = true;
+        options.notSmoothEdges = true;
 
+        options.fixedLayout = true;
+        options.onclickFn = function (node, point) {
+
+
+        }
         visjsGraph.draw("graphDiv", visjsDataV, options)
     }
 
@@ -110,16 +116,23 @@ var graphDisplay = (function () {
     self.getCommonNodesVisjData = function (commonEdges) {
         var uniqueNodes = [];
         var uniqueEdges = [];
+        var topNodes = [];
         var nodes = [];
         var edges = [];
 
+        var yOffset = 30;
+        var xOffset = 200;
+
+        var maxX = 0
+
         function recurseAncestors(node, options, level) {
+
             if (!node)
                 return;
             if (uniqueNodes.indexOf(node.id) < 0) {
                 uniqueNodes.push(node.id)
-                var color = "blue";
-                var shape = "star";
+                var color = "#ddd";
+                var shape = "box";
                 if (level > 1) {
                     color = options.color;
                     shape = options.shape
@@ -132,9 +145,25 @@ var graphDisplay = (function () {
                     shape: shape,
                     size: 10 + (5 * level)
                 }
+                if (level == 1) {//common node
+                    visNode.fixed = {x: true, y: true}
+                    visNode.x = options.fixedX
+                    visNode.y = options.commonY
+
+                } else {//parentNode
+                    visNode.fixed = {x: true, y: false}
+                    if (options.side == "left") {
+                        visNode.x = options.fixedX - (level * xOffset)
+                    } else {
+                        visNode.x = options.fixedX + (level * xOffset)
+                    }
+                    maxX = visNode.x;
+
+                }
                 nodes.push(visNode)
 
             }
+
             var parent = node.data.broaders[0];
             if (parent) {
                 var edgeKey = parent + "|" + node.id;
@@ -146,22 +175,80 @@ var graphDisplay = (function () {
                         type: "parent"
                     })
                 }
+
                 recurseAncestors(comparator.conceptsMap[parent], options, level + 1)
 
+            } else {
+                if (visNode)
+                    topNodes.push(visNode)
             }
 
         }
 
+        function setTopNodesRootNode(topNodes, rootNodeName, color, x) {
+            var color = topNodes[0].color
+            var x = topNodes[0].x
+            if (x > 0)
+                x += xOffset;
+            else
+                x -= xOffset
 
+            nodes.push({
+                id: rootNodeName,
+                label: rootNodeName,
+                color: color,
+                shape: "box",
+                fixed: {x: true},
+                x: x
+            })
+            topNodes.forEach(function (node) {
+                edges.push({
+                    from: node.id,
+                    to: rootNodeName,
+                    type: "parent"
+
+                })
+            })
+
+
+        }
+
+        var commonY = 5;
+        topNodes = [];
+
+        var color = $("#thesaurusSelectH").css("background-color")
         commonEdges.forEach(function (commonEdge) {
             edges.push(commonEdge);
             var conceptV = comparator.conceptsMap[commonEdge.from];
-            recurseAncestors(conceptV, {shape: "dot", color: "green"}, 1)
-            var conceptH = comparator.conceptsMap[commonEdge.to];
-            recurseAncestors(conceptH, {shape: "dot", color: "orange"}, 1)
 
+
+            recurseAncestors(conceptV, {shape: "box", color: color, fixedX: 150, side: "left", commonY: commonY}, 1);
+            commonY += yOffset
+        })
+        setTopNodesRootNode(topNodes, $("#thesaurusSelectH").val())
+
+        var commonY = 5;
+        topNodes = [];
+        var color = $("#thesaurusSelectV").css("background-color")
+        commonEdges.forEach(function (commonEdge) {
+            var conceptH = comparator.conceptsMap[commonEdge.to];
+            recurseAncestors(conceptH, {shape: "box", color: color, fixedX: 350, side: "right", commonY: commonY}, 1)
+            commonY += yOffset
 
         })
+
+        setTopNodesRootNode(topNodes, $("#thesaurusSelectV").val())
+
+        nodes.sort(function (a, b) {
+            if (a.label > b.label)
+                return 1;
+            if (a.label < b.label)
+                return -1;
+            return 0;
+
+        })
+
+
         return {nodes: nodes, edges: edges};
 
 

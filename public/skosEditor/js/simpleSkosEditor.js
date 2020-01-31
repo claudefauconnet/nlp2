@@ -8,7 +8,9 @@ skosEditor = (function () {
     self.initThesaurusSelects = function () {
 
 
-        common.fillSelectOptions("thesaurusSelect", thesaurusList, true);
+        common.fillSelectOptions("thesaurusSelect1", thesaurusList, true);
+        common.fillSelectOptions("thesaurusSelect2", thesaurusList, true);
+        common.fillSelectOptions("thesaurusSelect3", thesaurusList, true);
 
     }
 
@@ -41,8 +43,9 @@ skosEditor = (function () {
             function (evt, obj) {
                 skosEditor.synchronizePreviousData();
                 skosEditor.context.previousNode = obj.node;
-                var conceptData = obj.node.data;
-                skosEditor.conceptEditor.editConcept(conceptData,"editorDivId");
+                var conceptData = obj.node.data
+                $("#popupDiv").css("display","block")
+                skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
             })
             .on("rename_node.jstree Event",
                 function (event, obj) {
@@ -88,10 +91,10 @@ skosEditor = (function () {
 
     }
 
-    self.loadThesaurus = function (rdfPath, editorDivId) {
+    self.loadThesaurus = function (rdfPath, editorDivId, thesaurusIndex) {
         $("#" + editorDivId).html("");
-        $("#treeDiv").html("");
-        $("#countConcepts").html("");
+        $("#treeDiv" + thesaurusIndex).html("");
+        $("#countConcepts" + thesaurusIndex).html("");
         $("#waitImg").css("display", "block");
 
         var payload = {
@@ -111,18 +114,18 @@ skosEditor = (function () {
 
             success: function (data, textStatus, jqXHR) {
                 $("#waitImg").css("display", "none");
-                $("#countConcepts").html(data.length)
+                $("#countConcepts" + thesaurusIndex).html(data.length)
                 //   $("#messageDiv").html("done")
 
                 data.forEach(function (item) {
-                    if(item.parent=="xs:element_Kind_424")
-                        var x=3
+                    if (item.parent == "xs:element_Kind_424")
+                        var x = 3
                     item.icon = "concept-icon.png";
 
 
                 })
 
-                self.drawJsTree("treeDiv", data)
+                self.drawJsTree("treeDiv" + thesaurusIndex, data)
 
             }
             , error: function (err) {
@@ -136,9 +139,9 @@ skosEditor = (function () {
     }
 
 
-    self.initNewThesaurus = function (rdfPath) {
-        $("#skosInput").val("")
-        $("#skosInput").val("")
+    self.initNewThesaurus = function (thesaurusIndex) {
+        $("#skosInput" + thesaurusIndex).val("")
+        $("#skosInput" + thesaurusIndex).val("")
         var thesaurusName = prompt("enter thesaurus name", "");
         if (!thesaurusName || thesaurusName == "")
             return;
@@ -161,11 +164,11 @@ skosEditor = (function () {
                 }
             }
         ]
-        self.drawJsTree("treeDiv", jsTreeData);
+        self.drawJsTree("treeDiv" + thesaurusIndex, jsTreeData);
 
     }
 
-    self.saveThesaurus = function (rdfPath) {
+    self.saveThesaurus = function (rdfPath, thesaurusIndex) {
         self.synchronizePreviousData();
 
 
@@ -176,7 +179,7 @@ skosEditor = (function () {
             return;
 
         var data = [];
-        var jsonNodes = $('#treeDiv').jstree(true).get_json('#', {flat: true});
+        var jsonNodes = $('#treeDiv' + thesaurusIndex).jstree(true).get_json('#', {flat: true});
         $.each(jsonNodes, function (i, item) {
             if (item.parent != "#" && item.parent != item.data.broaders[0]) {
                 item.data.broaders.splice(0, 1, item.parent)
@@ -333,12 +336,12 @@ skosEditor = (function () {
 
 
     self.conceptEditor = {
-        currentEditorDivId:null,
+        currentEditorDivId: null,
         editConcept: function (conceptData, editorDivId, options) {
-           if(editorDivId)
-               currentEditorDivId=editorDivId;
-           else
-               editorDivId=currentEditorDivId;
+            if (editorDivId)
+                currentEditorDivId = editorDivId;
+            else
+                editorDivId = currentEditorDivId;
 
             if (!conceptData)
                 return $("#" + editorDivId).html("");
@@ -479,8 +482,8 @@ skosEditor = (function () {
             if (options.readOnly) {
                 $(".concept_button").css("display", "none")
             }
-            if(options.bgColor){
-                $("#"+editorDivId+" .concept-group").css("background-color", options.bgColor);
+            if (options.bgColor) {
+                $("#" + editorDivId + " .concept-group").css("background-color", options.bgColor);
 
             }
 
