@@ -3,6 +3,8 @@ var thesaurusList=[
     "D:\\NLP\\thesaurusCTG-12_2019.rdf",
     "D:\\NLP\\quantum_F_all.rdf",
     "D:\\NLP\\Tulsa_all.rdf",
+    "D:\\NLP\\souslesensTotal.rdf",
+
     "---------Energistics-------",
     "D:\\NLP\\energistics\\WellboreGeology.rdf",
     "---------Tulsa-------",

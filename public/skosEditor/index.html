@@ -128,7 +128,7 @@
         <select id="thesaurusSelect1" onclick="$('#skosInput1').val($(this).val())"></select>
         <input id="skosInput1" value="" size="40"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus(1)" value="New">
-        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
+        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit"> <input id="outputLangInput" value="en">
 
         <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
         concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput_1">

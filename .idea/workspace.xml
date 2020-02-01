@@ -3,14 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/statistics..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/statistics..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,8 +22,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
-        <option value="JS module" />
         <option value="JavaScript File" />
+        <option value="JS module" />
       </list>
     </option>
   </component>
@@ -77,7 +74,7 @@
     <configuration name="app.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="app.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="quantumToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="quantumToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
+    <configuration name="locskos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="locskos..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
     <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
@@ -91,11 +88,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.locskos..js" />
         <item itemvalue="Node.js.app.js" />
         <item itemvalue="Node.js.statistics..js" />
         <item itemvalue="Node.js.xsdToSkos..js" />
         <item itemvalue="Node.js.skosReader..js" />
-        <item itemvalue="Node.js.quantumToSkos..js" />
       </list>
     </recent_temporary>
   </component>
@@ -120,7 +117,7 @@
       <workItem from="1579248347019" duration="164446000" />
       <workItem from="1579943080519" duration="84593000" />
       <workItem from="1580303849684" duration="25826000" />
-      <workItem from="1580478347303" duration="13006000" />
+      <workItem from="1580478347303" duration="33813000" />
     </task>
     <servers />
   </component>
@@ -142,28 +139,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/xsdToSkos..js</url>
-          <line>334</line>
-          <option name="timeStamp" value="1228" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>50</line>
-          <option name="timeStamp" value="1253" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/xsdToSkos..js</url>
-          <line>188</line>
-          <option name="timeStamp" value="1260" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/xsdToSkos..js</url>
-          <line>101</line>
-          <option name="timeStamp" value="1262" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="dart-exception" />
       </default-breakpoints>

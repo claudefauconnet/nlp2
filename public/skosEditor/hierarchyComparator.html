@@ -112,7 +112,7 @@
             $('.treeSearchInput').keyup(function (e) {
 
                 if (true) {
-                    for(var thesaurusIndex=1;thesaurusIndex<4;thesaurusIndex++){
+                    for(var thesaurusIndex=1;thesaurusIndex<6;thesaurusIndex++){
                         if( $('#treeDiv' + thesaurusIndex).jstree &&  $('#treeDiv' + thesaurusIndex).jstree(true) ){
                             if (e.keyCode == 13) {
                                 var v = $(this).val();
@@ -143,8 +143,8 @@
     </script>
 </head>
 <body>
-<div class='row'>
-
+<div class='row' style='justify-content: center;align-items:center;display: flex'>
+ Search <input size='10' class="treeSearchInput" style="height: 30px;margin: 5px" id="treeSearchInput_3">
 </div>
 <div style="display: flex;flex-direction: row;justify-content:left">
     <div style='min-width:100px'>
@@ -161,7 +161,7 @@
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
 
         <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
-        concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput_1">
+        concepts:<span id="countConcepts1"></span>
         <div id="treeDiv1"></div>
     </div>
 
@@ -175,7 +175,7 @@
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput2').val(),'editorDivId',2)" value="Edit">
 
         <input type="button" onclick="skosEditor.saveThesaurus(2)" value="Save">
-        concepts:<span id="countConcepts2"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput_2">
+        concepts:<span id="countConcepts2"></span>
         <div id="treeDiv2"></div>
     </div>
 
@@ -190,8 +190,22 @@
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput3').val(),'editorDivId',3)" value="Edit">
 
         <input type="button" onclick="skosEditor.saveThesaurus(3)" value="Save">
-        concepts:<span id="countConcepts3"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput_3">
+        concepts:<span id="countConcepts3"></span>
         <div id="treeDiv3"></div>
+    </div>
+
+    <!-------------------------------------------------------- thesaurus 4---------------------------------------------------------------------->
+    <div class="thesaurusDiv">
+        thesaurus (rdf)<br>
+
+        <select id="thesaurusSelect4" onclick="$('#skosInput4').val($(this).val())"></select>
+        <input id="skosInput4" value="" size="40"><br>
+        <input type="button" onclick="skosEditor.initNewThesaurus(4)" value="New">
+        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput3').val(),'editorDivId',4)" value="Edit">
+
+        <input type="button" onclick="skosEditor.saveThesaurus(4)" value="Save">
+        concepts:<span id="countConcepts4"></span>
+        <div id="treeDiv4"></div>
     </div>
 
 

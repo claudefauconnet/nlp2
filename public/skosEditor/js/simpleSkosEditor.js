@@ -11,6 +11,8 @@ skosEditor = (function () {
         common.fillSelectOptions("thesaurusSelect1", thesaurusList, true);
         common.fillSelectOptions("thesaurusSelect2", thesaurusList, true);
         common.fillSelectOptions("thesaurusSelect3", thesaurusList, true);
+        common.fillSelectOptions("thesaurusSelect4", thesaurusList, true);
+
 
     }
 
@@ -44,24 +46,44 @@ skosEditor = (function () {
                 skosEditor.synchronizePreviousData();
                 skosEditor.context.previousNode = obj.node;
                 var conceptData = obj.node.data
-                $("#popupDiv").css("display","block")
+                $("#popupDiv").css("display", "block")
                 skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
             })
             .on("rename_node.jstree Event",
                 function (event, obj) {
+                    var treeId = event.target.id
 
                     if (!obj.node.data) {
                         obj.node.data = {
                             id: "",
                             prefLabels: {},
                             altLabels: [],
-                            relateds: []
+                            relateds: [],
+                            broaders: []
                         }
 
                     }
-                    obj.node.data.prefLabels["en"] = obj.node.text
+
+                    if (obj.node.parent != "#") {
+
+
+                        var parentNode = $('#' + treeId).jstree(true).get_node(obj.node.parent)
+                        obj.node.data.id = parentNode.data.id + "/" + obj.node.text;
+                        obj.node.data.broaders = [parentNode.data.id]
+
+
+                    } else {
+                        if (self.rootId)
+                            obj.node.data.id = [self.rootId + "/" + obj.node.text]
+                        else
+                            obj.node.data.id = [obj.node.text]
+                    }
+                    $('#'+treeId).jstree(true).set_id(obj.node, obj.node.data.id);
+
+                    obj.node.data.prefLabels = [{lang: self.outputLang, value: obj.node.text}]
                     var conceptData = obj.node.data;
-                    skosEditor.conceptEditor.editConcept(conceptData);
+                    skosEditor.context.previousNode = obj.node;
+                    skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
 
 
                 })
@@ -79,7 +101,7 @@ skosEditor = (function () {
         if (node.data.prefLabels.length > 0) {
             var prefLabel = node.data.prefLabels[0]
             node.data.prefLabels.forEach(function (item) {
-                    if (item.lang == "en")
+                    if (item.lang == self.outputLang)
                         prefLabel = item.value;
                 }
             )
@@ -92,6 +114,9 @@ skosEditor = (function () {
     }
 
     self.loadThesaurus = function (rdfPath, editorDivId, thesaurusIndex) {
+        self.outputLang = $("#outputLangInput").val();
+        if (!self.outputLang || self.outputLang == "")
+            self.outputLang = "en";
         $("#" + editorDivId).html("");
         $("#treeDiv" + thesaurusIndex).html("");
         $("#countConcepts" + thesaurusIndex).html("");
@@ -102,7 +127,7 @@ skosEditor = (function () {
             rdfPath: rdfPath,
             options: JSON.stringify({
                 extractedLangages: "en,fr,sp",
-                outputLangage: "en",
+                outputLangage: self.outputLang,
 
             })
         }
@@ -142,6 +167,9 @@ skosEditor = (function () {
     self.initNewThesaurus = function (thesaurusIndex) {
         $("#skosInput" + thesaurusIndex).val("")
         $("#skosInput" + thesaurusIndex).val("")
+        self.outputLang = $("#outputLangInput").val();
+        if (!self.outputLang || self.outputLang == "")
+            self.outputLang = "en";
         var thesaurusName = prompt("enter thesaurus name", "");
         if (!thesaurusName || thesaurusName == "")
             return;
@@ -149,7 +177,8 @@ skosEditor = (function () {
 
         if (!self.rdfUri || self.rdfUri == "")
             return;
-        var id = self.rdfUri + thesaurusName
+        var id = self.rdfUri + thesaurusName;
+        self.rootId = id;
         var jsTreeData = [
             {
                 id: id,
@@ -157,10 +186,10 @@ skosEditor = (function () {
                 parent: "#",
                 data: {
                     id: id,
-                    prefLabels: [],
+                    prefLabels: [{lang: self.outputLang, lang: thesaurusName}],
                     altLabels: [],
                     broaders: [],
-                    related: [],
+                    relateds: [],
                 }
             }
         ]
@@ -168,25 +197,40 @@ skosEditor = (function () {
 
     }
 
-    self.saveThesaurus = function (rdfPath, thesaurusIndex) {
+    self.saveThesaurus = function (thesaurusIndex) {
         self.synchronizePreviousData();
 
 
-        if (!rdfPath) {
-            rdfPath = prompt("enter rdf file location", $("#skosInput").val());
-        }
+        var rdfPath = prompt("enter rdf file location", $("#skosInput" + thesaurusIndex).val());
+
         if (!rdfPath || rdfPath == "")
             return;
 
         var data = [];
+        //get jstree nodes
         var jsonNodes = $('#treeDiv' + thesaurusIndex).jstree(true).get_json('#', {flat: true});
         $.each(jsonNodes, function (i, item) {
-            if (item.parent != "#" && item.parent != item.data.broaders[0]) {
-                item.data.broaders.splice(0, 1, item.parent)
+            if (item.parent == "#") {
+                item.data.broaders = [];
+            } else {
+                if (item.data.broaders.length > 0) {
+                    if (item.parent != item.data.broaders[0])
+                        item.data.broaders[0] = item.parent;
+                } else {
+                    item.data.broaders.push(item.parent)
+                }
             }
             data.push(item.data);
+
+
+        })
+        // reset incorrect nodeIds (newly created)
+        data.forEach(function (item) {
         })
 
+        data.forEach(function (item) {
+
+        })
 
         var payload = {
             skosEditorToRdf: 1,
@@ -213,125 +257,6 @@ skosEditor = (function () {
 
             }
         })
-    }
-
-    self.skosShema = {
-
-        "title": "Concept",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "prefLabels": {
-                "type": "array",
-                "items": {
-                    "title": "prefLabel",
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "required": true,
-                            "type": "string"
-                        },
-                        "lang": {
-                            "required": true,
-                            "type": "string",
-                            "enum": [
-                                "en",
-                                "fr",
-                                "sp"
-                            ]
-                        }
-                    }
-                }
-            }, "altLabels": {
-                "type": "array",
-                "items": {
-                    "title": "altLabel",
-                    "type": "string",
-
-                }
-            }
-            , "relateds": {
-                "type": "array",
-                "items": {
-                    "title": "related",
-                    "type": "object",
-                    "properties": {
-                        "uri": {
-                            "required": true,
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    self.skosShemaXX = {
-
-        "title": "Concept",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "prefLabels": {
-                "type": "array",
-                "items": {
-                    "title": "prefLabel",
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "required": true,
-                            "type": "string"
-                        },
-                        "lang": {
-                            "required": true,
-                            "type": "string",
-                            "enum": [
-                                "en",
-                                "fr",
-                                "sp"
-                            ]
-                        }
-                    }
-                }
-            }, "altLabels": {
-                "type": "array",
-                "items": {
-                    "title": "altLabel",
-                    "type": "object",
-                    "properties": {
-                        "value": {
-                            "required": true,
-                            "type": "string"
-
-                        },
-                        "lang": {
-                            "required": true,
-                            "type": "string",
-                            "enum": [
-                                "en",
-                                "fr",
-                                "sp"
-                            ]
-                        }
-                    }
-                }
-            }
-            , "relateds": {
-                "type": "array",
-                "items": {
-                    "title": "related",
-                    "type": "object",
-                    "properties": {
-                        "uri": {
-                            "required": true,
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        }
     }
 
 
@@ -493,12 +418,12 @@ skosEditor = (function () {
 
 
         addToConceptPrefLabels: function () {
-            self.context.conceptData.prefLabels.splice(0, 0, {lang: "en", value: ""})
+            self.context.conceptData.prefLabels.splice(0, 0, {lang: self.outputLang, value: ""})
             var conceptData = self.context.conceptData
             self.conceptEditor.editConcept(conceptData);
         },
         addToConceptAltLabels: function () {
-            self.context.conceptData.altLabels.splice(0, 0, {lang: "en", value: ""})
+            self.context.conceptData.altLabels.splice(0, 0, {lang: self.outputLang, value: ""})
             var conceptData = self.context.conceptData
             self.conceptEditor.editConcept(conceptData);
         }
@@ -549,81 +474,36 @@ skosEditor = (function () {
 
             })
             var altLabels = []
-            var lang = ""
-            conceptData.altLabels.forEach(function (item, index) {
-                if (index % 2 == 0) {
-                    lang = item;
-                } else {
-                    altLabels.push({lang: lang, value: item})
-                }
-            })
+            var lang = "";
+            if (conceptData.altLabels)
+                conceptData.altLabels.forEach(function (item, index) {
+                    if (index % 2 == 0) {
+                        lang = item;
+                    } else {
+                        altLabels.push({lang: lang, value: item})
+                    }
+                })
             conceptData.altLabels = altLabels;
 
 
             var prefLabels = []
             var lang = ""
-            conceptData.prefLabels.forEach(function (item, index) {
-                if (index % 2 == 0) {
-                    lang = item;
-                } else {
-                    prefLabels.push({lang: lang, value: item})
-                }
-            })
+            if (conceptData.prefLabels)
+                conceptData.prefLabels.forEach(function (item, index) {
+                    if (index % 2 == 0) {
+                        lang = item;
+                    } else {
+                        prefLabels.push({lang: lang, value: item})
+                    }
+                })
             conceptData.prefLabels = prefLabels;
 
             return conceptData;
 
 
-        },
-
-        editConceptX: function (conceptData) {
-            self.context.currentState = "toForm"
-
-
-            if (self.editor)
-                self.editor.setValue(conceptData);
-            else {
-                // Initialize the editor
-                self.editor = new JSONEditor(document.getElementById('editor_holder'), {
-                    // Enable fetching schemas via ajax
-                    ajax: true,
-                    disable_properties: true,
-                    disable_edit_json: true,
-                    // The schema for the editor
-                    schema: self.skosShema,
-
-                    // Seed the form with a starting value
-                    startval: conceptData
-                });
-                self.editor.on('change', function () {
-
-                    if (skosEditor.context.currentState == "toForm") {
-                        skosEditor.context.currentState = null;
-                        return;
-
-                    }
-                    // Get an array of errors from the validator
-                    var errors = self.editor.validate();
-
-                    var indicator = document.getElementById('valid_indicator');
-
-                    // Not valid
-                    if (errors.length) {
-                        indicator.className = 'label alert';
-                        indicator.textContent = 'not valid';
-                    }
-                    // Valid
-                    else {
-                        indicator.className = 'label success';
-                        indicator.textContent = 'valid';
-
-
-                    }
-                });
-
-            }
-
         }
+
+
     }
 
     return self;

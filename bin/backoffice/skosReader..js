@@ -137,8 +137,7 @@ var skosReader = {
             if (currentTagName) {
                 if (currentTagName.indexOf("prefLabels_") == 0) {
                     var array = currentTagName.split("_")
-                    if(text=="Donges")
-                        var x=3
+
 
                     currentConcept[array[0]][array[1]] = text;
                 } else if (currentTagName.indexOf("altLabels_") == 0) {
@@ -162,8 +161,9 @@ var skosReader = {
                 countConceptsEnd += 1
 
                 if (!stop)
-                    if(Object.keys(currentConcept.prefLabels).length>0)
+                    if( true  || Object.keys(currentConcept.prefLabels).length>0)
                     conceptsMap[currentConcept.id] = currentConcept;
+
 
             }
         })
@@ -347,8 +347,7 @@ var skosReader = {
         var conceptsArray = []
         for (var id in conceptsMap) {
 
-            if(id=="xs:element_Kind_424")
-                var x=3
+
             var obj = {data: {}}
             var concept = conceptsMap[id];
 
