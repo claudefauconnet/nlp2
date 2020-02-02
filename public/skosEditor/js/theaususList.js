@@ -4,6 +4,8 @@ var thesaurusList=[
     "D:\\NLP\\quantum_F_all.rdf",
     "D:\\NLP\\Tulsa_all.rdf",
     "D:\\NLP\\souslesensTotal.rdf",
+    "D:\\NLP\\commonConceptsLocCtg.rdf",
+
 
     "---------Energistics-------",
     "D:\\NLP\\energistics\\WellboreGeology.rdf",

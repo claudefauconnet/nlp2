@@ -90,6 +90,14 @@ skosEditor = (function () {
 
 
     }
+
+    self.openAllTree=function(thesaurusIndex){
+
+        $('#treeDiv'+thesaurusIndex).jstree('open_all');
+    }
+
+
+
     self.synchronizePreviousData = function () {
 
         if (!skosEditor.context.previousNode)
@@ -122,12 +130,17 @@ skosEditor = (function () {
         $("#countConcepts" + thesaurusIndex).html("");
         $("#waitImg").css("display", "block");
 
+      var lastBroaderOption=null;
+        if($("#broaderTypeInput").val()=="last")
+            lastBroaderOption=true;
+
         var payload = {
             rdfToEditor: 1,
             rdfPath: rdfPath,
             options: JSON.stringify({
                 extractedLangages: "en,fr,sp",
                 outputLangage: self.outputLang,
+                lastBroader:lastBroaderOption
 
             })
         }
@@ -186,7 +199,7 @@ skosEditor = (function () {
                 parent: "#",
                 data: {
                     id: id,
-                    prefLabels: [{lang: self.outputLang, lang: thesaurusName}],
+                    prefLabels: [{lang: self.outputLang, value: thesaurusName}],
                     altLabels: [],
                     broaders: [],
                     relateds: [],
@@ -258,6 +271,7 @@ skosEditor = (function () {
             }
         })
     }
+
 
 
     self.conceptEditor = {

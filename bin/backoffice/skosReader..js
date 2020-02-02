@@ -36,6 +36,9 @@ var skosReader = {
 
     parseRdfXml: function (sourcePath, options, callback) {
         var saxStream = sax.createStream(true)
+        if (!options) {
+            options = {extractedLangages: "en", outputLangage: "en"}
+        }
 
         var conceptTagNames = ["rdf:Description", "skos:ConceptScheme", "skos:Concept", "iso-thes:ConceptGroup"]
         var conceptsMap = {}
@@ -65,7 +68,7 @@ var skosReader = {
                 countConcepts += 1
                 currentConcept = {};
                 var id = node.attributes["rdf:about"];
-               // console.log(id);
+                // console.log(id);
 
                 if (!id) {
                     currentConcept = null;
@@ -142,9 +145,9 @@ var skosReader = {
                     currentConcept[array[0]][array[1]] = text;
                 } else if (currentTagName.indexOf("altLabels_") == 0) {
                     var array = currentTagName.split("_")
-                        if(!currentConcept[array[0]][array[1]])
-                            currentConcept[array[0]][array[1]]=[];
-                        currentConcept[array[0]][array[1]].push(text)
+                    if (!currentConcept[array[0]][array[1]])
+                        currentConcept[array[0]][array[1]] = [];
+                    currentConcept[array[0]][array[1]].push(text)
 
 
                 }
@@ -161,8 +164,8 @@ var skosReader = {
                 countConceptsEnd += 1
 
                 if (!stop)
-                    if( true  || Object.keys(currentConcept.prefLabels).length>0)
-                    conceptsMap[currentConcept.id] = currentConcept;
+                    if (true || Object.keys(currentConcept.prefLabels).length > 0)
+                        conceptsMap[currentConcept.id] = currentConcept;
 
 
             }
@@ -219,7 +222,7 @@ var skosReader = {
                 synonyms: [],
                 ancestors: [],
                 parent: "#",
-                schemes:concept.schemes
+                schemes: concept.schemes
 
             }
 
@@ -238,7 +241,7 @@ var skosReader = {
             }
 
             for (var key2 in concept.altLabels) {
-                concept.altLabels[key2].forEach(function(item){
+                concept.altLabels[key2].forEach(function (item) {
                     obj.synonyms.push(item);
                 })
 
@@ -353,6 +356,9 @@ var skosReader = {
 
 
             if (concept.broaders.length > 0) {
+                if(options.lastBroader)
+                    obj.parent = concept.broaders[ concept.broaders.length-1];
+                else
                 obj.parent = concept.broaders[0];
 
             } else {
@@ -370,7 +376,7 @@ var skosReader = {
             }
             var altLabelsArray = [];
             for (var key in concept.altLabels) {
-                concept.altLabels[key].forEach(function(item) {
+                concept.altLabels[key].forEach(function (item) {
                     altLabelsArray.push({
                         lang: key,
                         value: item
@@ -378,8 +384,8 @@ var skosReader = {
                 })
             }
 
-            if(concept.relateds.length>0)
-                var x=3
+            if (concept.relateds.length > 0)
+                var x = 3
 
             obj.data.prefLabels = prefLabelsArray;
             obj.data.altLabels = altLabelsArray;
@@ -387,19 +393,32 @@ var skosReader = {
             obj.data.relateds = concept.relateds;
             obj.data.broaders = concept.broaders;
             obj.data.id = concept.id;
-            if (obj.parent!="#" && !conceptsMap[obj.parent])
+            if (obj.parent != "#" && !conceptsMap[obj.parent])
                 var x = 2;
             else
                 conceptsArray.push(obj)
 
         }
+  /*     var multipleBoradersConcepts=[];
+        conceptsArray.forEach(function(concept){
+           concept.data.broaders.forEach(function(broader,index){
+
+               if(index>1){
+                   var clonedConceptData=JSON.parse(JSON.stringify(concept.data))
+                   var clonedConcept={
+                       id:0
+                   }
+                   multipleBoradersConcepts.push(clonedConcept)
+               }
+           })
+        })*/
         return conceptsArray;
     },
 
     skosEditorToRdf: function (rdfPath, conceptsArray, options, callback) {
 
-if(!options)
-    options={};
+        if (!options)
+            options = {};
         var uriRoot = ""// "http://PetroleumAbstractsThesaurus/"
         var str = "";
         str += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -477,7 +496,7 @@ if(!options)
         str += "</rdf:RDF>"
 
         fs.writeFileSync(rdfPath, str)
-        return callback(null, "done "+rdfPath)
+        return callback(null, "done " + rdfPath)
 
     }
 
