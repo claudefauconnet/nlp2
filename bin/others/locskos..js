@@ -197,16 +197,15 @@ var locskos = {
                         ;
 
 
-
                         count += 1
                         line = line.replace(/http:\/\/id.loc.gov\/authorities\/subjects\//g, "")
                         var json
 
-                     /*   if(line.indexOf("sh85146057")>-1 )
-                            console.log(line)
-                            if(line.indexOf("sh85146057")>-1){
-                           xx=5
-                        }*/
+                        /*   if(line.indexOf("sh85146057")>-1 )
+                               console.log(line)
+                               if(line.indexOf("sh85146057")>-1){
+                              xx=5
+                           }*/
 
                         try {
                             json = JSON.parse(line)
@@ -223,8 +222,8 @@ var locskos = {
                                 var id = node["@id"];
                                 if (!id)
                                     return;
-                                if(id=="sh85063336")
-                                 var x=3 ;
+                                if (id == "sh85063336")
+                                    var x = 3;
 
                                 var parents = node["skos:broader"];
                                 var parentIds = "";
@@ -240,7 +239,7 @@ var locskos = {
                                         parentIds += (parent["@id"])
                                     })
                                 }
-                                parents=parentIds;
+                                parents = parentIds;
 
 
                                 var children = node["skos:narrower"];
@@ -282,7 +281,7 @@ var locskos = {
 
 
     },
-    compareWithThesaurus: function (th1, th2) {
+    compareWithThesaurus: function (th1, th2, callback) {
         var lines = 1000000;
         var separator = "\t"
 
@@ -311,29 +310,25 @@ var locskos = {
 
                     .on('data', function (data) {
 
-                        var id=data.id;
-                        if(id=="sh85146057")
-                            var x=3
-                        var conceptName=data.concept.toLowerCase()
-                        if( !conceptsMap[conceptName]) {
+                        var id = data.id;
+                        if (id == "sh85146057")
+                            var x = 3
+                        var conceptName = data.concept.toLowerCase()
+                        if (!conceptsMap[conceptName]) {
                             conceptsMap[conceptName] = data;
                             conceptsIdsMap[id] = data;
-                        }else{
-                            if(  data.parents) {
+                        } else {
+                            if (data.parents) {
                                 if (!conceptsMap[conceptName].parents) {
                                     conceptsMap[conceptName].parents = data.parents
-                                  //  conceptsIdsMap[id].parents = data.parents
-                                }
-                                else {
+                                    //  conceptsIdsMap[id].parents = data.parents
+                                } else {
                                     conceptsMap[conceptName].parents += "," + data.parents
 
-                                   // conceptsIdsMap[id].parents = data.parents
+                                    // conceptsIdsMap[id].parents = data.parents
                                 }
                             }
                         }
-
-
-
 
 
                     }).on('end', function () {
@@ -348,24 +343,24 @@ var locskos = {
             var xx = conceptsMap;
 
             // set parentName with parentIds
-         /*   for (var key in conceptsMap) {
-                conceptsMap[key].parentConcepts = [];
-                if (conceptsMap[key].parents) {
-                    var parentIds = conceptsMap[key].parents.split(",")
+            /*   for (var key in conceptsMap) {
+                   conceptsMap[key].parentConcepts = [];
+                   if (conceptsMap[key].parents) {
+                       var parentIds = conceptsMap[key].parents.split(",")
 
-                    parentIds.forEach(function (parent) {
-                        var parentConcept = conceptsIdsMap[parent];
-                        if (parentConcept)
-                            conceptsMap[key].parentConcepts.push(parentConcept.concept)
-                        else {
-                            orphanParentConcepts.push(key);
-                        }
+                       parentIds.forEach(function (parent) {
+                           var parentConcept = conceptsIdsMap[parent];
+                           if (parentConcept)
+                               conceptsMap[key].parentConcepts.push(parentConcept.concept)
+                           else {
+                               orphanParentConcepts.push(key);
+                           }
 
-                    })
-                }
+                       })
+                   }
 
 
-            }*/
+               }*/
 
 
             skosReader.parseRdfXml(th2, null, function (err, skosMap) {
@@ -375,16 +370,17 @@ var locskos = {
                     var concept = skosMap[key];
                     if (concept.prefLabels && concept.prefLabels["en"]) {
                         var name = concept.prefLabels["en"].toLowerCase();
-                        var altLabels=[name];
+                        var altLabels = [name];
 
-                        if( concept.altLabels) {
+                        if (concept.altLabels) {
                             for (var key in concept.altLabels) {
                                 concept.altLabels[key].forEach(function (altLabel) {
                                     altLabels.push(altLabel.toLowerCase());
                                 })
                             }
                         }
-                        altLabels.forEach(function(altLabel) {
+
+                        altLabels.forEach(function (altLabel) {
                             var locConcept = conceptsMap[altLabel];
                             if (locConcept)
                                 commonConcepts.push({locConceptId: locConcept.id, ctgConcept: concept})
@@ -392,15 +388,15 @@ var locskos = {
                         })
 
 
-
                     }
                 }
 
 
                 var locCtgSkos = [];
-var uniqueConcepts=[];
-                function recurseParents(conceptId){
-                    if(uniqueConcepts.indexOf(conceptId)<0) {
+                var uniqueConcepts = [];
+
+                function recurseParents(conceptId) {
+                    if (uniqueConcepts.indexOf(conceptId) < 0) {
                         uniqueConcepts.push(conceptId)
                         var concept = conceptsIdsMap[conceptId];
                         if (!concept)
@@ -408,9 +404,9 @@ var uniqueConcepts=[];
                         var parentIds = [];
                         if (concept.parents) {
                             parentIds = concept.parents.split(",")
-                            if(parentIds.length>0){
+                            if (parentIds.length > 0) {
                                 // parentIds=[parentIds[0]]
-                               // concept.id
+                                // concept.id
                             }
 
                         }
@@ -423,7 +419,7 @@ var uniqueConcepts=[];
                             relateds: [],
                         })
 
-                        parentIds.forEach(function (parentId,index) {
+                        parentIds.forEach(function (parentId, index) {
 
                             recurseParents(parentId)
                         })
@@ -433,28 +429,26 @@ var uniqueConcepts=[];
 
 
                 commonConcepts.forEach(function (item) {
-                    if(item.locConceptId=="sh85003955")
-                        var x=4
-                  recurseParents(item.locConceptId)
+                    if (item.locConceptId == "sh85003955")
+                        var x = 4
+                    recurseParents(item.locConceptId)
 
 
                 })
-                locCtgSkos.forEach(function(item){
-                    if(item.broaders.length==0)
-                        var x=3
-                })
 
-                skosReader.skosEditorToRdf("D:\\NLP\\commonConceptsLocCtg.rdf", locCtgSkos, {}, function (err, result) {
-                    var xxx = 3;
-                })
-                return;
-                fs.writeFileSync("D:\\NLP\\commonConceptsLocCtg.json", JSON.stringify(commonConcepts, null, 2))
+                callback(null, {locConceptsMap: conceptsMap,locConceptsIdsMap: locConceptsIdsMap, locCtgSkos:locCtgSkos});
 
 
             })
 
 
         })
+
+
+    },
+
+
+    readFastNt: function (filePath) {
 
 
     }
@@ -466,12 +460,51 @@ module.exports = locskos
 
 
 if (false) {
-   locskos.readCsv("D:\\NLP\\lcsh.skos.ndjson");
-  //  locskos.readCsv("D:\\NLP\\lcsh.madsrdf.ndjson");
+    locskos.readCsv("D:\\NLP\\lcsh.skos.ndjson");
+    //  locskos.readCsv("D:\\NLP\\lcsh.madsrdf.ndjson");
 
 }
 if (true) {
 
-    locskos.compareWithThesaurus("D:\\NLP\\LOCtopNodesAll.txt", "D:\\NLP\\thesaurusCTG-12_2019.rdf")
+    locskos.compareWithThesaurus("D:\\NLP\\LOCtopNodesAll.txt", "D:\\NLP\\thesaurusCTG-12_2019.rdf", function (err, result) {
+        if (err)
+            return console.log(err);
+
+        if (false) {
+            skosReader.skosEditorToRdf("D:\\NLP\\commonConceptsLocCtg.rdf", locCtgSkos, {}, function (err, result) {
+                var xxx = 3;
+            })
+            return;
+            fs.writeFileSync("D:\\NLP\\commonConceptsLocCtg.json", JSON.stringify(commonConcepts, null, 2))
+        }
+        if (true) {
+            var topLocCtgConcepts = []
+            var locConceptsIdsMap = result.locConceptsIdsMap;
+            result.locCtgSkos.forEach(function (item) {
+                if (item.broaders.length == 0)
+                    topLocCtgConcepts.push(item.id);
+            })
+
+            var tree={}
+            function recurse(node,concept){
+
+            for(var id in locConceptsIdsMap){
+                var child=locConceptsIdsMap[id];
+
+                if(child.parent[concept.id]){
+                    if()
+                }
+
+                }
+
+            }
+            topLocCtgConcepts.forEach(function(topConcept){
+                recurse(topConcept)
+            })
+
+        }
+
+
+    })
 }
 

@@ -3,7 +3,7 @@ skosEditor = (function () {
     var self = {};
     self.context = {}
     var elasticUrl = "../elastic";
-
+    var thesaurusNodeId = "_thesaurusNodeId"
     self.editor = null;
     self.initThesaurusSelects = function () {
 
@@ -51,6 +51,7 @@ skosEditor = (function () {
             })
             .on("rename_node.jstree Event",
                 function (event, obj) {
+                    $("#popupDiv").css("display", "none")
                     var treeId = event.target.id
 
                     if (!obj.node.data) {
@@ -78,7 +79,7 @@ skosEditor = (function () {
                         else
                             obj.node.data.id = [obj.node.text]
                     }
-                    $('#'+treeId).jstree(true).set_id(obj.node, obj.node.data.id);
+                    $('#' + treeId).jstree(true).set_id(obj.node, obj.node.data.id);
 
                     obj.node.data.prefLabels = [{lang: self.outputLang, value: obj.node.text}]
                     var conceptData = obj.node.data;
@@ -91,11 +92,10 @@ skosEditor = (function () {
 
     }
 
-    self.openAllTree=function(thesaurusIndex){
+    self.openAllTree = function (thesaurusIndex) {
 
-        $('#treeDiv'+thesaurusIndex).jstree('open_all');
+        $('#treeDiv' + thesaurusIndex).jstree('open_all');
     }
-
 
 
     self.synchronizePreviousData = function () {
@@ -122,17 +122,19 @@ skosEditor = (function () {
     }
 
     self.loadThesaurus = function (rdfPath, editorDivId, thesaurusIndex) {
-        self.outputLang = $("#outputLangInput").val();
+        self.outputLang = $("#outputLangInput" + thesaurusIndex).val();
         if (!self.outputLang || self.outputLang == "")
             self.outputLang = "en";
         $("#" + editorDivId).html("");
         $("#treeDiv" + thesaurusIndex).html("");
         $("#countConcepts" + thesaurusIndex).html("");
         $("#waitImg").css("display", "block");
+        var thesaurusName = rdfPath.substring(rdfPath.lastIndexOf("\\")+1)
+        thesaurusName = thesaurusName.substring(0, thesaurusName.indexOf("."))
 
-      var lastBroaderOption=null;
-        if($("#broaderTypeInput").val()=="last")
-            lastBroaderOption=true;
+        var lastBroaderOption = null;
+        if ($("#broaderTypeInput" + thesaurusIndex).val() == "last")
+            lastBroaderOption = true;
 
         var payload = {
             rdfToEditor: 1,
@@ -140,7 +142,8 @@ skosEditor = (function () {
             options: JSON.stringify({
                 extractedLangages: "en,fr,sp",
                 outputLangage: self.outputLang,
-                lastBroader:lastBroaderOption
+                lastBroader: lastBroaderOption,
+                thesaurusName: thesaurusName
 
             })
         }
@@ -155,13 +158,29 @@ skosEditor = (function () {
                 $("#countConcepts" + thesaurusIndex).html(data.length)
                 //   $("#messageDiv").html("done")
 
-                data.forEach(function (item) {
-                    if (item.parent == "xs:element_Kind_424")
-                        var x = 3
+
+                data.forEach(function (item, index) {
+                    if (data[index].parent == "#") {
+                        data[index].parent = thesaurusNodeId;
+                    }
                     item.icon = "concept-icon.png";
 
 
                 })
+                var rootNode = {
+                    id: thesaurusNodeId,
+                    text: thesaurusName,
+                    parent: "#",
+                    data: {
+                        id: thesaurusNodeId,
+                        prefLabels: [{lang: self.outputLang, value: thesaurusName || "root"}],
+                        altLabels: [],
+                        broaders: [],
+                        relateds: [],
+                    }
+                }
+                data.push(rootNode)
+//console.log(JSON.stringify(data,null,2))
 
                 self.drawJsTree("treeDiv" + thesaurusIndex, data)
 
@@ -180,7 +199,7 @@ skosEditor = (function () {
     self.initNewThesaurus = function (thesaurusIndex) {
         $("#skosInput" + thesaurusIndex).val("")
         $("#skosInput" + thesaurusIndex).val("")
-        self.outputLang = $("#outputLangInput").val();
+        self.outputLang = $("#outputLangInput" + thesaurusIndex).val();
         if (!self.outputLang || self.outputLang == "")
             self.outputLang = "en";
         var thesaurusName = prompt("enter thesaurus name", "");
@@ -223,7 +242,11 @@ skosEditor = (function () {
         //get jstree nodes
         var jsonNodes = $('#treeDiv' + thesaurusIndex).jstree(true).get_json('#', {flat: true});
         $.each(jsonNodes, function (i, item) {
-            if (item.parent == "#") {
+            if(item.id==thesaurusNodeId)
+                return;
+            if( !item.data || !item.data.broaders)
+                var x=3
+            if (item.parent == thesaurusNodeId) {
                 item.data.broaders = [];
             } else {
                 if (item.data.broaders.length > 0) {
@@ -271,7 +294,6 @@ skosEditor = (function () {
             }
         })
     }
-
 
 
     self.conceptEditor = {

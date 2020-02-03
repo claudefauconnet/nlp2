@@ -8,9 +8,10 @@ var visjsGraph = (function () {
     self.legendLabels = [];
     self.context = {};
     self.currentScale;
+    self.simulationOn;
 
 
-    var simulationOn = false;
+    self.simulationOn = false;
 
     self.draw = function (divId, visjsData, _options, callback) {
         self.legendLabels = self.legendLabels.concat(visjsData.labels)
@@ -46,23 +47,24 @@ var visjsGraph = (function () {
 
 
         self.network = new vis.Network(container, self.data, options);
-        simulationOn = true;
+        self.simulationOn = true;
         window.setTimeout(function () {
             self.network.stopSimulation();
-            simulationOn = false;
+            self.simulationOn = false;
         }, self.simulationTimeOut)
 
 
         self.network.on("click", function (params) {
             if (params.edges.length == 0 && params.nodes.length == 0) {//simple click stop animation
 
-                if ( simulationOn || _options.fixedLayout)
+                if ( self.simulationOn || _options.fixedLayout)
                     self.network.stopSimulation();
                 else {
 
                     self.network.startSimulation();
-                    simulationOn = !simulationOn;
+
                 }
+                self.simulationOn = !self.simulationOn;
                 // graphController.hideNodePopover();
             }
 

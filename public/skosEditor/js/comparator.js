@@ -153,7 +153,7 @@ var comparator = (function () {
 
 
         childrenArray.forEach(function (child) {
-            if (child.parent && child.parent != "#") {
+            if (child.parent && child.parent != "#" && self.conceptsMap[child.parent]) {
                 if (!self.conceptsMap[child.parent].children) {
                     self.conceptsMap[child.parent].children = [];
                 }

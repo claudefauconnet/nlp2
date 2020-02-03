@@ -347,8 +347,11 @@ var skosReader = {
 
 
     mapToSkosEditor: function (conceptsMap, options) {
+
         var conceptsArray = []
+
         for (var id in conceptsMap) {
+
 
 
             var obj = {data: {}}
@@ -356,10 +359,10 @@ var skosReader = {
 
 
             if (concept.broaders.length > 0) {
-                if(options.lastBroader)
-                    obj.parent = concept.broaders[ concept.broaders.length-1];
+                if (options.lastBroader)
+                    obj.parent = concept.broaders[concept.broaders.length - 1];
                 else
-                obj.parent = concept.broaders[0];
+                    obj.parent = concept.broaders[0];
 
             } else {
                 obj.parent = "#"
@@ -399,19 +402,19 @@ var skosReader = {
                 conceptsArray.push(obj)
 
         }
-  /*     var multipleBoradersConcepts=[];
-        conceptsArray.forEach(function(concept){
-           concept.data.broaders.forEach(function(broader,index){
+        /*     var multipleBoradersConcepts=[];
+              conceptsArray.forEach(function(concept){
+                 concept.data.broaders.forEach(function(broader,index){
 
-               if(index>1){
-                   var clonedConceptData=JSON.parse(JSON.stringify(concept.data))
-                   var clonedConcept={
-                       id:0
-                   }
-                   multipleBoradersConcepts.push(clonedConcept)
-               }
-           })
-        })*/
+                     if(index>1){
+                         var clonedConceptData=JSON.parse(JSON.stringify(concept.data))
+                         var clonedConcept={
+                             id:0
+                         }
+                         multipleBoradersConcepts.push(clonedConcept)
+                     }
+                 })
+              })*/
         return conceptsArray;
     },
 

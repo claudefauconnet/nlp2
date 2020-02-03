@@ -5,10 +5,13 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/locskos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/locskos..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/backoffice.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/backoffice.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,7 +42,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../standalone" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -71,7 +74,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
+  <component name="RunManager" selected="Node.js.locskos..js">
     <configuration name="app.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="app.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
@@ -119,7 +122,7 @@
       <workItem from="1579943080519" duration="84593000" />
       <workItem from="1580303849684" duration="25826000" />
       <workItem from="1580478347303" duration="35208000" />
-      <workItem from="1580634999564" duration="23891000" />
+      <workItem from="1580634999564" duration="47370000" />
     </task>
     <servers />
   </component>
@@ -144,15 +147,15 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
-          <line>273</line>
+          <line>272</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1323" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
-          <line>450</line>
+          <line>397</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1368" />
+          <option name="timeStamp" value="1419" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

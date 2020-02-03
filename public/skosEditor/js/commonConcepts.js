@@ -7,7 +7,7 @@ var commonConcepts=(function(){
             if ( child && child.parent && child.parent != "#") {
                 if( child.parent=="xs:element_Kind_711")
                     var xx=3;
-                if (child.commonConceptCount > 0) {
+                if (child.commonConceptCount > 0 && comparator.conceptsMap[child.parent]) {
                     comparator.conceptsMap[child.parent].commonConceptCount += child.commonConceptCount;
                     child.commonConcepts.forEach(function (commonConcept) {
                         var array = comparator.conceptsMap[child.parent].commonConcepts;

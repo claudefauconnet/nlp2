@@ -31,11 +31,87 @@ var graphDisplay = (function () {
 
         options.fixedLayout = true;
         options.onclickFn = function (node, point) {
-
+            self.onNodeClick(node, point);
 
         }
         visjsGraph.draw("graphDiv", visjsDataV, options)
     }
+
+
+    self.onNodeClick = function (node, point) {
+
+        var allEdges = visjsGraph.data.edges.get();
+        var allNodes = visjsGraph.data.nodes.get();
+        var pathNodes = []
+        var pathEdges = []
+        var dir = null
+
+        function recurse(nodeId, direction) {
+            pathNodes.push(nodeId)
+            allEdges.forEach(function (edge) {
+                if (pathEdges.indexOf(edge.id) < 0) {
+                    if (nodeId != edge.from && nodeId != edge.to)
+                        return;
+
+                    if (direction == "normal" && nodeId == edge.to) {
+                        pathEdges.push(edge.id)
+                        recurse(edge.from, direction)
+
+                    }
+                    if (direction == "inverse" && nodeId == edge.from) {
+                        pathEdges.push(edge.id)
+                        recurse(edge.to, direction)
+
+                    } else if (edge.type == "common") {
+                        pathEdges.push(edge.id)
+                        recurse(edge.to, "inverse")
+                    }
+
+
+                }
+            })
+        }
+
+        recurse(node.id, "normal")
+        var newNodes = [];
+        var newEdges = []
+
+
+        allNodes.forEach(function (node) {
+            if (pathNodes.indexOf(node.id) > -1) {
+                //    node.color = "red";
+                node.hidden = false;
+            } else {
+                node.color = node.initialColor;
+                node.hidden = true;
+            }
+        })
+        visjsGraph.data.nodes.update(allNodes);
+        /* visjsGraph.network.stopSimulation();
+          visjsGraph.simulationOn = !visjsGraph.simulationOn;*/
+
+        var selectedEdges = visjsGraph.data.edges.get(pathEdges)
+        var selectedNodes = visjsGraph.data.nodes.get(pathNodes);
+
+
+        var y1Offset = 0
+        var y2Offeset = 0
+        selectedNodes.forEach(function (node,index) {
+            if (node.x < 0) {
+                selectedNodes[index].y = (y1Offset)
+                y1Offset += 30
+            } else {
+                selectedNodes[index].y = (y2Offeset)
+                y2Offeset += 30
+            }
+
+        })
+
+        visjsGraph.draw("graphDiv", {nodes: selectedNodes, edges: selectedEdges}, {})
+
+
+    }
+
 
     self.getTreeVisjsData = function (tree, maxLevels, options) {
         //    var interpolateColorFn = d3.scaleSequential(d3.interpolateYlOrRd).domain([1, Math.log(self.commonConcepts.length / 2)]);
@@ -59,6 +135,7 @@ var graphDisplay = (function () {
                     label: node.data.prefLabels[0].value,
                     id: node.id,
                     color: options.color,
+                    initialColor: options.color,
                     data: node.data,
                     shape: options.shape,
                     size: 10
@@ -104,6 +181,7 @@ var graphDisplay = (function () {
 
 
                     })
+
                 }
             })
         })
@@ -141,6 +219,7 @@ var graphDisplay = (function () {
                     label: node.data.prefLabels[0].value,
                     id: node.id,
                     color: color,
+                    initialColor: color,
                     data: node.data,
                     shape: shape,
                     size: 10 + (5 * level)
@@ -170,8 +249,8 @@ var graphDisplay = (function () {
                 if (uniqueEdges.indexOf(edgeKey) < 0) {
                     uniqueEdges.push(edgeKey)
                     edges.push({
-                        from: parent,
-                        to: node.id,
+                        from: node.id,
+                        to: parent,
                         type: "parent"
                     })
                 }
@@ -186,8 +265,15 @@ var graphDisplay = (function () {
         }
 
         function setTopNodesRootNode(topNodes, rootNodeName, color, x) {
+            var x = 0;
+            topNodes.forEach(function (node) {
+                if (node.x < 0)
+                    x = Math.min(x, node.x)
+                else
+                    x = Math.max(x, node.x)
+            })
             var color = topNodes[0].color
-            var x = topNodes[0].x
+
             if (x > 0)
                 x += xOffset;
             else
@@ -197,6 +283,7 @@ var graphDisplay = (function () {
                 id: rootNodeName,
                 label: rootNodeName,
                 color: color,
+                initialColor: color,
                 shape: "box",
                 fixed: {x: true},
                 x: x
@@ -222,17 +309,17 @@ var graphDisplay = (function () {
             var conceptV = comparator.conceptsMap[commonEdge.from];
 
 
-            recurseAncestors(conceptV, {shape: "box", color: color, fixedX: 150, side: "left", commonY: commonY}, 1);
+            recurseAncestors(conceptV, {shape: "box", color: color, fixedX: -150, side: "left", commonY: commonY}, 1);
             commonY += yOffset
         })
-        setTopNodesRootNode(topNodes, $("#thesaurusSelectH").val())
+        //  setTopNodesRootNode(topNodes, $("#thesaurusSelectH").val())
 
         var commonY = 5;
         topNodes = [];
         var color = $("#thesaurusSelectV").css("background-color")
         commonEdges.forEach(function (commonEdge) {
             var conceptH = comparator.conceptsMap[commonEdge.to];
-            recurseAncestors(conceptH, {shape: "box", color: color, fixedX: 350, side: "right", commonY: commonY}, 1)
+            recurseAncestors(conceptH, {shape: "box", color: color, fixedX: 150, side: "right", commonY: commonY}, 1)
             commonY += yOffset
 
         })
@@ -256,4 +343,5 @@ var graphDisplay = (function () {
     return self;
 
 
-})()
+})
+()

@@ -98,13 +98,13 @@
         $(function () {
             skosEditor.initThesaurusSelects()
             // var to = false;
-            $('#treeSearchInput').keyup(function (e) {
+            $('#treeSearchInput1').keyup(function (e) {
                 if (e.keyCode == 13) {
-                    var v = $('#treeSearchInput').val();
+                    var v = $('#treeSearchInput1').val();
                     if (v == "")
-                        skosEditor.loadThesaurus($('#skosInput').val())
+                        skosEditor.loadThesaurus($('#skosInput1').val())
                     else
-                        $('#treeDiv').jstree(true).search(v);
+                        $('#treeDiv1').jstree(true).search(v);
                 }
 
                 /* if(to) { clearTimeout(to); }
@@ -129,11 +129,11 @@
         <input id="skosInput1" value="" size="40"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus(1)" value="New">
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
-        <input id="outputLangInput" value="en" size="3"><select id="broaderTypeInput"><option>first</option><option>last</option>
+        <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1"><option>first</option><option>last</option>
 
         <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
-        concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput_1">
-       </select><button onclick="skosEditor.openAllTree(1)">O</button>
+        concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput1">
+       </select><button onclick="skosEditor.openAllTree(1)">Expand</button>
 
         <div id="treeDiv1"></div>
     </div>
