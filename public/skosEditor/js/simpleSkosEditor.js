@@ -27,12 +27,16 @@ skosEditor = (function () {
         plugins.push("dnd");
         plugins.push("search");
 
+
         if ($('#' + treeDiv).jstree)
             $('#' + treeDiv).jstree("destroy")
 
         $('#' + treeDiv).jstree({
             'core': {
-                'check_callback': true,
+                // 'check_callback':true,
+                'check_callback': function (operation, node, node_parent, node_position, more) {
+                    return true;
+                },
                 'data': jsTreeData,
             }
             ,
@@ -40,7 +44,9 @@ skosEditor = (function () {
             "search": {
                 "case_sensitive": false,
                 "show_only_matches": true
-            }
+            },
+
+
         }).on("select_node.jstree",
             function (evt, obj) {
                 skosEditor.synchronizePreviousData();
@@ -59,7 +65,7 @@ skosEditor = (function () {
                             id: "",
                             prefLabels: {},
                             altLabels: [],
-                            relateds: [],
+                            relateds: ["xxx"],
                             broaders: []
                         }
 
@@ -80,17 +86,16 @@ skosEditor = (function () {
                             obj.node.data.id = [obj.node.text]
                     }
                     $('#' + treeId).jstree(true).set_id(obj.node, obj.node.data.id);
-
                     obj.node.data.prefLabels = [{lang: self.outputLang, value: obj.node.text}]
                     var conceptData = obj.node.data;
                     skosEditor.context.previousNode = obj.node;
                     skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
 
-
                 })
 
 
     }
+
 
     self.openAllTree = function (thesaurusIndex) {
 
@@ -129,7 +134,7 @@ skosEditor = (function () {
         $("#treeDiv" + thesaurusIndex).html("");
         $("#countConcepts" + thesaurusIndex).html("");
         $("#waitImg").css("display", "block");
-        var thesaurusName = rdfPath.substring(rdfPath.lastIndexOf("\\")+1)
+        var thesaurusName = rdfPath.substring(rdfPath.lastIndexOf("\\") + 1)
         thesaurusName = thesaurusName.substring(0, thesaurusName.indexOf("."))
 
         var lastBroaderOption = null;
@@ -162,6 +167,7 @@ skosEditor = (function () {
                 data.forEach(function (item, index) {
                     if (data[index].parent == "#") {
                         data[index].parent = thesaurusNodeId;
+                        item.data.str = JSON.stringify(item.data)
                     }
                     item.icon = "concept-icon.png";
 
@@ -176,13 +182,14 @@ skosEditor = (function () {
                         prefLabels: [{lang: self.outputLang, value: thesaurusName || "root"}],
                         altLabels: [],
                         broaders: [],
-                        relateds: [],
+                        relateds: ["rrrrr"],
                     }
                 }
                 data.push(rootNode)
-//console.log(JSON.stringify(data,null,2))
 
                 self.drawJsTree("treeDiv" + thesaurusIndex, data)
+
+
 
             }
             , error: function (err) {
@@ -242,11 +249,11 @@ skosEditor = (function () {
         //get jstree nodes
         var jsonNodes = $('#treeDiv' + thesaurusIndex).jstree(true).get_json('#', {flat: true});
         $.each(jsonNodes, function (i, item) {
-            if(item.id==thesaurusNodeId)
+            if (item.id == thesaurusNodeId)
                 return;
-            if( !item.data || !item.data.broaders)
-                var x=3
-            if (item.parent == thesaurusNodeId) {
+            if (!item.data || !item.data.broaders)
+                var x = 3
+            if (!item.data.broaders || item.parent == thesaurusNodeId) {
                 item.data.broaders = [];
             } else {
                 if (item.data.broaders.length > 0) {

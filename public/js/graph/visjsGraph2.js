@@ -137,6 +137,7 @@ var visjsGraph = (function () {
         if (self.network)
             self.network.destroy();
         $("#graph_legendDiv").html("");
+        self.data={};
 
     }
 

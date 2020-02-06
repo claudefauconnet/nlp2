@@ -57,7 +57,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
 
-    <script src="js/jstree.js"></script>
+    <script src="js/jstreeCF.js"></script>
     <script>
         var mapWidth, mapHeight;
         $(function () {
@@ -129,7 +129,8 @@
             <option>hierarchical</option>
 
         </select>
-        <button onclick="graphDisplay.drawTreeGraph()">Graph</button>
+        <button onclick="graphDisplay.drawTreeGraph()">Graph</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button onclick="graphDisplay.drawTreeGraph(null,graphDisplay.currentSelectionCommonEdges)">Zoom on selection</button>
     </div>
 
     <div id="graphDiv" style="min-width: 500px;min-height: 1000px"></div>

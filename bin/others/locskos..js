@@ -436,7 +436,7 @@ var locskos = {
 
                 })
 
-                callback(null, {locConceptsMap: conceptsMap,locConceptsIdsMap: locConceptsIdsMap, locCtgSkos:locCtgSkos});
+                callback(null, {locConceptsMap: conceptsMap,locConceptsIdsMap: conceptsIdsMap, locCtgSkos:locCtgSkos});
 
 
             })
@@ -466,18 +466,19 @@ if (false) {
 }
 if (true) {
 
-    locskos.compareWithThesaurus("D:\\NLP\\LOCtopNodesAll.txt", "D:\\NLP\\thesaurusCTG-12_2019.rdf", function (err, result) {
+    var thesaurus="thesaurus_CTG_Product"
+    locskos.compareWithThesaurus("D:\\NLP\\LOCtopNodesAll.txt", "D:\\NLP\\"+thesaurus+".rdf", function (err, result) {
         if (err)
             return console.log(err);
 
-        if (false) {
-            skosReader.skosEditorToRdf("D:\\NLP\\commonConceptsLocCtg.rdf", locCtgSkos, {}, function (err, result) {
+        if (true) {
+            skosReader.skosEditorToRdf("D:\\NLP\\commonConceptsLocCtg_"+thesaurus+".rdf", result.locCtgSkos, {}, function (err, result) {
                 var xxx = 3;
             })
             return;
             fs.writeFileSync("D:\\NLP\\commonConceptsLocCtg.json", JSON.stringify(commonConcepts, null, 2))
         }
-        if (true) {
+        if (false) {
             var topLocCtgConcepts = []
             var locConceptsIdsMap = result.locConceptsIdsMap;
             result.locCtgSkos.forEach(function (item) {
@@ -492,7 +493,7 @@ if (true) {
                 var child=locConceptsIdsMap[id];
 
                 if(child.parent[concept.id]){
-                    if()
+                    if(false);
                 }
 
                 }

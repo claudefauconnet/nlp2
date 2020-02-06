@@ -3773,6 +3773,8 @@
 				'data' : options && options.no_data ? false : $.extend(true, $.isArray(obj.data)?[]:{}, obj.data)
 				//( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
 			}, i, j;
+
+
 			if(options && options.flat) {
 				tmp.parent = obj.parent;
 			}
@@ -4323,7 +4325,14 @@
 				this.settings.core.error.call(this, this._data.core.last_error);
 				return false;
 			}
-			node = old_ins ? old_ins.get_json(obj, { no_id : true, no_data : true, no_state : true }) : obj;
+
+			//	node = old_ins ? old_ins.get_json(obj, { no_id : false, no_data : false, no_state : true }) : obj;
+			//************************modifications CF************************************
+
+			node = old_ins ? old_ins.get_json(obj, { no_id : false, no_data : false, no_state : true }) : obj;
+			if(obj.data)
+				obj.data.broaders=obj.parent
+			//************************modifications CF************************************
 			if(!node) { return false; }
 			if(node.id === true) { delete node.id; }
 			node = this._parse_model_from_json(node, new_par.id, new_par.parents.concat());
@@ -7274,6 +7283,7 @@
 						$(e.target).one('click', function() { if(to) { clearTimeout(to); } });
 					}
 				}
+
 				$.vakata.dnd._clean();
 				return false;
 			}

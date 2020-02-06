@@ -1,10 +1,16 @@
 var thesaurusList=[
 
-    "D:\\NLP\\thesaurusCTG-12_2019.rdf",
+    "D:\\NLP\\thesaurusCTG-02-20.rdf",
     "D:\\NLP\\quantum_F_all.rdf",
     "D:\\NLP\\Tulsa_all.rdf",
     "D:\\NLP\\souslesensTotal.rdf",
     "D:\\NLP\\commonConceptsLocCtg.rdf",
+
+    "---------CTG-------",
+    "D:\\NLP\\thesaurus_CTG_Characterisation.rdf",
+    "D:\\NLP\\thesaurus_CTG_Phenomenon.rdf",
+    "D:\\NLP\\thesaurus_CTG_Product.rdf",
+    "D:\\NLP\\thesaurus_CTG_Method.rdf",
 
 
     "---------Energistics-------",

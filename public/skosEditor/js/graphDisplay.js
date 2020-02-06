@@ -1,6 +1,6 @@
 var graphDisplay = (function () {
     var self = {};
-    self.drawTreeGraph = function (options) {
+    self.drawTreeGraph = function (options, visJSDataCommonEdges) {
 
         var maxLevels = parseInt($("#maxGraphLevels").val());
         var graphDisplay_type = $("#graphDisplay_type").val();
@@ -8,7 +8,8 @@ var graphDisplay = (function () {
 
         var visjsDataV = self.getTreeVisjsData(comparator.treeV, maxLevels, {shape: "dot", color: "green"});
         var visjsDataH = self.getTreeVisjsData(comparator.treeH, maxLevels, {shape: "dot", color: "orange"});
-        var visJSDataCommonEdges = self.getCommonEdges(visjsDataV.nodes, visjsDataH.nodes);
+        if (!visJSDataCommonEdges)
+            visJSDataCommonEdges = self.getCommonEdges(visjsDataV.nodes, visjsDataH.nodes);
 
 
         if (graphDisplay_type == "all") {
@@ -45,13 +46,20 @@ var graphDisplay = (function () {
         var pathNodes = []
         var pathEdges = []
         var dir = null
+        self.currentSelectionCommonEdges = [];
 
         function recurse(nodeId, direction) {
-            pathNodes.push(nodeId)
+
             allEdges.forEach(function (edge) {
                 if (pathEdges.indexOf(edge.id) < 0) {
                     if (nodeId != edge.from && nodeId != edge.to)
                         return;
+
+                    if (pathNodes.indexOf(edge.to) < 0)
+                        pathNodes.push(edge.to)
+                    if (pathNodes.indexOf(edge.from) < 0)
+                        pathNodes.push(edge.from)
+
 
                     if (direction == "normal" && nodeId == edge.to) {
                         pathEdges.push(edge.id)
@@ -63,8 +71,13 @@ var graphDisplay = (function () {
                         recurse(edge.to, direction)
 
                     } else if (edge.type == "common") {
+                        self.currentSelectionCommonEdges.push(edge);
                         pathEdges.push(edge.id)
-                        recurse(edge.to, "inverse")
+                     //   recurse(edge.to, "inverse")
+                      if (pathNodes.indexOf(edge.to) > -1)
+                            recurse(edge.from, "normal")
+                        else
+                            recurse(edge.to, "inverse")
                     }
 
 
@@ -76,38 +89,30 @@ var graphDisplay = (function () {
         var newNodes = [];
         var newEdges = []
 
-
-        allNodes.forEach(function (node) {
-            if (pathNodes.indexOf(node.id) > -1) {
-                //    node.color = "red";
-                node.hidden = false;
-            } else {
-                node.color = node.initialColor;
-                node.hidden = true;
-            }
-        })
-        visjsGraph.data.nodes.update(allNodes);
-        /* visjsGraph.network.stopSimulation();
-          visjsGraph.simulationOn = !visjsGraph.simulationOn;*/
-
-        var selectedEdges = visjsGraph.data.edges.get(pathEdges)
-        var selectedNodes = visjsGraph.data.nodes.get(pathNodes);
-
-
         var y1Offset = 0
         var y2Offeset = 0
-        selectedNodes.forEach(function (node,index) {
-            if (node.x < 0) {
-                selectedNodes[index].y = (y1Offset)
-                y1Offset += 30
+        allNodes.forEach(function (node) {
+            if (pathNodes.indexOf(node.id) > -1) {
+                node.color = "red";
+                // node.hidden = false;
             } else {
-                selectedNodes[index].y = (y2Offeset)
-                y2Offeset += 30
+                node.color = node.initialColor;
+                //  node.hidden = true;
             }
+            /*   if (node.x < 0) {
+                   node.y = (y1Offset)
+                   y1Offset += 30
+               } else {
+                   node.y = (y2Offeset)
+                   y2Offeset += 30
+               }*/
 
         })
-
-        visjsGraph.draw("graphDiv", {nodes: selectedNodes, edges: selectedEdges}, {})
+        visjsGraph.data.nodes.update(allNodes);
+        setTimeout(function () {
+            visjsGraph.network.stopSimulation();
+            visjsGraph.simulationOn = !visjsGraph.simulationOn;
+        }, 1000)
 
 
     }
@@ -199,7 +204,7 @@ var graphDisplay = (function () {
         var edges = [];
 
         var yOffset = 30;
-        var xOffset = 200;
+        var xOffset = 150;
 
         var maxX = 0
 
@@ -265,6 +270,9 @@ var graphDisplay = (function () {
         }
 
         function setTopNodesRootNode(topNodes, rootNodeName, color, x) {
+            return;
+            if (topNodes.length == 0)
+                return;
             var x = 0;
             topNodes.forEach(function (node) {
                 if (node.x < 0)

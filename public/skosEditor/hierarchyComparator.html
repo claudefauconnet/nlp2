@@ -43,7 +43,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
     <!--  <link rel="stylesheet" href="../js/backoffice/jstree/proton/style.css"/>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>-->
-    <script src="js/jstree.js"></script>
+    <script src="js/jstreeCF.js"></script>
     <!--script src="js/json-editor.js"></script-->
     <script src="js/simpleSkosEditor.js"></script>
     <script src="js/common.js"></script>
@@ -156,7 +156,7 @@
         thesaurus (rdf)<br>
 
         <select id="thesaurusSelect1" onclick="$('#skosInput1').val($(this).val())"></select>
-        <input id="skosInput1" value="" size="40"><br>
+        <input id="skosInput1" value="D:\NLP\commonConceptsLocCtg.rdf" size="40"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus(1)" value="New">
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
         <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1"><option>first</option><option>last</option>
@@ -172,7 +172,7 @@
         thesaurus (rdf)<br>
 
         <select id="thesaurusSelect2" onclick="$('#skosInput2').val($(this).val())"></select>
-        <input id="skosInput2" value="" size="40"><br>
+        <input id="skosInput2" value="D:\NLP\souslesensTotal.rdf" size="40"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus(2)" value="New">
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput2').val(),'editorDivId',2)" value="Edit">
         <input id="outputLangInput2" value="en" size="3"><select id="broaderTypeInput2"><option>first</option><option>last</option>
@@ -207,11 +207,11 @@
         <select id="thesaurusSelect4" onclick="$('#skosInput4').val($(this).val())"></select>
         <input id="skosInput4" value="" size="40"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus(4)" value="New">
-        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput3').val(),'editorDivId',4)" value="Edit">
+        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput4').val(),'editorDivId',4)" value="Edit">
 
         <input type="button" onclick="skosEditor.saveThesaurus(4)" value="Save">
         concepts:<span id="countConcepts4"></span>
-        </select><button onclick="skosEditor.openAllTree(1)">Expand</button>
+        </select><button onclick="skosEditor.openAllTree(4)">Expand</button>
         <div id="treeDiv4"></div>
     </div>
 
