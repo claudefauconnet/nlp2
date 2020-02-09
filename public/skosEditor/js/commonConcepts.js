@@ -1,12 +1,12 @@
-var commonConcepts=(function(){
-    var self={};
+var commonConcepts = (function () {
+    var self = {};
 
     self.setAncestorsCommonConcepts = function (tree, commonConcepts) {
         function recurse(child) {
 
-            if ( child && child.parent && child.parent != "#") {
-                if( child.parent=="xs:element_Kind_711")
-                    var xx=3;
+            if (child && child.parent && child.parent != "#") {
+                if (child.parent == "xs:element_Kind_711")
+                    var xx = 3;
                 if (child.commonConceptCount > 0 && comparator.conceptsMap[child.parent]) {
                     comparator.conceptsMap[child.parent].commonConceptCount += child.commonConceptCount;
                     child.commonConcepts.forEach(function (commonConcept) {
@@ -17,15 +17,15 @@ var commonConcepts=(function(){
                 }
                 //  console.log(child.id + "-------------\n" + JSON.stringify(comparator.conceptsMap[child.parent].commonConcepts, null, 2))
             }
-            if( child && child.parent)
+            if (child && child.parent)
                 recurse(comparator.conceptsMap[child.parent])
         }
 
 
         if (commonConcepts) {
             for (var key in comparator.conceptsMap) {
-                if(key=="enumeration_LithologyQualifierKind_marl")
-                    var xx=3;
+                if (key == "enumeration_LithologyQualifierKind_marl")
+                    var xx = 3;
                 recurse(comparator.conceptsMap[key]);
             }
         }
@@ -44,26 +44,35 @@ var commonConcepts=(function(){
     }
 
 
-    self.isCommonConcept = function (a, b) {
+    self.isCommonConcept = function (a, b,withoutAlLabels) {
         var ok = false;
-        if(! a.prefLabels ||  !a.prefLabels)
+        if (!a.prefLabels || !a.prefLabels)
             return ok;
+
+        var valuesA = [];
+        var valuesB = [];
         a.prefLabels.forEach(function (prefLabelA) {
             b.prefLabels.forEach(function (prefLabelB) {
                 if (prefLabelA.value.toLowerCase() == prefLabelB.value.toLowerCase())
-                   ok = true;
-                return ok;
-
-            })
-        })
-        a.altLabels.forEach(function (altLabelA) {
-            b.altLabels.forEach(function (altLabelB) {
-                if (altLabelA.value.toLowerCase() == altLabelB.value.toLowerCase())
                     ok = true;
                 return ok;
+        })
+
+        })
+
+
+
+        if(!withoutAlLabels) {
+            a.altLabels.forEach(function (prefLabelA) {
+                b.altLabels.forEach(function (prefLabelB) {
+                    if (prefLabelA.value.toLowerCase() == prefLabelB.value.toLowerCase())
+                        ok = true;
+                    return ok;
+                })
 
             })
-        })
+        }
+
         return ok;
     }
 
@@ -82,7 +91,7 @@ var commonConcepts=(function(){
     }
 
 
-    self.showMapSelectionCommonConcepts= function (vId, hId) {
+    self.showMapSelectionCommonConcepts = function (vId, hId) {
         $("#CommonConceptsDiv").html("");
 
 
@@ -91,7 +100,7 @@ var commonConcepts=(function(){
 
         selCommonConcepts.forEach(function (commonConcept) {
             var array = commonConcept.split(" | ")
-            html += "<li><ul onclick=\"commonConcepts.onIntersectionCommonConceptsClick('" + array[0] + "','" + array[1] + "')\">" + "<li class='conceptH'>"+array[0]+"</li><li class='conceptV'>"+array[1]+"</li></ul></li>"
+            html += "<li><ul onclick=\"commonConcepts.onIntersectionCommonConceptsClick('" + array[0] + "','" + array[1] + "')\">" + "<li class='conceptH'>" + array[0] + "</li><li class='conceptV'>" + array[1] + "</li></ul></li>"
         })
         html += "</ul>";
         $("#CommonConceptsDiv").html(html)
@@ -101,19 +110,16 @@ var commonConcepts=(function(){
     }
 
 
-
-
-
     self.onIntersectionCommonConceptsClick = function (commonConceptH, commonConceptV) {
         comparator.displayPopupDiv("popupDiv");
         var vConcept = comparator.conceptsMap[commonConceptV];
         var hConcept = comparator.conceptsMap[commonConceptH];
-        var textHColor=$("#thesaurusH").css("background-color");
-        var textVColor=$("#thesaurusV").css("background-color");
+        var textHColor = $("#thesaurusH").css("background-color");
+        var textVColor = $("#thesaurusV").css("background-color");
         $("#jstreeTtitleH").html($('#thesaurusH').val())
         $("#jstreeTtitleV").html($('#thesaurusV').val())
-        skosEditor.conceptEditor.editConcept(vConcept.data, "editorDivVId",{readOnly: true,bgColor:textVColor})
-        skosEditor.conceptEditor.editConcept(hConcept.data, "editorDivHId",{readOnly: true,bgColor:textHColor});
+        skosEditor.conceptEditor.editConcept(vConcept.data, "editorDivVId", {readOnly: true, bgColor: textVColor})
+        skosEditor.conceptEditor.editConcept(hConcept.data, "editorDivHId", {readOnly: true, bgColor: textHColor});
 
         $("#editorDivVId").animate({'zoom': .7}, 'slow');
         $("#editorDivHId").animate({'zoom': .7}, 'slow');
@@ -199,8 +205,6 @@ var commonConcepts=(function(){
 
         })
     }
-
-
 
 
     return self;

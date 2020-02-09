@@ -15,7 +15,6 @@ var thesaurusList=[
     "D:\\NLP\\termScience\\termScience_Chemistry.rdf",
     "D:\\NLP\\termScience\\termScience_Physics.rdf",
     "D:\\NLP\\termScience\\termScience_Methodology.rdf",
-    "D:\\NLP\\termScience\\termScience_Elements_Chimiques.rdf",
 
 
 
@@ -33,13 +32,24 @@ var thesaurusList=[
     "D:\\NLP\\Tulsa_PHENOMENON.rdf",
     "D:\\NLP\\Tulsa_PROCESS.rdf",
     "D:\\NLP\\Tulsa_PROPERTY.rdf",
+    "D:\\NLP\\Tulsa_WORLD.rdf",
     "--------CGI---------",
 
 
-
+  /*  "D:\\NLP\\cgi\\eventenvironment.rdf",
+    "D:\\NLP\\cgi\\eventprocess.rdf",
+    "D:\\NLP\\cgi\\eventprocess2.rdf",
+    "D:\\NLP\\cgi\\explorationResults.rdf",
+    "D:\\NLP\\cgi\\isc2014.rdf",
+    "D:\\NLP\\cgi\\isc2017.rdf",
+    "D:\\NLP\\cgi\\lithology.rdf",
+    "D:\\NLP\\cgi\\simplelithology.rdf",*/
     "--------Others--------",
     "D:\\NLP\\unesco.rdf",
+  //  "D:\\NLP\\unescothes.rdf",
     "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
+  //  "D:\\NLP\\geochemistry.rdf",
+ //   "D:\\NLP\\measurement-unit-skos.rdf",
     "D:\\NLP\\thesaurusIngenieur.rdf",
 
 

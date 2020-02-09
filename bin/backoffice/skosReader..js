@@ -104,7 +104,8 @@ var skosReader = {
                 currentConcept.narrowers = [];
                 currentConcept.broaders = [];
                 currentConcept.topConcepts = [];
-
+                currentConcept.definitions = [];
+                currentConcept.notes = [];
             }
             if (currentConcept) {
                 if (node.name == "skos:prefLabel") {
@@ -117,6 +118,12 @@ var skosReader = {
                         currentTagName = "prefLabels_" + lang
                     }
 
+                }
+                if (node.name == "skos:definition") {
+                    currentTagName = "definition"
+                }
+                if (node.name == "skos:note") {
+                    currentTagName = "note"
                 }
                 if (node.name == "skos:altLabel") {
                     var lang = node.attributes["xml:lang"];
@@ -162,16 +169,18 @@ var skosReader = {
             if (currentTagName) {
                 if (currentTagName.indexOf("prefLabels_") == 0) {
                     var array = currentTagName.split("_")
-
-
-                    currentConcept[array[0]][array[1]] = text;
+                    if (!currentConcept[array[0]][array[1]])
+                        currentConcept[array[0]][array[1]] = [];
+                    currentConcept[array[0]][array[1]].push(text)
                 } else if (currentTagName.indexOf("altLabels_") == 0) {
                     var array = currentTagName.split("_")
                     if (!currentConcept[array[0]][array[1]])
                         currentConcept[array[0]][array[1]] = [];
                     currentConcept[array[0]][array[1]].push(text)
-
-
+                } else if (currentTagName.indexOf("definition") == 0) {
+                    currentConcept.definitions.push(text);
+                } else if (currentTagName.indexOf("note") == 0) {
+                    currentConcept.notes.push(text);
                 }
             }
 
@@ -391,11 +400,14 @@ var skosReader = {
             }
             obj.text = (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"] || concept.prefLabels["X"]);
             obj.id = concept.id;
+
             var prefLabelsArray = [];
             for (var key in concept.prefLabels) {
-                prefLabelsArray.push({
-                    lang: key,
-                    value: concept.prefLabels[key]
+                concept.prefLabels[key].forEach(function (item) {
+                    prefLabelsArray.push({
+                        lang: key,
+                        value: item
+                    })
                 })
             }
             var altLabelsArray = [];
@@ -413,7 +425,8 @@ var skosReader = {
 
             obj.data.prefLabels = prefLabelsArray;
             obj.data.altLabels = altLabelsArray;
-
+            obj.data.definitions = concept.definitions;
+            obj.data.notes = concept.notes;
             obj.data.relateds = concept.relateds;
             obj.data.broaders = concept.broaders;
             obj.data.id = concept.id;
@@ -423,19 +436,7 @@ var skosReader = {
                 conceptsArray.push(obj)
 
         }
-        /*     var multipleBoradersConcepts=[];
-              conceptsArray.forEach(function(concept){
-                 concept.data.broaders.forEach(function(broader,index){
 
-                     if(index>1){
-                         var clonedConceptData=JSON.parse(JSON.stringify(concept.data))
-                         var clonedConcept={
-                             id:0
-                         }
-                         multipleBoradersConcepts.push(clonedConcept)
-                     }
-                 })
-              })*/
         return conceptsArray;
     },
 
@@ -534,8 +535,8 @@ var skosReader = {
         str += "</rdf:RDF>"
 
         fs.writeFileSync(rdfPath, str)
-        if(callback)
-        return callback(null, "done " + rdfPath)
+        if (callback)
+            return callback(null, "done " + rdfPath)
 
     }
 
@@ -589,14 +590,21 @@ var skosReader = {
         pathStrs.forEach(function (leafId) {
             var ids = leafId.split("|")
             var path = "";
-
             var synonyms = ""
             ids.forEach(function (id, index) {
-                if (index > 0)
-                    path += "|"
-                if (conceptsMap[id]) {
-                    path += conceptsMap[id].prefLabels["en"]
 
+                if (conceptsMap[id]) {
+
+                    for (var lang in conceptsMap[id].prefLabels) {
+                        if (conceptsMap[id].prefLabels && conceptsMap[id].prefLabels[lang] && conceptsMap[id].prefLabels[lang].forEach) {
+                            conceptsMap[id].prefLabels[lang].forEach(function (value) {
+                                if (path != "")
+                                    path += "|"
+                                path += value;
+                            })
+
+                        }
+                    }
 
                     for (var lang in conceptsMap[id].altLabels) {
                         if (conceptsMap[id].altLabels && conceptsMap[id].altLabels[lang] && conceptsMap[id].altLabels[lang].forEach) {
@@ -633,7 +641,7 @@ if (false) {
 
     var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf";
     var sourcePath = "D:\\NLP\\termScience\\Chemistry.rdf";
-    var x = fs.readFileSync(sourcePath)
+
     skosReader.rdfToFlat(sourcePath, null, function (err, result) {
         fs.writeFileSync(sourcePath.replace(".rdf", "_flat.json"), JSON.stringify(result, null, 2))
 

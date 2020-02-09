@@ -10,22 +10,41 @@
     <script src="../js/graph/visjsGraph2.js"></script>
 
     <script src="js/common.js"></script>
+    <script src="js/theaususList.js"></script>
 
     <script src="js/multiSkosGraph.js"></script>
 
+    <script>
+$(function(){
+multiSkosGraph.setTheaurusList()
+    $("#searchWordInput").bind('keyup', function(e) {
+        if(e.keyCode==13){
+            multiSkosGraph.drawConceptGraph($('#searchWordInput').val());
+        }
+    });
+    $(".thesCBX").bind('change',  multiSkosGraph.onThesCBXChange) ;
+
+})
+
+
+    </script>
 
 
 </head>
 <body>
+<div style="display: flex;flex-direction: row">
 
-<div>
-    <input id="searchWordInput" value="zinc"><button onclick="multiSkosGraph.drawConceptGraph($('#searchWordInput').val())">Graph</button>
 
+<div style="width:300px">
+    <input id="searchWordInput" value="zinc" ><button onclick="multiSkosGraph.drawConceptGraph($('#searchWordInput').val())">Graph</button>
+<div id="thesaurusListDiv">
 
 </div>
+</div>
+
 <div id="graphDiv" style="width:1000px;height: 1000px" ></div>
 
 
-
+</div>
 </body>
 </html>

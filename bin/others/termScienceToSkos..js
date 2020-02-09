@@ -440,12 +440,12 @@ if (true) {
     var selectedSubjects = [{"name": "Physics", "id": "TE.60624"}]
 
     var selectedSubjects = [ {"name": "Energy", "id": "TE.29455"}]
-    //  var selectedSubjects = [{"name": "Elements Chimiques", "id": "TE.173836"}]
+    var selectedSubjects = [{"name": "Elements_Chimiques", "id": "TE.173836"}]
 
 
 
 
-    async.eachSeries(humanSubject, function (subject, callbackEachSubject) {
+    async.eachSeries(selectedSubjects, function (subject, callbackEachSubject) {
         var rdfPath = "D:\\NLP\\termScience\\termScience_" + subject.name + ".rdf";
         termScienceToSkos.buildTreeToSkos(subject.id, 6, rdfPath, function (err, result) {
             if (err) {
