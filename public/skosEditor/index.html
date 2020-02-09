@@ -86,15 +86,64 @@
         }
 
 
-        #treeDiv {
+        .jstree {
             height: 800px;
             width: 400px;
             overflow: auto;
 
         }
+        #drop_zone {
+            border: 1px solid blue;
+            width:  150px;
+            height: 100px;
+        }
 
     </style>
     <script>
+        function dragOverHandler(ev) {
+            console.log('File(s) in drop zone');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+        }
+        function dropHandler(ev) {
+            console.log('File(s) dropped');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+
+            if (ev.dataTransfer.items) {
+
+                var xx=  ev.dataTransfer.files[0].path;
+                // Use DataTransferItemList interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+
+                    // If dropped items aren't files, reject them
+                    if (ev.dataTransfer.items[i].kind === 'file') {
+                        var file = ev.dataTransfer.items[i].getAsFile();
+                        console.log('... file[' + i + '].name = ' + file.name);
+
+                        $("#skosInput1").val( $("#dropFileDirPath1").val()+file.name)
+                        skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)
+
+                     /*   if (file.type.indexOf("text") == 0) {
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                // get file content
+                                var text = e.target.result;
+
+                            }
+                            reader.readAsText(file);
+                        }*/
+                    }
+                }
+            } else {
+                // Use DataTransfer interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+                    console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+                }
+            }
+        }
         $(function () {
             skosEditor.initThesaurusSelects()
             // var to = false;
@@ -121,7 +170,14 @@
 
 </div>
 <div style="display: flex;flex-direction: row;justify-content:left">
-    <div style='min-width:50px'></div>
+    <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+        <input id="dropFileDirPath1" value="D:\NLP\" size="12">
+        <p>Drag File here ...</p>
+
+    </div>
+    <div style='min-width:50px'>
+
+    </div>
     <div style='max-width: 400px;'>
         thesaurus (rdf)<br>
 

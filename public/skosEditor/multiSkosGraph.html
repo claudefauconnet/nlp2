@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Souslesens MultiSkosGraph</title>
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/others/async.js" charset="utf-8"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
+    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>
+    <script src="../js/graph/visjsGraph2.js"></script>
+
+    <script src="js/common.js"></script>
+
+    <script src="js/multiSkosGraph.js"></script>
+
+
+
+</head>
+<body>
+
+<div>
+    <input id="searchWordInput" value="zinc"><button onclick="multiSkosGraph.drawConceptGraph($('#searchWordInput').val())">Graph</button>
+
+
+</div>
+<div id="graphDiv" style="width:1000px;height: 1000px" ></div>
+
+
+
+</body>
+</html>

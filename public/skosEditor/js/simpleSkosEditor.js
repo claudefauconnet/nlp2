@@ -65,7 +65,7 @@ skosEditor = (function () {
                             id: "",
                             prefLabels: {},
                             altLabels: [],
-                            relateds: ["xxx"],
+                            relateds: [],
                             broaders: []
                         }
 
@@ -161,31 +161,13 @@ skosEditor = (function () {
             success: function (data, textStatus, jqXHR) {
                 $("#waitImg").css("display", "none");
                 $("#countConcepts" + thesaurusIndex).html(data.length)
-                //   $("#messageDiv").html("done")
 
 
                 data.forEach(function (item, index) {
-                    if (data[index].parent == "#") {
-                        data[index].parent = thesaurusNodeId;
-                        item.data.str = JSON.stringify(item.data)
-                    }
                     item.icon = "concept-icon.png";
 
-
                 })
-                var rootNode = {
-                    id: thesaurusNodeId,
-                    text: thesaurusName,
-                    parent: "#",
-                    data: {
-                        id: thesaurusNodeId,
-                        prefLabels: [{lang: self.outputLang, value: thesaurusName || "root"}],
-                        altLabels: [],
-                        broaders: [],
-                        relateds: ["rrrrr"],
-                    }
-                }
-                data.push(rootNode)
+
 
                 self.drawJsTree("treeDiv" + thesaurusIndex, data)
 
@@ -249,7 +231,7 @@ skosEditor = (function () {
         //get jstree nodes
         var jsonNodes = $('#treeDiv' + thesaurusIndex).jstree(true).get_json('#', {flat: true});
         $.each(jsonNodes, function (i, item) {
-            if (item.id == thesaurusNodeId)
+            if (item.id == thesaurusNodeId || item.id == "#")
                 return;
             if (!item.data || !item.data.broaders)
                 var x = 3

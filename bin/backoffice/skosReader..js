@@ -33,6 +33,28 @@ var skosReader = {
         })
 
     },
+    rdfToFlat: function (sourcePath, options, callback) {
+
+        //  var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf"
+        var thesaurusName = sourcePath.substring(sourcePath.lastIndexOf("\\") + 1)
+        thesaurusName = thesaurusName.substring(0, thesaurusName.indexOf("."))
+        if (!options) {
+            options = {
+                outputLangage: "en",
+                extractedLangages: "en,fr,sp",
+                thesaurusName: thesaurusName
+            }
+        }
+
+        skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
+            if (err)
+                return callback(err);
+            var flatConceptsArray = skosReader.mapToFlat(conceptsMap, options);
+            callback(null, flatConceptsArray)
+        })
+
+    },
+
 
     parseRdfXml: function (sourcePath, options, callback) {
         var saxStream = sax.createStream(true)
@@ -353,7 +375,6 @@ var skosReader = {
         for (var id in conceptsMap) {
 
 
-
             var obj = {data: {}}
             var concept = conceptsMap[id];
 
@@ -432,59 +453,63 @@ var skosReader = {
         conceptsArray.forEach(function (concept, index) {
             var objArray = [];
 
-
-            concept.prefLabels.forEach(function (prefLabel, index2) {
-                objArray.push({
-                        "skos:prefLabel": {
-                            "@": {
-                                "xml:lang": prefLabel.lang
-                            },
-                            "#": prefLabel.value
+            if (concept.prefLabels) {
+                concept.prefLabels.forEach(function (prefLabel, index2) {
+                    objArray.push({
+                            "skos:prefLabel": {
+                                "@": {
+                                    "xml:lang": prefLabel.lang
+                                },
+                                "#": prefLabel.value
+                            }
                         }
-                    }
-                )
-            })
-
-
-            concept.altLabels.forEach(function (altLabel) {
-                objArray.push({
-                    "skos:altLabel": {
-                        "@": {
-                            "xml:lang": altLabel.lang
-                        },
-                        "#": altLabel.value
-                    }
+                    )
                 })
-            })
+            }
 
-            concept.broaders.forEach(function (broader, index2) {
-                objArray.push({
-                        "skos:broader": {
+            if (concept.altLabels) {
+                concept.altLabels.forEach(function (altLabel) {
+                    objArray.push({
+                        "skos:altLabel": {
+                            "@": {
+                                "xml:lang": altLabel.lang
+                            },
+                            "#": altLabel.value
+                        }
+                    })
+                })
+
+            }
+            if (concept.broaders) {
+                concept.broaders.forEach(function (broader, index2) {
+                    objArray.push({
+                            "skos:broader": {
+                                "@":
+                                    {
+                                        "rdf:resource":
+                                            uriRoot + broader
+                                    }
+                            }
+                        }
+                    )
+                })
+            }
+
+            if (concept.relateds) {
+                concept.relateds.forEach(function (related) {
+                    objArray.push({
+                        "skos:related": {
                             "@":
                                 {
                                     "rdf:resource":
-                                        uriRoot + broader
+                                        uriRoot + related
                                 }
                         }
-                    }
-                )
-            })
-
-
-            concept.relateds.forEach(function (related) {
-                objArray.push({
-                    "skos:related": {
-                        "@":
-                            {
-                                "rdf:resource":
-                                    uriRoot + related
-                            }
-                    }
+                    })
                 })
-            })
+            }
 
-            if (concept.prefLabels.length > 1)
-                var x = 3
+
             var obj = {
 
                 "@": {
@@ -499,10 +524,88 @@ var skosReader = {
         str += "</rdf:RDF>"
 
         fs.writeFileSync(rdfPath, str)
+        if(callback)
         return callback(null, "done " + rdfPath)
 
     }
 
+
+    , mapToFlat: function (conceptsMap, options) {
+
+        function recurseConceptStr(concept, str) {
+            if (concept.broaders && concept.broaders.length > 0) {
+                if (str !== "")
+                    str += "|";
+                str += concept.broaders[0];
+                var broaderConcept = conceptsMap[concept.broaders[0]]
+                if (broaderConcept)
+                    return recurseConceptStr(broaderConcept, str)
+            }
+
+
+            return str;
+
+        }
+
+        var pathStrs = []
+        var longuestPathMap = {}
+        for (var id in conceptsMap) {
+            var concept = conceptsMap[id];
+
+
+            var str = concept.id;
+            str = recurseConceptStr(concept, str);
+            var found = false;
+
+            pathStrs.forEach(function (path, index) {
+                if (str.indexOf(path) > -1) {
+                    pathStrs[index] = str
+                    found = true;
+                }
+            })
+            if (!found)
+                pathStrs.push(str)
+
+
+        }
+        for (var id in longuestPathMap) {
+            pathStrs[id] = longuestPathMap[id]
+        }
+
+        //pathStrs.sort();
+
+
+        var leaves = []
+        pathStrs.forEach(function (leafId) {
+            var ids = leafId.split("|")
+            var path = "";
+
+            var synonyms = ""
+            ids.forEach(function (id, index) {
+                if (index > 0)
+                    path += "|"
+                if (conceptsMap[id]) {
+                    path += conceptsMap[id].prefLabels["en"]
+
+
+                    for (var lang in conceptsMap[id].altLabels) {
+                        if (conceptsMap[id].altLabels && conceptsMap[id].altLabels[lang] && conceptsMap[id].altLabels[lang].forEach) {
+                            conceptsMap[id].altLabels[lang].forEach(function (value) {
+                                if (synonyms != "")
+                                    synonyms += "|"
+                                synonyms += value;
+                            })
+
+                        }
+                    }
+                } else
+                    path += "?"
+            })
+            leaves.push({thesaurus: options.thesaurusName, path: path, pathIds: ids, synonyms: synonyms})
+        })
+
+        return leaves;
+    }
 
 }
 /*
@@ -515,3 +618,16 @@ skosReader.rdfToAnnotator("D:\\NLP\\cgi\\eventprocess.rdf", {outputLangage: "en"
 
 
 module.exports = skosReader
+
+if (false) {
+
+    var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf";
+    var sourcePath = "D:\\NLP\\termScience\\Chemistry.rdf";
+    var x = fs.readFileSync(sourcePath)
+    skosReader.rdfToFlat(sourcePath, null, function (err, result) {
+        fs.writeFileSync(sourcePath.replace(".rdf", "_flat.json"), JSON.stringify(result, null, 2))
+
+    })
+
+
+}

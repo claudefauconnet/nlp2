@@ -1,0 +1,62 @@
+{
+  "general": {
+    "description": "flat_thesaurus",
+    "label": "flat_thesaurus",
+    "indexName": "flat_thesaurus"
+  },
+  "connector": {
+    "type": "json",
+    "subType": "object",
+    "filePath": "D:\\NLP\\thesaurus_CTG_Product_flat.json",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "flat_thesaurus": {
+        "properties": {
+          "thesaurus": {
+            "type": "text"
+          },
+          "path": {
+            "type": "text"
+          },
+          "pathIds": {
+            "type": "text"
+          },
+          "synonyms": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "thesaurus": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "path": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "pathIds": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "synonyms": {
+        "cssClass": "excerpt"
+      }
+    }
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "no",
+    "applythesauri": "no"
+  }
+}

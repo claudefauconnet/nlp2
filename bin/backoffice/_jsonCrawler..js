@@ -48,7 +48,7 @@ var jsonCrawler = {
                           if (value == "0000-00-00")
                               return;
                           if(typeof value=="object")
-                              value=JSON.stringify(value,null,2)
+                            value=JSON.stringify(value,null,2)
 
                           record[key] = value;
                           lineContent+=value+";"

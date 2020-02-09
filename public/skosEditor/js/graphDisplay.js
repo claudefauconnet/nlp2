@@ -28,7 +28,7 @@ var graphDisplay = (function () {
         var options = {};
         if (layout == "hierarchical")
             options.layoutHierarchical = true;
-        options.notSmoothEdges = true;
+        options.notSmoothEdges = false;
 
         options.fixedLayout = true;
         options.onclickFn = function (node, point) {

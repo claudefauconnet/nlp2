@@ -192,6 +192,11 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                 processResponse(response, err, result)
             })
         }
+        if (req.body.rdfToFlat) {
+            skosReader.rdfToFlat(req.body.rdfPath,JSON.parse(req.body.options), function (err, result) {
+                processResponse(response, err, result)
+            })
+        }
 
 
     },

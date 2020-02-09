@@ -12,6 +12,11 @@ var thesaurusList=[
     "D:\\NLP\\thesaurus_CTG_Product.rdf",
     "D:\\NLP\\thesaurus_CTG_Method.rdf",
 
+    "-----------------termScience-------",
+
+    "D:\\NLP\\termScience\\termScience_Chemistry.rdf",
+    "D:\\NLP\\termScience\\termScience_Physics.rdf",
+
 
     "---------Energistics-------",
     "D:\\NLP\\energistics\\WellboreGeology.rdf",

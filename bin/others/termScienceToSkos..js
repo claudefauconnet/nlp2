@@ -24,7 +24,7 @@ var termScienceToSkos = {
             concepts.push(concept)
 // name
             var idNode = node.getElementsByTagName("feat").item(0);
-            if(!idNode)
+            if (!idNode)
                 return;
             var id = idNode.getAttribute("conceptIdentifier");
             if (id)
@@ -70,6 +70,8 @@ var termScienceToSkos = {
 
 
         function setElementsMap() {
+
+
             var allElements = doc.documentElement.getElementsByTagName("struct");
             //   var allElements = doc.documentElement.childNodes;
 
@@ -80,8 +82,13 @@ var termScienceToSkos = {
 
         }
 
-        setElementsMap();
-        callback(null, concepts[0])
+        if (doc && doc.documentElement) {
+            setElementsMap();
+            callback(null, concepts[0])
+        } else {
+            callback(null, {});
+        }
+
         //   console.log()
     }
     , queryTermScience: function (conceptId, callback) {
@@ -134,56 +141,260 @@ var termScienceToSkos = {
 
     },
 
-    buildTree: function (rootConceptId, maxDepth, callback) {
-        var rootConcept = {"name": "root", id: rootConceptId, children: []}
-        var continueToRecurse=true
-        function recurseChildren(conceptParent, currentLevel, maxDepth, callbackRecurse) {
+    buildTreeToSkos: function (rootConceptId, maxDepth, rdfPath, callback) {
 
-            var x = rootConcept;
-            setTimeout(function () {
-                termScienceToSkos.queryTermScience(conceptParent.id, function (err, xmlStr) {
+        function getConceptChildren(conceptId, callback) {
+            if (conceptId == "TE.173836")
+                var x = 3
+            var concept = {"name": "", id: conceptId, children: []}
 
-                    termScienceToSkos.xmlToTree(xmlStr, {}, function (err, concept) {
+            if (conceptId)
+                termScienceToSkos.queryTermScience(conceptId, function (err, xmlStr) {
+
+                    termScienceToSkos.xmlToTree(xmlStr, {}, function (err, concept2) {
                         if (err) {
                             return callback(err);
                         }
-                        if (!conceptParent.children)
-                            conceptParent.children = []
-                        conceptParent.children.push(concept);
-                        if (currentLevel < maxDepth) {
-                            async.eachSeries(conceptParent.children, function (childConcept, callbackEach) {
-                                var ierationend= recurseChildren(childConcept, currentLevel + 1, maxDepth,callbackRecurse);
-                                continueToRecurse=continueToRecurse || ierationend
-                                callbackEach()
-                            }, function (err) {
-                                if (err)
-                                    return callbackRecurse(err);
-                                return false;
 
-                            })
-
-                        }
-                        else {
-                            return true;
-
-                        }
+                        concept.name = concept2.name
+                        concept.children = concept2.children
+                        return callback(null, concept)
                     })
                 })
-            }, 1000)
-            if(!continueToRecurse)
-            return  callbackRecurse(null,conceptParent);
+
         }
 
-        async.series([function (callbackSeries) {
-               recurseChildren(rootConcept, 0, maxDepth, function (err, result) {
-                    rootConcept =result;
+
+        var children1 = []
+        var children2 = []
+        var children3 = []
+        var children4 = []
+        var children5 = []
+        var children6 = []
+
+        var conceptsMap = {};
+        var editorArray = [];
+        var maxLevel=4
+       var  level3_exclude=["Biochimie","Chimie agricole","Chimie pharmaceutique"]
+        async.series([
+            function (callbackSeries) {
+                getConceptChildren(rootConceptId, function (err, concept) {
+                    if (err)
+                        return callbackSeries(err);
+                    conceptsMap[concept.id] = concept;
+                    concept.children.forEach(function (child) {
+                        children1.push(child)
+                    })
                     callbackSeries();
                 })
-            }],
-            function (err) {
-                return rootConcept
+            },
+            function (callbackSeries) {
+                if(maxLevel<2)
+                    return callbackSeries()
+                var index = 0;
+                async.eachSeries(children1, function (item, callbackEach) {
+                    getConceptChildren(item.id, function (err, concept) {
+                        if (err)
+                            return callbackEach(err);
 
+                        conceptsMap[concept.id] = concept;
+                        if(level3_exclude.indexOf(concept.name)>-1)
+                            return callbackEach();
+                        concept.children.forEach(function(child){
+                            child.parent=concept.id
+                            children2.push(child)
+                        })
+                        callbackEach();
+                    })
+                }, function (err) {
+                    if (err)
+                        return callbackSeries(err);
+                    callbackSeries();
+                })
+            },
+            function (callbackSeries) {
+                if(maxLevel<3)
+                    return callbackSeries()
+                var index = 0;
+                async.eachSeries(children2, function (item, callbackEach) {
+
+                    getConceptChildren(item.id, function (err, concept) {
+                        if (err)
+                            return callbackEach(err);
+
+                        conceptsMap[concept.id] = concept;
+                        concept.children.forEach(function(child){
+                            child.parent=concept.id
+                            children3.push(child)
+                        })
+
+                        callbackEach();
+                    })
+                }, function (err) {
+                    if (err)
+                        return callbackSeries(err);
+                    callbackSeries();
+                })
+            }
+            ,
+            function (callbackSeries) {
+            if(maxLevel<4)
+               return callbackSeries()
+                var index = 0;
+                async.eachSeries(children3, function (item, callbackEach) {
+                    getConceptChildren(item.id, function (err, concept) {
+                        if (err)
+                            return callbackEach(err);
+
+
+                        concept.children.forEach(function(child){
+                            child.parent=concept.id
+                            children4.push(child)
+                        })
+                        conceptsMap[concept.id] = concept;
+                        callbackEach();
+                    })
+                }, function (err) {
+                    if (err)
+                        return callbackSeries(err);
+                    callbackSeries();
+                })
+            }
+            ,
+            function (callbackSeries) {
+                if(maxLevel<5)
+                    return callbackSeries()
+                var index = 0;
+                async.eachSeries(children4, function (item, callbackEach) {
+                    getConceptChildren(item.id, function (err, concept) {
+                        if (err)
+                            return callbackEach(err);
+
+                        conceptsMap[concept.id] = concept;
+                        concept.children.forEach(function(child){
+                            child.parent=concept.id
+                            children5.push(child)
+                        })
+                        callbackEach();
+                    })
+                }, function (err) {
+                    if (err)
+                        return callbackSeries(err);
+                    callbackSeries();
+                })
+            },
+
+
+       function (callbackSeries) {
+           if(maxLevel<6)
+               return callbackSeries()
+                var index = 0;
+                async.eachSeries(children5, function (item, callbackEach) {
+                    getConceptChildren(item.id, function (err, concept) {
+                        if (err)
+                            return callbackEach(err);
+                        conceptsMap[concept.id] = concept;
+                        concept.children.forEach(function(child){
+                            child.parent=concept.id
+                            children6.push(child)
+                        })
+                        callbackEach();
+                    })
+                }, function (err) {
+                    if (err)
+                        return callbackSeries(err);
+                    callbackSeries();
+                })
+            },
+
+            // *************************final treatment**********************
+            function (callbackSeries) {
+
+
+                for (var key in conceptsMap) {
+                    var node = conceptsMap[key]
+                    console.log(key)
+
+                    function recurseChildren(node) {
+                        var obj = {
+                            id: node.id,
+                            prefLabels: [{lang: "en", value: node.name}],
+
+                            altLabels: []
+                        }
+                        if (node.parent) {
+                            obj.broaders = [node.parent];
+                            editorArray.push(obj);
+                        }
+
+                        if (node.children) {
+                            node.children.forEach(function (child) {
+                                editorArray.push({
+                                    id: child.id,
+                                    prefLabels: [{lang: "en", value: child.name}],
+                                    broaders: [node.id],
+                                    altLabels: [],
+                                    relateds: []
+                                })
+                                if(child.id=="TE.49696")
+                                    var w=3
+                                if(conceptsMap[child.id])
+                                    recurseChildren(conceptsMap[child.id])
+                            })
+                        }
+                    }
+
+                    recurseChildren(node);
+
+
+                }
+                callbackSeries()
+            }
+
+
+        ], function (err) {
+            if (err)
+                return callback(err)
+
+
+            skoReader.skosEditorToRdf(rdfPath, editorArray, {}, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                callback();
             })
+
+        })
+
+
+    }
+    ,
+
+    treeToThesaurusEditor: function (tree) {
+        var conceptsArray = []
+
+        function recurse(node, parentId) {
+            if (!node.id)
+                node.id = node.name;
+            var obj = {
+                id: node.id,
+                prefLabels: [{"lang": "en", "value": node.name}],
+                altLabels: [],
+                relateds: [],
+                broaders: [parentId]
+            }
+            conceptsArray.push(obj);
+
+            if (node.children) {
+                node.children.forEach(function (child) {
+                    var nodeId = node.id;
+                    recurse(child, nodeId)
+                })
+            }
+        }
+
+        recurse(tree, "#");
+        return conceptsArray;
     }
 }
 
@@ -233,11 +444,102 @@ if (true) {
         {"name": "Physics", "id": "TE.60624"}
     ]
 
-    var rdfPath = "D:\\NLP\\termScience\\TotalConcepts.rdf";
 
-    termScienceToSkos.buildTree(totalSubjects[0].id, 4, function (err, concept) {
-        fs.writeFileSync(rdfPath, JSON.stringify(concept, null, 2))
+    var humanSubject = [{"name": "Philosophy", "id": "TE.60063"},
+        {"name": "Ethnology", "id": "TE.31503"},
+        {"name": "History", "id": "TE.39654"},
+        {"name": "Psychology", "id": "TE.185309"},
+        {"name": "Religion", "id": "TE.68945"}]
+
+
+    others = {"name": "Methodology", "id": "TE.50404"}
+
+    var selectedSubjects = [{"name": "Chemistry", "id": "TE.15428"}]
+    var selectedSubjects = [{"name": "Physics", "id": "TE.60624"}]
+    //  var selectedSubjects = [{"name": "Elements Chimiques", "id": "TE.173836"}]
+
+    async.eachSeries(selectedSubjects, function (subject, callbackEachSubject) {
+        var rdfPath = "D:\\NLP\\termScience\\termScience_" + subject.name + ".rdf";
+        termScienceToSkos.buildTreeToSkos(subject.id, 6, rdfPath, function (err, result) {
+            if (err) {
+                return callbackEachSubject(err);
+
+            }
+            var x = result
+
+            callbackEachSubject();
+        })
+
+    }, function (err) {
+        if (err) {
+            return console.log(err);
+        }
+        return console.log("ALL DONE");
     })
+
+}
+
+if (false) {
+    var jsonPath = "D:\\NLP\\termScience\\terms2.json";
+    var rdfPath = "D:\\NLP\\termScience\\termSciences_Physics.rdf";
+    var json = JSON.parse("" + fs.readFileSync(jsonPath));
+
+
+    skoReader.skosEditorToRdf(rdfPath, conceptsArray, {})
+
+}
+
+if (false) {
+
+    var conceptsMap = JSON.parse("" + fs.readFileSync("d:\\NLP\\conceptsMap.json"));
+
+    var editorArray=[];
+    for (var key in conceptsMap) {
+        var node = conceptsMap[key]
+        console.log(key)
+
+        function recurseChildren(node) {
+            var obj = {
+                id: node.id,
+                prefLabels: [{lang: "en", value: node.name}],
+
+                altLabels: []
+            }
+            if (node.parent) {
+                obj.broaders = [node.parent];
+                editorArray.push(obj);
+            }
+
+            if (node.children) {
+                node.children.forEach(function (child) {
+                    editorArray.push({
+                        id: child.id,
+                        prefLabels: [{lang: "en", value: child.name}],
+                        broaders: [node.id],
+                        altLabels: [],
+                        relateds: []
+                    })
+                    if(child.id=="TE.49696")
+                        var w=3
+                    if(conceptsMap[child.id])
+                    recurseChildren(conceptsMap[child.id])
+                })
+            }
+        }
+
+        recurseChildren(node);
+
+
+    }
+
+
+    var rdfPath = "D:\\NLP\\termScience\\termScience_" + "Chemistry" + ".rdf";
+    skoReader.skosEditorToRdf(rdfPath, editorArray, {}, function (err, result) {
+
+    })
+
+
+
 
 
 }

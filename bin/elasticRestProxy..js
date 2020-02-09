@@ -2,24 +2,24 @@ const request = require('request');
 
 
 const elasticUrl = "http://localhost:9200/";
-const debug=true;
+const debug = true;
 var elasticRestProxy = {
-    elasticUrl:elasticUrl,
+    elasticUrl: elasticUrl,
 
     executePostQuery: function (url, query, callback) {
 
-        if(url.toLowerCase().trim().indexOf("http")<0)
-            url=elasticUrl+url;
+        if (url.toLowerCase().trim().indexOf("http") < 0)
+            url = elasticUrl + url;
         var options = {
             method: 'POST',
             json: query,
             headers: {
                 'content-type': 'application/json'
             },
-            url:  url
+            url: url
         };
-        if(debug)
-            console.log(JSON.stringify(query,null,2));
+        if (debug)
+            console.log(JSON.stringify(query, null, 2));
         request(options, function (error, response, body) {
             if (error)
                 return callback(error);
@@ -40,7 +40,7 @@ var elasticRestProxy = {
         })
 
     },
-    executeMsearch:function(ndjson,callback){
+    executeMsearch: function (ndjson, callback) {
         var options = {
             method: 'POST',
             body: ndjson,
@@ -48,15 +48,15 @@ var elasticRestProxy = {
             headers: {
                 'content-type': 'application/json'
             },
-            url: baseUrl+"/_msearch"
+            url: baseUrl + "/_msearch"
         };
 
         console.log(ndjson)
         request(options, function (error, response, body) {
-            if(error)
-                return  callback(error);
-            if(body.error && body.error.reason)
-                return  callback(body.error.reason)
+            if (error)
+                return callback(error);
+            if (body.error && body.error.reason)
+                return callback(body.error.reason)
             var json = JSON.parse(response.body);
             var responses = json.responses;
             var totalDocsAnnotated = 0
@@ -76,7 +76,8 @@ var elasticRestProxy = {
 
     checkBulkQueryResponse: function (responseBody, callback) {
         var body;
-        if (typeof responseBody != "object")
+        //  if (typeof responseBody != "object")
+        if (Buffer.isBuffer(responseBody))
             body = JSON.parse(responseBody.toString());
         else
             body = responseBody;
