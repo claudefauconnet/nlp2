@@ -494,6 +494,16 @@ var skosReader = {
                     )
                 })
             }
+            if (concept.definitions) {
+                concept.definitions.forEach(function (definition, index2) {
+                    objArray.push({
+                            "skos:definition": {
+                                "#": definition
+                            }
+                        }
+                    )
+                })
+            }
 
             if (concept.relateds) {
                 concept.relateds.forEach(function (related) {
