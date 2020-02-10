@@ -1,6 +1,7 @@
 var fs = require('fs');
 var sax = require("sax");
 const csv = require('csv-parser');
+const async = require('async');
 var skosReader = require('../backoffice/skosReader.')
 var locskos = {
 
@@ -436,7 +437,7 @@ var locskos = {
 
                 })
 
-                callback(null, {locConceptsMap: conceptsMap,locConceptsIdsMap: conceptsIdsMap, locCtgSkos:locCtgSkos});
+                callback(null, {locConceptsMap: conceptsMap, locConceptsIdsMap: conceptsIdsMap, locCtgSkos: locCtgSkos});
 
 
             })
@@ -452,11 +453,255 @@ var locskos = {
 
 
     }
+    ,
+    getCommonConceptsFromLOCindex: function (rfdPath) {
+        var thesaurusConcepts = [];
+        var locArray = [];
+        var commonConcepts = [];
+        async.series([
+
+            function (callbackSeries) {
+                skosReader.rdfToEditor(rfdPath, null, function (err, result) {
+                    if (err)
+                        return console.log(err)
+
+                    result.forEach(function (concept) {
+                        if (concept.data.prefLabels) {
+                            concept.data.prefLabels.forEach(function (label) {
+                                if (label.lang == "en")
+                                    thesaurusConcepts.push(label.value)
+                            })
+                        }
+
+                    })
+                    callbackSeries();
+                })
+            },
+            function (callbackSeries) {
+                var csvCrawler = require('../backoffice/_csvCrawler.')
+                csvCrawler.readCsv({filePath: "D:\\NLP\\LOCtopNodesAll.txt"}, 100000, function (err, result) {
+                    locArray = result;
+                    callbackSeries();
+                })
+
+            },
+            function (callbackSeries) {
+                locArray.data.forEach(function (locFetch, index) {
+                    console.log("" + (index * locFetch.length))
+                    locFetch.forEach(function (locItem) {
+                        thesaurusConcepts.forEach(function (thesaurusConcept) {
+                            if (locItem.concept.toLowerCase() == thesaurusConcept.toLowerCase()) {
+                                commonConcepts.push(locItem)
+                            }
+                        })
+                    })
+
+                })
+                callbackSeries()
+            }
+
+        ], function (err) {
+
+            fs.writeFileSync("D:\\NLP\\LOCcommonCTG.txt", JSON.stringify(commonConcepts, null, 2))
+        })
+
+    }
+    ,
+    getCommonConceptsLOCparents: function (jsonPath, level,callback) {
+        var allCommonConcepts = [];
+        var uniqueConcepts = []
+        var conceptsWithParents = [];
+        var locArray = []
+        var newParentConcepts = []
+        async.series([
+
+            function (callbackSeries) {
+                var str = fs.readFileSync(jsonPath);
+                allCommonConcepts = JSON.parse("" + str);
+
+                allCommonConcepts.forEach(function (concept) {
+
+                        if (uniqueConcepts.indexOf(concept.id) < 0) {
+                            uniqueConcepts.push(concept.id)
+                            if (!Array.isArray(concept.parents))
+                           concept.parents = concept.parents.split(",")
+                            if (!Array.isArray(concept.parents))
+                                concept.parents = [concept.parents]
+                            conceptsWithParents.push(concept)
+
+                    }
+                })
+                var x = uniqueConcepts.length;
+                callbackSeries();
+            },
+            function (callbackSeries) {
+                var csvCrawler = require('../backoffice/_csvCrawler.')
+                csvCrawler.readCsv({filePath: "D:\\NLP\\LOCtopNodesUniques.txt"}, 100000, function (err, result) {
+                    if(err)
+                        callbackSeries(err);
+                    locArray = result;
+                    callbackSeries();
+                })
+
+            },
+            function (callbackSeries) {
+                var uniqueConcepts2 = []
+                conceptsWithParents.forEach(function (parentConcept, index3) {
+                    //  console.log("" + (index3 ))
+                    parentConcept.parents.forEach(function (parent) {
+                        if(parent=="")
+                            return;
+                        var found = false;
+                        locArray.data.forEach(function (locFetch, index) {
+
+                            locFetch.forEach(function (locItem, index2) {
+
+
+                                if (locItem.id == parent) {
+                                    if (uniqueConcepts2.indexOf(locItem.id) < 0) {
+                                        uniqueConcepts2.push(locItem.id)
+                                        newParentConcepts.push(locItem)
+
+                                    }
+                                    found = true;
+                                }
+                                    // console.log("--" + (index2))
+
+                            })
+                        })
+                        if (!found)
+                            console.log(parent + " not found")
+                    })
+
+                })
+                callbackSeries()
+            }
+        ], function (err) {
+            //  allCommonConcepts=allCommonConcepts.concat(newParentConcepts)
+            console.log(level+ " : "+newParentConcepts.length)
+            fs.writeFileSync("D:\\NLP\\LOCcommonCTG_" + level + ".txt", JSON.stringify(newParentConcepts, null, 2))
+            callback();
+        })
+
+
+    }
 
 
 }
 
 module.exports = locskos
+
+// set LOCtopNodesAll uniques withParents
+if (false) {
+    var csvCrawler = require('../backoffice/_csvCrawler.')
+    csvCrawler.readCsv({filePath: "D:\\NLP\\LOCtopNodesAll.txt"}, 100000, function (err, result) {
+        var locArray = result.data;
+
+        var locMap = {}
+        locArray.forEach(function (locFetch) {
+            locFetch.forEach(function (item) {
+
+                if (!locMap[item.id])
+                    locMap[item.id] = item;
+                else if (item.parents.length > locMap[item.id].parents.length)
+                    locMap[item.id].parents = item.parents;
+            })
+        })
+        var loc2 = "concept\tid\tparents\n"
+        for (var key in locMap) {
+            var concept = locMap[key];
+            loc2 += concept.concept + "\t" + concept.id + "\t" + concept.parents + "\n"
+        }
+
+        fs.writeFileSync("D:\\NLP\\LOCtopNodesUniques.txt", loc2)
+
+    })
+
+
+}
+
+
+// extract commonConcepts
+if (false) {
+    locskos.getCommonConceptsFromLOCindex("D:\\NLP\\thesaurusCTG-02-20.rdf")
+}
+// extract parents
+if (false) {
+    var array=[]
+    for(var i=1;i<20;i++) {
+        array.push(i)
+    }
+    async.eachSeries(array,function(level,callbackEach) {
+        var level2=level+1
+        locskos.getCommonConceptsLOCparents("D:\\NLP\\LOCcommonCTG_" + level + ".txt", level2,function(err, result){
+            callbackEach();
+        })
+
+    })
+
+
+
+}
+//concat all levels
+if (true) {
+    var allConcepts = []
+    var uniqueConcepts=[];
+    for (var i = 1; i < 20; i++) {
+        var str = "" + fs.readFileSync("D:\\NLP\\LOCcommonCTG_" + i + ".txt")
+        var json = JSON.parse(str);
+        json.forEach(function(concept,index){
+            var p;
+            if((p=uniqueConcepts.indexOf(concept.id))<0){
+                uniqueConcepts.push(concept.id)
+                allConcepts.push(concept)
+            }else{
+                if(concept.parents.length > allConcepts[p].parents.length)
+                    allConcepts[p].parents=concept.parents.length;
+            }
+        })
+
+    }
+    fs.writeFileSync("D:\\NLP\\LOCcommonCTG_ALL.json", JSON.stringify(allConcepts, null, 2))
+}
+
+//build skos
+
+if (true) {
+
+    var str = "" + fs.readFileSync("D:\\NLP\\LOCcommonCTG_ALL.json")
+    var json = JSON.parse(str);
+    var skosArray = [];
+    json.forEach(function (concept) {
+        var broaders = [];
+        if (Array.isArray(concept.parents)) {
+            concept.parents.forEach(function (parent) {
+                broaders.push(parent)
+            })
+
+        } else if (concept.parents != "") {
+            broaders = concept.parents.split(",")
+        }
+        else{
+            broaders= "_root"
+        }
+        var skosObj = {
+
+            id: concept.id,
+            prefLabels: [{lang: "en", value: concept.concept}],
+            altLabels: [],
+            broaders: broaders,
+            relateds: [],
+
+
+        }
+        skosArray.push(skosObj)
+        skosArray.push({ id: "_root",  prefLabels: [{lang: "en", value: "root"}], broaders: []})
+
+
+    })
+    skosReader.skosEditorToRdf("D:\\NLP\\LOCcommonCTG.rdf", skosArray, {})
+
+}
 
 
 if (false) {
@@ -464,15 +709,15 @@ if (false) {
     //  locskos.readCsv("D:\\NLP\\lcsh.madsrdf.ndjson");
 
 }
-if (true) {
+if (false) {
 
-    var thesaurus="thesaurus_CTG_Product"
-    locskos.compareWithThesaurus("D:\\NLP\\LOCtopNodesAll.txt", "D:\\NLP\\"+thesaurus+".rdf", function (err, result) {
+    var thesaurus = "thesaurus_CTG_Product"
+    locskos.compareWithThesaurus("D:\\NLP\\LOCtopNodesAll.txt", "D:\\NLP\\" + thesaurus + ".rdf", function (err, result) {
         if (err)
             return console.log(err);
 
         if (true) {
-            skosReader.skosEditorToRdf("D:\\NLP\\commonConceptsLocCtg_"+thesaurus+".rdf", result.locCtgSkos, {}, function (err, result) {
+            skosReader.skosEditorToRdf("D:\\NLP\\commonConceptsLocCtg_" + thesaurus + ".rdf", result.locCtgSkos, {}, function (err, result) {
                 var xxx = 3;
             })
             return;
@@ -486,20 +731,22 @@ if (true) {
                     topLocCtgConcepts.push(item.id);
             })
 
-            var tree={}
-            function recurse(node,concept){
+            var tree = {}
 
-            for(var id in locConceptsIdsMap){
-                var child=locConceptsIdsMap[id];
+            function recurse(node, concept) {
 
-                if(child.parent[concept.id]){
-                    if(false);
-                }
+                for (var id in locConceptsIdsMap) {
+                    var child = locConceptsIdsMap[id];
+
+                    if (child.parent[concept.id]) {
+                        if (false) ;
+                    }
 
                 }
 
             }
-            topLocCtgConcepts.forEach(function(topConcept){
+
+            topLocCtgConcepts.forEach(function (topConcept) {
                 recurse(topConcept)
             })
 

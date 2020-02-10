@@ -68,13 +68,19 @@ var multiSkosGraph=(function(){
 
 
                var path=hit._source.path;
+
                var nodes=path.split("|");
                var ids=hit._source.pathIds;
 
 
 
                nodes.forEach(function(node,index){
+
+
+
                    var id=ids[index];
+                   if(id.indexOf("TE.184968")>-1)
+                       var x=3;
                    var thesaurus=hit._source.thesaurus.replace(/\s/g,"_");
                    var color=colorsMap[thesaurus]
 

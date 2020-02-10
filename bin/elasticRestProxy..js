@@ -78,7 +78,14 @@ var elasticRestProxy = {
         var body;
         //  if (typeof responseBody != "object")
         if (Buffer.isBuffer(responseBody))
-            body = JSON.parse(responseBody.toString());
+            try {
+
+        body = JSON.parse(responseBody.toString());
+    }
+    catch(e){
+        return callback(e+" : "+responseBody.toString())
+
+    }
         else
             body = responseBody;
         var errors = [];

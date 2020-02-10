@@ -46,7 +46,7 @@ var annotator_skos = {
         async.series([
 
 
-                // match entities on each doc of corpus index (all fields) and set documents field of ecah entities withe doc matching entity query
+                // match entities on each doc of corpus index (all fields) and set documents field of each entities withe doc matching entity query
                 function (callbackSeries) {
                     annotator_skos.findEntitiesDocuments(globalOptions, entities, function (err, result) {
                         if (err)

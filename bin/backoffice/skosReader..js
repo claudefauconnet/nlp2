@@ -543,32 +543,54 @@ var skosReader = {
 
     , mapToFlat: function (conceptsMap, options) {
 
-        function recurseConceptStr(concept, str) {
+        function recurseConceptStr(concept, str,level) {
+if(concept.id=="TE.16026")
+    var x=3
             if (concept.broaders && concept.broaders.length > 0) {
                 if (str !== "")
-                    str += "|";
-                str += concept.broaders[0];
-                var broaderConcept = conceptsMap[concept.broaders[0]]
-                if (broaderConcept)
-                    return recurseConceptStr(broaderConcept, str)
+                    str += "|";// concept separator
+                concept.broaders.forEach(function (broader, index) {
+                    if (str.indexOf(broader) > -1 || broader==concept.id)
+                        return str;
+                    if ( concept.broaders.length>1)
+                        str += "*";// branch separator
+                    str += broader;
+                    var broaderConcept = conceptsMap[broader]
+                    if (broaderConcept) {
+                        try {
+                            return recurseConceptStr(broaderConcept, str, level++)
+                        }catch(e){
+                            console.log(str)
+                        }
+                    }
+                })
+
             }
-
-
+           // console.log(str);
             return str;
 
         }
 
+
+        // set longuest paths  even if multiple broaders
+
         var pathStrs = []
-        var longuestPathMap = {}
         for (var id in conceptsMap) {
             var concept = conceptsMap[id];
 
-
             var str = concept.id;
-            str = recurseConceptStr(concept, str);
+
+            str = recurseConceptStr(concept, str,0);
+
+            if( str.indexOf("*")>-1)
+                var x=3
+
             var found = false;
 
+
+            //take the longuest path only
             pathStrs.forEach(function (path, index) {
+
                 if (str.indexOf(path) > -1) {
                     pathStrs[index] = str
                     found = true;
@@ -579,16 +601,11 @@ var skosReader = {
 
 
         }
-        for (var id in longuestPathMap) {
-            pathStrs[id] = longuestPathMap[id]
-        }
-
-        //pathStrs.sort();
 
 
         var leaves = []
         pathStrs.forEach(function (leafId) {
-            var ids = leafId.split("|")
+            var ids = leafId.split(/[|*]/)
             var path = "";
             var synonyms = ""
             ids.forEach(function (id, index) {
@@ -640,12 +657,26 @@ module.exports = skosReader
 if (false) {
 
     var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf";
-    var sourcePath = "D:\\NLP\\termScience\\Chemistry.rdf";
+    var sourcePath =  "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
 
     skosReader.rdfToFlat(sourcePath, null, function (err, result) {
-        fs.writeFileSync(sourcePath.replace(".rdf", "_flat.json"), JSON.stringify(result, null, 2))
+        //   fs.writeFileSync(sourcePath.replace(".rdf", "_flat.json"), JSON.stringify(result, null, 2))
 
     })
 
 
 }
+
+var str="TE.13668|*TE.10210*TE.15439|TE.10210|*TE.15439*TE.10210*TE.15439"
+
+var array=str.split("*")
+var strs=[]
+array.forEach(function(item,index){
+    var str2="";
+    if( index>0)
+        str2=strs[index-1]
+
+    strs.push(str2+"|"+item)
+
+})
+var x=strs
