@@ -197,6 +197,12 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                 processResponse(response, err, result)
             })
         }
+        if (req.body.getLOCchildren) {
+            var lockskos=require('../bin/others/locskos.')
+            lockskos.getLOCchildren(req.body.conceptId,req.body.maxLevels, function (err, result) {
+                processResponse(response, err, result)
+            })
+        }
 
 
     },
@@ -207,6 +213,8 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             processResponse(res, err, result)
         })
     })
+
+
 )
 
 

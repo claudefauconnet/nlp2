@@ -101,8 +101,6 @@
     </style>
     <script>
         function dragOverHandler(ev) {
-            console.log('File(s) in drop zone');
-
             // Prevent default behavior (Prevent file from being opened)
             ev.preventDefault();
         }
@@ -113,7 +111,6 @@
             ev.preventDefault();
 
             if (ev.dataTransfer.items) {
-
                 var xx=  ev.dataTransfer.files[0].path;
                 // Use DataTransferItemList interface to access the file(s)
                 for (var i = 0; i < ev.dataTransfer.items.length; i++) {
@@ -124,23 +121,8 @@
                         console.log('... file[' + i + '].name = ' + file.name);
 
                         $("#skosInput1").val( $("#dropFileDirPath1").val()+file.name)
-                        skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)
 
-                     /*   if (file.type.indexOf("text") == 0) {
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                                // get file content
-                                var text = e.target.result;
-
-                            }
-                            reader.readAsText(file);
-                        }*/
                     }
-                }
-            } else {
-                // Use DataTransfer interface to access the file(s)
-                for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-                    console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
                 }
             }
         }

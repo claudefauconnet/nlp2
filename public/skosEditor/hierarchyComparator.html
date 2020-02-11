@@ -104,9 +104,44 @@
 
         }
 
+        #drop_zone {
+            border: 1px solid blue;
+            width:  150px;
+            height: 70px;
+        }
     </style>
     <script>
+
+        function dragOverHandler(ev) {
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+        }
+        function dropHandler(ev) {
+            console.log('File(s) dropped');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+
+            if (ev.dataTransfer.items) {
+                var xx=  ev.dataTransfer.files[0].path;
+                // Use DataTransferItemList interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+
+                    // If dropped items aren't files, reject them
+                    if (ev.dataTransfer.items[i].kind === 'file') {
+                        var file = ev.dataTransfer.items[i].getAsFile();
+                        console.log('... file[' + i + '].name = ' + file.name);
+var index=prompt("drop on zone number :")
+                        $("#skosInput"+index).val( $("#dropFileDirPath1").val()+file.name)
+
+                    }
+                }
+            }
+        }
+
+
         $(function () {
+            skosEditor.isMultiple=true;
             skosEditor.initThesaurusSelects()
             // var to = false;
             $('.treeSearchInput').keyup(function (e) {
@@ -144,7 +179,13 @@
 </head>
 <body>
 <div class='row' style='justify-content: center;align-items:center;display: flex'>
+    <input id="dropFileDirPath1" value="D:\NLP\" size="12">
+    <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+        <p>Drag File here ...</p>
+
+    </div>
  Search <input size='10' class="treeSearchInput" style="height: 30px;margin: 5px" id="treeSearchInput_3">
+    <button onclick="skosEditor.addLocLevel()"> Add LOC Levels</button>
 </div>
 <div style="display: flex;flex-direction: row;justify-content:left">
     <div style='min-width:100px'>

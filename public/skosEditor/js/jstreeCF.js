@@ -7729,6 +7729,8 @@
 				};
 			}
 			search = function (text) {
+				if(Array.isArray(text))
+					text=text[0]
 				text = options.caseSensitive ? text : text.toLowerCase();
 				if(pattern === text || text.indexOf(pattern) !== -1) {
 					return {

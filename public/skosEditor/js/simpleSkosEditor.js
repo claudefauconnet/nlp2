@@ -45,10 +45,13 @@ skosEditor = (function () {
                 "case_sensitive": false,
                 "show_only_matches": true
             },
+            "crrm": {"move": {"always_copy": "multitree"}}
 
 
         }).on("select_node.jstree",
             function (evt, obj) {
+                if (skosEditor.isMultiple)
+                    return;
                 skosEditor.synchronizePreviousData();
                 skosEditor.context.previousNode = obj.node;
                 var conceptData = obj.node.data
@@ -63,7 +66,7 @@ skosEditor = (function () {
                     if (!obj.node.data) {
                         obj.node.data = {
                             id: "",
-                            prefLabels: {},
+                            prefLabels: [],
                             altLabels: [],
                             relateds: [],
                             broaders: [],
@@ -325,7 +328,7 @@ skosEditor = (function () {
                 conceptData.definitions.forEach(function (definition, index) {
                     html += "  <div class='row'>" +
                         "    <div class='col-sm-3'>" +
-                        "       <label for='concept_definition_value_"+index+"'><h6>about</h6></label> " +
+                        "       <label for='concept_definition_value_" + index + "'><h6>about</h6></label> " +
                         "    </div>" +
                         "    <div class='col-lg'>" +
                         "      <input id='concept_definition_value_" + index + "' value='" + definition + "' size='70'>" +
@@ -341,10 +344,10 @@ skosEditor = (function () {
                 conceptData.notes.forEach(function (note, index) {
                     html += "  <div class='row'>" +
                         "    <div class='col-sm-3'>" +
-                        "       <label for='concept_about_value_"+index+"'><h6>about</h6></label> " +
+                        "       <label for='concept_about_value_" + index + "'><h6>about</h6></label> " +
                         "    </div>" +
                         "    <div class='col-lg'>" +
-                        "      <input id='concept_about_value_'"+index+" value='" + note + "' size='70' >" +
+                        "      <input id='concept_about_value_'" + index + " value='" + note + "' size='70' >" +
                         "   </div>" +
                         "</div>"
                 })
@@ -526,7 +529,7 @@ skosEditor = (function () {
 
 
         getConceptData: function () {
-            var conceptData = {about: "", prefLabels: [], altLabels: [], broaders: [], altLabels: [], relateds: [],definitions:[],notes:[]}
+            var conceptData = {about: "", prefLabels: [], altLabels: [], broaders: [], altLabels: [], relateds: [], definitions: [], notes: []}
             $("input").each(function (a, b) {
                 var id = $(this).attr("id")
 
@@ -585,6 +588,50 @@ skosEditor = (function () {
 
         }
 
+
+    }
+
+    self.addLocLevel = function () {
+        var node = $('#treeDiv2').jstree(true).get_selected(true)[0]
+        var payload = {
+            getLOCchildren: 1,
+            conceptId: node.id,
+            maxLevels: 1,
+
+        }
+        $.ajax({
+            type: "POST",
+            url: elasticUrl,
+            data: payload,
+            dataType: "json",
+
+            success: function (data, textStatus, jqXHR) {
+
+                var parent = $('#treeDiv2').jstree('get_selected');
+
+                data.forEach(function (itemData) {
+                  if( $('#treeDiv2').jstree(true).get_node(itemData.id))
+                      return;
+                    var newNode = {
+                        state: "open",
+                        id: itemData.id,
+                        text: itemData.prefLabels[0].value,
+                        parent: node.id,
+                        data: itemData
+
+                    }
+                    var position = 'inside';
+                    var parent = $('#treeDiv2').jstree('get_selected');
+
+
+                    $('#treeDiv2').jstree("create_node", node.id, position, newNode, false, false);
+
+                })
+            }
+            , error: (function (err) {
+
+            })
+        })
 
     }
 

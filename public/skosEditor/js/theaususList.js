@@ -2,7 +2,7 @@ var thesaurusList=[
 
     "D:\\NLP\\thesaurusCTG-02-20.rdf",
     "D:\\NLP\\quantum_F_all.rdf",
-    "D:\\NLP\\commonConceptsLocCtg.rdf",
+    "D:\\NLP\\LOCcommonCTG.rdf",
 
     "---------CTG-------",
     "D:\\NLP\\thesaurus_CTG_Characterisation.rdf",
