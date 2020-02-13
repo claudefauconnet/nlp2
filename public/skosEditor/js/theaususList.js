@@ -1,8 +1,9 @@
-var thesaurusList=[
-
+var thesaurusList = [
+    "D:\\NLP\\DRAFT_CTG.rdf",
     "D:\\NLP\\thesaurusCTG-02-20.rdf",
+    "D:\\NLP\\LOC-CTG.rdf",
     "D:\\NLP\\quantum_F_all.rdf",
-    "D:\\NLP\\LOCcommonCTG.rdf",
+
 
     "---------CTG-------",
     "D:\\NLP\\thesaurus_CTG_Characterisation.rdf",
@@ -10,14 +11,18 @@ var thesaurusList=[
     "D:\\NLP\\thesaurus_CTG_Product.rdf",
     "D:\\NLP\\thesaurus_CTG_Method.rdf",
 
+    "---------LOC-------",
+    "D:\\NLP\\LOC_Engineering_3.rdf",
+    "D:\\NLP\\LOC_Chemistry_3.rdf",
+    "D:\\NLP\\LOC_Physics_3.rdf",
+
+
     "-----------------termScience-------",
 
     "D:\\NLP\\termScience\\termScience_Chemistry.rdf",
     "D:\\NLP\\termScience\\termScience_Physics.rdf",
     "D:\\NLP\\termScience\\termScience_Methodology.rdf",
     "D:\\NLP\\termScience\\termScience_Elements_Chimiques.rdf",
-
-
 
 
     "---------Energistics-------",
@@ -36,13 +41,10 @@ var thesaurusList=[
     "--------CGI---------",
 
 
-
     "--------Others--------",
     "D:\\NLP\\unesco.rdf",
     "D:\\NLP\\eurovoc_in_skos_core_concepts.rdf",
     "D:\\NLP\\thesaurusIngenieur.rdf",
-
-
 
 
 ];

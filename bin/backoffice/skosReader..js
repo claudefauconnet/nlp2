@@ -398,7 +398,11 @@ var skosReader = {
                 obj.parent = "#"
 
             }
-            obj.text = (concept.prefLabels[options.outputLangage] || concept.prefLabels["en"] || concept.prefLabels["X"]);
+            var lang = options.outputLangage || "en" || "X"
+            if (!lang || !concept.prefLabels[lang] || concept.prefLabels[lang].length == 0)
+                obj.text = "?"
+            else
+                obj.text = concept.prefLabels[lang][0]
             obj.id = concept.id;
 
             var prefLabelsArray = [];
@@ -543,30 +547,30 @@ var skosReader = {
 
     , mapToFlat: function (conceptsMap, options) {
 
-        function recurseConceptStr(concept, str,level) {
-if(concept.id=="TE.16026")
-    var x=3
+        function recurseConceptStr(concept, str, level) {
+            if (concept.id == "TE.16026")
+                var x = 3
             if (concept.broaders && concept.broaders.length > 0) {
                 if (str !== "")
                     str += "|";// concept separator
                 concept.broaders.forEach(function (broader, index) {
-                    if (str.indexOf(broader) > -1 || broader==concept.id)
+                    if (str.indexOf(broader) > -1 || broader == concept.id)
                         return str;
-                    if ( concept.broaders.length>1)
+                    if (concept.broaders.length > 1)
                         str += "*";// branch separator
                     str += broader;
                     var broaderConcept = conceptsMap[broader]
                     if (broaderConcept) {
                         try {
                             return recurseConceptStr(broaderConcept, str, level++)
-                        }catch(e){
+                        } catch (e) {
                             console.log(str)
                         }
                     }
                 })
 
             }
-           // console.log(str);
+            // console.log(str);
             return str;
 
         }
@@ -580,10 +584,10 @@ if(concept.id=="TE.16026")
 
             var str = concept.id;
 
-            str = recurseConceptStr(concept, str,0);
+            str = recurseConceptStr(concept, str, 0);
 
-            if( str.indexOf("*")>-1)
-                var x=3
+            if (str.indexOf("*") > -1)
+                var x = 3
 
             var found = false;
 
@@ -657,7 +661,7 @@ module.exports = skosReader
 if (false) {
 
     var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf";
-    var sourcePath =  "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
+    var sourcePath = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
 
     skosReader.rdfToFlat(sourcePath, null, function (err, result) {
         //   fs.writeFileSync(sourcePath.replace(".rdf", "_flat.json"), JSON.stringify(result, null, 2))
@@ -667,16 +671,16 @@ if (false) {
 
 }
 
-var str="TE.13668|*TE.10210*TE.15439|TE.10210|*TE.15439*TE.10210*TE.15439"
+var str = "TE.13668|*TE.10210*TE.15439|TE.10210|*TE.15439*TE.10210*TE.15439"
 
-var array=str.split("*")
-var strs=[]
-array.forEach(function(item,index){
-    var str2="";
-    if( index>0)
-        str2=strs[index-1]
+var array = str.split("*")
+var strs = []
+array.forEach(function (item, index) {
+    var str2 = "";
+    if (index > 0)
+        str2 = strs[index - 1]
 
-    strs.push(str2+"|"+item)
+    strs.push(str2 + "|" + item)
 
 })
-var x=strs
+var x = strs

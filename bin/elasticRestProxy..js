@@ -111,7 +111,26 @@ var elasticRestProxy = {
             return callback(errors);
         }
         return callback(null, body.items.length);
-    }
+    },
+    refreshIndex: function (config, callback) {
+
+        var options = {
+            method: 'GET',
+            encoding: null,
+            timeout: 1000 * 3600 * 24 * 3, //3 days //Set your timeout value in milliseconds or 0 for unlimited
+            headers: {
+                'content-type': 'application/json'
+            },
+            url: config.indexation.elasticUrl + config.general.indexName + "/_refresh"
+        };
+
+        request(options, function (error, response, body) {
+            if (error) {
+                return callback(error)
+            }
+            return callback();
+        })
+    },
 
 
 }

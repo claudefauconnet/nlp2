@@ -6,7 +6,7 @@
   },
   "connector": {
     "type": "csv",
-    "filePath": "D:\\NLP\\LOCtopNodesAll.txt",
+    "filePath": "D:\\NLP\\LOCtopNodesUniquesWithParentNames.txt",
     "contentField": "attachment.content"
   },
   "schema": {
@@ -19,10 +19,13 @@
             "type": "text"
           },
           "id": {
-            "type": "integer"
+            "type": "keyword"
           },
           "parents": {
-            "type": "integer"
+            "type": "keyword"
+          },
+          "parentNames": {
+            "type": "text"
           }
         }
       }
@@ -44,5 +47,10 @@
         "cssClass": "excerpt"
       }
     }
-  ]
+  ],
+  "indexation": {
+    "elasticUrl": "http://localhost:9200/",
+    "deleteOldIndex": "no",
+    "applythesauri": "no"
+  }
 }

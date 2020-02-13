@@ -18,6 +18,36 @@ skosEditor = (function () {
 
     self.drawJsTree = function (treeDiv, jsTreeData) {
 
+        function customMenu(node) {
+            skosEditor.editSkosMenuNode = node;
+            var items = $.jstree.defaults.contextmenu.items(node);
+            delete items.ccp;
+            if (node.type === 'root') {
+                delete items.create;
+                delete items.rename;
+                delete items.remove;
+
+            } else {
+                items.openBranch = {
+                    label: "openBranch",
+                    action: function () {
+                        var node = skosEditor.editSkosMenuNode;
+                        $("#" + treeDiv).jstree(true).open_all(node.id, 1000)
+                    }
+                }
+                items.editSkos = {
+                    label: "editSkos",
+                    action: function () {
+                        var node = skosEditor.editSkosMenuNode;
+                        if (skosEditor.context.editSkosNodeFn)
+                            skosEditor.context.editSkosNodeFn(node);
+                    }
+                }
+            }
+
+            return items;
+        }
+
         var plugins = [];
         plugins.push("search");
 
@@ -45,15 +75,20 @@ skosEditor = (function () {
                 "case_sensitive": false,
                 "show_only_matches": true
             },
-            "crrm": {"move": {"always_copy": "multitree"}}
+            "crrm": {"move": {"always_copy": "multitree"}},
+            contextmenu: {items: customMenu}
 
 
         }).on("select_node.jstree",
             function (evt, obj) {
-                if (skosEditor.isMultiple)
-                    return;
                 skosEditor.synchronizePreviousData();
                 skosEditor.context.previousNode = obj.node;
+                if (skosEditor.onJstreeNodeClick) {
+                    skosEditor.onJstreeNodeClick(evt, obj);
+                    return;
+                }
+
+
                 var conceptData = obj.node.data
                 $("#popupDiv").css("display", "block")
                 skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
@@ -86,15 +121,15 @@ skosEditor = (function () {
 
                     } else {
                         if (self.rootId)
-                            obj.node.data.id = [self.rootId + "/" + obj.node.text]
+                            obj.node.data.id = self.rootId + "/" + obj.node.text
                         else
-                            obj.node.data.id = [obj.node.text]
+                            obj.node.data.id = obj.node.text
                     }
                     $('#' + treeId).jstree(true).set_id(obj.node, obj.node.data.id);
                     obj.node.data.prefLabels = [{lang: self.outputLang, value: obj.node.text}]
                     var conceptData = obj.node.data;
-                    skosEditor.context.previousNode = obj.node;
-                    skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
+                    skosEditor.context.previousNode = null;
+                    //  skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
 
                 })
 
@@ -103,8 +138,14 @@ skosEditor = (function () {
 
 
     self.openAllTree = function (thesaurusIndex) {
+        if (!skosEditor.context.expanded) {
+            skosEditor.context.expanded = true;
+            $('#treeDiv' + thesaurusIndex).jstree('open_all');
+        } else {
 
-        $('#treeDiv' + thesaurusIndex).jstree('open_all');
+            skosEditor.context.expanded = false;
+            $('#treeDiv' + thesaurusIndex).jstree('close_all');
+        }
     }
 
 
@@ -132,6 +173,13 @@ skosEditor = (function () {
     }
 
     self.loadThesaurus = function (rdfPath, editorDivId, thesaurusIndex) {
+
+        if(skosEditor.context.modified) {
+            if (confirm("Save opened Thesaurus ?")) {
+                self.saveThesaurus(thesaurusIndex);
+                skosEditor.context.modified = null;
+            }
+        }
         self.outputLang = $("#outputLangInput" + thesaurusIndex).val();
         if (!self.outputLang || self.outputLang == "")
             self.outputLang = "en";
@@ -190,6 +238,14 @@ skosEditor = (function () {
 
 
     self.initNewThesaurus = function (thesaurusIndex) {
+
+        if(skosEditor.context.modified) {
+            if (confirm("Save opened Thesaurus ?")) {
+                self.saveThesaurus(thesaurusIndex);
+                skosEditor.context.modified = null;
+
+            }
+        }
         $("#skosInput" + thesaurusIndex).val("")
         $("#skosInput" + thesaurusIndex).val("")
         self.outputLang = $("#outputLangInput" + thesaurusIndex).val();
@@ -582,7 +638,7 @@ skosEditor = (function () {
                     }
                 })
             conceptData.prefLabels = prefLabels;
-
+skosEditor.context.modified=true;
             return conceptData;
 
 
@@ -591,8 +647,34 @@ skosEditor = (function () {
 
     }
 
-    self.addLocLevel = function () {
-        var node = $('#treeDiv2').jstree(true).get_selected(true)[0]
+    self.addChildToSelectedNode = function (childSkosData, thesaurusIndex) {
+        var treeDiv = '#treeDiv' + thesaurusIndex;
+        var parent = $(treeDiv).jstree('get_selected');
+
+        if (childSkosData.broaders.length == 0)
+            childSkosData.broaders.push(parent.id)
+
+        if ($(treeDiv).jstree(true).get_node(childSkosData.id))
+            return;
+        var newNode = {
+            id: childSkosData.id,
+            text: childSkosData.prefLabels[0].value,
+            data: childSkosData,
+            icon: "concept-icon.png"
+
+        }
+        $(treeDiv).jstree(true).create_node(parent, newNode, "first", function () {
+            //$(treeDiv).jstree(true).open_node( parent.id);
+            $(treeDiv).jstree()._open_to(newNode.id);
+
+        }, false);
+
+    }
+
+
+    self.addLocLevel = function (thesaurusIndex) {
+        var treeDiv = '#treeDiv' + thesaurusIndex;
+        var node = $(treeDiv).jstree(true).get_selected(true)[0]
         var payload = {
             getLOCchildren: 1,
             conceptId: node.id,
@@ -606,25 +688,11 @@ skosEditor = (function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
-
-                var parent = $('#treeDiv2').jstree('get_selected');
+                $(treeDiv).jstree(true).set_icon(node.id, "concept-icon-yellow.png")
+                var parent = $(treeDiv).jstree('get_selected');
 
                 data.forEach(function (itemData) {
-                  if( $('#treeDiv2').jstree(true).get_node(itemData.id))
-                      return;
-                    var newNode = {
-                        state: "open",
-                        id: itemData.id,
-                        text: itemData.prefLabels[0].value,
-                        parent: node.id,
-                        data: itemData
-
-                    }
-                    var position = 'inside';
-                    var parent = $('#treeDiv2').jstree('get_selected');
-
-
-                    $('#treeDiv2').jstree("create_node", node.id, position, newNode, false, false);
+                    self.addChildToSelectedNode(itemData, thesaurusIndex);
 
                 })
             }

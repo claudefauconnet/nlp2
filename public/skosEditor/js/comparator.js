@@ -72,6 +72,7 @@ var comparator = (function () {
 
 
                     if (outputType == 'map') {
+                        comparator.displayPopupDiv("popupLargeDiv");
                         commonConcepts.setAncestorsCommonConcepts(self.treeV, self.commonConcepts)
                         commonConcepts.setAncestorsCommonConcepts(self.treeH, self.commonConcepts);
 
@@ -81,8 +82,8 @@ var comparator = (function () {
                             return callbackSeries();
                         })
                     } else if (outputType == 'graph') {
+                        graphDisplay.drawTreeGraph()
 
-                        comparator.displayPopupDiv("popupLargeDiv");
 
 
                     }

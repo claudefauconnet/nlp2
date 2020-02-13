@@ -22,6 +22,8 @@ var indexer = {
         var index = config.general.indexName;
         var elasticUrl = config.indexation.elasticUrl;
         var connector = config.connector;
+        if(config.indexation.deleteOldIndex=="no")
+            config.indexation.deleteOldIndex=false
 
 
         var indexExists = false;
@@ -54,6 +56,8 @@ var indexer = {
 
                 //******deleteIndex*************
                 function (callbackSeries) {
+                    if (!config.indexation.deleteOldIndex)
+                        return callbackSeries();
                     indexer.deleteIndex(config, function (err, result) {
                         callbackSeries(err);
                     })

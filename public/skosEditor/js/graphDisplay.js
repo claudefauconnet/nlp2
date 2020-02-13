@@ -2,9 +2,10 @@ var graphDisplay = (function () {
     var self = {};
     self.drawTreeGraph = function (options, visJSDataCommonEdges) {
 
-        var maxLevels = parseInt($("#maxGraphLevels").val());
-        var graphDisplay_type = $("#graphDisplay_type").val();
-        var layout = $("#graphDisplay_layout").val();
+        var maxLevels = 6;
+        parseInt($("#maxGraphLevels").val());
+        var graphDisplay_type = "commonEdgesAndParentsOnly"// $("#graphDisplay_type").val();
+        var layout = "normal" //$("#graphDisplay_layout").val();
 
         var visjsDataV = self.getTreeVisjsData(comparator.treeV, maxLevels, {shape: "dot", color: "green"});
         var visjsDataH = self.getTreeVisjsData(comparator.treeH, maxLevels, {shape: "dot", color: "orange"});
@@ -22,8 +23,8 @@ var graphDisplay = (function () {
             visjsDataV = self.getCommonNodesVisjData(visJSDataCommonEdges);
         }
 
-        $("#graphDiv").width($(window).width())
-        $("#graphDiv").height($(window).height() - 200)
+        $("#graphDiv").width($(window).width() - 450)
+        $("#graphDiv").height($(window).height() - 400)
 
         var options = {};
         if (layout == "hierarchical")
@@ -31,15 +32,21 @@ var graphDisplay = (function () {
         options.notSmoothEdges = false;
 
         options.fixedLayout = true;
-        options.onclickFn = function (node, point) {
-            self.onNodeClick(node, point);
+        options.onclickFn = function (node, point, _options) {
+            self.onNodeClick(node, point, _options);
 
         }
         visjsGraph.draw("graphDiv", visjsDataV, options)
     }
 
 
-    self.onNodeClick = function (node, point) {
+    self.onNodeClick = function (node, point, options) {
+        $("#searchElasticInput").val(node.label);
+
+        if (options.ctrlKey) {
+            return self.onCtrlNodeClick(node, point);
+        }
+
 
         var allEdges = visjsGraph.data.edges.get();
         var allNodes = visjsGraph.data.nodes.get();
@@ -73,8 +80,8 @@ var graphDisplay = (function () {
                     } else if (edge.type == "common") {
                         self.currentSelectionCommonEdges.push(edge);
                         pathEdges.push(edge.id)
-                     //   recurse(edge.to, "inverse")
-                      if (pathNodes.indexOf(edge.to) > -1)
+                        //   recurse(edge.to, "inverse")
+                        if (pathNodes.indexOf(edge.to) > -1)
                             recurse(edge.from, "normal")
                         else
                             recurse(edge.to, "inverse")
@@ -118,6 +125,16 @@ var graphDisplay = (function () {
     }
 
 
+    self.onCtrlNodeClick = function (node, point) {
+        var skosObj = node.data;
+        skosObj.broaders = [];
+
+        skosEditor.addChildToSelectedNode(skosObj, 1)
+
+
+    }
+
+
     self.getTreeVisjsData = function (tree, maxLevels, options) {
         //    var interpolateColorFn = d3.scaleSequential(d3.interpolateYlOrRd).domain([1, Math.log(self.commonConcepts.length / 2)]);
         var allnodeIds = [];
@@ -129,15 +146,32 @@ var graphDisplay = (function () {
             if (level > maxLevels)
                 return
 
+
             if (node.id && allnodeIds.indexOf(node.id) < 0) {
                 allnodeIds.push(node.id);
                 //
                 var data = node.data;
                 if (!data)
                     data = {};
+
+
+                var label = null;
+
+                data.prefLabels.forEach(function (prefLabel) {
+                    if (prefLabel.lang == "en" && !label) {
+                        label =prefLabel.value;
+                    }
+                    else{
+                        x=3
+                    }
+                })
+                if (!label)
+                    label = data.prefLabels[0].value
+
+
                 data.commonConcepts = node.commonConcepts;
                 var visNode = {
-                    label: node.data.prefLabels[0].value,
+                    label: label,
                     id: node.id,
                     color: options.color,
                     initialColor: options.color,

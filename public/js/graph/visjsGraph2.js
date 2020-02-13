@@ -80,7 +80,7 @@ var visjsGraph = (function () {
                     ctrlKey: (params.event.srcEvent.ctrlKey ? 1 : 0)
                 }
                 if(_options.onclickFn)
-                    _options.onclickFn(node, point)
+                    _options.onclickFn(node, point,options)
 
 
             }

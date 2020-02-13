@@ -51,6 +51,10 @@
     <script src="js/graphDisplay.js"></script>
     <script src="js/comparator.js"></script>
 
+    <script src="js/jstreeCF.js"></script>
+    <script src="js/simpleSkosEditor.js"></script>
+    <script src="js/searchElastic.js"></script>
+
     <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
     <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>
 
@@ -60,10 +64,28 @@
     <script src="js/jstreeCF.js"></script>
     <script>
         var mapWidth, mapHeight;
+
+
         $(function () {
+            skosEditor.onJstreeNodeClick = function (evt, obj) {
+                $("#searchElasticInput").val(obj.node.text)
+                return;
+            }
+            skosEditor.context.editSkosNodeFn = function (node) {
+                skosEditor.synchronizePreviousData();
+                skosEditor.context.previousNode = node;
+                var conceptData = node.data
+                $("#skosEditorPopupDiv").css("display", "block")
+                skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
+
+
+            }
+
+
             mapWidth = $("#mapDiv").width();
             mapHeight = $("#mapDiv").height();
-            comparator.initThesaurusSelects()
+            comparator.initThesaurusSelects();
+            skosEditor.initThesaurusSelects()
         })
     </script>
     <style>
@@ -74,66 +96,125 @@
         .conceptV {
             background-color: peachpuff;
         }
+
+        #treeDiv1 {
+            height: 800px;
+            width: 400px;
+            overflow: auto;
+
+        }
+
     </style>
 
 
 </head>
 <body>
-<div>
-    <div>&nbsp;</div>
-    <select class='conceptV' id="thesaurusSelectV" onclick="$('#thesaurusV').val($(this).val())"></select><input class='conceptV' id="thesaurusV" value="" size="80">
-
-    <button onclick="comparator.draw('graph',$('#thesaurusV').val(),$('#thesaurusH').val())">Graph</button>
-    <br>
-    <select class='conceptH' id="thesaurusSelectH" onclick="$('#thesaurusH').val($(this).val())"></select><input class='conceptH' id="thesaurusH" value="" size="80">
-
-
-    <button onclick="comparator.draw('map',$('#thesaurusV').val(),$('#thesaurusH').val())">Map</button>
-    <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 25px"></div>
-</div>
-
 <div style="display: flex;flex-direction: row">
-    <div id="mapDiv" style="width:50%;height: 700px"></div>
+    <div style="width:50px">&nbsp;</div>
+    <div style='max-width: 400px;'>
+        thesaurus (rdf)<br>
 
-    <div id="CommonConceptsDiv" style="width:50%;height: 700px;overflow:auto;"></div>
+        <select id="thesaurusSelect1" style="width:280px;" onclick="$('#skosInput1').val($(this).val())"></select>
+        <input id="skosInput1" value="" size="40"><br>
+        <input type="button" onclick="skosEditor.initNewThesaurus(1)" value="New">
+        <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
+        <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1">
+        <option>first</option>
+        <option>last</option>
 
-</div>
+        <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
+        concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput1">
+    </select>
+        <button onclick="skosEditor.openAllTree(1)">Expand</button>
 
-
-<div id="popupDiv" style="position:absolute;display: none;flex-direction: column; background-color: white">
-    <div style="width:100%;height: 20px; background-color: #372806" onclick="comparator.hidePopupDiv('popupDiv')">&nbsp;</div>
-    <div id="ConceptsEditorDiv" style="display:flex;flex-direction:column;width:700px;height:700px;">
-        <!--  <span> Common Concepts   <span style='font-weight: bold' id='CommonConceptsCount'> </span></span>-->
-        <span style="font-weight: bold" id='jstreeTtitleH'> </span>
-        <div style="display: flex;flex-direction: row; justify-content: center;">
-            <div id='editorDivHId' style="height: 600px;width:600px;overflow: auto"></div>
-        </div>
-        <span style="font-weight: bold" id='jstreeTtitleV'> </span>
-        <div style="display: flex;flex-direction: row; justify-content: center;">
-            <div id='editorDivVId' style="height:600px;width:600px;overflow: auto"></div>
-        </div>
-
+        <div id="treeDiv1"></div>
     </div>
-</div>
-<div id="popupLargeDiv" style="position:absolute;display: none;flex-direction: column; background-color: white">
-    <div style="width:100%;height: 20px; background-color: #372806" onclick="comparator.hidePopupDiv('popupLargeDiv')">&nbsp;</div>
-    <div style="width:100%;height: 50px; background-color: #95a4bd">&nbsp;
-        <input id="maxGraphLevels" size="2" value="6">
-        <select id="graphDisplay_type">
-            <option>commonEdgesAndParentsOnly</option>
-            <option>all</option>
-        </select>
+    <div>
+        <select class='conceptV' id="thesaurusSelectV" onclick="$('#thesaurusV').val($(this).val())"></select><input class='conceptV' id="thesaurusV" value="" size="80">
 
-        <select id="graphDisplay_layout">
-            <option>normal</option>
-            <option>hierarchical</option>
+        <button onclick="comparator.draw('graph',$('#thesaurusV').val(),$('#thesaurusH').val())">Graph</button>
+        <br>
+        <select class='conceptH' id="thesaurusSelectH" onclick="$('#thesaurusH').val($(this).val())"></select><input class='conceptH' id="thesaurusH" value="" size="80">
 
-        </select>
-        <button onclick="graphDisplay.drawTreeGraph()">Graph</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button onclick="graphDisplay.drawTreeGraph(null,graphDisplay.currentSelectionCommonEdges)">Zoom on selection</button>
+
+        <button onclick="comparator.draw('map',$('#thesaurusV').val(),$('#thesaurusH').val())">Map</button>
+        <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 25px"></div>
+
+
+        <div style="display: flex;flex-direction: row">
+
+
+            <div>
+                <div style="width:100%;">&nbsp;
+                    <!--    <input id="maxGraphLevels" size="2" value="6">
+                        <select id="graphDisplay_type">
+                            <option>commonEdgesAndParentsOnly</option>
+                            <option>all</option>
+                        </select>
+
+                        <select id="graphDisplay_layout">
+                            <option>normal</option>
+                            <option>hierarchical</option>
+
+                        </select>-->
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button onclick="graphDisplay.drawTreeGraph()">Graph</button>
+                    <button onclick="graphDisplay.drawTreeGraph(null,graphDisplay.currentSelectionCommonEdges)">Zoom on selection</button>
+
+                    <input id="searchElasticInput" value="Machine">
+                    <button onclick="searchElastic.getLocParents($('#searchElasticInput').val())">searchLocParents</button>
+                    <button onclick="searchElastic.getLocChildren($('#searchElasticInput').val())">searchLocChildren</button>
+                </div>
+
+                <div id="graphDiv" style="min-width: 500px;min-height: 1000px"></div>
+            </div>
+
+        </div>
+
+        <div id="popupDiv" style="position:absolute;display: none;flex-direction: column; background-color: white">
+            <div style="width:100%;height: 20px; background-color: #372806" onclick="comparator.hidePopupDiv('popupDiv')">&nbsp;</div>
+            <div id="ConceptsEditorDiv" style="display:flex;flex-direction:column;width:700px;height:700px;">
+                <!--  <span> Common Concepts   <span style='font-weight: bold' id='CommonConceptsCount'> </span></span>-->
+                <span style="font-weight: bold" id='jstreeTtitleH'> </span>
+                <div style="display: flex;flex-direction: row; justify-content: center;">
+                    <div id='editorDivHId' style="height: 600px;width:600px;overflow: auto"></div>
+                </div>
+                <span style="font-weight: bold" id='jstreeTtitleV'> </span>
+                <div style="display: flex;flex-direction: row; justify-content: center;">
+                    <div id='editorDivVId' style="height:600px;width:600px;overflow: auto"></div>
+                </div>
+
+            </div>
+        </div>
+        <div id="popupLargeDiv" style="position:absolute;display: none;flex-direction: column; background-color: white">
+            <div style="width:100%;height: 20px; background-color: #372806" onclick="comparator.hidePopupDiv('popupLargeDiv');">&nbsp;</div>
+            <div style="display: flex;flex-direction: row">
+                <div id="mapDiv" style="width:50%;height: 700px"></div>
+
+                <div id="CommonConceptsDiv" style="width:50%;height: 700px;overflow:auto;"></div>
+
+            </div>
+
+        </div>
+
+        <div id="skosEditorPopupDiv" style="position:absolute;display: none;top:100px;left:300px ;flex-direction: column; background-color: white">
+            <div style="width:100%;height: 20px; background-color: #372806" onclick="$('#skosEditorPopupDiv').css('display','none')">&nbsp;</div>
+
+            <span style="font-weight: bold" id='jstreeTtitle'> </span>
+            <div id='editorDivId' style="height: 600px;width:600px;overflow: auto"></div>
+
+
+        </div>
+
+        <div id="searchElasticPopupDiv" style="position:absolute;display: none;top:100px;left:300px ;flex-direction: column; background-color: white">
+            <div style="width:100%;height: 20px; background-color: #372806" onclick="$('#searchElasticPopupDiv').css('display','none')">&nbsp;</div>
+
+
+            <div id='searchElasticResultDiv' style="height: 600px;width:800px;overflow: auto"></div>
+
+
+        </div>
     </div>
-
-    <div id="graphDiv" style="min-width: 500px;min-height: 1000px"></div>
 </div>
 </body>
 </html>

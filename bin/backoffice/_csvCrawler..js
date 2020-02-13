@@ -17,7 +17,7 @@ var csvCrawler = {
 
             // read csv
             function (callbackseries) {
-                csvCrawler.readCsv(config.connector, 10000, function (err, result) {
+                csvCrawler.readCsv(config.connector, 50000, function (err, result) {
                     if (err)
                         return callbackseries(err);
                     data = result.data;
@@ -67,6 +67,7 @@ var csvCrawler = {
                         method: 'POST',
                         body: bulkStr,
                         encoding: null,
+                        timeout: 1000 * 3600 * 24 * 3, //3 days //Set your timeout value in milliseconds or 0 for unlimited
                         headers: {
                             'content-type': 'application/json'
                         },
@@ -83,8 +84,15 @@ var csvCrawler = {
                             if (err)
                                 return callbackEach(err);
                             var message = "indexed " + totalLines + " records ";
-                            socket.message(message)
-                            return callbackEach()
+                            socket.message(message);
+                            setTimeout(function() {
+                                elasticRestProxy.refreshIndex(config, function (err, result) {
+                                    if (err)
+                                        return callbackEach(err);
+                                    return callbackEach()
+                                });
+                            },5000)
+
 
                         })
 
@@ -110,6 +118,7 @@ var csvCrawler = {
 
         })
     }
+
 
 
     , generateDefaultMappingFields: function (connector, callback) {

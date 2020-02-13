@@ -598,7 +598,7 @@ var locskos = {
 
             function (callbackSeries) {
                 if (locskos.locArray)
-                   return callbackSeries()
+                    return callbackSeries()
 
                 var csvCrawler = require('../backoffice/_csvCrawler.')
                 csvCrawler.readCsv({filePath: "D:\\NLP\\LOCtopNodesUniques.txt"}, 100000, function (err, result) {
@@ -621,13 +621,15 @@ var locskos = {
                                     if (level == maxLevels)
                                         var x = 3
                                     recurseChildren(concept.id, level + 1)
+                                } else {
+                                    var x = 3
                                 }
                             }
                         })
                     })
                 }
 
-                recurseChildren(conceptId, maxLevels)
+                recurseChildren(conceptId, 1)
                 console.log(maxLevels + " : " + childConcepts.length)
                 skosArray = locskos.locArrayToSkos(childConcepts);
                 callbackSeries();
@@ -668,17 +670,42 @@ var locskos = {
 
         ]
 
-        var maxLevels = 2
+        var topConcepts = [{
+            "concept": "Physics",
+            id: "sh85101653"
+        }, {
+            "concept": "Chemistry",
+            id: "sh85022986"
+        },
+            {
+                "concept": "Engineering",
+                id: "sh85043176"
+            }
+        ]
+
+        var maxLevels = 3
         var locArray = [];
         var childConcepts = [];
-            async.eachSeries(topConcepts,function(concept,callbackEach){
+        async.eachSeries(topConcepts, function (concept, callbackEach) {
             childConcepts = [];
-            childConcepts.push(concept)
+
             locskos.getLOCchildren(concept.id, maxLevels, function (err, result) {
                 if (err)
                     return console.log(err);
                 skosArray = result;
-                skosReader.skosEditorToRdf("D:\\NLP\\LOCcommonCTG_" + concept.concept + "_" + maxLevels + ".rdf", skosArray)
+                skosArray.push({
+                    "id": concept.id,
+                    "prefLabels": [
+                        {
+                            "lang": "en",
+                            "value": concept.concept
+                        }
+                    ],
+                    "altLabels": [],
+                    "broaders": [],
+                    "relateds": []
+                })
+                skosReader.skosEditorToRdf("D:\\NLP\\LOC_CTG_" + concept.concept + "_" + maxLevels + ".rdf", skosArray)
                 callbackEach();
 
             })
@@ -716,12 +743,100 @@ var locskos = {
         })
 
         return skosArray
+    },
+
+    setAllLocParentsNames: function (callback) {
+
+        var csvCrawler = require('../backoffice/_csvCrawler.')
+        csvCrawler.readCsv({filePath: "D:\\NLP\\LOCtopNodesUniques.txt"}, 100000, function (err, result) {
+            if (err)
+                callbackSeries(err);
+            var locArray = [];
+
+            var locMap = {};
+            var locArray2Index = 0;
+            var fileindex=0;
+
+            result.data.forEach(function (fetch, index) {
+
+                fetch.forEach(function (item) {
+                    locArray.push(item)
+
+                })
+            })
+
+                locArray.forEach(function (item, index1) {
+
+                    if(index1<400006)
+                        return;
+
+                    locArray2Index += 1
+                    item.parentNames = ""
+                    if (!item.parents)
+                        return;
+                    if (item.parents == "")
+                        return;
+                    var parentsArray = item.parents.split(",")
+                    if (!Array.isArray(parentsArray)) {
+                        parentsArray = [parentsArray]
+                    }
+
+
+                    locArray.forEach(function (item2,index2) {
+                        var found = false
+                        parentsArray.forEach(function (parentId) {
+                            if (item2.id == parentId) {
+                                if (!locMap[item.id])
+                                    locMap[item.id] = item;
+                                locMap[item.id].parentNames += item2.concept + "|";
+
+
+                                if (locArray2Index > 100000 || index1>=(locArray.length-1)) {
+                                    console.log("done "+fileindex)
+                                    fileindex+=1
+                                    var loc2 = "concept\tid\tparents\tparentNames\n"
+                                    for (var key in locMap) {
+                                        item2 = locMap[key]
+                                        loc2 += item2.concept + "\t" + item2.id + "\t" + item2.parents + "\t" + item2.parentNames + "\n"
+                                    }
+
+                                    fs.writeFileSync("D:\\NLP\\LOCtopNodesUniquesWithParentNamesXX" + fileindex + ".txt", loc2)
+                                    locArray2 = [];
+                                    locArray2Index=0
+
+
+                                }
+
+                            }
+                        })
+                            } )
+                    })
+            var loc2 = "concept\tid\tparents\tparentNames\n"
+            for (var key in locMap) {
+                item2 = locMap[key]
+                loc2 += item2.concept + "\t" + item2.id + "\t" + item2.parents + "\t" + item2.parentNames + "\n"
+            }
+
+            fs.writeFileSync("D:\\NLP\\LOCtopNodesUniquesWithParentNamesXX"  + ".txt", loc2)
+
+
+                })
+
+
+
+        }
     }
+
+
+    module.exports = locskos
+
+
+    if(true)
+{
+    locskos.setAllLocParentsNames(function (err, result) {
+
+    })
 }
-
-
-module.exports = locskos
-
 // set LOCtopNodesAll uniques withParents
 if (false) {
     var csvCrawler = require('../backoffice/_csvCrawler.')
@@ -804,7 +919,7 @@ if (false) {
     skosReader.skosEditorToRdf("D:\\NLP\\LOCcommonCTG.rdf", skosArray, {})
 
 }
-if (true) {
+if (false) {
 
     locskos.buildTreeFromTopConcepts(function (err, result) {
     })

@@ -93,7 +93,7 @@
 
         }
 
-        .thesaurusDiv{
+        .thesaurusDiv {
             width: 28%;
             height: 900px;
             margin: 5px;
@@ -106,7 +106,7 @@
 
         #drop_zone {
             border: 1px solid blue;
-            width:  150px;
+            width: 150px;
             height: 70px;
         }
     </style>
@@ -116,6 +116,7 @@
             // Prevent default behavior (Prevent file from being opened)
             ev.preventDefault();
         }
+
         function dropHandler(ev) {
             console.log('File(s) dropped');
 
@@ -123,7 +124,7 @@
             ev.preventDefault();
 
             if (ev.dataTransfer.items) {
-                var xx=  ev.dataTransfer.files[0].path;
+                var xx = ev.dataTransfer.files[0].path;
                 // Use DataTransferItemList interface to access the file(s)
                 for (var i = 0; i < ev.dataTransfer.items.length; i++) {
 
@@ -131,8 +132,8 @@
                     if (ev.dataTransfer.items[i].kind === 'file') {
                         var file = ev.dataTransfer.items[i].getAsFile();
                         console.log('... file[' + i + '].name = ' + file.name);
-var index=prompt("drop on zone number :")
-                        $("#skosInput"+index).val( $("#dropFileDirPath1").val()+file.name)
+                        var index = prompt("drop on zone number :")
+                        $("#skosInput" + index).val($("#dropFileDirPath1").val() + file.name)
 
                     }
                 }
@@ -141,14 +142,25 @@ var index=prompt("drop on zone number :")
 
 
         $(function () {
-            skosEditor.isMultiple=true;
+            skosEditor.onJstreeNodeClick = function () {
+                return;
+            }
+            skosEditor.context.editSkosNodeFn=function(node){
+                skosEditor.synchronizePreviousData();
+                skosEditor.context.previousNode = node;
+                var conceptData = node.data
+                $("#popupDiv").css("display", "block")
+                skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
+
+
+            }
             skosEditor.initThesaurusSelects()
             // var to = false;
             $('.treeSearchInput').keyup(function (e) {
 
                 if (true) {
-                    for(var thesaurusIndex=1;thesaurusIndex<6;thesaurusIndex++){
-                        if( $('#treeDiv' + thesaurusIndex).jstree &&  $('#treeDiv' + thesaurusIndex).jstree(true) ){
+                    for (var thesaurusIndex = 1; thesaurusIndex < 6; thesaurusIndex++) {
+                        if ($('#treeDiv' + thesaurusIndex).jstree && $('#treeDiv' + thesaurusIndex).jstree(true)) {
                             if (e.keyCode == 13) {
                                 var v = $(this).val();
                                 if (v != "")
@@ -184,8 +196,8 @@ var index=prompt("drop on zone number :")
         <p>Drag File here ...</p>
 
     </div>
- Search <input size='10' class="treeSearchInput" style="height: 30px;margin: 5px" id="treeSearchInput_3">
-    <button onclick="skosEditor.addLocLevel()"> Add LOC Levels</button>
+    Search <input size='10' class="treeSearchInput" style="height: 30px;margin: 5px" id="treeSearchInput_3">
+    <button onclick="skosEditor.addLocLevel(2)"> Add LOC Levels</button>
 </div>
 <div style="display: flex;flex-direction: row;justify-content:left">
     <div style='min-width:100px'>
@@ -200,11 +212,14 @@ var index=prompt("drop on zone number :")
         <input id="skosInput1" value="D:\NLP\commonConceptsLocCtg.rdf" size="40"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus(1)" value="New">
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
-        <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1"><option>first</option><option>last</option>
+        <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1">
+        <option>first</option>
+        <option>last</option>
 
         <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
         concepts:<span id="countConcepts1"></span>
-        </select><button onclick="skosEditor.openAllTree(1)">Expand</button>
+    </select>
+        <button onclick="skosEditor.openAllTree(1)">Expand</button>
         <div id="treeDiv1"></div>
     </div>
 
@@ -216,11 +231,14 @@ var index=prompt("drop on zone number :")
         <input id="skosInput2" value="D:\NLP\souslesensTotal.rdf" size="40"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus(2)" value="New">
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput2').val(),'editorDivId',2)" value="Edit">
-        <input id="outputLangInput2" value="en" size="3"><select id="broaderTypeInput2"><option>first</option><option>last</option>
+        <input id="outputLangInput2" value="en" size="3"><select id="broaderTypeInput2">
+        <option>first</option>
+        <option>last</option>
 
         <input type="button" onclick="skosEditor.saveThesaurus(2)" value="Save">
         concepts:<span id="countConcepts2"></span>
-        </select><button onclick="skosEditor.openAllTree(2)">Expand</button>
+    </select>
+        <button onclick="skosEditor.openAllTree(2)">Expand</button>
         <div id="treeDiv2"></div>
     </div>
 
@@ -233,11 +251,14 @@ var index=prompt("drop on zone number :")
         <input id="skosInput3" value="" size="40"><br>
         <input type="button" onclick="skosEditor.initNewThesaurus(3)" value="New">
         <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput3').val(),'editorDivId',3)" value="Edit">
-        <input id="outputLangInput3" value="en" size="3"><select id="broaderTypeInput3"><option>first</option><option>last</option>
+        <input id="outputLangInput3" value="en" size="3"><select id="broaderTypeInput3">
+        <option>first</option>
+        <option>last</option>
 
         <input type="button" onclick="skosEditor.saveThesaurus(3)" value="Save">
         concepts:<span id="countConcepts3"></span>
-        </select><button onclick="skosEditor.openAllTree(3)">Expand</button>
+    </select>
+        <button onclick="skosEditor.openAllTree(3)">Expand</button>
         <div id="treeDiv3"></div>
     </div>
 
@@ -252,10 +273,10 @@ var index=prompt("drop on zone number :")
 
         <input type="button" onclick="skosEditor.saveThesaurus(4)" value="Save">
         concepts:<span id="countConcepts4"></span>
-        </select><button onclick="skosEditor.openAllTree(4)">Expand</button>
+        </select>
+        <button onclick="skosEditor.openAllTree(4)">Expand</button>
         <div id="treeDiv4"></div>
     </div>
-
 
 
 </div>
