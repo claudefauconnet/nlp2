@@ -68,12 +68,13 @@
 
         $(function () {
             skosEditor.onJstreeNodeClick = function (evt, obj) {
+                $("#skosEditorPopupDiv").css("display", "none")
                 $("#searchElasticInput").val(obj.node.text)
                 return;
             }
             skosEditor.context.editSkosNodeFn = function (node) {
-              //  skosEditor.synchronizePreviousData();
-                skosEditor.context.previousNode = node;
+
+                skosEditor.context.editingNode = node;
                 var conceptData = node.data
                 $("#skosEditorPopupDiv").css("display", "block")
                 skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");

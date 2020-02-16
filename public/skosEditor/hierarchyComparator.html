@@ -143,11 +143,12 @@
 
         $(function () {
             skosEditor.onJstreeNodeClick = function () {
+                $("#skosEditorPopupDiv").css("display", "none")
                 return;
             }
             skosEditor.context.editSkosNodeFn=function(node){
-                skosEditor.synchronizePreviousData();
-                skosEditor.context.previousNode = node;
+                skosEditor.synchronizeEditorData();
+                skosEditor.context.editingNode = node;
                 var conceptData = node.data
                 $("#popupDiv").css("display", "block")
                 skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
