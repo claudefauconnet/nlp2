@@ -128,10 +128,24 @@ var graphDisplay = (function () {
     self.onCtrlNodeClick = function (node, point) {
         var skosObj = node.data;
         skosObj.broaders = [];
+        var label = graphDisplay.getNodeLabel(skosObj, "en")
+        skosEditor.addChildToSelectedNode(skosObj, 1, label)
 
-        skosEditor.addChildToSelectedNode(skosObj, 1)
 
+    }
 
+    self.getNodeLabel = function (data, lang) {
+        var label = null;
+        data.prefLabels.forEach(function (prefLabel) {
+            if (prefLabel.lang == lang && !label) {
+                label = prefLabel.value;
+            }
+        })
+        if (!label && data.prefLabels && data.prefLabels.length>0)
+            label = data.prefLabels[0].value
+        if (!label)
+            label = "?";
+        return label;
     }
 
 
@@ -154,19 +168,7 @@ var graphDisplay = (function () {
                 if (!data)
                     data = {};
 
-
-                var label = null;
-
-                data.prefLabels.forEach(function (prefLabel) {
-                    if (prefLabel.lang == "en" && !label) {
-                        label =prefLabel.value;
-                    }
-                    else{
-                        x=3
-                    }
-                })
-                if (!label)
-                    label = data.prefLabels[0].value
+                var label = graphDisplay.getNodeLabel(data, "en");
 
 
                 data.commonConcepts = node.commonConcepts;
@@ -254,8 +256,9 @@ var graphDisplay = (function () {
                     color = options.color;
                     shape = options.shape
                 }
+                var label = graphDisplay.getNodeLabel(node.data, "en");
                 var visNode = {
-                    label: node.data.prefLabels[0].value,
+                    label: label,
                     id: node.id,
                     color: color,
                     initialColor: color,

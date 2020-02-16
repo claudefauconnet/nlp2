@@ -1,6 +1,7 @@
 var thesaurusList = [
     "D:\\NLP\\DRAFT_CTG.rdf",
     "D:\\NLP\\thesaurusCTG-02-20.rdf",
+    "D:\\NLP\\thesaurusCTG-02-20all.rdf",
     "D:\\NLP\\LOC-CTG.rdf",
     "D:\\NLP\\quantum_F_all.rdf",
 

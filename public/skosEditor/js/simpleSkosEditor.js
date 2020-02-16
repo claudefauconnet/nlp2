@@ -22,27 +22,27 @@ skosEditor = (function () {
             skosEditor.editSkosMenuNode = node;
             var items = $.jstree.defaults.contextmenu.items(node);
             delete items.ccp;
-            if (node.type === 'root') {
+            if (node.type === 'root' || self.context.isReadOnly) {
                 delete items.create;
                 delete items.rename;
                 delete items.remove;
 
-            } else {
-                items.openBranch = {
-                    label: "openBranch",
-                    action: function () {
-                        var node = skosEditor.editSkosMenuNode;
-                        $("#" + treeDiv).jstree(true).open_all(node.id, 1000)
-                    }
+            }
+            items.openBranch = {
+                label: "openBranch",
+                action: function () {
+                    var node = skosEditor.editSkosMenuNode;
+                    $("#" + treeDiv).jstree(true).open_all(node.id, 1000)
                 }
-                items.editSkos = {
-                    label: "editSkos",
-                    action: function () {
-                        var node = skosEditor.editSkosMenuNode;
-                        if (skosEditor.context.editSkosNodeFn)
-                            skosEditor.context.editSkosNodeFn(node);
-                    }
+            }
+            items.editSkos = {
+                label: "editSkos",
+                action: function () {
+                    var node = skosEditor.editSkosMenuNode;
+                    if (skosEditor.context.editSkosNodeFn)
+                        skosEditor.context.editSkosNodeFn(node);
                 }
+
             }
 
             return items;
@@ -54,7 +54,10 @@ skosEditor = (function () {
         plugins.push("sort");
         //   plugins.push("types");
         plugins.push("contextmenu");
-        plugins.push("dnd");
+
+        if (!self.context.isReadOnly) {
+            plugins.push("dnd");
+        }
         plugins.push("search");
 
 
@@ -65,6 +68,7 @@ skosEditor = (function () {
             'core': {
                 // 'check_callback':true,
                 'check_callback': function (operation, node, node_parent, node_position, more) {
+
                     return true;
                 },
                 'data': jsTreeData,
@@ -90,8 +94,12 @@ skosEditor = (function () {
 
 
                 var conceptData = obj.node.data
-                $("#popupDiv").css("display", "block")
-                skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
+                $("#popupDiv").css("display", "block");
+                var options = {}
+                if (self.context.isReadOnly) {
+                    options.readOnly = true
+                }
+                skosEditor.conceptEditor.editConcept(conceptData, "editorDivId", options);
             })
             .on("rename_node.jstree Event",
                 function (event, obj) {
@@ -174,12 +182,13 @@ skosEditor = (function () {
 
     self.loadThesaurus = function (rdfPath, editorDivId, thesaurusIndex) {
 
-        if(skosEditor.context.modified) {
-            if (confirm("Save opened Thesaurus ?")) {
+        if (skosEditor.context.modified && !self.context.isReadOnly) {
+            if (confirm("Save Current file  before open new file?")) {
                 self.saveThesaurus(thesaurusIndex);
                 skosEditor.context.modified = null;
             }
         }
+        self.context.isReadOnly = false;
         self.outputLang = $("#outputLangInput" + thesaurusIndex).val();
         if (!self.outputLang || self.outputLang == "")
             self.outputLang = "en";
@@ -201,7 +210,8 @@ skosEditor = (function () {
                 extractedLangages: "en,fr,sp",
                 outputLangage: self.outputLang,
                 lastBroader: lastBroaderOption,
-                thesaurusName: thesaurusName
+                thesaurusName: thesaurusName,
+                checkModifications: true,
 
             })
         }
@@ -212,6 +222,13 @@ skosEditor = (function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
+                self.context.currentRdfPath = rdfPath;
+                if (data.mode && data.mode == "readOnly") {
+                    self.context.isReadOnly = true;
+                    alert("this file is already editing : cannot be saved")
+                }
+                self.context.data = data.skos;
+                var data = data.skos
                 $("#waitImg").css("display", "none");
                 $("#countConcepts" + thesaurusIndex).html(data.length)
 
@@ -239,7 +256,7 @@ skosEditor = (function () {
 
     self.initNewThesaurus = function (thesaurusIndex) {
 
-        if(skosEditor.context.modified) {
+        if (skosEditor.context.modified) {
             if (confirm("Save opened Thesaurus ?")) {
                 self.saveThesaurus(thesaurusIndex);
                 skosEditor.context.modified = null;
@@ -288,6 +305,13 @@ skosEditor = (function () {
 
         if (!rdfPath || rdfPath == "")
             return;
+        if (self.context.isReadOnly && self.context.currentRdfPath == rdfPath) {
+            if (confirm("This file is allready editing Do you want to overwrite  :" + rdfPath)) {
+                if (!confirm("confirm overwrite : other editing  modifications will be lost"))
+                    return;
+            }
+
+        }
 
         var data = [];
         //get jstree nodes
@@ -366,7 +390,7 @@ skosEditor = (function () {
 
 
             function setAbout(conceptData) {
-                var html = "<div class='concept-group' >" +
+                var html = "<div class='concept-group' style='background-color: #b8d6a2'>" +
                     "  <div class='row'>" +
                     "    <div class='col-sm-3'>" +
                     "       <label for='concept_about_value'><h6>about</h6></label> " +
@@ -380,7 +404,7 @@ skosEditor = (function () {
             }
 
             function setDefinitions(conceptData) {
-                var html = "   <div class='concept-group'> <h6><span class='title'> Definition</span> <button  class='concept_button' onclick='skosEditor.conceptEditor.addToConceptDefinitions()'>+</button> </h6>"
+                var html = "   <div class='concept-group' style='background-color:#5da9261c'> <h6><span class='title'> Definition</span> <button  class='concept_button' onclick='skosEditor.conceptEditor.addToConceptDefinitions()'>+</button> </h6>"
                 conceptData.definitions.forEach(function (definition, index) {
                     html += "  <div class='row'>" +
                         "    <div class='col-sm-3'>" +
@@ -396,7 +420,7 @@ skosEditor = (function () {
             }
 
             function setNotes(conceptData) {
-                var html = "   <div class='concept-group'> <h6><span class='title'> Notes</span> <button  class='concept_button' onclick='skosEditor.conceptEditor.addToConceptNotes()'>+</button> </h6>"
+                var html = "   <div class='concept-group' style='background-color:#5da9261c'> <h6><span class='title'> Notes</span> <button  class='concept_button' onclick='skosEditor.conceptEditor.addToConceptNotes()'>+</button> </h6>"
                 conceptData.notes.forEach(function (note, index) {
                     html += "  <div class='row'>" +
                         "    <div class='col-sm-3'>" +
@@ -413,7 +437,7 @@ skosEditor = (function () {
 
 
             function setPrefLabels(conceptData) {
-                var html = "   <div class='concept-group'> <h6><span class='title'> prefLabels</span> <button  class='concept_button' onclick='skosEditor.conceptEditor.addToConceptPrefLabels()'>+</button> </h6>"
+                var html = "   <div class='concept-group' style='background-color:#b8d6a2'> <h6><span class='title'> prefLabels</span> <button  class='concept_button' onclick='skosEditor.conceptEditor.addToConceptPrefLabels()'>+</button> </h6>"
                 conceptData.prefLabels.forEach(function (prefLabel, index) {
                     html += "<div class='container concept-item' >"
 
@@ -439,7 +463,7 @@ skosEditor = (function () {
 
             function setAltLabels(conceptData) {
 
-                var html = "   <div class='concept-group'> <h6><span class='title'> altLabels</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptAltLabels()'>+</button></h6> "
+                var html = "   <div class='concept-group' style='background-color:#5da9261c'> <h6><span class='title'> altLabels</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptAltLabels()'>+</button></h6> "
                 conceptData.altLabels.forEach(function (altLabel, index) {
                     html += "<div class='container concept-item' >"
 
@@ -466,7 +490,7 @@ skosEditor = (function () {
             }
 
             function setRelated(conceptData) {
-                var html = "   <div class='concept-group'> <h6><span class='title'> related</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptRelateds()'>+</button></h6> "
+                var html = "   <div class='concept-group' style='background-color:#5da9261c'> <h6><span class='title'> related</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptRelateds()'>+</button></h6> "
                 conceptData.relateds.forEach(function (related, index) {
                     html += "<div class='container concept-item' >"
 
@@ -489,7 +513,7 @@ skosEditor = (function () {
 
 
             function setBroaders(conceptData) {
-                var html = "   <div class='concept-group'><h6> <span class='title'> broader</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptBroaders()'>+</button></h6> "
+                var html = "   <div class='concept-group' style='background-color:#5da9261c'><h6> <span class='title'> broader</span> <button   class='concept_button' onclick='skosEditor.conceptEditor.addToConceptBroaders()'>+</button></h6> "
                 conceptData.broaders.forEach(function (broader, index) {
                     html += "<div class='container concept-item' >"
 
@@ -515,9 +539,9 @@ skosEditor = (function () {
             html += setAbout(conceptData);
             html += setDefinitions(conceptData);
             html += setNotes(conceptData);
-            html += setBroaders(conceptData);
             html += setPrefLabels(conceptData);
             html += setAltLabels(conceptData);
+            html += setBroaders(conceptData);
             html += setRelated(conceptData);
 
             html += "</div>"
@@ -638,7 +662,7 @@ skosEditor = (function () {
                     }
                 })
             conceptData.prefLabels = prefLabels;
-skosEditor.context.modified=true;
+            skosEditor.context.modified = true;
             return conceptData;
 
 
@@ -647,7 +671,9 @@ skosEditor.context.modified=true;
 
     }
 
-    self.addChildToSelectedNode = function (childSkosData, thesaurusIndex) {
+    self.addChildToSelectedNode = function (childSkosData, thesaurusIndex, label) {
+        if (!label)
+            label = childSkosData.prefLabels[0].value
         var treeDiv = '#treeDiv' + thesaurusIndex;
         var parent = $(treeDiv).jstree('get_selected');
 
@@ -655,10 +681,12 @@ skosEditor.context.modified=true;
             childSkosData.broaders.push(parent.id)
 
         if ($(treeDiv).jstree(true).get_node(childSkosData.id))
-            return;
+            return
+
+
         var newNode = {
             id: childSkosData.id,
-            text: childSkosData.prefLabels[0].value,
+            text: label,
             data: childSkosData,
             icon: "concept-icon.png"
 

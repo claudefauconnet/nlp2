@@ -120,7 +120,9 @@ var comparator = (function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
-                callback(null, data)
+                if(data.mode && data.mode=="readOnly")
+                    alert("this file is already editing : cannot be saved")
+                callback(null, data.skos)
             }
             , error: function (err) {
                 callback(err.responseText)

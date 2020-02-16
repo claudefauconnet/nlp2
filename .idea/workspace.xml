@@ -3,17 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/_csvCrawler..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/_csvCrawler..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/indexer..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/indexer..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/elasticRestProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/elasticRestProxy..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/locskos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/locskos..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/sources/libraryofcongress.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/libraryofcongress.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/comparator.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/jstreeCF.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/jstreeCF.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" afterDir="false" />
     </list>
@@ -46,24 +44,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/skosEditor" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bailletArchives" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\telanthropia\js" />
+      <recent name="D:\GitHub\nlp2\public\telanthropia" />
+      <recent name="D:\GitHub\nlp2\public\skosEditor" />
+      <recent name="D:\GitHub\nlp2\bin\backoffice" />
+      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
       <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
       <recent name="D:\GitHub\nlp2\public\index2.html" />
       <recent name="D:\GitHub\nlp2\public\skosviewer" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\skosEditor" />
-      <recent name="D:\GitHub\nlp2\bin\backoffice" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
-      <recent name="D:\GitHub\nlp2\bin\others" />
-      <recent name="D:\GitHub\nlp2\public\pierre\data" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -128,7 +126,7 @@
       <workItem from="1580478347303" duration="35208000" />
       <workItem from="1580634999564" duration="123023000" />
       <workItem from="1581157541319" duration="134492000" />
-      <workItem from="1581576959723" duration="21206000" />
+      <workItem from="1581576959723" duration="51466000" />
     </task>
     <servers />
   </component>
@@ -153,41 +151,9 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>589</line>
-          <option name="timeStamp" value="1799" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
-          <line>508</line>
-          <option name="timeStamp" value="1830" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/jstreeCF.js</url>
-          <line>4331</line>
-          <option name="timeStamp" value="1933" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
-          <line>802</line>
-          <option name="timeStamp" value="1972" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
-          <line>794</line>
+          <line>15</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1982" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
-          <line>813</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1984" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
-          <line>819</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1993" />
+          <option name="timeStamp" value="2020" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

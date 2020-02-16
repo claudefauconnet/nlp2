@@ -113,7 +113,7 @@
 	 * @name $.jstree.destroy()
 	 */
 	$.jstree.destroy = function () {
-		$('.jstree:jstree').jstree('destroy');
+		$('.jstree').jstree('destroy');
 		$(document).off('.jstree');
 	};
 	/**
@@ -7601,6 +7601,12 @@
 			}
 
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
+
+			//*****************************modification CF
+			inside=null;
+			//*****************************modification CF
+
+
 			$.each(m[inside ? inside : $.jstree.root].children_d, function (ii, i) {
 				var v = m[i];
 				if(v.text && !v.state.hidden && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) && ( (s.search_callback && s.search_callback.call(this, str, v)) || (!s.search_callback && f.search(v.text).isMatch) ) ) {
@@ -7729,8 +7735,6 @@
 				};
 			}
 			search = function (text) {
-				if(Array.isArray(text))
-					text=text[0]
 				text = options.caseSensitive ? text : text.toLowerCase();
 				if(pattern === text || text.indexOf(pattern) !== -1) {
 					return {

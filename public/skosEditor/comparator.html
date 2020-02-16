@@ -61,7 +61,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
 
-    <script src="js/jstreeCF.js"></script>
+
     <script>
         var mapWidth, mapHeight;
 
@@ -72,7 +72,7 @@
                 return;
             }
             skosEditor.context.editSkosNodeFn = function (node) {
-                skosEditor.synchronizePreviousData();
+              //  skosEditor.synchronizePreviousData();
                 skosEditor.context.previousNode = node;
                 var conceptData = node.data
                 $("#skosEditorPopupDiv").css("display", "block")
@@ -80,6 +80,23 @@
 
 
             }
+            $('#treeSearchInput1').keyup(function (e) {
+                if (e.keyCode == 13) {
+
+
+                    var v = $('#treeSearchInput1').val();
+                    if (v == ""){
+                        $('#treeDiv1').jstree(true).clear_search();
+                        $('#treeDiv1').jstree(true).refresh();
+                        $('#treeDiv1').jstree(true).open_node("#");
+                        //   var data= $('#treeDiv1').jstree(true).settings.core.data;
+                    }
+
+                    else
+                        $('#treeDiv1').jstree(true).search(v);
+                }
+
+            });
 
 
             mapWidth = $("#mapDiv").width();
@@ -189,7 +206,7 @@
         <div id="popupLargeDiv" style="position:absolute;display: none;flex-direction: column; background-color: white">
             <div style="width:100%;height: 20px; background-color: #372806" onclick="comparator.hidePopupDiv('popupLargeDiv');">&nbsp;</div>
             <div style="display: flex;flex-direction: row">
-                <div id="mapDiv" style="width:50%;height: 700px"></div>
+                <div id="mapDiv" style="width:700px;height: 700px"></div>
 
                 <div id="CommonConceptsDiv" style="width:50%;height: 700px;overflow:auto;"></div>
 

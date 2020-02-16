@@ -1,12 +1,17 @@
 var fs = require('fs');
-var sax = require("sax")
+var sax = require("sax");
 var skosReader = {
+    editingSkosFiles: [],
+
+
     rdfToAnnotator: function (sourcePath, options, callback) {
         if (!options)
             options = {
                 outputLangage: "en",
                 extractedLangages: "en",
+
             }
+
 
         skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
             if (err)
@@ -19,17 +24,39 @@ var skosReader = {
 
     rdfToEditor: function (sourcePath, options, callback) {
 
+
         if (!options)
             options = {
                 outputLangage: "en",
                 extractedLangages: "en,fr,sp",
+
             }
+        var mode = null;
+        if(options.checkModifications) {
+            var fileAlreadyOpen = skosReader.editingSkosFiles.indexOf(sourcePath);
+            if (fileAlreadyOpen > -1) {
+                mode = "readOnly"
+            } else {
+
+                options.saveCopy = true;
+                skosReader.editingSkosFiles.push(sourcePath);
+            }
+        }
+
 
         skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
             if (err)
                 return callback(err);
+
             var conceptsArray = skosReader.mapToSkosEditor(conceptsMap, options);
-            return callback(null, conceptsArray);
+            /*   var chmod=fs.statSync(sourcePath).mode
+               if(chmod==33060)
+                   conceptsArray.mode="readOnly"
+
+             //  fs.chmodSync(sourcePath,"444")//read only*/
+
+
+            return callback(null, {skos: conceptsArray, mode: mode});
         })
 
     },
@@ -208,6 +235,15 @@ var skosReader = {
         })
 
         if (fs.existsSync(sourcePath)) {
+            if (options.saveCopy) {
+                fs.readFile(sourcePath, null, function (err, data) {
+                    if (err)
+                        return callback(err)
+                    fs.writeFileSync(sourcePath + "-copy", "" + data);
+                })
+
+            }
+
             fs.createReadStream(sourcePath)
                 .pipe(saxStream)
         } else {
@@ -376,7 +412,20 @@ var skosReader = {
         return conceptsArray;
     },
 
-
+    getNodeLabel: function (prefLabels, lang) {
+        var label = null;
+        prefLabels.forEach(function (prefLabel) {
+            if (prefLabel.lang == lang && !label) {
+                label = prefLabel.value;
+            }
+        })
+        if (!label && prefLabels && prefLabels.length > 0)
+            label = prefLabels[0].value
+        if (!label)
+            label = "?";
+        return label;
+    }
+    ,
     mapToSkosEditor: function (conceptsMap, options) {
 
         var conceptsArray = []
@@ -398,12 +447,14 @@ var skosReader = {
                 obj.parent = "#"
 
             }
-            var lang = options.outputLangage || "en" || "X"
-            if (!lang || !concept.prefLabels[lang] || concept.prefLabels[lang].length == 0)
-                obj.text = "?"
-            else
-                obj.text = concept.prefLabels[lang][0]
-            obj.id = concept.id;
+
+
+              var lang = options.outputLangage || "en" || "X"
+               if (!lang || !concept.prefLabels[lang] || concept.prefLabels[lang].length == 0)
+                   obj.text = "?"
+               else
+                   obj.text = concept.prefLabels[lang][0]
+               obj.id = concept.id;
 
             var prefLabelsArray = [];
             for (var key in concept.prefLabels) {
@@ -414,6 +465,10 @@ var skosReader = {
                     })
                 })
             }
+
+          obj.text = skosReader.getNodeLabel(prefLabelsArray, options.outputLangage)
+
+
             var altLabelsArray = [];
             for (var key in concept.altLabels) {
                 concept.altLabels[key].forEach(function (item) {
@@ -442,9 +497,15 @@ var skosReader = {
         }
 
         return conceptsArray;
-    },
+    }
+    ,
 
     skosEditorToRdf: function (rdfPath, conceptsArray, options, callback) {
+
+        var p = skosReader.editingSkosFiles.indexOf(rdfPath);
+        if (p > -1)
+            skosReader.editingSkosFiles.splice(p, 1)
+
 
         if (!options)
             options = {};
@@ -545,7 +606,8 @@ var skosReader = {
     }
 
 
-    , mapToFlat: function (conceptsMap, options) {
+    ,
+    mapToFlat: function (conceptsMap, options) {
 
         function recurseConceptStr(concept, str, level) {
             if (concept.id == "TE.16026")

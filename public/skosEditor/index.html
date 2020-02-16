@@ -131,18 +131,20 @@
             // var to = false;
             $('#treeSearchInput1').keyup(function (e) {
                 if (e.keyCode == 13) {
+
+
                     var v = $('#treeSearchInput1').val();
-                    if (v == "")
-                        skosEditor.loadThesaurus($('#skosInput1').val())
+                   if (v == ""){
+                       $('#treeDiv1').jstree(true).clear_search();
+                       $('#treeDiv1').jstree(true).refresh();
+                       $('#treeDiv1').jstree(true).open_node("#");
+                    //   var data= $('#treeDiv1').jstree(true).settings.core.data;
+                   }
+
                     else
                         $('#treeDiv1').jstree(true).search(v);
                 }
 
-                /* if(to) { clearTimeout(to); }
-                 to = setTimeout(function () {
-                     var v = $('#treeSearchInput').val();
-                     $('#treeDiv').jstree(true).search(v);
-                 }, 250);*/
             });
         });
     </script>

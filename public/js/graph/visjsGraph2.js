@@ -14,6 +14,8 @@ var visjsGraph = (function () {
     self.simulationOn = false;
 
     self.draw = function (divId, visjsData, _options, callback) {
+        if(!_options)
+            _options={}
         self.legendLabels = self.legendLabels.concat(visjsData.labels)
         var container = document.getElementById(divId);
         self.data = {

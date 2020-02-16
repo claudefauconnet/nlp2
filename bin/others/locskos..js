@@ -469,7 +469,8 @@ var locskos = {
                     if (err)
                         return console.log(err)
 
-                    result.forEach(function (concept) {
+                    result.skos.forEach(function (concept) {
+
                         if (concept.data.prefLabels) {
                             concept.data.prefLabels.forEach(function (label) {
                                 if (label.lang == "en")

@@ -158,34 +158,27 @@
             // var to = false;
             $('.treeSearchInput').keyup(function (e) {
 
-                if (true) {
+
                     for (var thesaurusIndex = 1; thesaurusIndex < 6; thesaurusIndex++) {
                         if ($('#treeDiv' + thesaurusIndex).jstree && $('#treeDiv' + thesaurusIndex).jstree(true)) {
                             if (e.keyCode == 13) {
                                 var v = $(this).val();
                                 if (v != "")
                                     $('#treeDiv' + thesaurusIndex).jstree(true).search(v);
-                                else
-                                    skosEditor.loadThesaurus($('#skosInput' + thesaurusIndex).val(), 'treeDiv' + thesaurusIndex, thesaurusIndex)
+                                else {
+                                 //   skosEditor.loadThesaurus($('#skosInput' + thesaurusIndex).val(), 'treeDiv' + thesaurusIndex, thesaurusIndex)
+                                    $('#treeDiv' + thesaurusIndex).jstree(true).clear_search();
+                                    $('#treeDiv' + thesaurusIndex).jstree(true).refresh();
+                                    $('#treeDiv' + thesaurusIndex).jstree(true).open_node("#");
+                                }
                             }
 
                         }
 
                     }
+                    });
 
 
-                } else {
-                    var id = $(this).attr("id")
-                    var thesaurusIndex = id.split("_")[1]
-                    if (e.keyCode == 13) {
-                        var v = $(this).val();
-                        if (v != "")
-                            $('#treeDiv' + thesaurusIndex).jstree(true).search(v);
-                        else
-                            skosEditor.loadThesaurus($('#skosInput' + thesaurusIndex).val(), 'treeDiv' + thesaurusIndex, thesaurusIndex)
-                    }
-                }
-            });
         });
     </script>
 </head>
