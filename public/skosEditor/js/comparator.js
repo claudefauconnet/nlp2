@@ -38,8 +38,8 @@ var comparator = (function () {
         async.series([
                 function (callbackSeries) {
 
-           if(!thesaurusV || thesaurusV=="")
-               return callbackSeries();
+                    if (!thesaurusV || thesaurusV == "")
+                        return callbackSeries();
                     self.loadThesaurus(thesaurusV, function (err, result) {
                         if (err)
                             return callbackSeries(err)
@@ -50,7 +50,7 @@ var comparator = (function () {
                 }
                 ,
                 function (callbackSeries) {
-                    if(!thesaurusH || thesaurusH=="")
+                    if (!thesaurusH || thesaurusH == "")
                         return callbackSeries();
                     self.loadThesaurus(thesaurusH, function (err, result) {
                         if (err)
@@ -64,8 +64,10 @@ var comparator = (function () {
 
                 function (callbackSeries) {
                     $("#waitImg").css("display", "none");
+                    var thesaurusNameV=thesaurusV.substring(thesaurusV.lastIndexOf("\\")+1)
+                    var thesaurusNameH=thesaurusH.substring(thesaurusV.lastIndexOf("\\")+1)
                     self.commonConcepts = commonConcepts.getCommonConcepts(self.dataH, self.dataV);
-
+                    $('#statsSpan').html(thesaurusNameV+" : " + self.dataV.length +","+thesaurusNameH +" : " + self.dataH.length + ",  commonConcepts : " + self.commonConcepts.length);
                     self.treeV = self.buildTree(self.dataV, self.commonConcepts);
 
                     self.treeH = self.buildTree(self.dataH, self.commonConcepts);
@@ -78,12 +80,11 @@ var comparator = (function () {
 
                         var canvasData = self.bindMapData(self.treeV, self.treeH);
 
-                        drawCanvas.drawData(canvasData, {graphDiv:"mapDiv",onclickFn: comparator.onMapClickRect, onMouseOverFn: comparator.onMapMouseOverRect}, function (err, result) {
+                        drawCanvas.drawData(canvasData, {graphDiv: "mapDiv", onclickFn: comparator.onMapClickRect, onMouseOverFn: comparator.onMapMouseOverRect}, function (err, result) {
                             return callbackSeries();
                         })
                     } else if (outputType == 'graph') {
                         graphDisplay.drawTreeGraph()
-
 
 
                     }
@@ -120,7 +121,7 @@ var comparator = (function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
-                if(data.mode && data.mode=="readOnly")
+                if (data.mode && data.mode == "readOnly")
                     alert("this file is already editing : cannot be saved")
                 callback(null, data.skos)
             }
@@ -188,10 +189,10 @@ var comparator = (function () {
         if (event.ctrlKey) {
             var subTreeV = jsTreeEditor.getNodeChildrenSubTree(self.treeV, obj.id.v);
             if (!subTreeV.children)
-                subTreeV=subTreeV
+                subTreeV = subTreeV
             var subTreeH = jsTreeEditor.getNodeChildrenSubTree(self.treeH, obj.id.h);
             if (!subTreeH.children)
-                subTreeH=subTreeH
+                subTreeH = subTreeH
             /*    var html = JSON.stringify(obj.id)
                 $("#infosDiv").html(html)*/
             var newCanvasData = self.bindMapData(subTreeV, subTreeH);
@@ -202,7 +203,7 @@ var comparator = (function () {
             $("#graphDiv").html("")
             $("#CommonConceptsDiv").html("")
 
-            drawCanvas.drawData(newCanvasData, {graphDiv:"mapDiv",onclickFn: comparator.onMapClickRect, onMouseOverFn: comparator.onMapMouseOverRect})
+            drawCanvas.drawData(newCanvasData, {graphDiv: "mapDiv", onclickFn: comparator.onMapClickRect, onMouseOverFn: comparator.onMapMouseOverRect})
             ;
         } else {
 
@@ -372,22 +373,19 @@ var comparator = (function () {
     }
 
 
-
-
-
     self.displayPopupDiv = function (popupDiv) {
 
-        $("#"+popupDiv).position({
+        $("#" + popupDiv).position({
             my: "top",
             at: "top",
             of: "#mapDiv", // or $("#otherdiv")
             collision: "fit"
         });
-        $("#"+popupDiv).css("display", "flex")
+        $("#" + popupDiv).css("display", "flex")
 
     }
     self.hidePopupDiv = function (popupDiv) {
-        $("#"+popupDiv).css("display", "none")
+        $("#" + popupDiv).css("display", "none")
 
     }
 

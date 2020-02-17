@@ -7603,7 +7603,10 @@
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
 
 			//*****************************modification CF
+			if(!inside)
 			inside=null;
+			else
+				var x=3
 			//*****************************modification CF
 
 

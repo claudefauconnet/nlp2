@@ -163,14 +163,16 @@
                     for (var thesaurusIndex = 1; thesaurusIndex < 6; thesaurusIndex++) {
                         if ($('#treeDiv' + thesaurusIndex).jstree && $('#treeDiv' + thesaurusIndex).jstree(true)) {
                             if (e.keyCode == 13) {
+                                $('#treeDiv' + thesaurusIndex).jstree(true).clear_search();
+                             /*   $('#treeDiv' + thesaurusIndex).jstree(true).refresh();
+                                $('#treeDiv' + thesaurusIndex).jstree(true).open_node("#");*/
+
                                 var v = $(this).val();
                                 if (v != "")
                                     $('#treeDiv' + thesaurusIndex).jstree(true).search(v);
                                 else {
                                  //   skosEditor.loadThesaurus($('#skosInput' + thesaurusIndex).val(), 'treeDiv' + thesaurusIndex, thesaurusIndex)
-                                    $('#treeDiv' + thesaurusIndex).jstree(true).clear_search();
-                                    $('#treeDiv' + thesaurusIndex).jstree(true).refresh();
-                                    $('#treeDiv' + thesaurusIndex).jstree(true).open_node("#");
+
                                 }
                             }
 

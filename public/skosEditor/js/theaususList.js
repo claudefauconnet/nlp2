@@ -29,6 +29,7 @@ var thesaurusList = [
     "---------Energistics-------",
     "D:\\NLP\\energistics\\WellboreGeology.rdf",
     "---------Tulsa-------",
+    "D:\\NLP\\Tulsa_all.rdf",
     "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
     "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
     "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",

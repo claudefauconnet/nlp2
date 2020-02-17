@@ -84,16 +84,14 @@
             $('#treeSearchInput1').keyup(function (e) {
                 if (e.keyCode == 13) {
 
-
+                   $('#treeDiv1').jstree(true).clear_search();
+                    /*   $('#treeDiv1').jstree(true).refresh();
+                      $('#treeDiv1').jstree(true).open_node("#");*/
                     var v = $('#treeSearchInput1').val();
-                    if (v == ""){
-                        $('#treeDiv1').jstree(true).clear_search();
-                        $('#treeDiv1').jstree(true).refresh();
-                        $('#treeDiv1').jstree(true).open_node("#");
-                        //   var data= $('#treeDiv1').jstree(true).settings.core.data;
-                    }
+                    if (v == "") {
 
-                    else
+                        //   var data= $('#treeDiv1').jstree(true).settings.core.data;
+                    } else
                         $('#treeDiv1').jstree(true).search(v);
                 }
 
@@ -106,18 +104,17 @@
             skosEditor.initThesaurusSelects();
 
 
+            /*    // correction pb: if enter on input concept_... , add a value
+                $(document).on('keypress',function(e) {
+                    if(e.which == 13) {
+                        if(e.target.id.indexOf("concept_")==0)
+                            skosEditor.context.dontAddValue=true;
+                        else
+                            skosEditor.context.dontAddValue=false;
 
-        /*    // correction pb: if enter on input concept_... , add a value
-            $(document).on('keypress',function(e) {
-                if(e.which == 13) {
-                    if(e.target.id.indexOf("concept_")==0)
-                        skosEditor.context.dontAddValue=true;
-                    else
-                        skosEditor.context.dontAddValue=false;
-
-                    e.stopPropagation()
-                }
-            });*/
+                        e.stopPropagation()
+                    }
+                });*/
         })
     </script>
     <style>
@@ -196,6 +193,7 @@
                     <input id="searchElasticInput" value="Machine">
                     <button onclick="searchElastic.getLocParents($('#searchElasticInput').val())">searchLocParents</button>
                     <button onclick="searchElastic.getLocChildren($('#searchElasticInput').val())">searchLocChildren</button>
+                    <span id="statsSpan" style="font-weight: bold"></span>
                 </div>
 
                 <div id="graphDiv" style="min-width: 500px;min-height: 1000px"></div>
