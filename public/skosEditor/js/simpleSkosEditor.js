@@ -5,6 +5,17 @@ skosEditor = (function () {
     var elasticUrl = "../elastic";
     var thesaurusNodeId = "_thesaurusNodeId"
     self.editor = null;
+
+
+
+
+
+
+
+
+
+
+
     self.initThesaurusSelects = function () {
 
 
@@ -424,7 +435,8 @@ skosEditor = (function () {
                     html += "  <div class='row'>" +
 
                         "    <div class='col-lg'>" +
-                        "      <input class ='concept_input' id='concept_definition_value_" + index + "' value='" + definition + "' size='70'>" +
+                        "      <textarea class ='concept_input' id='concept_definition_value_" + index+"'  cols='70', rows='3'>"+ definition +"</textarea>" +
+
                         "   </div>" +
                         "<div class='col'>" +
                         "       <button  class='concept_button' onclick=skosEditor.conceptEditor.removeFromConcept('definitions'," + index + ")> -</button>" +
@@ -440,7 +452,8 @@ skosEditor = (function () {
                 conceptData.notes.forEach(function (note, index) {
                     html += "  <div class='row'>" +
                         "    <div class='col-lg'>" +
-                        "      <textarea class='concept_input' id='concept_notes_value_'" + index + " value='" + note + "' cols='70' rows='3' ></textarea>" +
+                        "      <textarea class ='concept_input' id='concept_note_value_" + index+"'  cols='70', rows='3'>"+ note +"</textarea>" +
+
                         "   </div>" +
                         "<div class='col'>" +
                         "       <button  class='concept_button' onclick=skosEditor.conceptEditor.removeFromConcept('notes'," + index + ")> -</button>" +
@@ -551,7 +564,7 @@ skosEditor = (function () {
 
 
             var html = "<div class='concept'>"
-            html += "<form name='conceptDetails'>"
+        //    html += "<form name='conceptDetails'>"
             html += setAbout(conceptData);
             html += setPrefLabels(conceptData);
             html += setDefinitions(conceptData);
@@ -561,7 +574,7 @@ skosEditor = (function () {
             html += setRelated(conceptData);
 
             html += "</div>"
-            html += "</form>";
+       //     html += "</form>";
 
 
             $("#" + editorDivId).html(html);
@@ -572,6 +585,12 @@ skosEditor = (function () {
                 $("#" + editorDivId + " .concept-group").css("background-color", options.bgColor);
 
             }
+
+
+
+
+
+
             $('.concept_input').bind("blur", function (a, b, c) {
 
                 var value = $(this).val();
@@ -607,17 +626,18 @@ skosEditor = (function () {
                 skosEditor.synchronizeEditorData( skosEditor.context.editingNode);
 
             })
+          //  $( ".concept_button").unbind( "click" );
 
 
         }
         ,
 
 
-        addToConceptPrefLabels: function (ok) {
-            var x=ok
-            self.context.conceptData.prefLabels.splice(0, 0, {lang: self.outputLang, value: ""})
-            var conceptData = self.context.conceptData
-            self.conceptEditor.editConcept(conceptData);
+        addToConceptPrefLabels: function () {
+                self.context.conceptData.prefLabels.splice(0, 0, {lang: self.outputLang, value: ""})
+                var conceptData = self.context.conceptData
+                self.conceptEditor.editConcept(conceptData);
+
         }
         ,
         addToConceptAltLabels: function () {
@@ -627,24 +647,28 @@ skosEditor = (function () {
         }
         ,
         addToConceptBroaders: function () {
+
             self.context.conceptData.broaders.splice(0, 0, "")
             var conceptData = self.context.conceptData
             self.conceptEditor.editConcept(conceptData);
         }
         ,
         addToConceptRelateds: function () {
+
             self.context.conceptData.relateds.splice(0, 0, "")
             var conceptData = self.context.conceptData
             self.conceptEditor.editConcept(conceptData);
         }
         ,
         addToConceptDefinitions: function () {
+
             self.context.conceptData.definitions.splice(0, 0, "")
             var conceptData = self.context.conceptData
             self.conceptEditor.editConcept(conceptData);
         }
         ,
         addToConceptNotes: function () {
+
             self.context.conceptData.notes.splice(0, 0, "")
             var conceptData = self.context.conceptData
             self.conceptEditor.editConcept(conceptData);
@@ -653,6 +677,7 @@ skosEditor = (function () {
 
 
         removeFromConcept: function (type, index) {
+
             self.context.conceptData[type].splice(index, 1)
             var conceptData = self.context.conceptData
             self.conceptEditor.editConcept(conceptData);

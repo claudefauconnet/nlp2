@@ -103,7 +103,21 @@
             mapWidth = $("#mapDiv").width();
             mapHeight = $("#mapDiv").height();
             comparator.initThesaurusSelects();
-            skosEditor.initThesaurusSelects()
+            skosEditor.initThesaurusSelects();
+
+
+
+        /*    // correction pb: if enter on input concept_... , add a value
+            $(document).on('keypress',function(e) {
+                if(e.which == 13) {
+                    if(e.target.id.indexOf("concept_")==0)
+                        skosEditor.context.dontAddValue=true;
+                    else
+                        skosEditor.context.dontAddValue=false;
+
+                    e.stopPropagation()
+                }
+            });*/
         })
     </script>
     <style>
@@ -219,7 +233,7 @@
             <div style="width:100%;height: 20px; background-color: #372806" onclick="$('#skosEditorPopupDiv').css('display','none')">&nbsp;</div>
 
             <span style="font-weight: bold" id='jstreeTtitle'> </span>
-            <div id='editorDivId' style="height: 600px;width:600px;overflow: auto"></div>
+            <div id='editorDivId' style="height: 600px;width:700px;overflow: auto"></div>
 
 
         </div>

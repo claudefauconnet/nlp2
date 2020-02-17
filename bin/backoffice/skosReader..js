@@ -570,6 +570,16 @@ var skosReader = {
                     )
                 })
             }
+            if (concept.notes) {
+                concept.notes.forEach(function (note, index2) {
+                    objArray.push({
+                            "skos:note": {
+                                "#": note
+                            }
+                        }
+                    )
+                })
+            }
 
             if (concept.relateds) {
                 concept.relateds.forEach(function (related) {
