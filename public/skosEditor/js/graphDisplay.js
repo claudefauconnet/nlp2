@@ -380,11 +380,12 @@ var graphDisplay = (function () {
 
         })
 
-
         return {nodes: nodes, edges: edges};
-
-
     }
+
+
+
+
     return self;
 
 

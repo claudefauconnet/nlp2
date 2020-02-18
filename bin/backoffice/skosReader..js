@@ -32,7 +32,7 @@ var skosReader = {
 
             }
         var mode = null;
-        if(options.checkModifications) {
+        if (options.checkModifications) {
             var fileAlreadyOpen = skosReader.editingSkosFiles.indexOf(sourcePath);
             if (fileAlreadyOpen > -1) {
                 mode = "readOnly"
@@ -73,13 +73,34 @@ var skosReader = {
             }
         }
 
+
         skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
             if (err)
                 return callback(err);
-            var flatConceptsArray = skosReader.mapToFlat(conceptsMap, options);
+            var visjsArray = skosReader.rdfToFlat(conceptsMap, options);
             callback(null, flatConceptsArray)
         })
 
+    },
+
+    rdfToVisjsGraph: function (sourcePath, options, callback) {
+
+        //  var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf"
+        var thesaurusName = sourcePath.substring(sourcePath.lastIndexOf("\\") + 1)
+        thesaurusName = thesaurusName.substring(0, thesaurusName.indexOf("."))
+        if (!options) {
+            options = {
+                outputLangage: "en",
+                extractedLangages: "en,fr,sp",
+                thesaurusName: thesaurusName
+            }
+        }
+        skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
+            if (err)
+                return callback(err);
+            var visjsArray = skosReader.mapToVisjGraph(conceptsMap, options);
+            callback(null, visjsArray)
+        })
     },
 
 
@@ -414,6 +435,8 @@ var skosReader = {
 
     getNodeLabel: function (prefLabels, lang) {
         var label = null;
+        if (!prefLabels)
+            return "";
         prefLabels.forEach(function (prefLabel) {
             if (prefLabel.lang == lang && !label) {
                 label = prefLabel.value;
@@ -449,12 +472,12 @@ var skosReader = {
             }
 
 
-              var lang = options.outputLangage || "en" || "X"
-               if (!lang || !concept.prefLabels[lang] || concept.prefLabels[lang].length == 0)
-                   obj.text = "?"
-               else
-                   obj.text = concept.prefLabels[lang][0]
-               obj.id = concept.id;
+            var lang = options.outputLangage || "en" || "X"
+            if (!lang || !concept.prefLabels[lang] || concept.prefLabels[lang].length == 0)
+                obj.text = "?"
+            else
+                obj.text = concept.prefLabels[lang][0]
+            obj.id = concept.id;
 
             var prefLabelsArray = [];
             for (var key in concept.prefLabels) {
@@ -466,7 +489,7 @@ var skosReader = {
                 })
             }
 
-          obj.text = skosReader.getNodeLabel(prefLabelsArray, options.outputLangage)
+            obj.text = skosReader.getNodeLabel(prefLabelsArray, options.outputLangage)
 
 
             var altLabelsArray = [];
@@ -614,7 +637,125 @@ var skosReader = {
             return callback(null, "done " + rdfPath)
 
     }
+    , mapToVisjGraph: function (conceptsMap, options) {
+        if (!options) {
+            options = {}
+        }
+        var maxDepth = 15;
+        if (options.maxDepth)
+            maxDepth = options.maxDepth;
+        var lang = "en";
+        if (options.lang)
+            lang = options.lang;
 
+
+        var topNodeIds = [];
+
+        var palette = ["#a6f1ff",
+            "#007aa4",
+            "#584f99",
+            "#cd4850",
+            "#005d96",
+            "#ffc6ff",
+            '#007DFF',
+        ]
+        var nodes = [];
+        var edges = [];
+        var uniqueNodeIds = [];
+        var uniqueEdgesIds = [];
+        var topNodeIds = [];
+
+
+        function recurseBroaders(conceptId) {
+
+            var concept = conceptsMap[conceptId];
+            if (!concept)
+                return;
+
+            concept.broaders.forEach(function (broaderId, index) {
+
+                var broader = conceptsMap[broaderId];
+                if (!broader)
+                    return;
+
+                if (!broader.children)
+                    broader.children = [];
+                if (broader.children.indexOf(concept.id) < 0)
+                    broader.children.push(concept.id);
+                if (broader.broaders && broader.broaders[0] != "#") {
+                    recurseBroaders(broaderId)
+
+
+                } else if (topNodeIds.indexOf(broader.id) < 0) {
+                    topNodeIds.push(broader.id)
+                }
+
+            })
+
+
+        }
+
+
+        function recurseChildren(conceptId, level) {
+            var concept = conceptsMap[conceptId];
+            if (!concept)
+                return;
+            var color = palette[level];
+            var prefLabelsArray = [];
+            var label = "";
+            if (concept.prefLabels) {
+                for (var key in concept.prefLabels) {
+                    concept.prefLabels[key].forEach(function (item) {
+                        prefLabelsArray.push({
+                            lang: key,
+                            value: item
+                        })
+                    })
+                }
+                label = skosReader.getNodeLabel(prefLabelsArray, lang)
+            }
+
+            if (uniqueNodeIds.indexOf(concept.id) < 0) {
+                uniqueNodeIds.push(concept.id)
+                var visjNode = {
+                    id: concept.id,
+                    label: label,
+                    color: color,
+                    shape: "dot",
+                    data: concept,
+                }
+                nodes.push(visjNode)
+            }
+            if (concept.children) {
+                concept.children.forEach(function (childId, index) {
+                    var key = concept.id + "-" + childId;
+                    if (uniqueEdgesIds.indexOf(key) < 0) {
+                        uniqueEdgesIds.push(key)
+                        edges.push({
+                            from: concept.id,
+                            to: childId,
+                            type: "parent"
+                        })
+                        if (level <= maxDepth) {
+
+                                recurseChildren(childId, level + 1)
+                        }
+                    }
+
+                })
+            }
+
+        }
+
+        for (var id in conceptsMap) {
+            recurseBroaders(id)
+        }
+
+        topNodeIds.forEach(function (id) {
+            recurseChildren(id, 0)
+        })
+        return {nodes: nodes, edges: edges};
+    }
 
     ,
     mapToFlat: function (conceptsMap, options) {

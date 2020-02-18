@@ -3,12 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/comparator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/hierarchyComparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiEditor.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/jstreeCF.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/jstreeCF.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/graphDisplay.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -121,7 +122,7 @@
       <workItem from="1580478347303" duration="35208000" />
       <workItem from="1580634999564" duration="123023000" />
       <workItem from="1581157541319" duration="134492000" />
-      <workItem from="1581576959723" duration="75140000" />
+      <workItem from="1581576959723" duration="85425000" />
     </task>
     <servers />
   </component>

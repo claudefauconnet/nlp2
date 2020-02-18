@@ -372,6 +372,48 @@ var comparator = (function () {
         return canvasData;
     }
 
+    self.drawSingleThesaurusGraph=function(thesaurusPath){
+
+
+            $("#graphDiv").html("");
+            $("#mapDiv").html("");
+var maxDepth=parseInt($("#maxSingleGraphDepth").val())
+
+            var payload = {
+                rdfToVisjsGraph: 1,
+                rdfPath: thesaurusPath,
+                options: JSON.stringify({
+                    extractedLangages: "en,fr,sp",
+                    outputLangage: "en",
+                    maxDepth:maxDepth,
+                    lang:"en"
+
+                })
+            }
+            $.ajax({
+                type: "POST",
+                url: elasticUrl,
+                data: payload,
+                dataType: "json",
+
+                success: function (data, textStatus, jqXHR) {
+                    $("#graphDiv").width(1000)
+                  visjsGraph.draw("graphDiv",data);
+                }
+                , error: function (err) {
+
+                    console.log(err.responseText)
+
+
+                }
+            })
+
+
+
+
+    }
+
+
 
     self.displayPopupDiv = function (popupDiv) {
 

@@ -29,6 +29,10 @@ skosEditor = (function () {
 
     self.drawJsTree = function (treeDiv, jsTreeData) {
 
+
+
+
+
         function customMenu(node) {
             skosEditor.editSkosMenuNode = node;
             var items = $.jstree.defaults.contextmenu.items(node);
@@ -195,7 +199,7 @@ skosEditor = (function () {
 
     self.loadThesaurus = function (rdfPath, editorDivId, thesaurusIndex) {
 
-        if (skosEditor.data && skosEditor.context.modified && !skosEditor.context.isReadOnly) {
+        if (skosEditor.context.data && skosEditor.context.modified && !skosEditor.context.isReadOnly) {
             if (confirm("Save Current file  before open new file?")) {
                 self.saveThesaurus(thesaurusIndex);
                 skosEditor.context.modified = null;
@@ -249,7 +253,7 @@ skosEditor = (function () {
 
 
                 }
-                self.context.data = data.skos;
+                skosEditor.context.data = data.skos;
                 var data = data.skos
                 $("#waitImg").css("display", "none");
                 $("#countConcepts" + thesaurusIndex).html(data.length)
