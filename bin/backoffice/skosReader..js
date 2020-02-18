@@ -1,5 +1,7 @@
 var fs = require('fs');
 var sax = require("sax");
+var stemmer = require('stemmer');
+var async = require('async')
 var skosReader = {
     editingSkosFiles: [],
 
@@ -738,7 +740,7 @@ var skosReader = {
                         })
                         if (level <= maxDepth) {
 
-                                recurseChildren(childId, level + 1)
+                            recurseChildren(childId, level + 1)
                         }
                     }
 
@@ -857,7 +859,114 @@ var skosReader = {
         })
 
         return leaves;
+    },
+
+    getCommonConcepts: function (rdfPath1, rdfPath2, options, callback) {
+        var conceptMap1;
+        var conceptMap2;
+        var commonConceptLemmas = [];
+        var commonConcepts1 = [];
+        var commonConcepts2 = [];
+        var nonCommonConcepts1 = [];
+        var nonCommonConcepts2 = [];
+
+        function getConceptLemmas(concept, withSynonyms) {
+            var lemmas = [];
+            if (concept && concept.prefLabels) {
+                for (var key in concept.prefLabels) {
+                    concept.prefLabels[key].forEach(function (label) {
+                        //console.log(label)
+                        var lemme = stemmer(label);
+                        lemmas.push(lemme)
+                    })
+                }
+            }
+
+
+            if (concept && withSynonyms && concept.altLabels) {
+                for (var key in concept.altLabels) {
+                    concept.altLabels[key].forEach(function (label) {
+                        var lemme = stemmer(label);
+                        lemmas.push(lemme)
+                    })
+                }
+            }
+            return lemmas;
+        }
+
+
+        async.series([
+
+            function (callbackSeries) {
+                skosReader.parseRdfXml(rdfPath1, options, function (err, result) {
+                    if (err)
+                        return callbackSeries(err)
+                    conceptMap1 = result;
+                    return callbackSeries();
+
+                })
+
+
+            },
+            function (callbackSeries) {
+                skosReader.parseRdfXml(rdfPath2, options, function (err, result) {
+                    if (err)
+                        return callbackSeries(err)
+                    conceptMap2 = result;
+                    return callbackSeries();
+
+                })
+            },
+
+            //comparaison
+            function (callbackSeries) {
+                for (var key1 in conceptMap1) {
+                    var concept1 = conceptMap1[key1];
+                    var lemmas1 = getConceptLemmas(concept1, options.withSynonyms)
+                    for (var key2 in conceptMap2) {
+                        var concept2 = conceptMap2[key2];
+                        var lemmas2 = getConceptLemmas(concept2, options.withSynonyms);
+
+                        lemmas1.forEach(function (lemme1) {
+                            if (lemmas2.indexOf(lemme1) > -1) {
+                                if (commonConcepts1.indexOf(key1) < 0)
+                                    commonConcepts1.push(key1)
+                                if (commonConcepts2.indexOf(key2) < 0)
+                                    commonConcepts2.push(key2);
+                                if (commonConceptLemmas.indexOf(lemme1) < 0)
+                                    commonConceptLemmas.push(lemme1);
+                            }
+                        })
+                    }
+                }
+                for (var key1 in conceptMap1) {
+                    if (commonConcepts1.indexOf(key1) < 0)
+                        nonCommonConcepts1.push(key1)
+                }
+                for (var key2 in conceptMap2) {
+                    if (commonConcepts2.indexOf(key2) < 0)
+                        nonCommonConcepts2.push(key2)
+                }
+
+                return callbackSeries();
+            }
+
+
+        ], function (err) {
+            if (err)
+                return callback(err);
+            return {
+                commonConcepts1: commonConcepts1,
+                commonConcepts2: commonConcepts2,
+                nonCommonConcepts1: nonCommonConcepts1,
+                nonCommonConcepts2: nonCommonConcepts2,
+                commonConceptLemmas: commonConceptLemmas
+            }
+        })
+
+
     }
+
 
 }
 /*
@@ -871,6 +980,31 @@ skosReader.rdfToAnnotator("D:\\NLP\\cgi\\eventprocess.rdf", {outputLangage: "en"
 
 module.exports = skosReader
 
+
+if (true) {
+    var rdfPath1 = "D:\\NLP\\thesaurus_CTG_Product.rdf";
+    var rdfPath1 = "D:\\NLP\\thesaurusCTG-02-20.rdf";
+
+    var rdfPath2 = "D:\\NLP\\LOC_Chemistry_3.rdf";
+    var rdfPath2 = "D:\\NLP\\LOC_CTG_Physics_3.rdf";
+    var rdfPath2 = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
+
+
+
+
+    options = {
+        outputLangage: "en",
+        extractedLangages: "en",
+        withSynonyms: true,
+    }
+    skosReader.getCommonConcepts(rdfPath1, rdfPath2, options, function (err, result) {
+        var x = err;
+        if(err)
+            console.log(err)
+
+    })
+
+}
 if (false) {
 
     var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf";

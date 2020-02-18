@@ -390,7 +390,7 @@ if (false) {
 
 }
 
-if(true){
+if(false){
 
     var filePath="D:\\telanthropia\\words.csv"
 var str=""+fs.readFileSync(filePath);

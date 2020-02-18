@@ -113,7 +113,7 @@ skosEditor = (function () {
                     options.readOnly = true
                 }
                 skosEditor.context.editingNode = obj.node;
-                skosEditor.conceptEditor.editConcept(concept.data, "editorDivId", options);
+                skosEditor.conceptEditor.editConcept(conceptData, "editorDivId", options);
             })
             .on("rename_node.jstree Event",
                 function (event, obj) {

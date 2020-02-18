@@ -67,6 +67,11 @@ var comparator = (function () {
                     var thesaurusNameV=thesaurusV.substring(thesaurusV.lastIndexOf("\\")+1)
                     var thesaurusNameH=thesaurusH.substring(thesaurusV.lastIndexOf("\\")+1)
                     self.commonConcepts = commonConcepts.getCommonConcepts(self.dataH, self.dataV);
+                    self.nonCommonConceptsV=self.getNonCommonConcepts(self.dataV,self.commonConcepts);
+                    self.nonCommonConceptsH=self.getNonCommonConcepts(self.dataH,self.commonConcepts);
+                   // fs.writeFileSync()
+
+
                     $('#statsSpan').html(thesaurusNameV+" : " + self.dataV.length +","+thesaurusNameH +" : " + self.dataH.length + ",  commonConcepts : " + self.commonConcepts.length);
                     self.treeV = self.buildTree(self.dataV, self.commonConcepts);
 
@@ -99,6 +104,20 @@ var comparator = (function () {
 
 
     }
+
+
+    self.getNonCommonConcepts=function(thesaurus,commonConcepts){
+        var nonCommonConcepts=[]
+        thesaurus.forEach(function(item) {
+            commonConcepts.forEach(function (commonIds) {
+                if (commonIds.indexOf(item.id) < 0)
+                   if( nonCommonConcepts.indexOf(item.id)<0)
+                    nonCommonConcepts.push(item.id)
+            })
+        })
+        return nonCommonConcepts;
+
+    };
 
     self.loadThesaurus = function (rdfPath, callback) {
         $("#graphDiv").html("");

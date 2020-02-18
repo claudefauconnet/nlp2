@@ -39,6 +39,7 @@
     "socket.io": "^2.3.0",
     "spacy": "0.0.4",
     "spacy-nlp": "git+https://github.com/jeffreyflynt/spacy-nlp.git",
+    "stemmer": "^1.0.5",
     "streams": "^0.1.0",
     "util": "^0.12.1",
     "winston": "^3.2.1",
