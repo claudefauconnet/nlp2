@@ -7,15 +7,6 @@ skosEditor = (function () {
     self.editor = null;
 
 
-
-
-
-
-
-
-
-
-
     self.initThesaurusSelects = function () {
 
 
@@ -28,9 +19,6 @@ skosEditor = (function () {
     }
 
     self.drawJsTree = function (treeDiv, jsTreeData) {
-
-
-
 
 
         function customMenu(node) {
@@ -59,7 +47,14 @@ skosEditor = (function () {
                 }
 
             }
+            items.toCSV = {
+                label: "toCSV",
+                action: function () {
+                    var node = skosEditor.editSkosMenuNode;
+                    skosEditor.toCsv(node)
+                }
 
+            }
             return items;
         }
 
@@ -150,7 +145,7 @@ skosEditor = (function () {
                     $('#' + treeId).jstree(true).set_id(obj.node, obj.node.data.id);
                     obj.node.data.prefLabels = [{lang: self.outputLang, value: obj.node.text}]
                     var conceptData = obj.node.data;
-                 //   skosEditor.context.editingNode = null;
+                    //   skosEditor.context.editingNode = null;
                     //  skosEditor.conceptEditor.editConcept(conceptData, "editorDivId");
 
                 })
@@ -191,7 +186,7 @@ skosEditor = (function () {
             if (node.text != prefLabel) {
                 node.text = prefLabel;
                 $("#treeDiv1").jstree(true).rename_node(node.id, prefLabel);
-                $("#treeDiv1").jstree(true).refresh_node (node.id);
+                $("#treeDiv1").jstree(true).refresh_node(node.id);
             }
         }
 
@@ -439,7 +434,7 @@ skosEditor = (function () {
                     html += "  <div class='row'>" +
 
                         "    <div class='col-lg'>" +
-                        "      <textarea class ='concept_input' id='concept_definition_value_" + index+"'  cols='70', rows='3'>"+ definition +"</textarea>" +
+                        "      <textarea class ='concept_input' id='concept_definition_value_" + index + "'  cols='70', rows='3'>" + definition + "</textarea>" +
 
                         "   </div>" +
                         "<div class='col'>" +
@@ -456,7 +451,7 @@ skosEditor = (function () {
                 conceptData.notes.forEach(function (note, index) {
                     html += "  <div class='row'>" +
                         "    <div class='col-lg'>" +
-                        "      <textarea class ='concept_input' id='concept_note_value_" + index+"'  cols='70', rows='3'>"+ note +"</textarea>" +
+                        "      <textarea class ='concept_input' id='concept_note_value_" + index + "'  cols='70', rows='3'>" + note + "</textarea>" +
 
                         "   </div>" +
                         "<div class='col'>" +
@@ -568,7 +563,7 @@ skosEditor = (function () {
 
 
             var html = "<div class='concept'>"
-        //    html += "<form name='conceptDetails'>"
+            //    html += "<form name='conceptDetails'>"
             html += setAbout(conceptData);
             html += setPrefLabels(conceptData);
             html += setDefinitions(conceptData);
@@ -578,7 +573,7 @@ skosEditor = (function () {
             html += setRelated(conceptData);
 
             html += "</div>"
-       //     html += "</form>";
+            //     html += "</form>";
 
 
             $("#" + editorDivId).html(html);
@@ -589,10 +584,6 @@ skosEditor = (function () {
                 $("#" + editorDivId + " .concept-group").css("background-color", options.bgColor);
 
             }
-
-
-
-
 
 
             $('.concept_input').bind("blur", function (a, b, c) {
@@ -611,26 +602,26 @@ skosEditor = (function () {
                     if (type == "about")
                         conceptData.id = value;
                     if (type == "altLabel") {
-                        conceptData.altLabels[index][property]= value;
+                        conceptData.altLabels[index][property] = value;
                     }
                     if (type == "prefLabel") {
-                        conceptData.prefLabels[index][property]= value;
+                        conceptData.prefLabels[index][property] = value;
                     }
                     if (type == "related")
-                        conceptData.relateds[index]= value;
+                        conceptData.relateds[index] = value;
                     if (type == "broader")
-                        conceptData.broaders[index]= value;
+                        conceptData.broaders[index] = value;
                     if (type == "definition")
-                        conceptData.definitions[index]= value;
+                        conceptData.definitions[index] = value;
                     if (type == "note")
-                        conceptData.notes[index]= value;
+                        conceptData.notes[index] = value;
                 }
 
                 skosEditor.context.editingNode.data = conceptData;
-                skosEditor.synchronizeEditorData( skosEditor.context.editingNode);
+                skosEditor.synchronizeEditorData(skosEditor.context.editingNode);
 
             })
-          //  $( ".concept_button").unbind( "click" );
+            //  $( ".concept_button").unbind( "click" );
 
 
         }
@@ -638,9 +629,9 @@ skosEditor = (function () {
 
 
         addToConceptPrefLabels: function () {
-                self.context.conceptData.prefLabels.splice(0, 0, {lang: self.outputLang, value: ""})
-                var conceptData = self.context.conceptData
-                self.conceptEditor.editConcept(conceptData);
+            self.context.conceptData.prefLabels.splice(0, 0, {lang: self.outputLang, value: ""})
+            var conceptData = self.context.conceptData
+            self.conceptEditor.editConcept(conceptData);
 
         }
         ,
@@ -779,6 +770,64 @@ skosEditor = (function () {
         }, false);
 
     }
+    self.toCsv = function (topNode) {
+
+        function copyToClipboard(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($(element).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+
+        var depth = prompt("depth", "2")
+        if (isNaN(depth))
+            return;
+        depth = parseInt(depth)
+        var str = "";
+        for (var i = 1; i <= depth; i++) {
+            str += "\tlevel_" + i + "\t"
+        }
+        str += "\n";
+
+        var descendants = topNode.children_d;
+        var map = {}
+
+        /*    self.context.data.forEach(function (node){
+                 if(descendants.indexOf(node.id)<0){
+                     map[node.id]=node;
+                 }
+            })*/
+
+
+        var recurseChildren = function (nodeId, lineStr, level) {
+
+            // var node = map[nodeId]
+            var node = $("#treeDiv1").jstree(true).get_node(nodeId);
+            var children = node.children;
+            lineStr += node.text + "\t";
+            if (level > depth || !children || children.length == 0) {
+
+                str += lineStr + "\n";
+                return;
+            } else {
+
+
+            }
+            if (!children)
+                return;
+            children.forEach(function (child) {
+                recurseChildren(child, lineStr, level + 1)
+            })
+
+        }
+        recurseChildren(topNode.id, "", 1)
+        $("#editorDivId").html("<textArea id='commonConceptsTA' rows='50' cols='80'>"+str+"</textArea>")
+    // copyToClipboard("#editorDivId");
+     //  alert ("csv  is copied on clipboard")
+
+    }
 
 
     self.addLocLevel = function (thesaurusIndex) {
@@ -811,6 +860,7 @@ skosEditor = (function () {
         })
 
     }
+
 
     return self;
 

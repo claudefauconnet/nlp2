@@ -204,6 +204,14 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             })
         }
 
+        if (req.body.compareThesaurus) {
+            skosReader.compareThesaurus(req.body.rdfPath1,req.body.rdfPath2,JSON.parse(req.body.options), function (err, result) {
+                processResponse(response, err, result)
+            })
+        }
+
+
+
         if (req.body.getLOCchildren) {
             var lockskos=require('../bin/others/locskos.')
             lockskos.getLOCchildren(req.body.conceptId,req.body.maxLevels, function (err, result) {

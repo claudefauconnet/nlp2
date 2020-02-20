@@ -4,11 +4,11 @@
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/statistics..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/statistics..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/comparator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +71,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.skosReader..js">
+  <component name="RunManager" selected="Node.js.bin\www">
     <configuration name="_csvCrawler..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="_csvCrawler..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
@@ -122,7 +122,7 @@
       <workItem from="1580634999564" duration="123023000" />
       <workItem from="1581157541319" duration="134492000" />
       <workItem from="1581576959723" duration="87577000" />
-      <workItem from="1582042838100" duration="7375000" />
+      <workItem from="1582042838100" duration="20400000" />
     </task>
     <servers />
   </component>
@@ -152,7 +152,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js</url>
-          <line>34</line>
+          <line>89</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2022" />
         </line-breakpoint>
@@ -164,13 +164,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>957</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2044" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>902</line>
+          <line>906</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2059" />
         </line-breakpoint>

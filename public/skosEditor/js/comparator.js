@@ -106,18 +106,7 @@ var comparator = (function () {
     }
 
 
-    self.getNonCommonConcepts=function(thesaurus,commonConcepts){
-        var nonCommonConcepts=[]
-        thesaurus.forEach(function(item) {
-            commonConcepts.forEach(function (commonIds) {
-                if (commonIds.indexOf(item.id) < 0)
-                   if( nonCommonConcepts.indexOf(item.id)<0)
-                    nonCommonConcepts.push(item.id)
-            })
-        })
-        return nonCommonConcepts;
 
-    };
 
     self.loadThesaurus = function (rdfPath, callback) {
         $("#graphDiv").html("");

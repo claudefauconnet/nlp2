@@ -88,8 +88,7 @@ var skosReader = {
     rdfToVisjsGraph: function (sourcePath, options, callback) {
 
         //  var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf"
-        var thesaurusName = sourcePath.substring(sourcePath.lastIndexOf("\\") + 1)
-        thesaurusName = thesaurusName.substring(0, thesaurusName.indexOf("."))
+        var thesaurusName = skosReader.getThesaurusName(sourcePath);
         if (!options) {
             options = {
                 outputLangage: "en",
@@ -103,6 +102,11 @@ var skosReader = {
             var visjsArray = skosReader.mapToVisjGraph(conceptsMap, options);
             callback(null, visjsArray)
         })
+    },
+    getThesaurusName: function(refPath){
+        var thesaurusName = refPath.substring(refPath.lastIndexOf("\\") + 1)
+        refPath = refPath.substring(0, refPath.indexOf("."))
+        return thesaurusName;
     },
 
 
@@ -861,7 +865,7 @@ var skosReader = {
         return leaves;
     },
 
-    getCommonConcepts: function (rdfPath1, rdfPath2, options, callback) {
+    compareThesaurus: function (rdfPath1, rdfPath2, options, callback) {
         var conceptMap1;
         var conceptMap2;
         var commonConceptLemmas = [];
@@ -955,13 +959,11 @@ var skosReader = {
         ], function (err) {
             if (err)
                 return callback(err);
-            return {
-                commonConcepts1: commonConcepts1,
-                commonConcepts2: commonConcepts2,
-                nonCommonConcepts1: nonCommonConcepts1,
-                nonCommonConcepts2: nonCommonConcepts2,
+            return callback(null,{
+                thesaurus1:{name:  skosReader.getThesaurusName(rdfPath1), commonConcepts: commonConcepts1, nonCommonConcepts: nonCommonConcepts1},
+                thesaurus2:{name:  skosReader.getThesaurusName(rdfPath2), commonConcepts: commonConcepts2, nonCommonConcepts: nonCommonConcepts2},
                 commonConceptLemmas: commonConceptLemmas
-            }
+            })
         })
 
 
@@ -981,7 +983,7 @@ skosReader.rdfToAnnotator("D:\\NLP\\cgi\\eventprocess.rdf", {outputLangage: "en"
 module.exports = skosReader
 
 
-if (true) {
+if (false) {
     var rdfPath1 = "D:\\NLP\\thesaurus_CTG_Product.rdf";
     var rdfPath1 = "D:\\NLP\\thesaurusCTG-02-20.rdf";
 
@@ -997,7 +999,7 @@ if (true) {
         extractedLangages: "en",
         withSynonyms: true,
     }
-    skosReader.getCommonConcepts(rdfPath1, rdfPath2, options, function (err, result) {
+    skosReader.compareThesaurus(rdfPath1, rdfPath2, options, function (err, result) {
         var x = err;
         if(err)
             console.log(err)

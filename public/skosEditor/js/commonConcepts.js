@@ -30,6 +30,61 @@ var commonConcepts = (function () {
             }
         }
     }
+
+
+    self.compareThesaurus = function (rdfPath1, rdfPath2, callback) {
+        var lang = "en";
+        var withSynonyms = true;
+        callback = null;
+        var options = {
+            outputLangage: lang,
+            extractedLangages: lang,
+            withSynonyms: withSynonyms,
+        }
+
+
+        var payload = {
+            compareThesaurus: 1,
+            rdfPath1: rdfPath1,
+            rdfPath2: rdfPath2,
+            options: JSON.stringify(options)
+        }
+        $("#waitImg").css("display", "block");
+        $.ajax({
+            type: "POST",
+            url: "/elastic",
+            data: payload,
+            dataType: "json",
+
+            success: function (data, textStatus, jqXHR) {
+
+             var xx= $("#commonConceptsTA").val();
+             if(!xx || xx==""){
+                 $("#graphDiv").html("<textArea id='commonConceptsTA' row='50' cols='150'></textArea>")
+             }
+              /*  if (callback)
+                    return callback(null, data)*/
+                var str = data.thesaurus1.name+"\t"+data.thesaurus1.commonConcepts.length + "\t" +data.thesaurus1.nonCommonConcepts.length +"\t";
+               str += data.thesaurus2.name+"\t"+data.thesaurus2.commonConcepts.length + "\t" +data.thesaurus2.nonCommonConcepts.length + "\t" + data.commonConceptLemmas .toString()+ "\n";
+
+               var oldStr= $("#commonConceptsTA").val()
+                $("#commonConceptsTA").val(oldStr+str)
+                $("#waitImg").css("display", "none");
+            }
+            , error: function (err) {
+                if (callback)
+                    callback(err.responseText)
+                console.log(err.responseText)
+                $("#waitImg").css("display", "none");
+
+
+            }
+        })
+
+
+    }
+
+
     self.getCommonConcepts = function (thesaurusArrayA, thesaurusArrayB) {
         var commonConcepts = []
         thesaurusArrayA.forEach(function (conceptA) {
@@ -44,7 +99,7 @@ var commonConcepts = (function () {
     }
 
 
-    self.isCommonConcept = function (a, b,withoutAlLabels) {
+    self.isCommonConcept = function (a, b, withoutAlLabels) {
         var ok = false;
         if (!a.prefLabels || !a.prefLabels)
             return ok;
@@ -56,13 +111,12 @@ var commonConcepts = (function () {
                 if (prefLabelA.value.toLowerCase() == prefLabelB.value.toLowerCase())
                     ok = true;
                 return ok;
-        })
+            })
 
         })
 
 
-
-        if(!withoutAlLabels) {
+        if (!withoutAlLabels) {
             a.altLabels.forEach(function (prefLabelA) {
                 b.altLabels.forEach(function (prefLabelB) {
                     if (prefLabelA.value.toLowerCase() == prefLabelB.value.toLowerCase())
@@ -209,4 +263,5 @@ var commonConcepts = (function () {
 
     return self;
 
-})()
+})
+()

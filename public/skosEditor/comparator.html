@@ -171,12 +171,13 @@
 
         <button onclick="comparator.draw('graph',$('#thesaurusV').val(),$('#thesaurusH').val())">Graph common</button>
         <button onclick="comparator.drawSingleThesaurusGraph($('#thesaurusV').val(),$('#thesaurusH').val())">Graph single</button>
-        <input id="maxSingleGraphDepth" value="1">
+        <input id="maxSingleGraphDepth"  size="2" value="1">
         <br>
         <select class='conceptH' id="thesaurusSelectH" onclick="$('#thesaurusH').val($(this).val())"></select><input class='conceptH' id="thesaurusH" value="" size="80">
 
 
         <button onclick="comparator.draw('map',$('#thesaurusV').val(),$('#thesaurusH').val())">Map common</button>
+        <button onclick="commonConcepts.compareThesaurus($('#thesaurusV').val(),$('#thesaurusH').val())">Compare</button>
         <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 25px"></div>
 
 
