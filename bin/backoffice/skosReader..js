@@ -103,7 +103,7 @@ var skosReader = {
             callback(null, visjsArray)
         })
     },
-    getThesaurusName: function(refPath){
+    getThesaurusName: function (refPath) {
         var thesaurusName = refPath.substring(refPath.lastIndexOf("\\") + 1)
         refPath = refPath.substring(0, refPath.indexOf("."))
         return thesaurusName;
@@ -866,6 +866,9 @@ var skosReader = {
     },
 
     compareThesaurus: function (rdfPath1, rdfPath2, options, callback) {
+        if (!options) {
+            options = {withSynonyms: true}
+        }
         var conceptMap1;
         var conceptMap2;
         var commonConceptLemmas = [];
@@ -921,9 +924,34 @@ var skosReader = {
 
                 })
             },
+            function (callbackSeries) {
+                if (!options.printLemmas)
+                    return callbackSeries();
+                var l1 = Object.keys(conceptMap1).length
+                var l2 = Object.keys(conceptMap2).length;
+
+                function print(conceptMap, rdfPath) {
+                    var str = "";
+                    for (var key in conceptMap) {
+                        var concept = conceptMap[key];
+                        var lemmas = getConceptLemmas(concept, options.withSynonyms)
+                        str += key + "\t" + lemmas.toString() + "\n";
+                    }
+
+                    fs.writeFileSync(rdfPath, str)
+                }
+
+                print(conceptMap1, rdfPath1.replace(".", "_lemmas_."))
+                print(conceptMap2, rdfPath2.replace(".", "_lemmas_."))
+
+                return callback();
+
+            },
 
             //comparaison
             function (callbackSeries) {
+
+
                 for (var key1 in conceptMap1) {
                     var concept1 = conceptMap1[key1];
                     var lemmas1 = getConceptLemmas(concept1, options.withSynonyms)
@@ -939,6 +967,16 @@ var skosReader = {
                                     commonConcepts2.push(key2);
                                 if (commonConceptLemmas.indexOf(lemme1) < 0)
                                     commonConceptLemmas.push(lemme1);
+                            }
+                        })
+                        lemmas2.forEach(function (lemme2) {
+                            if (lemmas1.indexOf(lemme2) > -1) {
+                                if (commonConcepts1.indexOf(key1) < 0)
+                                    commonConcepts1.push(key1)
+                                if (commonConcepts2.indexOf(key2) < 0)
+                                    commonConcepts2.push(key2);
+                                if (commonConceptLemmas.indexOf(lemme2) < 0)
+                                    commonConceptLemmas.push(lemme2);
                             }
                         })
                     }
@@ -959,17 +997,129 @@ var skosReader = {
         ], function (err) {
             if (err)
                 return callback(err);
-            return callback(null,{
-                thesaurus1:{name:  skosReader.getThesaurusName(rdfPath1), commonConcepts: commonConcepts1, nonCommonConcepts: nonCommonConcepts1},
-                thesaurus2:{name:  skosReader.getThesaurusName(rdfPath2), commonConcepts: commonConcepts2, nonCommonConcepts: nonCommonConcepts2},
+            return callback(null, {
+                thesaurus1: {name: skosReader.getThesaurusName(rdfPath1), commonConcepts: commonConcepts1, nonCommonConcepts: nonCommonConcepts1},
+                thesaurus2: {name: skosReader.getThesaurusName(rdfPath2), commonConcepts: commonConcepts2, nonCommonConcepts: nonCommonConcepts2},
                 commonConceptLemmas: commonConceptLemmas
             })
         })
 
 
+    },
+
+    thesaurusToCsv: function (rdfPath, options, callback) {
+        if (!options)
+            options = {};
+
+        var conceptMap = {};
+
+        var str = "";
+
+
+        async.series([
+
+                function (callbackSeries) {
+                    skosReader.parseRdfXml(rdfPath, options, function (err, result) {
+                        if (err)
+                            return callbackSeries(err)
+                        conceptMap = result;
+                        return callbackSeries();
+
+                    })
+
+
+                },
+
+
+                function (callbackSeries) {
+
+
+                    function recurseAncestors(nodeId) {
+
+                        var node = conceptMap[nodeId];
+                        if (!node)
+                            return;
+                        if (node && node.prefLabels["en"] && node.prefLabels["en"].length > 0) {
+                            strAncestors = node.prefLabels["en"][0] + "," + strAncestors;
+                        }
+
+                        if (node.broaders && node.broaders.length > 0) {
+                            var broader = conceptMap[node.broaders[0]];
+
+                            recurseAncestors(node.broaders[0])
+                        } else {
+                            return;
+                        }
+                        return
+                    }
+
+
+                    for (var key1 in conceptMap) {
+                        var concept = conceptMap[key1];
+
+                        var strPrefLabel = "";
+                        var strAltLabel = ""
+                        var filterOk = false;
+                        for (var key in concept.prefLabels) {
+                            if (options.lang == key || !options.lang)
+                                concept.prefLabels[key].forEach(function (label, indexLabel) {
+                                    if (options.filterRegex && options.filterRegex.test(label))
+                                        filterOk = true;
+
+                                    if (indexLabel > 0)
+                                        strPrefLabel += ","
+                                    strPrefLabel += label
+
+                                })
+                        }
+
+                        for (var key in concept.altLabels) {
+                            if (options.lang == key || !options.lang)
+                                concept.altLabels[key].forEach(function (label, indexLabel) {
+                                    if (options.filterRegex && options.filterRegex.test(label))
+                                        filterOk = true;
+                                    if (indexLabel > 0)
+                                        strAltLabel += ","
+                                    strAltLabel += label
+
+                                })
+                        }
+
+
+                        if (!options.filterRegex || (options.filterRegex && filterOk)) {
+
+                            var strAncestors = ""
+                            if (options.withAncestors) {
+                                 recurseAncestors(concept.id)
+                            }
+
+
+                            str += concept.id;
+
+                            if (options.withAncestors) {
+                                str +=  "\t" + strAncestors
+                            }
+                            str += "\t" + strPrefLabel + "\t" + strAltLabel + "\n"
+
+
+                        }
+
+
+                    }
+                    callbackSeries();
+
+
+                }
+
+            ],
+
+            function (err) {
+                if (err)
+                    return callback(err);
+                return callback(null, str);
+            }
+        )
     }
-
-
 }
 /*
 skosReader.rdfToAnnotator("D:\\NLP\\cgi\\eventprocess.rdf", {outputLangage: "en", extractedLangages: "en"}, function (err, result) {
@@ -987,27 +1137,60 @@ if (false) {
     var rdfPath1 = "D:\\NLP\\thesaurus_CTG_Product.rdf";
     var rdfPath1 = "D:\\NLP\\thesaurusCTG-02-20.rdf";
 
+
     var rdfPath2 = "D:\\NLP\\LOC_Chemistry_3.rdf";
     var rdfPath2 = "D:\\NLP\\LOC_CTG_Physics_3.rdf";
     var rdfPath2 = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
-
-
+    // var rdfPath2 = "D:\\NLP\\termScience\\termScience_Elements_Chimiques.rdf";
 
 
     options = {
         outputLangage: "en",
         extractedLangages: "en",
         withSynonyms: true,
+        printLemmas: true,
+       // filterRegex: /corrosion/gi,
+        withAncestors: true
+
+    }
+    skosReader.thesaurusToCsv(rdfPath1, options, function (err, result) {
+        var x = err;
+        if (err)
+            console.log(err)
+        fs.writeFileSync(rdfPath1.replace(".rdf", ".csv"), result)
+
+    })
+
+}
+
+
+if (false) {
+    var rdfPath1 = "D:\\NLP\\thesaurus_CTG_Product.rdf";
+    // var rdfPath1 = "D:\\NLP\\thesaurusCTG-02-20.rdf";
+    var rdfPath1 = "D:\\NLP\\thesaurus_CTG_Product.rdf";
+
+    var rdfPath2 = "D:\\NLP\\LOC_Chemistry_3.rdf";
+    var rdfPath2 = "D:\\NLP\\LOC_CTG_Physics_3.rdf";
+    var rdfPath2 = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
+    // var rdfPath2 = "D:\\NLP\\termScience\\termScience_Elements_Chimiques.rdf";
+
+
+    options = {
+        outputLangage: "en",
+        extractedLangages: "en",
+        withSynonyms: true,
+        printLemmas: true
     }
     skosReader.compareThesaurus(rdfPath1, rdfPath2, options, function (err, result) {
         var x = err;
-        if(err)
+        if (err)
             console.log(err)
 
     })
 
 }
 if (false) {
+
 
     var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf";
     var sourcePath = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
@@ -1019,17 +1202,36 @@ if (false) {
 
 
 }
+if (false) {
 
-var str = "TE.13668|*TE.10210*TE.15439|TE.10210|*TE.15439*TE.10210*TE.15439"
 
-var array = str.split("*")
-var strs = []
-array.forEach(function (item, index) {
-    var str2 = "";
-    if (index > 0)
-        str2 = strs[index - 1]
+    var str = "TE.13668|*TE.10210*TE.15439|TE.10210|*TE.15439*TE.10210*TE.15439"
 
-    strs.push(str2 + "|" + item)
+    var array = str.split("*")
+    var strs = []
+    array.forEach(function (item, index) {
+        var str2 = "";
+        if (index > 0)
+            str2 = strs[index - 1]
 
-})
-var x = strs
+        strs.push(str2 + "|" + item)
+
+    })
+    var x = strs
+}
+
+
+if (false) {
+
+
+    var sourcePath1 = "D:\\NLP\\thesaurus_CTG_Product.rdf";
+    var sourcePath2 = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
+
+    skosReader.compareThesaurus(sourcePath1, sourcePath2, null, function (err, result) {
+        var x = result;
+        //   fs.writeFileSync(sourcePath.replace(".rdf", "_flat.json"), JSON.stringify(result, null, 2))
+
+    })
+
+
+}

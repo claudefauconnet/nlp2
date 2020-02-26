@@ -256,6 +256,7 @@ skosEditor = (function () {
 
                 data.forEach(function (item, index) {
                     item.icon = "concept-icon.png";
+                    item.data.treeDivId = "treeDiv"+thesaurusIndex;
 
                 })
 
@@ -792,6 +793,7 @@ skosEditor = (function () {
         str += "\n";
 
         var descendants = topNode.children_d;
+        var treeDivId=topNode.data.treeDivId;
         var map = {}
 
         /*    self.context.data.forEach(function (node){
@@ -801,10 +803,11 @@ skosEditor = (function () {
             })*/
 
 
+
         var recurseChildren = function (nodeId, lineStr, level) {
 
             // var node = map[nodeId]
-            var node = $("#treeDiv1").jstree(true).get_node(nodeId);
+            var node = $("#"+treeDivId).jstree(true).get_node(nodeId);
             var children = node.children;
             lineStr += node.text + "\t";
             if (level > depth || !children || children.length == 0) {
@@ -822,10 +825,13 @@ skosEditor = (function () {
             })
 
         }
+
+
         recurseChildren(topNode.id, "", 1)
-        $("#editorDivId").html("<textArea id='commonConceptsTA' rows='50' cols='80'>"+str+"</textArea>")
-    // copyToClipboard("#editorDivId");
-     //  alert ("csv  is copied on clipboard")
+        $("#editorDivId").html("<textArea id='commonConceptsTA' rows='50' cols='80'>" + str + "</textArea>")
+        $("#popupDiv").css("display", "block")
+        // copyToClipboard("#editorDivId");
+        //  alert ("csv  is copied on clipboard")
 
     }
 

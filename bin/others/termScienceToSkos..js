@@ -181,7 +181,7 @@ var termScienceToSkos = {
                     concept.narrowers.forEach(function (child) {
                         children1.push(child)
                     })
-                    console.log("children1 : "+children1.length);
+                    console.log("children1 : " + children1.length);
                     callbackSeries();
                 })
             },
@@ -207,7 +207,7 @@ var termScienceToSkos = {
                 }, function (err) {
                     if (err)
                         return callbackSeries(err);
-                    console.log("children2 : "+children2.length);
+                    console.log("children2 : " + children2.length);
                     callbackSeries();
                 })
             },
@@ -232,7 +232,7 @@ var termScienceToSkos = {
                 }, function (err) {
                     if (err)
                         return callbackSeries(err);
-                    console.log("children3 : "+children3.length);
+                    console.log("children3 : " + children3.length);
                     callbackSeries();
                 })
             }
@@ -257,7 +257,7 @@ var termScienceToSkos = {
                 }, function (err) {
                     if (err)
                         return callbackSeries(err);
-                    console.log("children4 : "+children4.length);
+                    console.log("children4 : " + children4.length);
                     callbackSeries();
                 })
             }
@@ -281,7 +281,7 @@ var termScienceToSkos = {
                 }, function (err) {
                     if (err)
                         return callbackSeries(err);
-                    console.log("children5 : "+children5.length);
+                    console.log("children5 : " + children5.length);
                     callbackSeries();
                 })
             },
@@ -290,7 +290,7 @@ var termScienceToSkos = {
             function (callbackSeries) {
                 if (maxLevel < 6)
                     return callbackSeries()
-              console.log("------------start level 6");
+                console.log("------------start level 6");
                 async.eachSeries(children5, function (item, callbackEach) {
                     getConcept(item, function (err, concept) {
                         if (err)
@@ -305,7 +305,7 @@ var termScienceToSkos = {
                 }, function (err) {
                     if (err)
                         return callbackSeries(err);
-                    console.log("children6 : "+children6.length);
+                    console.log("children6 : " + children6.length);
                     callbackSeries();
                 })
             },
@@ -375,7 +375,178 @@ var termScienceToSkos = {
 
         recurse(tree, "#");
         return conceptsArray;
+    },
+
+
+    commonConcepts: function (rdfPath, callback) {
+
+        var thesaurusTerms = []
+        async.series([
+
+                function (callbackSeries) {
+                    var options = {
+                        outputLangage: "en",
+                        extractedLangages: "en",
+                        withSynonyms: true,
+                        printLemmas: true,
+                        // filterRegex: /corrosion/gi,
+                        withAncestors: true
+
+                    }
+                    skoReader.thesaurusToCsv(rdfPath, options, function (err, result) {
+                        if (err)
+                            return callbackSeries(err);
+                        var lines = result.split("\n")
+                        lines.forEach(function (line) {
+                            var cols = line.split("\t");
+                            var altLabels = "";
+                            if (cols[3])
+                                altLabels = cols[3].split(",")
+                            thesaurusTerms.push({id: cols[0], ancestors: cols[1], name: cols[2], altLabels: altLabels})
+
+                        })
+
+                        callbackSeries()
+                    })
+
+
+                },
+
+                function (callbackSeries) {
+
+                    async.eachSeries(thesaurusTerms, function (term, callbackEach) {
+
+                        termScienceToSkos.queryTermScience(conceptId, function (err, xmlStr) {
+
+                        })
+                    })
+
+
+                    callbackSeries()
+                },
+
+                function (callbackSeries) {
+
+                    callbackSeries()
+
+                }
+
+
+            ],
+
+            function (err) {
+                if (err)
+                    return err;
+                return "DONE"
+
+            })
+    },
+
+
+    listConcepts: function (callback) {
+        var pages = [];
+        for (var i = 65; i <= 90; i++) {
+
+            pages.push(String.fromCharCode(i))
+
+        }
+
+
+        // var pages = [["A", 1], ["A", 2]]
+
+        var terms = [];
+        var termIds = [];
+        var previousPageCount = -1
+        async.eachSeries(pages, function (page, callbackEachPageLetter) {
+            var pageNums = []
+            previousPageCount = -1
+            for (var i = 1; i <= 150; i++) {
+                pageNums.push(i);
+            }
+            async.eachSeries(pageNums, function (pageNum, callbackEachPageNum) {
+                var url = "http://www.termsciences.fr/-/Index/Explorer/Alphabet/?lettre=" + page + "&page=" + pageNum + "&lng=en"
+                var options = {
+                    method: 'GET',
+                    url: url,
+                    headers: {
+                        'Content-Type': 'text/xml; charset=utf-8',
+                    }
+
+                };
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackEachPageNum(error);
+                    if (body.error)
+                        return callbackEachPageNum(body.error);
+
+                    var regex1 = /<a([^>]*)>([^<]+)<\/a>/gm;
+
+                    var array;
+                    var pageItemsCount = 0
+                    while ((array = regex1.exec(body)) != null) {
+                        var str = array[1];
+                        var term = array[2].trim();
+                        if (str.indexOf("idt=") > -1) {
+                            var regex2 = /idt=([^&]*)&/gm;
+                            var array2 = regex2.exec(str);
+                            if (array2 && array2.length == 2) {
+                                var id = array2[1];
+                                if (termIds.indexOf(page+"-"+id) < 0) {
+                                    termIds.push(page+"-"+id)
+                                    terms.push({name: term, id: id})
+                                    pageItemsCount += 1
+                                } else {// on a fini les numero de pages
+                                    return callbackEachPageNum("endLetter");
+                                }
+                            } else {
+                                var x = 3
+                            }
+
+                        }
+
+                    }
+                  /*  if (previousPageCount != -1 && previousPageCount == pageItemsCount) {
+                        return callbackEachPageNum("endLetter");
+                    }*/
+                    console.log(page[0] + "-" + pageNum + "   " + pageItemsCount);
+
+                    previousPageCount = pageItemsCount;
+
+
+                    return callbackEachPageNum()
+
+
+                })
+
+
+            }, function (err) {
+                if (err && err == "endLetter")
+                    return callbackEachPageLetter()
+
+                return callbackEachPageLetter()
+
+            })
+        }, function (err) {
+            var x = terms;
+            fs.writeFileSync("D:\\NLP\\termScience\\allTerms.csv", JSON.stringify(terms, null, 2))
+
+        })
     }
+}
+
+
+if (true) {
+    termScienceToSkos.listConcepts(function (err, result) {
+
+    })
+}
+
+
+if (false) {
+    var rdfPath = "D:\\NLP\\thesaurus_CTG_Product.rdf"
+    termScienceToSkos.commonConcepts(rdfPath, function (err, result) {
+
+    })
 }
 
 
@@ -412,7 +583,7 @@ if (false) {
 
     })
 }
-if (true) {
+if (false) {
 
     var totalSubjects = [{"name": "Chemistry", "id": "TE.15428"},
         {"name": "Energy", "id": "TE.29455"},
@@ -423,7 +594,7 @@ if (true) {
         {"name": "Mathematics", "id": "TE.48512"}, //aucun
         {"name": "Physics", "id": "TE.60624"},//OK
         {"name": "Methodology", "id": "TE.50404"}, //OK
-  {"name": "Chemistry", "id": "TE.15428"}//OK
+        {"name": "Chemistry", "id": "TE.15428"}//OK
     ]
 
 
@@ -439,10 +610,8 @@ if (true) {
 
     var selectedSubjects = [{"name": "Physics", "id": "TE.60624"}]
 
-    var selectedSubjects = [ {"name": "Energy", "id": "TE.29455"}]
+    var selectedSubjects = [{"name": "Energy", "id": "TE.29455"}]
     var selectedSubjects = [{"name": "Elements_Chimiques", "id": "TE.173836"}]
-
-
 
 
     async.eachSeries(selectedSubjects, function (subject, callbackEachSubject) {

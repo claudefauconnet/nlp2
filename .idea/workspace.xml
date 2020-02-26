@@ -4,11 +4,11 @@
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/comparator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/locskos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/locskos..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/skosToElastic..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/skosToElastic..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/termScienceToSkos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/termScienceToSkos..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/comparator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/simpleSkosEditor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,8 +23,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
-        <option value="JS module" />
         <option value="JavaScript File" />
+        <option value="JS module" />
       </list>
     </option>
   </component>
@@ -39,7 +39,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bailletArchives" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../telanthropia" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -71,7 +71,10 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
+  <component name="RunManager" selected="Node.js.termScienceToSkos..js">
+    <configuration name="CTGthesaurus..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="CTGthesaurus..js" working-dir="$PROJECT_DIR$/bin/others">
+      <method v="2" />
+    </configuration>
     <configuration name="_csvCrawler..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="_csvCrawler..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
@@ -81,19 +84,16 @@
     <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
-    <configuration name="skosToElastic..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosToElastic..js" working-dir="$PROJECT_DIR$/bin/others">
-      <method v="2" />
-    </configuration>
     <configuration name="termScienceToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="termScienceToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.skosReader..js" />
-        <item itemvalue="Node.js._csvCrawler..js" />
-        <item itemvalue="Node.js.locskos..js" />
-        <item itemvalue="Node.js.skosToElastic..js" />
         <item itemvalue="Node.js.termScienceToSkos..js" />
+        <item itemvalue="Node.js.locskos..js" />
+        <item itemvalue="Node.js.skosReader..js" />
+        <item itemvalue="Node.js.CTGthesaurus..js" />
+        <item itemvalue="Node.js._csvCrawler..js" />
       </list>
     </recent_temporary>
   </component>
@@ -122,7 +122,7 @@
       <workItem from="1580634999564" duration="123023000" />
       <workItem from="1581157541319" duration="134492000" />
       <workItem from="1581576959723" duration="87577000" />
-      <workItem from="1582042838100" duration="20400000" />
+      <workItem from="1582042838100" duration="53656000" />
     </task>
     <servers />
   </component>
@@ -146,27 +146,16 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>17</line>
-          <option name="timeStamp" value="2020" />
+          <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
+          <line>897</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2144" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/commonConcepts.js</url>
-          <line>89</line>
+          <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
+          <line>890</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2022" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/comparator.js</url>
-          <line>74</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2023" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>906</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2059" />
+          <option name="timeStamp" value="2146" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

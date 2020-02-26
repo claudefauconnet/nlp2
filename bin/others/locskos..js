@@ -3,6 +3,7 @@ var sax = require("sax");
 const csv = require('csv-parser');
 const async = require('async');
 var skosReader = require('../backoffice/skosReader.')
+var stemmer=require('stemmer')
 var locskos = {
 
 
@@ -756,7 +757,7 @@ var locskos = {
 
             var locMap = {};
             var locArray2Index = 0;
-            var fileindex=0;
+            var fileindex = 0;
 
             result.data.forEach(function (fetch, index) {
 
@@ -766,74 +767,162 @@ var locskos = {
                 })
             })
 
-                locArray.forEach(function (item, index1) {
+            locArray.forEach(function (item, index1) {
 
-                    if(index1<400006)
-                        return;
+                if (index1 < 400006)
+                    return;
 
-                    locArray2Index += 1
-                    item.parentNames = ""
-                    if (!item.parents)
-                        return;
-                    if (item.parents == "")
-                        return;
-                    var parentsArray = item.parents.split(",")
-                    if (!Array.isArray(parentsArray)) {
-                        parentsArray = [parentsArray]
-                    }
-
-
-                    locArray.forEach(function (item2,index2) {
-                        var found = false
-                        parentsArray.forEach(function (parentId) {
-                            if (item2.id == parentId) {
-                                if (!locMap[item.id])
-                                    locMap[item.id] = item;
-                                locMap[item.id].parentNames += item2.concept + "|";
+                locArray2Index += 1
+                item.parentNames = ""
+                if (!item.parents)
+                    return;
+                if (item.parents == "")
+                    return;
+                var parentsArray = item.parents.split(",")
+                if (!Array.isArray(parentsArray)) {
+                    parentsArray = [parentsArray]
+                }
 
 
-                                if (locArray2Index > 100000 || index1>=(locArray.length-1)) {
-                                    console.log("done "+fileindex)
-                                    fileindex+=1
-                                    var loc2 = "concept\tid\tparents\tparentNames\n"
-                                    for (var key in locMap) {
-                                        item2 = locMap[key]
-                                        loc2 += item2.concept + "\t" + item2.id + "\t" + item2.parents + "\t" + item2.parentNames + "\n"
-                                    }
-
-                                    fs.writeFileSync("D:\\NLP\\LOCtopNodesUniquesWithParentNamesXX" + fileindex + ".txt", loc2)
-                                    locArray2 = [];
-                                    locArray2Index=0
+                locArray.forEach(function (item2, index2) {
+                    var found = false
+                    parentsArray.forEach(function (parentId) {
+                        if (item2.id == parentId) {
+                            if (!locMap[item.id])
+                                locMap[item.id] = item;
+                            locMap[item.id].parentNames += item2.concept + "|";
 
 
+                            if (locArray2Index > 100000 || index1 >= (locArray.length - 1)) {
+                                console.log("done " + fileindex)
+                                fileindex += 1
+                                var loc2 = "concept\tid\tparents\tparentNames\n"
+                                for (var key in locMap) {
+                                    item2 = locMap[key]
+                                    loc2 += item2.concept + "\t" + item2.id + "\t" + item2.parents + "\t" + item2.parentNames + "\n"
                                 }
 
+                                fs.writeFileSync("D:\\NLP\\LOCtopNodesUniquesWithParentNamesXX" + fileindex + ".txt", loc2)
+                                locArray2 = [];
+                                locArray2Index = 0
+
+
                             }
-                        })
-                            } )
+
+                        }
                     })
+                })
+            })
             var loc2 = "concept\tid\tparents\tparentNames\n"
             for (var key in locMap) {
                 item2 = locMap[key]
                 loc2 += item2.concept + "\t" + item2.id + "\t" + item2.parents + "\t" + item2.parentNames + "\n"
             }
 
-            fs.writeFileSync("D:\\NLP\\LOCtopNodesUniquesWithParentNamesXX"  + ".txt", loc2)
+            fs.writeFileSync("D:\\NLP\\LOCtopNodesUniquesWithParentNamesXX" + ".txt", loc2)
 
 
-                })
+        })
+
+
+    },
+
+    commonConcepts: function (rdfPath, callback) {
+
+        var thesaurusTerms = [];
+        var locMap = {};
+        var locMapNames = {};
+        var commonConcepts =[]
+            async.series([
+// loadTheasurus
+                    function (callbackSeries) {
+                        var options = {
+                            outputLangage: "en",
+                            extractedLangages: "en",
+                            withSynonyms: true,
+                            printLemmas: true,
+                            // filterRegex: /corrosion/gi,
+                            withAncestors: true
+
+                        }
+                        skosReader.thesaurusToCsv(rdfPath, options, function (err, result) {
+                            if (err)
+                                return callbackSeries(err);
+                            var lines = result.split("\n")
+                            lines.forEach(function (line) {
+                                var cols = line.split("\t");
+                                var altLabels = "";
+                                if (cols[3])
+                                    altLabels = cols[3].split(",")
+                                thesaurusTerms.push({id: cols[0], ancestors: cols[1], name: cols[2], altLabels: altLabels})
+
+                            })
+
+                            callbackSeries()
+                        })
+
+
+                    },
+//loadSkos csv
+                    function (callbackSeries) {
+                        var locStr = "" + fs.readFileSync("D:\\NLP\\LOCtopNodesUniques.txt");
+                        var lines = locStr.split("\n")
+                        lines.forEach(function (line) {
+                            var cols = line.split("\t");
+                            var parents="";
+                            if(cols[2])
+                                parents= cols[2].split(",")
+                            locMap[cols[1]] = ({term: cols[0], id: cols[1], parents:parents})
+                            var lemme = stemmer(cols[2]);
+                            locMapNames[lemme] = ({term: cols[0], id: cols[1], parents:parents})
+
+                        })
+
+                        callbackSeries()
+                    }
+                    ,
+//compare
+                    function (callbackSeries) {
+                        thesaurusTerms.forEach(function (item) {
+
+                            var name = item.name;
+                            var lemme = stemmer(name);
+                            if (locMapNames[lemme]) {
+                                item.loc = {id: locMapNames[lemme].id, term: locMapNames[lemme].term, parents: locMapNames[lemme].parents}
+                                commonConcepts.push(item)
+                            }
+
+
+                        })
+
+                        callbackSeries()
+
+                    }
+
+
+                ],
+
+                function (err) {
+                    if (err)
+                        return err;
+                    return "DONE"
+
+                }
+            )
+    },
+
+
+}
+
+
+module.exports = locskos
 
 
 
-        }
-    }
-
-
-    module.exports = locskos
-
-
-    if(true)
-{
+if(true){
+    locskos.commonConcepts("D:\\NLP\\thesaurus_CTG_Product.rdf")
+}
+if (false) {
     locskos.setAllLocParentsNames(function (err, result) {
 
     })

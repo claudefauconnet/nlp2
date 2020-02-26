@@ -67,8 +67,8 @@ var comparator = (function () {
                     var thesaurusNameV=thesaurusV.substring(thesaurusV.lastIndexOf("\\")+1)
                     var thesaurusNameH=thesaurusH.substring(thesaurusV.lastIndexOf("\\")+1)
                     self.commonConcepts = commonConcepts.getCommonConcepts(self.dataH, self.dataV);
-                    self.nonCommonConceptsV=self.getNonCommonConcepts(self.dataV,self.commonConcepts);
-                    self.nonCommonConceptsH=self.getNonCommonConcepts(self.dataH,self.commonConcepts);
+                  //  self.nonCommonConceptsV=self.getNonCommonConcepts(self.dataV,self.commonConcepts);
+                  //  self.nonCommonConceptsH=self.getNonCommonConcepts(self.dataH,self.commonConcepts);
                    // fs.writeFileSync()
 
 

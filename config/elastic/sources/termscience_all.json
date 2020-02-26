@@ -1,0 +1,41 @@
+{
+  "general": {
+    "description": "termscience_all",
+    "label": "termscience_all",
+    "indexName": "termscience_all"
+  },
+  "connector": {
+    "type": "json",
+    "subType": "object",
+    "filePath": "D:\\NLP\\termScience\\allTerms.csv",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "termscience_all": {
+        "properties": {
+          "name": {
+            "type": "text"
+          },
+          "id": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "name": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "id": {
+        "cssClass": "excerpt"
+      }
+    }
+  ]
+}
