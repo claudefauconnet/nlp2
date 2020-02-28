@@ -3,7 +3,7 @@ var sax = require("sax");
 const csv = require('csv-parser');
 const async = require('async');
 var skosReader = require('../backoffice/skosReader.')
-var stemmer = require('stemmer')
+var stemmer=require('stemmer')
 var locskos = {
 
 
@@ -181,6 +181,8 @@ var locskos = {
     readCsv: function (filePath, lines, separator, callback) {
 
 
+        var maxLines=1000;
+
         var jsonData = [];
         var startId = 100000;
         var strOut = 'concept\tid\tparents\n';
@@ -191,91 +193,18 @@ var locskos = {
 
             .on('data', function (data) {
                 var str = data.toString();
-                //     console.log(data.toString());
+
+                  console.log(data.toString());
 
                 var lines = str.split("\n");
                 lines[0] = lastLine + lines[0];
                 lastLine = lines[lines.length - 1];
 
 
-                lines.forEach(function (line, lineIndex) {
-                    if (lineIndex < lines.length - 1) {
-                        ;
 
 
-                        count += 1
-                        line = line.replace(/http:\/\/id.loc.gov\/authorities\/subjects\//g, "")
-                        var json
 
-                        /*   if(line.indexOf("sh85146057")>-1 )
-                               console.log(line)
-                               if(line.indexOf("sh85146057")>-1){
-                              xx=5
-                           }*/
-
-                        try {
-                            json = JSON.parse(line)
-                        } catch (e) {
-                            console.log(lineIndex + "  " + line)
-                            return;
-                        }
-                        //   console.log(JSON.stringify(json, null, 2))
-                        var distinctConcepts = [];
-                        json["@graph"].forEach(function (node) {
-                            if (node["@type"] == "skos:Concept") {
-
-
-                                var id = node["@id"];
-                                if (!id)
-                                    return;
-                                if (id == "sh85063336")
-                                    var x = 3;
-
-                                var parents = node["skos:broader"];
-                                var parentIds = "";
-
-                                if (parents) {
-
-                                    if (!Array.isArray(parents))
-                                        parents = [parents];
-
-                                    parents.forEach(function (parent, index) {
-                                        if (index > 0)
-                                            parentIds += ","
-                                        parentIds += (parent["@id"])
-                                    })
-                                }
-                                parents = parentIds;
-
-
-                                var children = node["skos:narrower"];
-                                if (!children)
-                                    ;//return
-                                if (distinctConcepts.indexOf(id) < 0) {
-                                    distinctConcepts.push(id);
-
-
-                                    /*        delete node["skos:changeNote"];
-                                            delete node["@type"];
-                                            delete node["skos:editorial"];
-                                            delete node["skos:altLabel"];
-                                            delete node["skos:related"];*/
-
-                                    if (node["skos:prefLabel"]) {
-                                        // jsonData.push(node["skos:prefLabel"]["@value"]+"\t"+node["@id"]+"\n")
-                                        strOut += node["skos:prefLabel"]["@value"] + "\t" + node["@id"] + "\t" + parentIds + "\n"
-                                    }
-                                }
-                            }
-
-                        })
-
-                    }
-
-                })
-
-
-                if (jsonData.length > 1000000)
+                if (jsonData.length > 1000)
                     var x = 3;
             })
             .on('end', function () {
@@ -832,83 +761,83 @@ var locskos = {
         var thesaurusTerms = [];
         var locMap = {};
         var locMapNames = {};
-        var commonConcepts = []
-        async.series([
+        var commonConcepts =[]
+            async.series([
 // loadTheasurus
-                function (callbackSeries) {
-                    var options = {
-                        outputLangage: "en",
-                        extractedLangages: "en",
-                        withSynonyms: true,
-                        printLemmas: true,
-                        // filterRegex: /corrosion/gi,
-                        withAncestors: true
+                    function (callbackSeries) {
+                        var options = {
+                            outputLangage: "en",
+                            extractedLangages: "en",
+                            withSynonyms: true,
+                            printLemmas: true,
+                            // filterRegex: /corrosion/gi,
+                            withAncestors: true
 
-                    }
-                    skosReader.thesaurusToCsv(rdfPath, options, function (err, result) {
-                        if (err)
-                            return callbackSeries(err);
-                        var lines = result.split("\n")
+                        }
+                        skosReader.thesaurusToCsv(rdfPath, options, function (err, result) {
+                            if (err)
+                                return callbackSeries(err);
+                            var lines = result.split("\n")
+                            lines.forEach(function (line) {
+                                var cols = line.split("\t");
+                                var altLabels = "";
+                                if (cols[3])
+                                    altLabels = cols[3].split(",")
+                                thesaurusTerms.push({id: cols[0], ancestors: cols[1], name: cols[2], altLabels: altLabels})
+
+                            })
+
+                            callbackSeries()
+                        })
+
+
+                    },
+//loadSkos csv
+                    function (callbackSeries) {
+                        var locStr = "" + fs.readFileSync("D:\\NLP\\LOCtopNodesUniques.txt");
+                        var lines = locStr.split("\n")
                         lines.forEach(function (line) {
                             var cols = line.split("\t");
-                            var altLabels = "";
-                            if (cols[3])
-                                altLabels = cols[3].split(",")
-                            thesaurusTerms.push({id: cols[0], ancestors: cols[1], name: cols[2], altLabels: altLabels})
+                            var parents="";
+                            if(cols[2])
+                                parents= cols[2].split(",")
+                            locMap[cols[1]] = ({term: cols[0], id: cols[1], parents:parents})
+                            var lemme = stemmer(cols[2]);
+                            locMapNames[lemme] = ({term: cols[0], id: cols[1], parents:parents})
 
                         })
 
                         callbackSeries()
-                    })
-
-
-                },
-//loadSkos csv
-                function (callbackSeries) {
-                    var locStr = "" + fs.readFileSync("D:\\NLP\\LOCtopNodesUniques.txt");
-                    var lines = locStr.split("\n")
-                    lines.forEach(function (line) {
-                        var cols = line.split("\t");
-                        var parents = "";
-                        if (cols[2])
-                            parents = cols[2].split(",")
-                        locMap[cols[1]] = ({term: cols[0], id: cols[1], parents: parents})
-                        var lemme = stemmer(cols[2]);
-                        locMapNames[lemme] = ({term: cols[0], id: cols[1], parents: parents})
-
-                    })
-
-                    callbackSeries()
-                }
-                ,
+                    }
+                    ,
 //compare
-                function (callbackSeries) {
-                    thesaurusTerms.forEach(function (item) {
+                    function (callbackSeries) {
+                        thesaurusTerms.forEach(function (item) {
 
-                        var name = item.name;
-                        var lemme = stemmer(name);
-                        if (locMapNames[lemme]) {
-                            item.loc = {id: locMapNames[lemme].id, term: locMapNames[lemme].term, parents: locMapNames[lemme].parents}
-                            commonConcepts.push(item)
-                        }
+                            var name = item.name;
+                            var lemme = stemmer(name);
+                            if (locMapNames[lemme]) {
+                                item.loc = {id: locMapNames[lemme].id, term: locMapNames[lemme].term, parents: locMapNames[lemme].parents}
+                                commonConcepts.push(item)
+                            }
 
 
-                    })
+                        })
 
-                    callbackSeries()
+                        callbackSeries()
+
+                    }
+
+
+                ],
+
+                function (err) {
+                    if (err)
+                        return err;
+                    return "DONE"
 
                 }
-
-
-            ],
-
-            function (err) {
-                if (err)
-                    return err;
-                return "DONE"
-
-            }
-        )
+            )
     },
 
 
@@ -917,90 +846,9 @@ var locskos = {
 
 module.exports = locskos
 
-if (true) {
-    var commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\commonConcepts_LOC_CTG.json"));
-    var LOCtopNodesAll = "" + fs.readFileSync("D:\\NLP\\LOCtopNodesAll.txt");
-    var map = {}
-    var lines = LOCtopNodesAll.split("\n");
-    lines.forEach(function (line) {
-        var cols = line.split("\t");
-        if (!map[cols[1]])
-            map[cols[1]] = {id: cols[1], concept: cols[0], parents: cols[2]}
-        else if (cols[2].length > map[cols[1]].parents.length)
-            map[cols[1]].parents = cols[2]
-    })
 
 
-    var newItems = [];
-    function recurseParents(item) {
-        // si pas de parent
-        /* if(item.parents==""){
-             var mapItemParent = map[item.id];
-             if(mapItemParent && mapItemParent.parents){
-                 item.parents=mapItemParent.parents;
-                 newNodes.push(mapItemParent)
-
-             }
-
-
-         }*/
-
-
-        var array = item.parents.split(",");
-        //on prend chaque parent
-
-        array.forEach(function (parent) {
-            var mapItem = map[parent]
-            // on regarde si le parent a des parents
-            if (mapItem && mapItem.parents) {
-                var array2 = item.parents.split(",")
-                array2.forEach(function (parent2) {
-                    var item2 = map[parent2]
-                    var array3 = item2.parents.split(",")
-                    array3.forEach(function (parent3) {
-                        var item3 = map[parent3]
-                        if (item.parents.indexOf(parent3) < 0) {
-                            if (!mapItem[item3.id]) {
-                                item.parents = item.parents.replace(parent, parent + "," + parent3);
-                                newItems.push(item3);
-
-                                mapItem[item3.id] = item3
-                                // if (item.parents.indexOf(item3.id) < 0)
-                                recurseParents(item3)
-                            }
-                        }
-                    })
-                })
-            }
-
-        })
-        return item
-    }
-
-
-    var str = "";
-    commonConcepts.forEach(function (item) {
-
-        item.source._source = recurseParents(item.source._source);
-        var x=newItems;
-        return;
-        item.target.forEach(function (target) {
-            var id = "";
-            if (target._source.pathIds && target._source.pathIds.length > 0)
-                targetId = target._source.pathIds[0]
-
-            var str2 = target._source.prefLabel + "\t" + targetId + "\t" + item.source._source.concept + "\t" + item.source._source.parentNames + "\n"
-            if (str.indexOf(str2) < 0)
-                str += str2
-
-        })
-
-
-    })
-    fs.writeFileSync("D:\\NLP\\commonConcepts_LOC_CTG.csv", str)
-}
-
-if (false) {
+if(true){
     locskos.commonConcepts("D:\\NLP\\thesaurus_CTG_Product.rdf")
 }
 if (false) {
@@ -1147,5 +995,11 @@ if (false) {
 
 
     })
+}
+
+if (true) {
+    locskos.readCsv("C:\\Users\\claud\\Downloads\\sciencemetrix-category.data.istex.fr_notice_graph.nq\\sciencemetrix-category.data.istex.fr_notice_graph.nq");
+    //  locskos.readCsv("D:\\NLP\\lcsh.madsrdf.ndjson");
+
 }
 

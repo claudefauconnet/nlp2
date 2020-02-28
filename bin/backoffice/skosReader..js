@@ -79,8 +79,8 @@ var skosReader = {
         skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
             if (err)
                 return callback(err);
-            var visjsArray = skosReader.rdfToFlat(conceptsMap, options);
-            callback(null, flatConceptsArray)
+            var visjsArray = skosReader.mapToFlat(conceptsMap, options);
+            callback(null, visjsArray)
         })
 
     },
@@ -112,7 +112,7 @@ var skosReader = {
 
     parseRdfXml: function (sourcePath, options, callback) {
         var saxStream = sax.createStream(true)
-        if (!options) {
+        if (!options || Object.keys(options).length==0) {
             options = {extractedLangages: "en", outputLangage: "en"}
         }
 
@@ -589,6 +589,20 @@ var skosReader = {
                     )
                 })
             }
+            if (concept.narrowers) {
+                concept.narrowers.forEach(function (narrower, index2) {
+                    objArray.push({
+                            "skos:narrowers": {
+                                "@":
+                                    {
+                                        "rdf:resource":
+                                            uriRoot + narrower
+                                    }
+                            }
+                        }
+                    )
+                })
+            }
             if (concept.definitions) {
                 concept.definitions.forEach(function (definition, index2) {
                     objArray.push({
@@ -767,8 +781,7 @@ var skosReader = {
     mapToFlat: function (conceptsMap, options) {
 
         function recurseConceptStr(concept, str, level) {
-            if (concept.id == "TE.16026")
-                var x = 3
+
             if (concept.broaders && concept.broaders.length > 0) {
                 if (str !== "")
                     str += "|";// concept separator
@@ -830,14 +843,20 @@ var skosReader = {
         pathStrs.forEach(function (leafId) {
             var ids = leafId.split(/[|*]/)
             var path = "";
-            var synonyms = ""
+            var synonyms = "";
+            var prefLabel="";
             ids.forEach(function (id, index) {
 
                 if (conceptsMap[id]) {
 
                     for (var lang in conceptsMap[id].prefLabels) {
+
                         if (conceptsMap[id].prefLabels && conceptsMap[id].prefLabels[lang] && conceptsMap[id].prefLabels[lang].forEach) {
+
+
                             conceptsMap[id].prefLabels[lang].forEach(function (value) {
+                                if(prefLabel=="")
+                                    prefLabel=value;
                                 if (path != "")
                                     path += "|"
                                 path += value;
@@ -859,7 +878,7 @@ var skosReader = {
                 } else
                     path += "?"
             })
-            leaves.push({thesaurus: options.thesaurusName, path: path, pathIds: ids, synonyms: synonyms})
+            leaves.push({thesaurus: options.thesaurusName,prefLabel:prefLabel, path: path, pathIds: ids, synonyms: synonyms})
         })
 
         return leaves;

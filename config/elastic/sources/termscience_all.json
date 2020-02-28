@@ -17,10 +17,10 @@
       "termscience_all": {
         "properties": {
           "name": {
-            "type": "text"
+            "type": "keyword"
           },
           "id": {
-            "type": "text"
+            "type": "keyword"
           }
         }
       }

@@ -42,7 +42,7 @@ var termScienceToSkos = {
             if (type == "broaderConceptGeneric") {
                 var target = feature.getAttribute("target")
                 //  obj.broaders.push({id: target.substring(1), name: value})
-                obj.relateds.push(target.substring(1))
+                obj.broaders.push(target.substring(1))
 
             }
             if (type == "specificConcept") {
@@ -67,16 +67,18 @@ var termScienceToSkos = {
                 for (var j = 0; j < childrenFeatures.length; j++) {
 
                     var childFeature = childrenFeatures.item(j);
-                    var childValue = childFeature.childNodes[0].nodeValue;
-                    var childType = childFeature.getAttribute("type");
-                    if (childType == "languageIdentifier") {
-                        lang = childValue
-                    }
-                    if (childType == "term") {
-                        if (obj.prefLabels.length == 0 || obj.prefLabels[0].lang != "en")
-                            obj.prefLabels.push({lang: lang, value: childValue})
-                        else
-                            obj.altLabels.push({lang: lang, value: childValue})
+                    if (childFeature.childNodes && childFeature.childNodes.length > 0) {
+                        var childValue = childFeature.childNodes[0].nodeValue;
+                        var childType = childFeature.getAttribute("type");
+                        if (childType == "languageIdentifier") {
+                            lang = childValue
+                        }
+                        if (childType == "term") {
+                            if (obj.prefLabels.length == 0 || obj.prefLabels[0].lang != "en")
+                                obj.prefLabels.push({lang: lang, value: childValue})
+                            else
+                                obj.altLabels.push({lang: lang, value: childValue})
+                        }
                     }
                 }
 
@@ -491,8 +493,8 @@ var termScienceToSkos = {
                             var array2 = regex2.exec(str);
                             if (array2 && array2.length == 2) {
                                 var id = array2[1];
-                                if (termIds.indexOf(page+"-"+id) < 0) {
-                                    termIds.push(page+"-"+id)
+                                if (termIds.indexOf(page + "-" + id) < 0) {
+                                    termIds.push(page + "-" + id)
                                     terms.push({name: term, id: id})
                                     pageItemsCount += 1
                                 } else {// on a fini les numero de pages
@@ -505,9 +507,9 @@ var termScienceToSkos = {
                         }
 
                     }
-                  /*  if (previousPageCount != -1 && previousPageCount == pageItemsCount) {
-                        return callbackEachPageNum("endLetter");
-                    }*/
+                    /*  if (previousPageCount != -1 && previousPageCount == pageItemsCount) {
+                          return callbackEachPageNum("endLetter");
+                      }*/
                     console.log(page[0] + "-" + pageNum + "   " + pageItemsCount);
 
                     previousPageCount = pageItemsCount;
@@ -535,7 +537,7 @@ var termScienceToSkos = {
 }
 
 
-if (true) {
+if (false) {
     termScienceToSkos.listConcepts(function (err, result) {
 
     })
@@ -699,11 +701,168 @@ if (false) {
 
 if (false) {
 
-    var conceptId = "TE.16013"
+    var conceptId = "TE.182846"
     termScienceToSkos.queryTermScience(conceptId, function (err, xmlStr) {
         if (err)
             return console.log(err)
         var concept = termScienceToSkos.xmlToSkosConcept(xmlStr)
+    })
+
+
+}
+
+
+if (false) {
+    var items = JSON.parse("" + fs.readFileSync("d:\\NLP\\commonConcepts_TERM_SCIENCE_CTG.json"));
+    var concepts = [];
+    async.eachSeries(items, function (item, callbackEach) {
+            var conceptId = item.source._source.id;
+            termScienceToSkos.queryTermScience(conceptId, function (err, xmlStr) {
+                if (err)
+                    return console.log(err)
+                var concept = termScienceToSkos.xmlToSkosConcept(xmlStr);
+                concept.relatedCTG = []
+
+                item.target.forEach(function (target) {
+                    concept.relatedCTG.push(target._source.pathIds)
+                })
+
+                concepts.push(concept)
+                setTimeout(function () {
+                    callbackEach();
+                }, 200)
+            })
+        },
+        function (err) {
+            if (err)
+                console.log(err)
+            fs.writeFileSync("d:\\NLP\\commonConcepts_TERM_SCIENCE_CTG.rdf", JSON.stringify(concepts, null, 2))
+        })
+
+
+}
+if (true) {
+ //   var data = JSON.parse("" + fs.readFileSync("d:\\NLP\\commonConcepts_TERM_SCIENCE_CTG.rdf"));
+    var data = JSON.parse("" + fs.readFileSync("d:\\NLP\\temp.json"));
+   // var rdfPath = "D:\\NLP\\commonConcepts_TERM_SCIENCE_CTG2.rdf";
+    var rdfPath = "D:\\NLP\\temp.rdf";
+    skoReader.skosEditorToRdf(rdfPath, data, {}, function (err, result) {
+
+    })
+}
+
+//get Parents
+if (false) {
+    var data = JSON.parse("" + fs.readFileSync("d:\\NLP\\commonConcepts_TERM_SCIENCE_CTG.rdf"));
+    var concepts = [];
+    var conceptIds = [];
+    var allBroaders = [];
+    var newBroaders = [];
+    var newBroadersIds = [];
+    data.forEach(function (item) {
+        if (conceptIds.indexOf(item.id) < 0)
+            conceptIds.push(item.id)
+    })
+    data.forEach(function (item) {
+        item.broaders.forEach(function (broader) {
+            if (conceptIds.indexOf(broader) < 0) {
+                conceptIds.push(broader);
+                allBroaders.push(broader);
+            }
+
+        })
+    })
+
+
+    async.eachSeries(allBroaders, function (conceptId, callbackEach) {
+
+
+            termScienceToSkos.queryTermScience(conceptId, function (err, xmlStr) {
+                if (err)
+                    return console.log(err)
+                var concept = termScienceToSkos.xmlToSkosConcept(xmlStr);
+
+                newBroaders.push(concept)
+
+                setTimeout(function () {
+                    callbackEach();
+                }, 200)
+            })
+        },
+        function (err) {
+            if (err)
+                console.log(err)
+            data = data.concat(newBroaders)
+            fs.writeFileSync("d:\\NLP\\commonConcepts_TERM_SCIENCE_CTG.rdf", JSON.stringify(data, null, 2))
+        })
+
+
+}
+
+// getChildren
+if (false) {
+
+    skoReader.rdfToEditor("D:\\NLP\\commonConcepts_TERM_SCIENCE_CTGshort.rdf", {}, function (err, result) {
+        var dataShort = result
+        var shortIds = [];
+        dataShort.skos.forEach(function (item) {
+            shortIds.push(item.id)
+        })
+
+        var dataLong = JSON.parse("" + fs.readFileSync("d:\\NLP\\commonConcepts_TERM_SCIENCE_CTG.rdf"));
+
+        var data = [];
+        dataLong.forEach(function (item) {
+            if (shortIds.indexOf(item.id) > -1)
+                data.push(item)
+        })
+
+        var concepts = [];
+        var conceptIds = [];
+        var allNarrowers = [];
+
+        data.forEach(function (item) {
+            if (conceptIds.indexOf(item.id) < 0)
+                conceptIds.push(item.id)
+        })
+        data.forEach(function (item) {
+            item.narrowers.forEach(function (narrower) {
+                if (conceptIds.indexOf(narrower) < 0) {
+                    conceptIds.push(narrower);
+                    allNarrowers.push(narrower);
+                }
+
+            })
+        })
+
+
+        var newNarrowers = [];
+        // var newNarrowersIds = [];
+
+        async.eachSeries(allNarrowers, function (conceptId, callbackEach) {
+
+
+                termScienceToSkos.queryTermScience(conceptId, function (err, xmlStr) {
+                    if (err)
+                        return console.log(err)
+                    var concept = termScienceToSkos.xmlToSkosConcept(xmlStr);
+
+                    newNarrowers.push(concept)
+                    if (newNarrowers.length % 100 == 0) {
+                        console.log(newNarrowers.length)
+                    }
+
+                    setTimeout(function () {
+                        callbackEach();
+                    }, 50)
+                })
+            },
+            function (err) {
+                if (err)
+                    console.log(err)
+                data = data.concat(newNarrowers)
+                fs.writeFileSync("d:\\NLP\\commonConcepts_TERM_SCIENCE_CTG.rdf", JSON.stringify(data, null, 2))
+            })
     })
 
 

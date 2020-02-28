@@ -17,7 +17,7 @@
       "flat_thesaurus": {
         "properties": {
           "thesaurus": {
-            "type": "text"
+            "type": "keyword"
           },
           "path": {
             "type": "text"
