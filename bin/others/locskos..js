@@ -183,16 +183,12 @@ var locskos = {
 
         var jsonData = [];
         var startId = 100000;
-        var strOut = 'concept\tid\tparents\n';
+
         var lastLine = ""
         var count = 0;
-        fs.createReadStream(filePath)
-
-
-            .on('data', function (data) {
+        var distinctConcepts = {};
+        fs.createReadStream(filePath).on('data', function (data) {
                 var str = data.toString();
-                //     console.log(data.toString());
-
                 var lines = str.split("\n");
                 lines[0] = lastLine + lines[0];
                 lastLine = lines[lines.length - 1];
@@ -201,17 +197,9 @@ var locskos = {
                 lines.forEach(function (line, lineIndex) {
                     if (lineIndex < lines.length - 1) {
                         ;
-
-
                         count += 1
                         line = line.replace(/http:\/\/id.loc.gov\/authorities\/subjects\//g, "")
                         var json
-
-                        /*   if(line.indexOf("sh85146057")>-1 )
-                               console.log(line)
-                               if(line.indexOf("sh85146057")>-1){
-                              xx=5
-                           }*/
 
                         try {
                             json = JSON.parse(line)
@@ -219,8 +207,8 @@ var locskos = {
                             console.log(lineIndex + "  " + line)
                             return;
                         }
-                        //   console.log(JSON.stringify(json, null, 2))
-                        var distinctConcepts = [];
+
+
                         json["@graph"].forEach(function (node) {
                             if (node["@type"] == "skos:Concept") {
 
@@ -228,8 +216,7 @@ var locskos = {
                                 var id = node["@id"];
                                 if (!id)
                                     return;
-                                if (id == "sh85063336")
-                                    var x = 3;
+
 
                                 var parents = node["skos:broader"];
                                 var parentIds = "";
@@ -248,23 +235,60 @@ var locskos = {
                                 parents = parentIds;
 
 
+
                                 var children = node["skos:narrower"];
-                                if (!children)
-                                    ;//return
-                                if (distinctConcepts.indexOf(id) < 0) {
-                                    distinctConcepts.push(id);
 
+                                if (children){
+                                    var childrenIds = "";
 
-                                    /*        delete node["skos:changeNote"];
-                                            delete node["@type"];
-                                            delete node["skos:editorial"];
-                                            delete node["skos:altLabel"];
-                                            delete node["skos:related"];*/
+                                    if (children) {
 
-                                    if (node["skos:prefLabel"]) {
-                                        // jsonData.push(node["skos:prefLabel"]["@value"]+"\t"+node["@id"]+"\n")
-                                        strOut += node["skos:prefLabel"]["@value"] + "\t" + node["@id"] + "\t" + parentIds + "\n"
+                                        if (!Array.isArray(children))
+                                            parents = [children];
+
+                                        children.forEach(function (child, index) {
+                                            if (index > 0)
+                                                child += ","
+                                            childrenIds += (child["@id"])
+                                        })
                                     }
+                                    children = childrenIds;
+                                }
+
+                                if (node["skos:definition"]) {
+                                    ;
+                                }
+                                if (node["skos:related"]) {
+                                    ;
+                                }
+                                if (node["skos:note"]) {
+                                    ;
+                                }
+
+                                if (node["skos:prefLabel"]) {
+
+                                    var concept={
+                                        id:id,
+                                        concept: node["skos:prefLabel"]["@value"],
+                                        parents:parentIds,
+                                        children:childrenIds
+                                    }
+                                if (!distinctConcepts[id] < 0) {
+                                    distinctConcepts[id] = concept;
+                                }
+
+                                else {
+                                    if (parentIds > distinctConcepts[id].parents) {
+                                        distinctConcepts[id].parents = parentIds;
+                                    }
+                                    if (childrenIds > distinctConcepts[id].children) {
+                                        distinctConcepts[id].children = childrenIds;
+                                    }
+                                }
+
+
+                                //node["skos:prefLabel"]["@value"] + "\t" + node["@id"] + "\t" + parentIds + "\t" + childrenIds + "\n"
+
                                 }
                             }
 
@@ -279,6 +303,15 @@ var locskos = {
                     var x = 3;
             })
             .on('end', function () {
+
+
+                var strOut = 'concept\tid\tparents\tchildren\n';
+                for (var key in distinctConcepts){
+                  var concept=distinctConcepts[key];
+                    strOut += concept.concept + "\t" + concept.id + "\t" + concept.parents + "\t" + concepts.children+ "\n"
+
+            }
+
 
                 var x = count;
                 fs.writeFileSync("D:\\NLP\\LOCtopNodesAll.txt", strOut)
@@ -915,9 +948,12 @@ var locskos = {
 }
 
 
-module.exports = locskos
+module.exports = locskos;
 
-if (true) {
+
+
+
+if (false) {
     var commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\commonConcepts_LOC_CTG.json"));
     var LOCtopNodesAll = "" + fs.readFileSync("D:\\NLP\\LOCtopNodesAll.txt");
     var map = {}
@@ -932,6 +968,7 @@ if (true) {
 
 
     var newItems = [];
+    var newItemIds = [];
     function recurseParents(item) {
         // si pas de parent
         /* if(item.parents==""){
@@ -962,7 +999,10 @@ if (true) {
                         if (item.parents.indexOf(parent3) < 0) {
                             if (!mapItem[item3.id]) {
                                 item.parents = item.parents.replace(parent, parent + "," + parent3);
-                                newItems.push(item3);
+                                if(!newItemIds.indexOf(item3.id)) {
+                                    newItemIds.push(item3.id)
+                                    newItems.push(item3);
+                                }
 
                                 mapItem[item3.id] = item3
                                 // if (item.parents.indexOf(item3.id) < 0)

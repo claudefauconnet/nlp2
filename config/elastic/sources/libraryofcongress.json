@@ -6,7 +6,7 @@
   },
   "connector": {
     "type": "csv",
-    "filePath": "D:\\NLP\\LOCtopNodesUniquesWithParentNames.txt",
+    "filePath": "D:\\NLP\\LOC\\LOC_raw.txt",
     "contentField": "attachment.content"
   },
   "schema": {
@@ -15,16 +15,16 @@
     "mappings": {
       "libraryofcongress": {
         "properties": {
-          "concept": {
+          "name": {
             "type": "text"
           },
           "id": {
             "type": "keyword"
           },
           "parents": {
-            "type": "keyword"
+            "type": "text"
           },
-          "parentNames": {
+          "children": {
             "type": "text"
           }
         }

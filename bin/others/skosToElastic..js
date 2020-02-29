@@ -107,8 +107,8 @@ var skosToElastic = {
                 hitsIndexSource.forEach(function (item, index) {
 
 
-                    var label = item._source.concept;
-                  //  var label = item._source.name;
+                 //   var label = item._source.concept;
+                  var label = item._source.name;
 
 
                     var elasticQuery = {
@@ -214,8 +214,8 @@ var skosToElastic = {
                     var payload = {
                         "query":
                             {
-                               // "match_all": {}
-                                "match":{"concept":"corrosion"}
+                               "match_all": {}
+                              //  "match":{"concept":"corrosion"}
                             }
                         ,
                         // "from": 4800,
@@ -288,8 +288,8 @@ var skosToElastic = {
                             },
                             function (err, n) {
                                 if(err)
-                                    callbackSeries(err);
-                                fs.writeFileSync("D:\\NLP\\commonConcepts_" + indexTarget + ".json", JSON.stringify(commonConcepts, null, 2))
+                                   return callbackSeries(err);
+                                fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_" + indexTarget + ".json", JSON.stringify(commonConcepts, null, 2))
                                 callbackSeries();
                             })
                     })
@@ -346,7 +346,7 @@ if (false) {
         return console.log("done")
     })
 }
-if (false) {
+if (true) {
 
 
   skosToElastic.compareThesaurus("libraryofcongress", "flat_thesaurus", function (err, result) {
