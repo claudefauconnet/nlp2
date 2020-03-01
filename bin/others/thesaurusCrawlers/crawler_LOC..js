@@ -1,6 +1,8 @@
 var fs = require('fs');
 const async = require('async');
-
+var sax = require("sax");
+const csv = require('csv-parser');
+var skosReader = require('../../backoffice/skosReader.')
 
 var crawler_LOC = {
 
@@ -149,24 +151,177 @@ var crawler_LOC = {
 
     },
 
+
+    getLocMap: function (key) {
+        // set LOC map
+        var keyIndex = 0;
+        if (key == "id")
+            keyIndex = 1;
+        else if (key == "name")
+            keyIndex = 0;
+
+        var LOC_raw = "" + fs.readFileSync("D:\\NLP\\LOC\\LOC_raw.txt");
+        var locMap = {}
+        var lines = LOC_raw.split("\n");
+        lines.forEach(function (line, index) {
+            if (index == 0)
+                return;
+            var cols = line.split("\t");
+            var keyValue=cols[keyIndex];
+            if(key=="name")
+                keyValue = keyValue.toLowerCase().trim();
+                if (!locMap[keyValue])
+                    locMap[keyValue]={id: cols[1], name: cols[0], parents: cols[2], children: cols[3]};
+
+
+        })
+
+        return locMap;
+
+    }
+
+
+    ,
     writeCommonConcepts_CSV: function () {
 
         var commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.json"));
 
 
-        function getLocMap() {
-            // set LOC map
-            var LOC_raw = "" + fs.readFileSync("D:\\NLP\\LOC\\LOC_raw.txt");
-            var locMap = {}
-            var lines = LOC_raw.split("\n");
-            lines.forEach(function (line) {
-                var cols = line.split("\t");
-                if (!locMap[cols[1]])
-                    locMap[cols[1]] = {id: cols[1], name: cols[0], parents: cols[2], children: cols[3]}
+        function setAncestors(locMap) {
+            var newItems = [];
+            var newItemIds = [];
+            var newParentsMap = {};
 
+            function recurseParents(item, leafItemId) {
+                if (!item.parents)
+                    return;//console.log(item.name);
+                var itemParents = item.parents.split(",");
+
+                //on prend chaque parent
+                itemParents.forEach(function (parentId) {
+
+                    var itemParent = locMap[parentId]
+                    // on regarde si le parent a des parents : grands parents
+                    if (itemParent && itemParent.parents) {// si il y a des grands parents
+                        var grandParentIds = itemParent.parents.split(",")
+                        grandParentIds.forEach(function (grandParentId) {
+                            var grandParent = locMap[grandParentId]
+                            if (item.parents.indexOf(grandParentId) < 0) {
+                                if (!newParentsMap[item.id])
+                                    newParentsMap[item.id] = item.parents;
+                                if (leafItemId == "sh85017784")
+                                    var x = 3
+                                if (newParentsMap[leafItemId].indexOf(grandParentId) < 0) {
+                                    var xx = newParentsMap[leafItemId]
+                                    newParentsMap[leafItemId] = newParentsMap[leafItemId].replace(parentId, grandParentId + ";" + parentId);
+                                    var xx = newParentsMap[leafItemId]
+                                }
+                                recurseParents(grandParent, leafItemId)
+                            }
+                        })
+                    }
+                })
+
+
+            }
+
+
+            commonConcepts.forEach(function (item) {
+              //  item.loc.forEach(function (locItem) {
+                    recurseParents(item.loc, item.loc.id)
+              //  })
             })
+            var countNewParents = Object.keys(newParentsMap).length
+            for (var key in locMap) {
+                if (newParentsMap[key]) {
+                    locMap[key].parents = newParentsMap[key]
+                }
+
+            }
             return locMap;
         }
+
+
+        function setIdsValues(locMap) {
+            for (var key in locMap) {
+                var item = locMap[key]
+                item.parentNames = "";
+                item.childrenNames = ""
+                if (item.parents) {
+                    var parentGroupIds = item.parents.split(",");
+                    parentGroupIds.forEach(function (parentGroupId) {
+                        var groupNames = ""
+                        var parentSubgroupIds = parentGroupId.split(";")
+                        parentSubgroupIds.forEach(function (parentId) {
+                            if (!locMap[parentId])
+                                return;
+                            if (groupNames != "")
+                                groupNames += ","
+                            groupNames += locMap[parentId].name;
+                        })
+                        if (item.parentNames != "")
+                            item.parentNames += " | "
+                        item.parentNames += groupNames;
+                    })
+                }
+                if (item.children) {
+                    var childrenIds = item.children.split(",");
+                    childrenIds.forEach(function (childrenId) {
+                        if (!locMap[childrenId])
+                            return;
+                        if (item.childrenNames != "")
+                            item.childrenNames += ","
+                        item.childrenNames += locMap[childrenId].name;
+                    })
+                }
+                locMap[key] = item;
+            }
+            return locMap;
+        }
+
+        function printLocMap(locMap) {
+            var str = "CTG_concept\tCTG_id\tLOC_concept\tLOC_id\tLOC_parents\tLOC_children\n";
+            commonConcepts.forEach(function (item) {
+                    var locId = item.loc.id;
+                    if (locId == "sh85084167")
+                        var vv = 3
+                    var locItem = locMap[locId];
+                    if (!locItem)
+                        return;
+
+                    var target = item.ctg
+                    var targetId = "";
+                    if (target.pathIds && target.pathIds.length > 0)
+                        targetId = target.pathIds[0];
+
+
+                    var str2 = target.prefLabel + "\t" + targetId + "\t" + locItem.name + "\t" + locItem.id + "\t" + locItem.parentNames + "\t" + locItem.childrenNames + "\n"
+                    if (str.indexOf(str2) < 0)
+                        str += str2
+
+                })
+
+
+            fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.csv", str)
+
+        }
+
+
+        var locMap = crawler_LOC.getLocMap("id");
+        //  console.log(JSON.stringify(locMap["sh85136954"]))
+        locMap = setAncestors(locMap);
+        //  console.log(JSON.stringify(locMap["sh85136954"]))
+        locMap = setIdsValues(locMap);
+        //console.log(JSON.stringify(locMap["sh85136954"]))
+        printLocMap(locMap)
+
+
+        return;
+
+
+    }
+    ,
+    setCommonConcepts_LOC_CTG: function () {
 
 
         function setAncestors(locMap) {
@@ -215,93 +370,6 @@ var crawler_LOC = {
             return locMap;
         }
 
-
-        function setIdsValues(locMap) {
-            for (var key in locMap) {
-                var item = locMap[key]
-                item.parentNames = "";
-                item.childrenNames = ""
-                if (item.parents) {
-                    var parentIds = item.parents.split(",");
-                    parentIds.forEach(function (parentId) {
-                        if (!locMap[parentId])
-                            return;
-                        if (item.parentNames != "")
-                            item.parentNames += ","
-                        item.parentNames += locMap[parentId].name;
-                    })
-                }
-                if (item.children) {
-                    var childrenIds = item.children.split(",");
-                    childrenIds.forEach(function (childrenId) {
-                        if (!locMap[childrenId])
-                            return;
-                        if (item.childrenNames != "")
-                            item.childrenNames += ","
-                        item.childrenNames += locMap[childrenId].name;
-                    })
-                }
-                locMap[key] = item;
-            }
-            return locMap;
-        }
-
-        function printLocMap(locMap) {
-            var str = "";
-            commonConcepts.forEach(function (item) {
-                item.LOC.forEach(function (locItem_) {
-                    var locId = locItem_.id;
-                    var locItem = locMap[locId];
-                    if (!locItem)
-                        return;
-
-                    var target = item.CTG
-                    var targetId = "";
-                    if (target.pathIds && target.pathIds.length > 0)
-                        targetId = target.pathIds[0];
-
-
-                    var str2 = target.prefLabel + "\t" + targetId + "\t" + locItem.name + "\t" + locItem.id + "\t" + locItem.parentNames + "\t" + locItem.childrenNames + "\n"
-                    if (str.indexOf(str2) < 0)
-                        str += str2
-
-                })
-
-
-            })
-            fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.csv", str)
-
-        }
-
-
-        var locMap = getLocMap();
-        locMap = setAncestors(locMap);
-        locMap = setIdsValues(locMap);
-        printLocMap(locMap)
-
-
-        return;
-
-
-    }
-
-    , setCommonConcepts_LOC_CTG: function () {
-
-        function getLocMap() {
-            // set LOC map
-            var LOC_raw = "" + fs.readFileSync("D:\\NLP\\LOC\\LOC_raw.txt");
-            var locMap = {}
-            var lines = LOC_raw.split("\n");
-            lines.forEach(function (line) {
-                var cols = line.split("\t");
-                if (!locMap[cols[0]])
-                    locMap[cols[0].toLowerCase()] = {id: cols[1], name: cols[0], parents: cols[2], children: cols[3]}
-
-            })
-            return locMap;
-
-        }
-
         function isSame(a, b) {
             if (a.length > 3 && b.length > 3 && Math.abs(a.length - b.length) < 2 && isNaN(a) && isNaN(b)) {
                 if (a.indexOf(b) > -1 || b.indexOf(a) > -1)
@@ -318,44 +386,50 @@ var crawler_LOC = {
                 ctgMap[concept.prefLabel.toLowerCase()] = concept
             })
 
-            var locMap = getLocMap();
+            var locMap = crawler_LOC.getLocMap("name");
+        //    locMap = setAncestors(locMap)
             var ctgCount = 0
             var commonConcepts = [];
             for (var ctgKey in ctgMap) {
-                ctgCount += 1
-                var ctgTokens = ctgKey.split(/[\s-_;.]/g);
-                if (Array.isArray(ctgTokens)) {
-                    for (var locKey in locMap) {
+                if (true || ctgKey == "corrosion") {
+                    ctgCount += 1
+                    var ctgTokens = ctgKey.split(/[\s-_;.]/g);
+                    if (Array.isArray(ctgTokens)) {
+                        for (var locKey in locMap) {
 
-                        var locTokens = locKey.split(/[\s-_;.]/g);
-                        if (ctgTokens.length == 1 && locTokens.length == 1) {
-                            if (isSame(ctgKey, locKey)) {
-                                commonConcepts.push({ctg: ctgMap[ctgKey], loc: locMap[locKey]})
-
-                            } else {//composé
-                                if (Array.isArray(locTokens)) {
-                                    var nSame = 0;
-                                    ctgTokens.forEach(function (ctgToken) {
-                                        locTokens.forEach(function (locToken) {
-                                            if (isSame(ctgToken, locToken)) {
-                                                nSame += 1
-                                            }
-                                        })
-
-                                    })
-                                    if (nSame > 2)
+                            var locTokens = locKey.split(/[\s-_;.]/g);
+                            if (ctgTokens.length == locTokens.length) {
+                                if (ctgTokens.length == 1 && locTokens.length == 1) {
+                                    if (isSame(ctgKey, locKey)) {
                                         commonConcepts.push({ctg: ctgMap[ctgKey], loc: locMap[locKey]})
+                                    }
+                                } else {//composé
+                                    if (Array.isArray(locTokens)) {
+                                        var nSame = 0;
+                                        ctgTokens.forEach(function (ctgToken) {
+                                            locTokens.forEach(function (locToken) {
+                                                if (isSame(ctgToken, locToken)) {
+                                                    nSame += 1
+                                                }
+                                            })
+
+                                        })
+                                        if (nSame > 1 && (Math.abs(ctgTokens.length - locTokens.length))<2)
+                                            commonConcepts.push({ctg: ctgMap[ctgKey], loc: locMap[locKey]})
+                                    }
                                 }
                             }
+
                         }
                     }
-                }
-                if (ctgCount % 10 == 0)
-                    console.log(ctgCount + " / " + commonConcepts.length)
+                    if (ctgCount % 10 == 0)
+                        console.log(ctgCount + " / " + commonConcepts.length)
 
+                }
             }
 
             var xx = commonConcepts;
+            fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.json", JSON.stringify(commonConcepts,null,2))
         })
 
 
@@ -467,6 +541,56 @@ var crawler_LOC = {
             )
         })
     }
+    ,
+    getHierarchyFromTopConcepts: function () {
+        var locMapNames = crawler_LOC.getLocMap("name");
+        var locMapIds = crawler_LOC.getLocMap("id");
+
+        var str = "" + fs.readFileSync("D:\\NLP\\LOC\\LOC_topConcepts.txt");
+        var topConcepts = str.split("\n");
+
+        var hierarchy = [];
+        topConcepts.forEach(function (topConcept) {
+            topConcept = topConcept.trim()
+
+            var locMapConcept = locMapNames[topConcept];
+            if (locMapConcept) {
+
+
+                var childrenIds = locMapConcept.children;
+                if (childrenIds) {
+                    //  var obj = {name: topConcept, childrenIds: [], childrenNames: []}
+                    var obj = {name: topConcept, childrenNames: []}
+
+                    var childrenIdsArray = childrenIds.split(",")
+                    childrenIdsArray.forEach(function (childId, indexId) {
+                        //   obj.childrenIds.push(childId);
+                        var childName = locMapIds[childId].name;
+                        var children2 = locMapIds[childId].children;
+                        var children2IdsArray = children2.split(",");
+                        var child2Str = ""
+                        children2IdsArray.forEach(function (child2Id, indexId2) {
+                            if (locMapIds[child2Id]) {
+                                if (indexId2 > 0)
+                                    child2Str += ","
+                                child2Str += locMapIds[child2Id].name
+                            }
+
+                        })
+                        if (child2Str.length > 0)
+                            childName += " : " + child2Str
+
+                        obj.childrenNames.push(childName)
+
+                    })
+                    hierarchy.push(obj)
+                }
+            }
+
+        })
+
+
+    }
 
 
 }
@@ -480,8 +604,13 @@ if (false) {
 if (false) {
     crawler_LOC.setElasticCommonConcepts_LOC_CTG();
 }
-if (true) {
+if (false) {
     crawler_LOC.writeCommonConcepts_CSV();
+}
+
+if (true) {
+    crawler_LOC.setCommonConcepts_LOC_CTG();
+  //  crawler_LOC.getHierarchyFromTopConcepts();
 }
 
 
