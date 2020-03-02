@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -119,7 +118,7 @@
       <workItem from="1581157541319" duration="134492000" />
       <workItem from="1581576959723" duration="87577000" />
       <workItem from="1582042838100" duration="84479000" />
-      <workItem from="1582886859403" duration="89121000" />
+      <workItem from="1582886859403" duration="93906000" />
     </task>
     <servers />
   </component>
@@ -287,45 +286,75 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1197</line>
+          <line>1131</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2576" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1287</line>
+          <line>1419</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2655" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1299</line>
+          <line>1431</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2656" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1293</line>
+          <line>1425</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2657" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1278</line>
+          <line>1403</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2658" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>968</line>
+          <line>898</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2667" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1005</line>
+          <line>1416</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2681" />
+          <option name="timeStamp" value="2695" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>1411</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2696" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>244</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2697" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>1470</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2707" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>1446</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2715" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>1106</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2717" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
