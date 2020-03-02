@@ -4,6 +4,7 @@
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -118,7 +119,7 @@
       <workItem from="1581157541319" duration="134492000" />
       <workItem from="1581576959723" duration="87577000" />
       <workItem from="1582042838100" duration="84479000" />
-      <workItem from="1582886859403" duration="65497000" />
+      <workItem from="1582886859403" duration="89121000" />
     </task>
     <servers />
   </component>
@@ -286,39 +287,45 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>295</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2549" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>498</line>
+          <line>1197</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2576" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>397</line>
+          <line>1287</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2586" />
+          <option name="timeStamp" value="2655" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>358</line>
+          <line>1299</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2616" />
+          <option name="timeStamp" value="2656" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>369</line>
+          <line>1293</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2617" />
+          <option name="timeStamp" value="2657" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>385</line>
+          <line>1278</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2618" />
+          <option name="timeStamp" value="2658" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>968</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2667" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>1005</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2681" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

@@ -604,11 +604,11 @@ if (false) {
 if (false) {
     crawler_LOC.setElasticCommonConcepts_LOC_CTG();
 }
-if (false) {
+if (true) {
     crawler_LOC.writeCommonConcepts_CSV();
 }
 
-if (true) {
+if (false) {
     crawler_LOC.setCommonConcepts_LOC_CTG();
   //  crawler_LOC.getHierarchyFromTopConcepts();
 }
