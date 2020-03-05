@@ -19,13 +19,19 @@
           "thesaurus": {
             "type": "keyword"
           },
-          "path": {
+          "id": {
+            "type": "keyword"
+          },
+          "ancestors": {
             "type": "text"
           },
-          "pathIds": {
+          "ancestorsIds": {
             "type": "text"
           },
-          "synonyms": {
+          "prefLabels": {
+            "type": "text"
+          },
+          "altLabels": {
             "type": "text"
           }
         }

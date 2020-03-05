@@ -2,15 +2,35 @@ var fs = require('fs')
 var async = require('async')
 var request = require('request')
 var skosReader = require('../backoffice/skosReader.')
+var indexer=require('../backoffice/indexer.')
 
 var ndjson = require('ndjson');
 var skosToElastic = {
 
     load: function (thesaurusPaths, callback) {
+        options = {
+            outputLangage: "en",
+            extractedLangages: "en",
+            withSynonyms: true,
+            // filterRegex: /corrosion/gi,
+            withAncestors: true,
+            output:"json"
+
+        }
+
+
+
+
 
         async.eachSeries(thesaurusList, function (thesaurusPath, callbackEach) {
-            skosReader.rdfToFlat(thesaurusPath, null, function (err, json) {
-                skosToElastic.flatToElastic(json, function (err, result) {
+            var thesaurusName=thesaurusPath.substring(thesaurusPath.lastIndexOf("\\")+1)
+            thesaurusName=thesaurusName.substring(0,thesaurusName.indexOf("."))
+            skosReader.rdfToFlat(thesaurusPath, options, function (err, json) {
+                json.forEach(function(item){
+                    item.thesaurus=thesaurusName;
+                })
+
+                skosToElastic.flatToElastic(json,0, function (err, result) {
                     if (err) {
                         return callbackEach(err)
                     }
@@ -28,12 +48,13 @@ var skosToElastic = {
         })
 
     },
-    flatToElastic: function (flatJson, callback) {
+    flatToElastic: function (flatJson,startIndex,callback) {
         var indexName = "flat_thesaurus"
         var bulkStr = "";
         var elasticUrl = "http://localhost:9200/"
+        var elasticUrl="http://vps254642.ovh.net:2009/";
         flatJson.forEach(function (record, indexedLine) {
-            var id = record.thesaurus + "_" + (indexedLine)
+            var id = record.thesaurus + "_" + (startIndex+indexedLine)
 
             bulkStr += JSON.stringify({index: {_index: indexName, _type: indexName, _id: id}}) + "\r\n"
             bulkStr += JSON.stringify(record) + "\r\n";
@@ -343,9 +364,9 @@ if (true) {
     var thesaurusList = [
         "D:\\NLP\\thesaurusCTG-02-20.rdf",
         "D:\\NLP\\quantum_F_all.rdf",
-        "D:\\NLP\\Tulsa_all.rdf",
+     //   "D:\\NLP\\Tulsa_all.rdf",
         "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
-        "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
+     //   "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
         "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
         "D:\\NLP\\Tulsa_EQUIPMENT.rdf",
         "D:\\NLP\\Tulsa_LIFE FORM.rdf",
@@ -358,7 +379,7 @@ if (true) {
         "D:\\NLP\\thesaurusIngenieur.rdf",
     ];
 
-    var thesaurusList = ["D:\\NLP\\unesco.rdf"]
+  //  var thesaurusList = ["D:\\NLP\\unesco.rdf"]
     skosToElastic.load(thesaurusList, function (err, result) {
         if (err)
             return console.log(err);

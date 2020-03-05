@@ -167,11 +167,11 @@ var crawler_LOC = {
             if (index == 0)
                 return;
             var cols = line.split("\t");
-            var keyValue=cols[keyIndex];
-            if(key=="name")
+            var keyValue = cols[keyIndex];
+            if (key == "name")
                 keyValue = keyValue.toLowerCase().trim();
-                if (!locMap[keyValue])
-                    locMap[keyValue]={id: cols[1], name: cols[0], parents: cols[2], children: cols[3]};
+            if (!locMap[keyValue])
+                locMap[keyValue] = {id: cols[1], name: cols[0], parents: cols[2], children: cols[3]};
 
 
         })
@@ -227,9 +227,9 @@ var crawler_LOC = {
 
 
             commonConcepts.forEach(function (item) {
-              //  item.loc.forEach(function (locItem) {
-                    recurseParents(item.loc, item.loc.id)
-              //  })
+                //  item.loc.forEach(function (locItem) {
+                recurseParents(item.loc, item.loc.id)
+                //  })
             })
             var countNewParents = Object.keys(newParentsMap).length
             for (var key in locMap) {
@@ -282,24 +282,24 @@ var crawler_LOC = {
         function printLocMap(locMap) {
             var str = "CTG_concept\tCTG_id\tLOC_concept\tLOC_id\tLOC_parents\tLOC_children\n";
             commonConcepts.forEach(function (item) {
-                    var locId = item.loc.id;
-                    if (locId == "sh85084167")
-                        var vv = 3
-                    var locItem = locMap[locId];
-                    if (!locItem)
-                        return;
+                var locId = item.loc.id;
+                if (locId == "sh85084167")
+                    var vv = 3
+                var locItem = locMap[locId];
+                if (!locItem)
+                    return;
 
-                    var target = item.ctg
-                    var targetId = "";
-                    if (target.pathIds && target.pathIds.length > 0)
-                        targetId = target.pathIds[0];
+                var target = item.ctg
+                var targetId = "";
+                if (target.pathIds && target.pathIds.length > 0)
+                    targetId = target.pathIds[0];
 
 
-                    var str2 = target.prefLabel + "\t" + targetId + "\t" + locItem.name + "\t" + locItem.id + "\t" + locItem.parentNames + "\t" + locItem.childrenNames + "\n"
-                    if (str.indexOf(str2) < 0)
-                        str += str2
+                var str2 = target.prefLabel + "\t" + targetId + "\t" + locItem.name + "\t" + locItem.id + "\t" + locItem.parentNames + "\t" + locItem.childrenNames + "\n"
+                if (str.indexOf(str2) < 0)
+                    str += str2
 
-                })
+            })
 
 
             fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.csv", str)
@@ -387,7 +387,7 @@ var crawler_LOC = {
             })
 
             var locMap = crawler_LOC.getLocMap("name");
-        //    locMap = setAncestors(locMap)
+            //    locMap = setAncestors(locMap)
             var ctgCount = 0
             var commonConcepts = [];
             for (var ctgKey in ctgMap) {
@@ -414,7 +414,7 @@ var crawler_LOC = {
                                             })
 
                                         })
-                                        if (nSame > 1 && (Math.abs(ctgTokens.length - locTokens.length))<2)
+                                        if (nSame > 1 && (Math.abs(ctgTokens.length - locTokens.length)) < 2)
                                             commonConcepts.push({ctg: ctgMap[ctgKey], loc: locMap[locKey]})
                                     }
                                 }
@@ -429,7 +429,7 @@ var crawler_LOC = {
             }
 
             var xx = commonConcepts;
-            fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.json", JSON.stringify(commonConcepts,null,2))
+            fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.json", JSON.stringify(commonConcepts, null, 2))
         })
 
 
@@ -592,38 +592,199 @@ var crawler_LOC = {
 
     },
 
-    splitAncestorsBranches:function(){
-        var str=""+fs.readFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.csv")
-        var str2=""
-       var lines=str.split("\n")
-           lines.forEach(function(line){
+    splitAncestorsBranches: function () {
+        var str = "" + fs.readFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.csv")
+        var str2 = ""
+        var lines = str.split("\n")
+        lines.forEach(function (line) {
 
-              var cols=line.split("\t")
-               if(cols.length<4)
-                   return;
-               var CTG_concept=cols[0].trim()
-               var CTG_id=cols[1].trim()
-               var LOC_concept=cols[2].trim()
-               var LOC_id=cols[3].trim()
-               var LOC_parents=cols[4].trim()
-               var locParentBranch=LOC_parents.split("|");
-               var strBranch=""
-               if(locParentBranch.length>1)
-                   var x=3
-               locParentBranch.forEach(function(branch){
-                   if(strBranch.indexOf(branch)<0)
-                       strBranch+=CTG_concept+"\t"+CTG_id+"\t"+LOC_concept+"\t"+branch+"\n"
-               })
-               str2+=strBranch
-           })
+            var cols = line.split("\t")
+            if (cols.length < 4)
+                return;
+            var CTG_concept = cols[0].trim()
+            var CTG_id = cols[1].trim()
+            var LOC_concept = cols[2].trim()
+            var LOC_id = cols[3].trim()
+            var LOC_parents = cols[4].trim()
+            var locParentBranch = LOC_parents.split("|");
+            var strBranch = ""
+            if (locParentBranch.length > 1)
+                var x = 3
+            locParentBranch.forEach(function (branch) {
+                if (strBranch.indexOf(branch) < 0)
+                    strBranch += CTG_concept + "\t" + CTG_id + "\t" + LOC_concept + "\t" + branch + "\n"
+            })
+            str2 += strBranch
+        })
 
-        fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTGbranches.csv",str2)
+        fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTGbranches.csv", str2)
+    }
+
+
+    , locToFlat: function (options) {
+
+        function recurseAncestors(nodeId, ancestorsIdsStr, level) {
+            var node = locMap[nodeId];
+            if (!node)
+                return ancestorsIdsStr;
+
+            if (ancestorsIdsStr != "")
+                ancestorsIdsStr = "," + ancestorsIdsStr
+            ancestorsIdsStr = node.id + ancestorsIdsStr;
+
+
+            if (node.parents) {
+                var parentsArray = node.parents.split(",")
+                parentsArray.forEach(function (parent, indexParent) {
+                    if (indexParent > 0)
+                        return; //  ancestorsIdsStr = "|" + ancestorsIdsStr
+                    ancestorsIdsStr = recurseAncestors(parent, ancestorsIdsStr, level + 1)
+
+
+                })
+            } else {
+                return ancestorsIdsStr;
+            }
+            return ancestorsIdsStr;
+        }
+
+
+        var locMap = crawler_LOC.getLocMap("id");
+        var jsonArray = [];
+        var str = "";
+
+        var uniqueTopConcepts = []
+        for (var key in locMap) {
+            var item = locMap[key]
+            var ancestorsIdStr = recurseAncestors(item.id, "", 0);
+
+            var ancestorsNames = "";
+            ancestorsIdStr.split("|").forEach(function (ancestorGroupId, groupIndex) {
+              if (groupIndex > 0)
+                   var x=5;// ancestorsNames += "|"
+                ancestorGroupId.split(",").forEach(function (ancestorId, ancestorIndex) {
+                    if (ancestorIndex > 0)
+                        ancestorsNames += ","
+                    var ancestor = locMap[ancestorId];
+                    if (ancestor) {
+
+                        /*  if(uniqueTopConcepts.indexOf(ancestor.name)<0 )
+                              uniqueTopConcepts.push(ancestor.name)*/
+                        ancestorsNames += ancestor.name;
+                    } else {
+                        ancestorsNames += "?"
+                    }
+
+                })
+                if (options.output == 'json') {
+                    jsonArray.push({id: item.id, ancestorsIds: ancestorsIdStr, ancestors: ancestorsNames, prefLabels: item.name, altLabels: ""})
+                } else {
+                    str += item.id;
+                    if (options.withAncestors) {
+                        str += "\t" + ancestorsIdStr + "\t" + ancestorsNames
+                    }
+                    str += "\t" + item.name + "\t" + "" + "\n"
+                }
+
+            })
+
+
+
+        }
+
+        var xxx = uniqueTopConcepts.length
+        if (options.output == 'json') {
+            return jsonArray;
+        } else
+            return str
+    }
+
+    , indexLocToElastic: function (options_) {
+        var skosToElastic = require('../skosToElastic.')
+        var indexer = require('../../backoffice/indexer.')
+        var request=require('request');
+        var count = 0
+        var indexconfig = JSON.parse("" + fs.readFileSync("D:\\GitHub\\nlp2\\config\\elastic\\sources\\flat_thesaurus.json"))
+        var elasticUrl="http://localhost:9200/";
+        var elasticUrl="http://vps254642.ovh.net:2009/";
+
+
+        async.series([
+
+
+            function (callbackSeries) {
+
+                if (!options_.deleteIndex)
+                    callbackSeries();
+                indexer.deleteIndex(indexconfig, function (err, result) {
+                    callbackSeries();
+                })
+            },
+            function (callbackSeries) {
+
+                if (!options_.deleteIndex)
+                    callbackSeries();
+                //updateRecordId  used for incremental update
+                var json= {
+                    mappings: indexconfig.schema.mappings
+                }
+
+                var options = {
+                    method: 'PUT',
+                    description: "create index",
+                    url: elasticUrl + "flat_thesaurus" ,
+                    json: json
+                };
+
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackSeries(error);
+                    if (body.error)
+                        return callbackSeries(body.error);
+                   console.log("index  created");
+                    return callbackSeries();
+
+                })
+            },
+
+            function (callbackSeries) {
+                var json = crawler_LOC.locToFlat({output: 'json'})
+
+                var all = [];
+                var fetch = []
+                json.forEach(function (item) {
+                    item.thesaurus = "LOC"
+                    fetch.push(item)
+                    if (fetch.length > 5000) {
+                        all.push(fetch)
+                        fetch = [];
+                    }
+                })
+                all.push(fetch)
+
+
+                async.eachSeries(all, function (json, callbackSeries) {
+                    var x = json
+                    skosToElastic.flatToElastic(json, count,function (err, result) {
+                        if(err)
+                            console.log(err)
+                        count += result
+                        console.log(count)
+                        var x = err;
+                        callbackSeries()
+                    })
+                })
+            }
+
+        ], function (err) {
+            if (err)
+                console.log(err);
+            console.log("done" + count)
+        })
     }
 
 
 }
-
-
 
 
 module.exports = crawler_LOC
@@ -634,18 +795,22 @@ if (false) {
 if (false) {
     crawler_LOC.setElasticCommonConcepts_LOC_CTG();
 }
-if (true) {
+if (false) {
     crawler_LOC.writeCommonConcepts_CSV();
 }
 
 if (false) {
     crawler_LOC.setCommonConcepts_LOC_CTG();
-  //  crawler_LOC.getHierarchyFromTopConcepts();
+    //  crawler_LOC.getHierarchyFromTopConcepts();
+}
+
+if (false) {
+    crawler_LOC.splitAncestorsBranches();
+
 }
 
 if (true) {
-    crawler_LOC.splitAncestorsBranches();
-
+    crawler_LOC.indexLocToElastic({deleteIndex:true});
 }
 
 

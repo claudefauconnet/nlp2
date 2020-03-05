@@ -1,5 +1,6 @@
-var multiSkosGraph=(function(){
-    var self={};
+var multiSkosGraph = (function () {
+    var self = {};
+    self.distinctThesaurus = {};
     var palette = [
         "#0072d5",
         '#FF7D07',
@@ -19,155 +20,201 @@ var multiSkosGraph=(function(){
         '#B3B005',
     ]
 
-    var colorsMap={}
+    var colorsMap = {}
 
 
-    self.setTheaurusList=function(){
-        var html="<ul>"
-        thesaurusList.forEach(function(thesaurus){
-            if(thesaurus.indexOf("D:\\NLP")>-1) {
-                thesaurus = thesaurus.substring(thesaurus.lastIndexOf("\\") + 1)
-                thesaurus = thesaurus.substring(0, thesaurus.lastIndexOf("."))
-                var thesaurusId = thesaurus.replace(/\s/g, "_");
-                if (!colorsMap[thesaurusId])
-                    colorsMap[thesaurusId] = palette[Object.keys(colorsMap).length];
+    self.setTheaurusList = function (thesaurusList) {
+        var html = "<ul>"
+        for (var key in thesaurusList) {
 
-                html += "<li><input type='checkbox' checked='checked' class='thesCBX' id='thes_" + thesaurusId + "'><span style='color:" + colorsMap[thesaurusId] + "'>" + thesaurus + "</span></li>"
-            }
-        })
-        html+="</ul>"
+            var color = thesaurusList[key]
 
+            html += "<li><input type='checkbox' checked='checked' class='thesCBX' id='thes_" + key + "'><span style='color:" + color + "'>" + key + "</span></li>"
+
+        }
+        html += "</ul>"
         $("#thesaurusListDiv").html(html);
     }
 
-   self.drawConceptGraph=function(word){
+    self.drawConceptGraph = function (word, keepMatchingConcepts) {
 
-       self.queryElastic(word,function(err, result) {
-          if(err)
-              return console.log(err);
-           var hits=result.hits.hits;
-
-
-           var thesaurusMatching=[]
-           var visjsData={nodes:[],edges:[]}
-           var uniqueNodes=[]
-           var uniqueEdges=[];
-           var rooNode={
-               label:word,
-               id:word,
-               color:"#dda",
-               size:20
-
-           }
-           visjsData.nodes.push(rooNode)
-           hits.forEach(function(hit){
+        var uniqueMatchingConcepts = []
+        var exactMatch = $("#exactMatchCBX").prop("checked")
+        self.distinctThesaurus = {};
+        var rootNodeColor = "#dda";
+        var rootNodeSize = 20
+        $("#graphDiv").width($(window).width() - 300)
+        self.queryElastic(word, function (err, result) {
+            if (err)
+                return console.log(err);
+            var hits = result.hits.hits;
 
 
+            var thesaurusMatching = []
+            var visjsData = {nodes: [], edges: []}
+            var uniqueNodes = []
+            var uniqueEdges = [];
+            var rooNode = {
+                label: word,
+                id: word,
+                color: rootNodeColor,
+                size: rootNodeSize
+
+            }
+            visjsData.nodes.push(rooNode)
 
 
+            hits.forEach(function (hit) {
+
+                var thesaurus
+                if (hit._source.thesaurus)
+                    thesaurus = hit._source.thesaurus.replace(/\s/g, "_");
+                else
+                    thesaurus = "LOC"
+
+                if (!self.distinctThesaurus[thesaurus]) {
+
+                    self.distinctThesaurus[thesaurus] = palette[Object.keys(self.distinctThesaurus).length]
+                }
+
+                var ancestorsStr = hit._source.ancestors;
+                ancestorsStr = thesaurus + "," + ancestorsStr;
+                var nodes = ancestorsStr.split(",");
+
+                var ancestorsIdsStr = hit._source.ancestorsIds;
+                ancestorsIdsStr = "TH_" + thesaurus + "," + ancestorsIdsStr
+                var ancestorsIds = ancestorsIdsStr.split(",");
 
 
-               var path=hit._source.path;
+                var lastNode = nodes[nodes.length - 1];
+                if (!keepMatchingConcepts) {
+                    if (uniqueMatchingConcepts.indexOf(lastNode.toLocaleLowerCase()) < 0)
+                        uniqueMatchingConcepts.push(lastNode.toLocaleLowerCase())
+                }
+                if (exactMatch) {
 
-               var nodes=path.split("|");
-               var ids=hit._source.pathIds;
+                    if (word.toLowerCase() != lastNode.toLowerCase())
+                        return;
 
-
-
-               nodes.forEach(function(node,index){
-
-
-
-                   var id=ids[index];
-                   if(id.indexOf("TE.184968")>-1)
-                       var x=3;
-                   var thesaurus=hit._source.thesaurus.replace(/\s/g,"_");
-                   var color=colorsMap[thesaurus]
-
-                   if(thesaurusMatching.indexOf(thesaurus)<0)
-                       thesaurusMatching.push(thesaurus)
-                   if(uniqueNodes.indexOf(id)<0) {
-                       uniqueNodes.push(id)
-                       var color
-
-                       var visjNode = {
-                           label: node,
-                           id: id,
-                           color: color,
-                           data:{thesaurus:thesaurus},
-                           shape: "box"
-                       }
-                       visjsData.nodes.push(visjNode)
-                   }
-                   if(index>0) {
-
-                     var edge=(
-                           {
-                               from: ids[index - 1],
-                               to: id,
-                               type: parent
-                           }
-                       )
-                       if(uniqueEdges.indexOf(edge.from+"-"+edge.to)<0) {
-                           uniqueEdges.push(edge.from+"-"+edge.to)
-                           visjsData.edges.push(edge)
-                       }
-                   }
-                   else{
-                       visjsData.edges.push({from:word,to:id})
-                   }
-
-               })
-
-           })
+                }
 
 
-           //edges transverses
-           if(false) {
-               visjsData.nodes.forEach(function (node1) {
-                   visjsData.nodes.forEach(function (node2) {
-                       if (node1.id > node2.id && node1.label.toLowerCase() == node2.label.toLowerCase())
-                           visjsData.edges.push({from: node1.id, to: node2.id, color: "grey"})
-
-                   })
-               })
-           }
+                nodes.forEach(function (node, index) {
 
 
-           visjsGraph.draw("graphDiv",visjsData,{onclickFn:multiSkosGraph.onNodeClick})
-
-           $(".thesCBX").parent().css("background-color","none")
-           $(".thesCBX").parent().css("border","none")
-           thesaurusMatching.forEach(function(thesaurus){
-               thesaurus="thes_"+thesaurus
-               $("#"+thesaurus).parent().css("background-color","#ddd")
-
-           })
-
-       })
+                    var id = ancestorsIds[index];
 
 
-   }
+                    var color = self.distinctThesaurus[thesaurus];
 
 
-   self.onNodeClick=function(obj,point){
-       $(".thesCBX").parent().css("border-style","none")
-       $("#"+"thes_"+obj.data.thesaurus).parent().css("border","2px blue solid")
-   }
+                    if (thesaurusMatching.indexOf(thesaurus) < 0)
+                        thesaurusMatching.push(thesaurus)
+                    if (uniqueNodes.indexOf(id) < 0) {
+                        uniqueNodes.push(id)
 
-   self.onThesCBXChange=function(ev){
+                        var shape = "box";
+                        var size = 20;
+                        if (("" + id).indexOf("TH_") == 0)
+                            shape = "star";
+                        size = 30;
 
-        var checked=$(this).prop("checked")
-self.filterGraphByThesaurus();
+                        if (index == nodes.length - 1) {
+                            shape = "dot";
+                            color = rootNodeColor;
+                            size = 10;
+                        }
 
-   }
+                        var visjNode = {
+                            label: node,
+                            id: id,
+                            color: color,
+                            data: {thesaurus: thesaurus},
+                            shape: shape,
+                            size: size,
+                            /*  length:index*30,
+                              physics:true*/
+                        }
+
+                        visjsData.nodes.push(visjNode)
+                    }
+                    if (index > 0) {
+
+                        var edge = (
+                            {
+                                from: ancestorsIds[index - 1],
+                                to: id,
+                                type: parent
+                            }
+                        )
+                        if (uniqueEdges.indexOf(edge.from + "-" + edge.to) < 0) {
+                            uniqueEdges.push(edge.from + "-" + edge.to)
+                            visjsData.edges.push(edge)
+                        }
+                    } else {
+
+                        //   visjsData.edges.push({from:word,to:id})
+                    }
+                    if (index == nodes.length - 1) {
+                        visjsData.edges.push({from: word, to: id})
+                    }
+
+                })
+
+            })
 
 
+            //edges transverses
+            if (false) {
+                visjsData.nodes.forEach(function (node1) {
+                    visjsData.nodes.forEach(function (node2) {
+                        if (node1.id > node2.id && node1.label.toLowerCase() == node2.label.toLowerCase())
+                            visjsData.edges.push({from: node1.id, to: node2.id, color: "grey"})
+
+                    })
+                })
+            }
 
 
+            visjsGraph.draw("graphDiv", visjsData, {onclickFn: multiSkosGraph.onNodeClick})
 
-    self.queryElastic=function(queryString,callback){
-        var query={
+
+            self.setTheaurusList(self.distinctThesaurus);
+            if(!keepMatchingConcepts) {
+                //   $("#matchingConceptsSelect").val("");
+                common.fillSelectOptions("matchingConceptsSelect",uniqueMatchingConcepts)
+            }
+
+
+            $(".thesCBX").parent().css("background-color", "none")
+            $(".thesCBX").parent().css("border", "none")
+            thesaurusMatching.forEach(function (thesaurus) {
+                thesaurus = "thes_" + thesaurus
+                $("#" + thesaurus).parent().css("background-color", "#ddd")
+
+            })
+
+        })
+
+
+    }
+
+
+    self.onNodeClick = function (obj, point) {
+        $(".thesCBX").parent().css("border-style", "none")
+        $("#" + "thes_" + obj.data.thesaurus).parent().css("border", "2px blue solid")
+    }
+
+    self.onThesCBXChange = function (ev) {
+
+        var checked = $(this).prop("checked")
+        self.filterGraphByThesaurus();
+
+    }
+
+
+    self.queryElastic = function (queryString, callback) {
+        var query = {
 
             "query": {
                 "bool": {
@@ -175,7 +222,7 @@ self.filterGraphByThesaurus();
                         {
                             "query_string": {
                                 "query": queryString,
-                                "default_field": "path",
+                                "default_field": "prefLabels",
                                 "default_operator": "AND"
                             }
                         }
@@ -186,7 +233,7 @@ self.filterGraphByThesaurus();
             "size": 1000,
         }
 
-        var strQuery = JSON.stringify(query,null,2);
+        var strQuery = JSON.stringify(query, null, 2);
         console.log(strQuery)
         var payload = {
             executeQuery: strQuery,
@@ -195,7 +242,7 @@ self.filterGraphByThesaurus();
         }
         $.ajax({
             type: "POST",
-            url:"/elastic",
+            url: "/elastic",
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
@@ -215,38 +262,36 @@ self.filterGraphByThesaurus();
         });
 
 
-
     }
-    self.filterGraphByThesaurus=function(){
-        var selectedThesaurus=[];
-        $(".thesCBX").each(function(){
+    self.filterGraphByThesaurus = function () {
+        var selectedThesaurus = [];
+        $(".thesCBX").each(function () {
 
-            if($(this).prop("checked")){
+            if ($(this).prop("checked")) {
                 selectedThesaurus.push($(this).attr("id"))
             }
 
         })
 
-        var nodesToHide=[]
-        var nodes=visjsGraph.data.nodes.get()
-        nodes.forEach(function(node){
+        var nodesToHide = []
+        var nodes = visjsGraph.data.nodes.get()
+        nodes.forEach(function (node) {
 
-            if(node.data && selectedThesaurus.indexOf("thes_"+node.data.thesaurus)<0){
-                node.hidden=true;
-            }else{
-                node.hidden=false;
+            if (node.data && selectedThesaurus.indexOf("thes_" + node.data.thesaurus) < 0) {
+                node.hidden = true;
+            } else {
+                node.hidden = false;
             }
         })
 
         visjsGraph.data.nodes.update(nodes)
 
 
-
-
-
     }
-
-
+    self.zoomOnSelectedMatchingConcept = function () {
+        var value = $("#matchingConceptsSelect").val();
+        self.drawConceptGraph(value,true);
+    }
 
 
     return self;

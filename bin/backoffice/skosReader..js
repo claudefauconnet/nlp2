@@ -62,28 +62,28 @@ var skosReader = {
         })
 
     },
-    rdfToFlat: function (sourcePath, options, callback) {
-
-        //  var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf"
-        var thesaurusName = sourcePath.substring(sourcePath.lastIndexOf("\\") + 1)
-        thesaurusName = thesaurusName.substring(0, thesaurusName.indexOf("."))
-        if (!options) {
-            options = {
-                outputLangage: "en",
-                extractedLangages: "en,fr,sp",
-                thesaurusName: thesaurusName
-            }
-        }
 
 
-        skosReader.parseRdfXml(sourcePath, options, function (err, conceptsMap) {
-            if (err)
-                return callback(err);
-            var visjsArray = skosReader.mapToFlat(conceptsMap, options);
-            callback(null, visjsArray)
+    getLabel: function (labels, lang) {
+        if (!lang)
+            lang = "en"
+        var labelStr = null;
+        if (labels == null)
+            return "?"
+        if (!Array.isArray(labels))
+            labels = [labels]
+        if (labels.length == 0)
+            return "?"
+        labels.forEach(function (label, index) {
+            if (labelStr == null && label.lang == lang)
+                labelStr = labels[index].value
         })
-
+        if (labelStr == null) {
+            labelStr = labels[0].value
+        }
+        return labelStr
     },
+
 
     rdfToVisjsGraph: function (sourcePath, options, callback) {
 
@@ -112,7 +112,7 @@ var skosReader = {
 
     parseRdfXml: function (sourcePath, options, callback) {
         var saxStream = sax.createStream(true)
-        if (!options || Object.keys(options).length==0) {
+        if (!options || Object.keys(options).length == 0) {
             options = {extractedLangages: "en", outputLangage: "en"}
         }
 
@@ -778,111 +778,150 @@ var skosReader = {
     }
 
     ,
-    mapToFlat: function (conceptsMap, options) {
 
-        function recurseConceptStr(concept, str, level) {
 
-            if (concept.broaders && concept.broaders.length > 0) {
-                if (str !== "")
-                    str += "|";// concept separator
-                concept.broaders.forEach(function (broader, index) {
-                    if (str.indexOf(broader) > -1 || broader == concept.id)
-                        return str;
-                    if (concept.broaders.length > 1)
-                        str += "*";// branch separator
-                    str += broader;
-                    var broaderConcept = conceptsMap[broader]
-                    if (broaderConcept) {
-                        try {
-                            return recurseConceptStr(broaderConcept, str, level++)
-                        } catch (e) {
-                            console.log(str)
-                        }
-                    }
+    rdfToFlat: function (rdfPath, options, callback) {
+        if (!options)
+            options = {};
+        var conceptMap = {};
+        var str = "";
+        var jsonArray = [];
+        async.series([
+
+            function (callbackSeries) {
+                skosReader.parseRdfXml(rdfPath, options, function (err, result) {
+                    if (err)
+                        return callbackSeries(err)
+                    conceptMap = result;
+                    return callbackSeries();
+
                 })
+            },
+            function (callbackSeries) {
+                function recurseAncestors(nodeId, ancestorsIdsStr, level) {
+                    var node = conceptMap[nodeId];
+                    if (!node)
+                        return ancestorsIdsStr;
 
-            }
-            // console.log(str);
-            return str;
-
-        }
-
-
-        // set longuest paths  even if multiple broaders
-
-        var pathStrs = []
-        for (var id in conceptsMap) {
-            var concept = conceptsMap[id];
-
-            var str = concept.id;
-
-            str = recurseConceptStr(concept, str, 0);
-
-            if (str.indexOf("*") > -1)
-                var x = 3
-
-            var found = false;
+                    if (ancestorsIdsStr != "")
+                        ancestorsIdsStr = "," + ancestorsIdsStr
+                    ancestorsIdsStr =  node.id  + ancestorsIdsStr;
 
 
-            //take the longuest path only
-            pathStrs.forEach(function (path, index) {
+                    if (node.broaders && node.broaders.length > 0) {
+                        node.broaders.forEach(function (broader) {
+                            var broader = conceptMap[broader];
+                            if (!broader)
+                                return ancestorsIdsStr;
+                            var branchSep = "";
+                            for (var i = 0; i < level.length; i++) {// braoders branch separator
+                                ancestorsIdsStr += "|"
+                            }
+                            ancestorsIdsStr = recurseAncestors(broader.id, ancestorsIdsStr, level + 1)
 
-                if (str.indexOf(path) > -1) {
-                    pathStrs[index] = str
-                    found = true;
+
+                        })
+                    } else {
+                        return ancestorsIdsStr;
+                    }
+                    return ancestorsIdsStr;
                 }
-            })
-            if (!found)
-                pathStrs.push(str)
 
 
-        }
+                for (var key1 in conceptMap) {
+                    var concept = conceptMap[key1];
 
+                    var strPrefLabel = "";
+                    var strAltLabel = ""
+                    var filterOk = false;
+                    for (var key in concept.prefLabels) {
+                        if (options.lang == key || !options.lang)
+                            concept.prefLabels[key].forEach(function (label, indexLabel) {
+                                if (options.filterRegex && options.filterRegex.test(label))
+                                    filterOk = true;
 
-        var leaves = []
-        pathStrs.forEach(function (leafId) {
-            var ids = leafId.split(/[|*]/)
-            var path = "";
-            var synonyms = "";
-            var prefLabel="";
-            ids.forEach(function (id, index) {
+                                if (indexLabel > 0)
+                                    strPrefLabel += ","
+                                strPrefLabel += label
 
-                if (conceptsMap[id]) {
-
-                    for (var lang in conceptsMap[id].prefLabels) {
-
-                        if (conceptsMap[id].prefLabels && conceptsMap[id].prefLabels[lang] && conceptsMap[id].prefLabels[lang].forEach) {
-
-
-                            conceptsMap[id].prefLabels[lang].forEach(function (value) {
-                                if(prefLabel=="")
-                                    prefLabel=value;
-                                if (path != "")
-                                    path += "|"
-                                path += value;
                             })
-
-                        }
                     }
 
-                    for (var lang in conceptsMap[id].altLabels) {
-                        if (conceptsMap[id].altLabels && conceptsMap[id].altLabels[lang] && conceptsMap[id].altLabels[lang].forEach) {
-                            conceptsMap[id].altLabels[lang].forEach(function (value) {
-                                if (synonyms != "")
-                                    synonyms += "|"
-                                synonyms += value;
+                    for (var key in concept.altLabels) {
+                        if (options.lang == key || !options.lang)
+                            concept.altLabels[key].forEach(function (label, indexLabel) {
+                                if (options.filterRegex && options.filterRegex.test(label))
+                                    filterOk = true;
+                                if (indexLabel > 0)
+                                    strAltLabel += ","
+                                strAltLabel += label
+
                             })
+                    }
+                    var ancestorsStr = "";
+                    var ancestorsIdsStr = ""
+                    if (!options.filterRegex || (options.filterRegex && filterOk)) {
+
+                        if (options.withAncestors) {
+                            //   strAncestors = recurseAncestors(concept.id, "", 0)
+                            ancestorsIdsStr = recurseAncestors(concept.id, "", 0)
+                            ancestorsIdsStr.split("|").forEach(function (ancestorId2) {
+                                ancestorId2.split(",").forEach(function (ancestorId) {
+                                    var ancestor = conceptMap[ancestorId];
+                                    if (ancestor && ancestor.prefLabels) {
+                                        if (ancestorsStr != "")
+                                            ancestorsStr += ","
+                                        if (ancestor.prefLabels[options.outputLangage] && ancestor.prefLabels[options.outputLangage].length > 0) {
+                                            ancestorsStr+= ancestor.prefLabels[options.outputLangage][0];
+                                        } else {
+                                            ancestorsStr += "?" ;
+                                        }
+
+                                    }
+
+
+                                })
+                            })
+                        }
+
+                            if (options.output == 'json') {
+                                jsonArray.push({id: concept.id, ancestorsIds:ancestorsIdsStr, ancestors: ancestorsStr, prefLabels: strPrefLabel, altLabels: strAltLabel})
+
+                            } else {
+
+
+                                str += concept.id;
+
+                                if (options.withAncestors) {
+                                    str += "\t" + ancestorsStr+"\t"+ancestorsIdsStr
+                                }
+                                str += "\t" + strPrefLabel + "\t" + strAltLabel + "\n"
+                            }
 
                         }
-                    }
-                } else
-                    path += "?"
-            })
-            leaves.push({thesaurus: options.thesaurusName,prefLabel:prefLabel, path: path, pathIds: ids, synonyms: synonyms})
-        })
 
-        return leaves;
+
+                    }
+                    callbackSeries();
+
+
+                }
+
+            ],
+
+                function (err) {
+                    if (err)
+                        return callback(err);
+                    if (options.output == 'json') {
+                        return callback(null, jsonArray);
+                    } else {
+                        return callback(null, str);
+                    }
+                }
+
+            )
     },
+
 
     compareThesaurus: function (rdfPath1, rdfPath2, options, callback) {
         if (!options) {
@@ -1026,7 +1065,7 @@ var skosReader = {
 
     },
 
-    thesaurusToCsv: function (rdfPath, options, callback) {
+    thesaurusToCsvOld: function (rdfPath, options, callback) {
         if (!options)
             options = {};
 
@@ -1109,14 +1148,14 @@ var skosReader = {
 
                             var strAncestors = ""
                             if (options.withAncestors) {
-                                 recurseAncestors(concept.id)
+                                recurseAncestors(concept.id)
                             }
 
 
                             str += concept.id;
 
                             if (options.withAncestors) {
-                                str +=  "\t" + strAncestors
+                                str += "\t" + strAncestors
                             }
                             str += "\t" + strPrefLabel + "\t" + strAltLabel + "\n"
 
@@ -1152,7 +1191,7 @@ skosReader.rdfToAnnotator("D:\\NLP\\cgi\\eventprocess.rdf", {outputLangage: "en"
 module.exports = skosReader
 
 
-if (true) {
+if (false) {
     var rdfPath1 = "D:\\NLP\\thesaurus_CTG_Product.rdf";
     var rdfPath1 = "D:\\NLP\\thesaurusCTG-02-20.rdf";
 
@@ -1161,7 +1200,7 @@ if (true) {
     var rdfPath2 = "D:\\NLP\\LOC_CTG_Physics_3.rdf";
     var rdfPath2 = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
 
-    var rdfPath2 =  "D:\\NLP\\unesco.rdf"
+    var rdfPath1 = "D:\\NLP\\unesco.rdf"
     // var rdfPath2 = "D:\\NLP\\termScience\\termScience_Elements_Chimiques.rdf";
 
 
@@ -1169,8 +1208,7 @@ if (true) {
         outputLangage: "en",
         extractedLangages: "en",
         withSynonyms: true,
-        printLemmas: true,
-       // filterRegex: /corrosion/gi,
+        // filterRegex: /corrosion/gi,
         withAncestors: true
 
     }

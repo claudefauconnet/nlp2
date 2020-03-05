@@ -6,7 +6,9 @@
       <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/skosToElastic..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/skosToElastic..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/elastic/sources/flat_thesaurus.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/flat_thesaurus.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +71,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.skosReader..js">
+  <component name="RunManager" selected="Node.js.skosToElastic..js">
     <configuration name="crawler_LOC..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_LOC..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
@@ -87,13 +89,16 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.skosReader..js" />
         <item itemvalue="Node.js.skosToElastic..js" />
         <item itemvalue="Node.js.crawler_LOC..js" />
+        <item itemvalue="Node.js.skosReader..js" />
         <item itemvalue="Node.js.crawler_termSciences..js" />
         <item itemvalue="Node.js.locskos..js" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -122,7 +127,7 @@
       <workItem from="1581576959723" duration="87577000" />
       <workItem from="1582042838100" duration="84479000" />
       <workItem from="1582886859403" duration="103896000" />
-      <workItem from="1583235839973" duration="6830000" />
+      <workItem from="1583235839973" duration="35375000" />
     </task>
     <servers />
   </component>
@@ -152,7 +157,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/skosToElastic..js</url>
-          <line>300</line>
+          <line>320</line>
           <option name="timeStamp" value="2166" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -172,7 +177,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/skosToElastic..js</url>
-          <line>292</line>
+          <line>312</line>
           <option name="timeStamp" value="2229" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -337,27 +342,21 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>818</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2789" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>785</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2790" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>1137</line>
+          <line>1176</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2791" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>1180</line>
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
+          <line>663</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2792" />
+          <option name="timeStamp" value="2845" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
+          <line>769</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2847" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
