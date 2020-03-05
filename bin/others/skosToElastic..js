@@ -8,7 +8,7 @@ var skosToElastic = {
 
     load: function (thesaurusPaths, callback) {
 
-        async.eachSeries(thesaursusList, function (thesaurusPath, callbackEach) {
+        async.eachSeries(thesaurusList, function (thesaurusPath, callbackEach) {
             skosReader.rdfToFlat(thesaurusPath, null, function (err, json) {
                 skosToElastic.flatToElastic(json, function (err, result) {
                     if (err) {
@@ -333,20 +333,39 @@ function getThesaurusListFromNlp2App() {
 }
 
 
-if (false) {
+if (true) {
 
-    var thesaursusList = getThesaurusListFromNlp2App();
-    var x = thesaursusList;
+    var thesaurusList = getThesaurusListFromNlp2App();
 
-    thesaursusList = ["D:\\NLP\\thesaurusCTG-02-20.rdf"]
 
-    skosToElastic.load(thesaursusList, function (err, result) {
+ //   thesaursusList = ["D:\\NLP\\thesaurusCTG-02-20.rdf"]
+
+    var thesaurusList = [
+        "D:\\NLP\\thesaurusCTG-02-20.rdf",
+        "D:\\NLP\\quantum_F_all.rdf",
+        "D:\\NLP\\Tulsa_all.rdf",
+        "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
+        "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
+        "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
+        "D:\\NLP\\Tulsa_EQUIPMENT.rdf",
+        "D:\\NLP\\Tulsa_LIFE FORM.rdf",
+        "D:\\NLP\\Tulsa_MATERIAL.rdf",
+        "D:\\NLP\\Tulsa_OPERATING CONDITION.rdf",
+        "D:\\NLP\\Tulsa_PHENOMENON.rdf",
+        "D:\\NLP\\Tulsa_PROCESS.rdf",
+        "D:\\NLP\\Tulsa_PROPERTY.rdf",
+        "D:\\NLP\\unesco.rdf",
+        "D:\\NLP\\thesaurusIngenieur.rdf",
+    ];
+
+    var thesaurusList = ["D:\\NLP\\unesco.rdf"]
+    skosToElastic.load(thesaurusList, function (err, result) {
         if (err)
             return console.log(err);
         return console.log("done")
     })
 }
-if (true) {
+if (false) {
 
 
   skosToElastic.compareThesaurus("libraryofcongress", "flat_thesaurus", function (err, result) {

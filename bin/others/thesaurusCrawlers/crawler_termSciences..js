@@ -146,7 +146,7 @@ var crawler_termSciences = {
 
 
 
-        var children=JSON.parse(""+fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp\\newIds.txt"))
+        var children=JSON.parse(""+fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp\\newIdsOrphans.txt"))
 
         function getPrefLabelEN(prefLabels) {
             var prefLabelStr = null;
@@ -180,8 +180,11 @@ var crawler_termSciences = {
                 if (err)
                     return console.log(err);
                 var broader1Concept = crawler_termSciences.xmlToSkosConcept(result1);
+              //  var obj1 = {name: getPrefLabelEN(broader1Concept.prefLabels), id: broader1Concept.id, broaders: []}
                 var obj1 = {name: getPrefLabelEN(broader1Concept.prefLabels), id: broader1Concept.id, broaders: []}
                 hierarchy.push(obj1)
+                if(broader1Concept.broaders.length>1)
+                    var x=3
                 //   narrower1Concept.narrowers.forEach(function (narrower2, index2) {
                 async.eachSeries(broader1Concept.broaders, function (broaders2, callbackEach2) {
 
@@ -913,8 +916,8 @@ if(false)
         else if (key == "name")
             keyIndex = 0;
 
-        var TS_raw = "" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_raw.txt");
-      //  var TS_raw = "" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_technology_raw.txt");
+       var TS_raw = "" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_raw.txt");
+     //  var TS_raw = "" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_technology_raw.txt");
         var termScienceMap = {}
         var lines = TS_raw.split("\n");
         lines.forEach(function (line, index) {
@@ -942,7 +945,7 @@ if(false)
         var map = {};
         TS_allterms.forEach(function (term) {
 
-            map[term.id] = term;
+            map[term.name.toLowerCase()] = term;
         })
         return map;
     },
@@ -1036,8 +1039,7 @@ if(false)
     },
     writeCommonConcepts_CSV: function (TS_Map) {
 
-      var commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp\\commonConceptsNew.json"));
-    //    var commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG.json"));
+      var commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG.json"));
       // var  commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_technology.json"));
 
         function setIdsValues(TS_Map) {
@@ -1080,11 +1082,10 @@ if(false)
         function printTS_Map(TS_Map) {
             var str = "CTG_concept\tCTG_id\tTS__concept\tTS__id\tTS__parents\n";
             commonConcepts.forEach(function (item) {
-              //  item.TS_.forEach(function (TS_Item_) {
-
-                   var TS_Item_=item.TS_
+                item.TS_.forEach(function (TS_Item_) {
                     var TS_Id = TS_Item_.id;
-
+                    if (TS_Id == "sh85084167")
+                        var vv = 3
                     var TS_Item = TS_Map[TS_Id];
                     if (!TS_Item)
                         return;
@@ -1099,17 +1100,16 @@ if(false)
                     if (str.indexOf(str2) < 0)
                         str += str2
 
-              //  })
+                })
 
 
             })
-            fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\temp\\commonConcepts_TS__CTG.csv", str)
+            fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_TS__CTG.csv", str)
 
         }
 
 
         var TS_Map = crawler_termSciences.getTermScienceMap("id");
-        var TS_Map = crawler_termSciences.getAllTermScienceMap("id")
         //  console.log(JSON.stringify(TS_Map["sh85136954"]))
 
         TS_Map = setIdsValues(TS_Map);
@@ -1122,6 +1122,7 @@ if(false)
 
     }
     ,
+
     getConceptsCsv: function () {
         var tree = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciencesHierarchy_levels.txt"))
 
@@ -1197,181 +1198,7 @@ if(false)
        // var commonConceptsA = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_TS__CTGalphabetic.csv"));
 
         var existingTSCommon=[
-            'TE.12392',
-            'TE.4673',
-            'TE.16013',
-            'TE.21586',
-            'TE.12395',
-            'TE.68407',
-            'TE.187659',
-            'TE.198050',
-            'TE.82800',
-            'TE.13668',
-            'TE.1395',
-            'TE.13135',
-            'TE.13109',
-            'TE.12194',
-            'TE.188170',
-            'TE.15575',
-            'TE.15684',
-            'TE.4375',
-            'TE.183735',
-            'TE.182761',
-            'TE.74110',
-            'TE.183733',
-            'TE.22130',
-            'TE.183739',
-            'TE.76324',
-            'TE.102783',
-            'TE.104545',
-            'TE.66283',
-            'TE.66340',
-            'TE.104455',
-            'TE.109199',
-            'TE.54612',
-            'TE.54583',
-            'TE.60353',
-            'TE.60182',
-            'TE.73021',
-            'TE.73016',
-            'TE.66464',
-            'TE.189393',
-            'TE.40241',
-            'TE.76329',
-            'TE.76227',
-            'TE.9144',
-            'TE.21914',
-            'TE.79710',
-            'TE.177383',
-            'TE.3302',
-            'TE.31421',
-            'TE.31421',
-            'TE.183124',
-            'TE.49899',
-            'TE.49899',
-            'TE.4227',
-            'TE.4357',
-            'TE.13118',
-            'TE.174228',
-            'TE.40196',
-            'TE.11839',
-            'TE.31412',
-            'TE.31412',
-            'TE.49870',
-            'TE.49870',
-            'TE.57881',
-            'TE.58931',
-            'TE.64852',
-            'TE.31519',
-            'TE.1313',
-            'TE.9580',
-            'TE.53617',
-            'TE.85806',
-            'TE.31125',
-            'TE.184302',
-            'TE.8538',
-            'TE.8530',
-            'TE.1224',
-            'TE.1501',
-            'TE.178826',
-            'TE.1238',
-            'TE.178827',
-            'TE.185208',
-            'TE.62460',
-            'TE.65238',
-            'TE.82959',
-            'TE.59897',
-            'TE.74109',
-            'TE.3896',
-            'TE.12042',
-            'TE.12189',
-            'TE.37887',
-            'TE.16045',
-            'TE.21888',
-            'TE.31335',
-            'TE.183736',
-            'TE.27151',
-            'TE.185261',
-            'TE.57341',
-            'TE.34169',
-            'TE.43777',
-            'TE.85969',
-            'TE.40239',
-            'TE.33118',
-            'TE.61929',
-            'TE.49411',
-            'TE.8527',
-            'TE.74102',
-            'TE.18138',
-            'TE.28678',
-            'TE.54309',
-            'TE.65409',
-            'TE.849',
-            'TE.2580',
-            'TE.180784',
-            'TE.20604',
-            'TE.28649',
-            'TE.183743',
-            'TE.71135',
-            'TE.60527',
-            'TE.185072',
-            'TE.73629',
-            'TE.85082',
-            'TE.73782',
-            'TE.11529',
-            'TE.73864',
-            'TE.73864',
-            'TE.73005',
-            'TE.28482',
-            'TE.35509',
-            'TE.19841',
-            'TE.69542',
-            'TE.84154',
-            'TE.25176',
-            'TE.19236',
-            'TE.23847',
-            'TE.994',
-            'TE.70661',
-            'TE.183292',
-            'TE.29137',
-            'TE.52468',
-            'TE.36311',
-            'TE.48693',
-            'TE.78147',
-            'TE.182846',
-            'TE.14721',
-            'TE.183364',
-            'TE.38751',
-            'TE.185470',
-            'TE.20958',
-            'TE.50921',
-            'TE.19234',
-            'TE.32247',
-            'TE.41542',
-            'TE.22908',
-            'TE.22908',
-            'TE.26848',
-            'TE.41998',
-            'TE.59157',
-            'TE.67202',
-            'TE.66809',
-            'TE.62903',
-            'TE.185139',
-            'TE.63833',
-            'TE.23168',
-            'TE.185452',
-            'TE.19253',
-            'TE.19961',
-            'TE.69349',
-            'TE.70502',
-            'TE.80829',
-            'TE.69291',
-            'TE.4506',
-            'TE.181251',
-            'TE.78042',
-            'TE.87289',
-            'TE.12930',
-            'TE.185419',
+
 
         ]
 
@@ -1438,36 +1265,97 @@ var x=conceptsA;
 
         var commonConceptsA = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json"));
         var newConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp\\newConcepts.json"));
+        var commonConceptsA = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json"));
+
+     //   var oldConcepts= JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json"));
         var newConceptsMap={}
         newConcepts.forEach(function(concept){
             newConceptsMap[concept.id]=concept;
         })
 
+
+
+
+
+
+
+
+        function getPrefLabelEN(prefLabels) {
+            var prefLabelStr = null;
+            if (prefLabels == null)
+                return "?"
+            if (!Array.isArray(prefLabels))
+                prefLabels = [prefLabels]
+            if (prefLabels.length == 0)
+                return "?"
+            prefLabels.forEach(function (prefLabel, index) {
+                if (prefLabelStr == null && prefLabel.lang == "en")
+                    prefLabelStr = prefLabels[index].value
+            })
+            if (prefLabelStr == null) {
+
+                prefLabelStr = prefLabels[0].value
+
+            }
+
+            return prefLabelStr
+        }
+        var orphanConcepts=[]
         commonConceptsA.forEach(function(concept,index){
 
             var conceptX=newConceptsMap[concept.TS_.id]
 
-            if(!conceptX ||  !conceptX.broaders )
+            if(!conceptX ||  !conceptX.broaders ) {
+                orphanConcepts.push(concept.TS_.id)
                 return;
+            }
             var parents="";
+            var parentNames="";
+
             conceptX.broaders.forEach(function(broader,index2){
                 if(index!=0)
                     parents+=","
                 parents+=broader.id;
-            })
-            concept.parents=parents;
+                if(parents==""){
+                    orphanConcepts.push(concept)
+                }else {
+                    var parentName = getPrefLabelEN(broader.prefLabels)
+                    if (index != 0)
+                        parentNames = "," + parentNames
+                    parentNames = parentName + parentNames;
+                }
 
 
-         /*   var children="";
-            conceptX.narrower.forEach(function(narrower,index){
-                if(index==0)
-                    children+=","
-                children+=narrower;
             })
-            commonConceptsA.children=children;*/
+
+            concept.TS_.parents=parents;
+            concept.TS_.parentNames=parentNames;
+           // commonConceptsA[index]=concept;
+
         })
 
-        var x=commonConceptsA
+        var x=orphanConcepts;
+        var str = "CTG_concept\tCTG_id\tTS__concept\tTS__id\tTS__parents\n";
+        commonConceptsA.forEach(function (item) {
+
+
+                var target = item.ctg
+                var targetId = "";
+                if (target.pathIds && target.pathIds.length > 0)
+                    targetId = target.pathIds[0];
+var TS_Item=item.TS_;
+            if (TS_Item.parents!="")
+             var xx=3
+
+                var str2 = target.prefLabel + "\t" + targetId + "\t" + TS_Item.name + "\t" + TS_Item.id + "\t" + TS_Item.parentNames + "\n"
+                if (str.indexOf(str2) < 0)
+                    str += str2
+
+            })
+
+
+
+        fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\temp\\commonConcepts_TS__CTG.csv", str)
 
 
     }
@@ -1482,7 +1370,7 @@ if (false) {
 if (false) {
     crawler_termSciences.setCommonConcepts_TS_CTG()
 }
-if (true) {
+if (false) {
     crawler_termSciences.writeCommonConcepts_CSV();
 }
 
@@ -1501,6 +1389,6 @@ if(false){
     crawler_termSciences.buildHierarchyBroaders();
 }
 
-if(false){
+if(true){
     crawler_termSciences.processNewConcepts();
 }

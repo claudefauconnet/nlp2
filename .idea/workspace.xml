@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/skosToElastic..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/skosToElastic..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -34,24 +37,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../telanthropia" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bailletArchives" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
-      <recent name="D:\GitHub\nlp2\public\index2.html" />
-      <recent name="D:\GitHub\nlp2\public\skosviewer" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\bin\others" />
       <recent name="D:\GitHub\nlp2\public\telanthropia\js" />
       <recent name="D:\GitHub\nlp2\public\telanthropia" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
       <recent name="D:\GitHub\nlp2\bin\backoffice" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
+      <recent name="D:\GitHub\nlp2\public\skosEditor" />
+      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
+      <recent name="D:\GitHub\nlp2\public\index2.html" />
+      <recent name="D:\GitHub\nlp2\public\skosviewer" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -66,7 +69,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.crawler_termSciences..js">
+  <component name="RunManager" selected="Node.js.skosReader..js">
     <configuration name="crawler_LOC..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_LOC..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
@@ -76,19 +79,19 @@
     <configuration name="locskos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="locskos..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
-    <configuration name="skosToElastic..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosToElastic..js" working-dir="$PROJECT_DIR$/bin/others">
+    <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
-    <configuration name="termScienceToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="termScienceToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
+    <configuration name="skosToElastic..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosToElastic..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.crawler_termSciences..js" />
-        <item itemvalue="Node.js.crawler_LOC..js" />
+        <item itemvalue="Node.js.skosReader..js" />
         <item itemvalue="Node.js.skosToElastic..js" />
+        <item itemvalue="Node.js.crawler_LOC..js" />
+        <item itemvalue="Node.js.crawler_termSciences..js" />
         <item itemvalue="Node.js.locskos..js" />
-        <item itemvalue="Node.js.termScienceToSkos..js" />
       </list>
     </recent_temporary>
   </component>
@@ -118,7 +121,8 @@
       <workItem from="1581157541319" duration="134492000" />
       <workItem from="1581576959723" duration="87577000" />
       <workItem from="1582042838100" duration="84479000" />
-      <workItem from="1582886859403" duration="93906000" />
+      <workItem from="1582886859403" duration="103896000" />
+      <workItem from="1583235839973" duration="6830000" />
     </task>
     <servers />
   </component>
@@ -179,182 +183,181 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/termScienceToSkos..js</url>
           <line>707</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2261" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/termScienceToSkos..js</url>
           <line>776</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2281" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/termScienceToSkos..js</url>
           <line>754</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2290" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/termScienceToSkos..js</url>
           <line>863</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2295" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/termScienceToSkos..js</url>
           <line>748</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2297" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>1042</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2299" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>1039</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2301" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>1026</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2310" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>1025</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2333" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>1024</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2335" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>1140</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2336" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>241</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2342" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>258</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2344" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>261</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2345" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/locskos..js</url>
           <line>264</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2346" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
           <line>430</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2424" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
           <line>538</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2455" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
           <line>289</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2500" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
           <line>1131</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2576" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1419</line>
-          <properties lambdaOrdinal="-1" />
+          <line>1245</line>
           <option name="timeStamp" value="2655" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1431</line>
-          <properties lambdaOrdinal="-1" />
+          <line>1257</line>
           <option name="timeStamp" value="2656" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1425</line>
-          <properties lambdaOrdinal="-1" />
+          <line>1251</line>
           <option name="timeStamp" value="2657" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1403</line>
-          <properties lambdaOrdinal="-1" />
+          <line>1229</line>
           <option name="timeStamp" value="2658" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>898</line>
-          <properties lambdaOrdinal="-1" />
+          <line>901</line>
           <option name="timeStamp" value="2667" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1416</line>
-          <properties lambdaOrdinal="-1" />
+          <line>1242</line>
           <option name="timeStamp" value="2695" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1411</line>
-          <properties lambdaOrdinal="-1" />
+          <line>1237</line>
           <option name="timeStamp" value="2696" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>244</line>
-          <properties lambdaOrdinal="-1" />
+          <line>247</line>
           <option name="timeStamp" value="2697" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1470</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2707" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1446</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="2715" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
           <line>1106</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2717" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>1089</line>
+          <option name="timeStamp" value="2722" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>1357</line>
+          <option name="timeStamp" value="2732" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
+          <line>1319</line>
+          <option name="timeStamp" value="2745" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
+          <line>818</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2789" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
+          <line>785</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2790" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
+          <line>1137</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2791" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
+          <line>1180</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2792" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

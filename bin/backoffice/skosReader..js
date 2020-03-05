@@ -1152,7 +1152,7 @@ skosReader.rdfToAnnotator("D:\\NLP\\cgi\\eventprocess.rdf", {outputLangage: "en"
 module.exports = skosReader
 
 
-if (false) {
+if (true) {
     var rdfPath1 = "D:\\NLP\\thesaurus_CTG_Product.rdf";
     var rdfPath1 = "D:\\NLP\\thesaurusCTG-02-20.rdf";
 
@@ -1160,6 +1160,8 @@ if (false) {
     var rdfPath2 = "D:\\NLP\\LOC_Chemistry_3.rdf";
     var rdfPath2 = "D:\\NLP\\LOC_CTG_Physics_3.rdf";
     var rdfPath2 = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
+
+    var rdfPath2 =  "D:\\NLP\\unesco.rdf"
     // var rdfPath2 = "D:\\NLP\\termScience\\termScience_Elements_Chimiques.rdf";
 
 

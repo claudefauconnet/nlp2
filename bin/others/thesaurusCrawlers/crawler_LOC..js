@@ -590,10 +590,40 @@ var crawler_LOC = {
         })
 
 
+    },
+
+    splitAncestorsBranches:function(){
+        var str=""+fs.readFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTG.csv")
+        var str2=""
+       var lines=str.split("\n")
+           lines.forEach(function(line){
+
+              var cols=line.split("\t")
+               if(cols.length<4)
+                   return;
+               var CTG_concept=cols[0].trim()
+               var CTG_id=cols[1].trim()
+               var LOC_concept=cols[2].trim()
+               var LOC_id=cols[3].trim()
+               var LOC_parents=cols[4].trim()
+               var locParentBranch=LOC_parents.split("|");
+               var strBranch=""
+               if(locParentBranch.length>1)
+                   var x=3
+               locParentBranch.forEach(function(branch){
+                   if(strBranch.indexOf(branch)<0)
+                       strBranch+=CTG_concept+"\t"+CTG_id+"\t"+LOC_concept+"\t"+branch+"\n"
+               })
+               str2+=strBranch
+           })
+
+        fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_LOC_CTGbranches.csv",str2)
     }
 
 
 }
+
+
 
 
 module.exports = crawler_LOC
@@ -611,6 +641,11 @@ if (true) {
 if (false) {
     crawler_LOC.setCommonConcepts_LOC_CTG();
   //  crawler_LOC.getHierarchyFromTopConcepts();
+}
+
+if (true) {
+    crawler_LOC.splitAncestorsBranches();
+
 }
 
 
