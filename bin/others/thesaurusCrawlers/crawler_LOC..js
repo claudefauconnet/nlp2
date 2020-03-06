@@ -755,7 +755,7 @@ var crawler_LOC = {
                 json.forEach(function (item) {
                     item.thesaurus = "LOC"
                     fetch.push(item)
-                    if (fetch.length > 5000) {
+                    if (fetch.length > 1000) {
                         all.push(fetch)
                         fetch = [];
                     }
@@ -809,7 +809,7 @@ if (false) {
 
 }
 
-if (true) {
+if (false) {
     crawler_LOC.indexLocToElastic({deleteIndex:true});
 }
 

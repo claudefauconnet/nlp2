@@ -3,12 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/skosToElastic..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/skosToElastic..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/elastic/sources/flat_thesaurus.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/elastic/sources/flat_thesaurus.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -127,7 +122,7 @@
       <workItem from="1581576959723" duration="87577000" />
       <workItem from="1582042838100" duration="84479000" />
       <workItem from="1582886859403" duration="103896000" />
-      <workItem from="1583235839973" duration="35375000" />
+      <workItem from="1583235839973" duration="37477000" />
     </task>
     <servers />
   </component>
@@ -157,7 +152,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/skosToElastic..js</url>
-          <line>320</line>
+          <line>321</line>
           <option name="timeStamp" value="2166" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -177,7 +172,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/skosToElastic..js</url>
-          <line>312</line>
+          <line>313</line>
           <option name="timeStamp" value="2229" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
