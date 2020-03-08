@@ -13,16 +13,19 @@
     <script src="js/theaususList.js"></script>
 
     <script src="js/multiSkosGraph.js"></script>
+    <script src="js/authentification.js"></script>
 
     <script>
         $(function () {
+            config={loginMode:"none",appName:"CTG"};
+            authentication.init()
 //multiSkosGraph.setTheaurusList()
             $("#searchWordInput").bind('keyup', function (e) {
                 if (e.keyCode == 13) {
                     multiSkosGraph.drawConceptGraph($('#searchWordInput').val());
                 }
             });
-            $(".thesCBX").bind('change', multiSkosGraph.onThesCBXChange);
+
 
         })
 
@@ -32,23 +35,39 @@
 
 </head>
 <body>
-<div style="display: flex;flex-direction: row">
+<div id="main" style="display: flex;flex-direction: row">
 
 
     <div style="width:300px">
         <input id="searchWordInput" value="zinc">
         <button onclick="multiSkosGraph.drawConceptGraph($('#searchWordInput').val())">Graph</button>
-        <br><input type="checkbox" checked='checked' id="exactMatchCBX">exactMatch
 
-        <select id="matchingConceptsSelect" size="10" onchange="multiSkosGraph.zoomOnSelectedMatchingConcept()"></select>
+        <br><input type="checkbox" checked='checked' onchange="multiSkosGraph.drawConceptGraph($('#searchWordInput').val())" id="exactMatchCBX">exactMatch
+
+        <select id="matchingConceptsSelect" size="0" style="width:300px" onchange="multiSkosGraph.zoomOnSelectedMatchingConcept()"></select>
         <div id="thesaurusListDiv"></div>
 
     </div>
 
-
+<div>
+   &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"></span>
     <div id="graphDiv" style="width:1000px;height: 1000px"></div>
+</div>
 
 
+
+</div>
+
+<div id="loginDiv"
+     style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
+    <div> login<input id="loginInput">
+        password<input type="password" id="passwordInput" onkeydown="if (event.keyCode == 13)
+                        document.getElementById('loginButton').click()">
+        <button id="loginButton" onclick="authentication.doLogin()">OK</button>
+        <!--   <button id="xxx" onclick="Tablette.updateCotesParTabletteZeros()">TEST boites</button>-->
+
+        <div id="loginMessage"></div>
+    </div>
 </div>
 </body>
 </html>

@@ -10,7 +10,7 @@ var authentication = {
 
 
     authentify: function (login, password, callback) {
-         var usersLocation="../souslesens/config/users/users.json";
+         var usersLocation="../config/users/users.json";
         //  var usersLocation=path.resolve(,"../config/users/users.json");
         var usersLocation = path.join(__dirname, "../config/users/users.json")
         jsonFileStorage.retrieve(path.resolve(usersLocation), function (err, users) {

@@ -3,6 +3,7 @@ var async = require('async')
 var request = require('request')
 var skosReader = require('../backoffice/skosReader.')
 var indexer=require('../backoffice/indexer.')
+var indexer = require('../backoffice/indexer.')
 
 var ndjson = require('ndjson');
 var skosToElastic = {
@@ -48,66 +49,137 @@ var skosToElastic = {
         })
 
     },
-    flatToElastic: function (flatJson,startIndex,callback) {
-        var indexName = "flat_thesaurus"
-        var bulkStr = "";
+    flatToElastic: function (flatJson,startIdValue,createIndex,callback) {
+
+
+
+
         var elasticUrl = "http://localhost:9200/"
-        var elasticUrl="http://vps254642.ovh.net:2009/";
-        flatJson.forEach(function (record, indexedLine) {
-            var id = record.thesaurus + "_" + (startIndex+indexedLine)
+        //  var elasticUrl="http://vps254642.ovh.net:2009/";
+        var indexName = "flat_thesaurus"
+        var indexName = "flat_thesaurus2"
+        var indexconfig = JSON.parse("" + fs.readFileSync("D:\\GitHub\\nlp2\\config\\elastic\\sources\\flat_thesaurus2.json"))
+        var type = indexName;
 
-            bulkStr += JSON.stringify({index: {_index: indexName, _type: indexName, _id: id}}) + "\r\n"
-            bulkStr += JSON.stringify(record) + "\r\n";
+        var countCreated=0;
+        async.series([
 
-        })
+            function (callbackSeries) {
 
-        var options = {
-            method: 'POST',
-            body: bulkStr,
-            encoding: null,
-            headers: {
-                'content-type': 'application/json'
+                if (!createIndex)
+                    return callbackSeries();
+                indexer.deleteIndex(indexconfig, function (err, result) {
+                    callbackSeries();
+                })
             },
-            url: elasticUrl + "_bulk?refresh=wait_for"
-        };
+            function (callbackSeries) {
 
-        request(options, function (error, response, body) {
-            if (error) {
-                return callback(error)
+                if (!createIndex)
+                   return callbackSeries();
+                //updateRecordId  used for incremental update
+                var json = {
+                    mappings: indexconfig.schema.mappings
+                }
+
+                var options = {
+                    method: 'PUT',
+                    description: "create index",
+                    url: elasticUrl + indexName,
+                    json: json
+                };
+
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackSeries(error);
+                    if (body.error)
+                        return callbackSeries(body.error);
+                    console.log("index  created");
+                    return callbackSeries();
+
+                })
+            },
+            function (callbackSeries){
+
+                var bulkStr = "";
+
+                flatJson.forEach(function (record, indexedLine) {
+                    var id = record.thesaurus + "_" + (startIdValue+indexedLine)
+
+                    bulkStr += JSON.stringify({index: {_index: indexName, _type: type, _id: id}}) + "\r\n"
+                    bulkStr += JSON.stringify(record) + "\r\n";
+
+                })
+
+                var options = {
+                    method: 'POST',
+                    body: bulkStr,
+                    encoding: null,
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    url: elasticUrl + "_bulk?refresh=wait_for"
+                };
+
+                request(options, function (error, response, body) {
+                    if (error) {
+                        return callbackSeries(error)
+
+                    }
+
+
+                    if (Buffer.isBuffer(body))
+                        body = JSON.parse(body.toString());
+                    else
+                        body = body;
+                    var errors = [];
+                    if (body.error) {
+                        if (body.error.reason)
+                            return callbackSeries(body.error.reason)
+                        return callbackSeries(body.error)
+                    }
+
+                    if (!body.items)
+                        return callbackSeries(null, "done");
+                    body.items.forEach(function (item) {
+                        if (item.index && item.index.error)
+                            errors.push(item.index.error);
+                        else if (item.update && item.update.error)
+                            errors.push(item.update.error);
+                        else if (item.delete && item.delete.error)
+                            errors.push(item.delete.error);
+                    })
+
+                    if (errors.length > 0) {
+                        errors = errors.slice(0, 20);
+                        return callback(errors);
+                    }
+                    countCreated=body.items.length;
+                    return callbackSeries(null, body.items.length);
+
+
+                })
 
             }
 
 
-            if (Buffer.isBuffer(body))
-                body = JSON.parse(body.toString());
-            else
-                body = body;
-            var errors = [];
-            if (body.error) {
-                if (body.error.reason)
-                    return callback(body.error.reason)
-                return callback(body.error)
-            }
 
-            if (!body.items)
-                return callback(null, "done");
-            body.items.forEach(function (item) {
-                if (item.index && item.index.error)
-                    errors.push(item.index.error);
-                else if (item.update && item.update.error)
-                    errors.push(item.update.error);
-                else if (item.delete && item.delete.error)
-                    errors.push(item.delete.error);
-            })
 
-            if (errors.length > 0) {
-                errors = errors.slice(0, 20);
-                return callback(errors);
-            }
-            return callback(null, body.items.length);
+        ],function(err){
+                if (err)
+                   return callback(err);
+            callback(null,countCreated)
 
 
         })
+
+
+
+
+
+
+
+
+
 
     },
 
@@ -354,7 +426,7 @@ function getThesaurusListFromNlp2App() {
 }
 
 
-if (true) {
+if (false) {
 
     var thesaurusList = getThesaurusListFromNlp2App();
 
@@ -366,7 +438,7 @@ if (true) {
         "D:\\NLP\\quantum_F_all.rdf",
      //   "D:\\NLP\\Tulsa_all.rdf",
         "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
-     //   "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
+      "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
         "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
         "D:\\NLP\\Tulsa_EQUIPMENT.rdf",
         "D:\\NLP\\Tulsa_LIFE FORM.rdf",
@@ -378,7 +450,7 @@ if (true) {
         "D:\\NLP\\unesco.rdf",
         "D:\\NLP\\thesaurusIngenieur.rdf",
     ];
-
+  //  var thesaurusList = [ "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf"]
   //  var thesaurusList = ["D:\\NLP\\unesco.rdf"]
     skosToElastic.load(thesaurusList, function (err, result) {
         if (err)

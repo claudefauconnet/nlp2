@@ -3,7 +3,9 @@ const async = require('async');
 const request = require('request')
 const sax = require("sax");
 var DOMParser = require('xmldom').DOMParser;
+var skosReader = require("../../backoffice/skosReader.")
 
+var skosToElastic = require("../skosToElastic.")
 var crawler_termSciences = {
 
 
@@ -145,8 +147,7 @@ var crawler_termSciences = {
     buildHierarchyBroaders: function () {
 
 
-
-        var children=JSON.parse(""+fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp\\newIdsOrphans.txt"))
+        var children = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp\\newIdsOrphans.txt"))
 
         function getPrefLabelEN(prefLabels) {
             var prefLabelStr = null;
@@ -180,11 +181,11 @@ var crawler_termSciences = {
                 if (err)
                     return console.log(err);
                 var broader1Concept = crawler_termSciences.xmlToSkosConcept(result1);
-              //  var obj1 = {name: getPrefLabelEN(broader1Concept.prefLabels), id: broader1Concept.id, broaders: []}
+                //  var obj1 = {name: getPrefLabelEN(broader1Concept.prefLabels), id: broader1Concept.id, broaders: []}
                 var obj1 = {name: getPrefLabelEN(broader1Concept.prefLabels), id: broader1Concept.id, broaders: []}
                 hierarchy.push(obj1)
-                if(broader1Concept.broaders.length>1)
-                    var x=3
+                if (broader1Concept.broaders.length > 1)
+                    var x = 3
                 //   narrower1Concept.narrowers.forEach(function (narrower2, index2) {
                 async.eachSeries(broader1Concept.broaders, function (broaders2, callbackEach2) {
 
@@ -193,7 +194,6 @@ var crawler_termSciences = {
                             return console.log(err);
                         var broader2Concept = crawler_termSciences.xmlToSkosConcept(result2);
                         obj1.broaders.push(broader2Concept)
-
 
 
                         async.eachSeries(broader2Concept.broaders, function (broaders3, callbackEach3) {
@@ -245,7 +245,7 @@ var crawler_termSciences = {
             })
 
         }, function (err) {
-            var xxx =hierarchy;
+            var xxx = hierarchy;
         })
 
 
@@ -285,548 +285,198 @@ var crawler_termSciences = {
             "Computer science",
             "Spare-time activities"]
 
-        var domains =
-            [
-
-
-                {
-                    "name": "Chemistry",
-                    "id": "TE.15428",
-                    "children": []
-                },
-
-                {
-                    "name": "Energy",
-                    "id": "TE.29455",
-                    "children": []
-                },
-
-
-                {
-                    "name": "Spare-time activities",
-                    "id": "TE.156452",
-                    "children": []
-                },
-                {
-                    "name": "Mathematics",
-                    "id": "TE.48512",
-                    "children": []
-                },
-
-                {
-                    "name": "Physics",
-                    "id": "TE.60624",
-                    "children": []
-                },
-
-            ];
-
-
-        var deepConcepts = [
-            "TE.183956",
-            "TE.183956",
-            "TE.74482",
-            "TE.74484",
-            "TE.74487",
-            "TE.74500",
-            "TE.74551",
-            "TE.185728",
-            "TE.184995",
-            "TE.16038",
-            "TE.16040",
-            "TE.25154",
-            "TE.28730",
-            "TE.178241",
-            "TE.178251",
-            "TE.28736",
-            "TE.41344",
-            "TE.82803",
-            "TE.183956",
-            "TE.23745",
-            "TE.184665",
-            "TE.74551",
-            "TE.185750",
-            "TE.185749",
-            "TE.14340",
-            "TE.180336",
-            "TE.4273",
-            "TE.50428",
-            "TE.2685",
-            "TE.180784",
-            "TE.182968",
-            "TE.25154",
-            "TE.28649",
-            "TE.28727",
-            "TE.82803",
-            "TE.60527",
-            "TE.180513",
-            "TE.72519",
-            "TE.72527",
-            "TE.72542",
-            "TE.76329",
-            "TE.178846",
-            "TE.12496",
-            "TE.57753",
-            "TE.71824",
-            "TE.83901",
-            "TE.182058",
-            "TE.182588",
-            "TE.178665",
-            "TE.181586",
-            "TE.31421",
-            "TE.183124",
-            "TE.49899",
-            "TE.189590",
-            "TE.176867",
-            "TE.75269",
-            "TE.1203",
-            "TE.182822",
-            "TE.178087",
-            "TE.183141",
-            "TE.177923",
-            "TE.4357",
-            "TE.73448",
-            "TE.183733",
-            "TE.54598",
-            "TE.54612",
-            "TE.4357",
-            "TE.8481",
-            "TE.178792",
-            "TE.186932",
-            "TE.8538",
-            "TE.1224",
-            "TE.1501",
-            "TE.3302",
-            "TE.4258",
-            "TE.31146",
-            "TE.37143",
-            "TE.62460",
-            "TE.182636",
-            "TE.36249",
-            "TE.103164",
-            "TE.103165",
-            "TE.40198",
-            "TE.59637",
-            "TE.29180",
-            "TE.5971",
-            "TE.105103",
-            "TE.12208",
-            "TE.60193",
-            "TE.94878",
-            "TE.100456",
-            "TE.104176",
-            "TE.104733",
-            "TE.79710",
-            "TE.94964",
-            "TE.178292",
-            "TE.74620",
-            "TE.104545",
-            "TE.35604",
-            "TE.37887",
-            "TE.31335",
-            "TE.36202",
-            "TE.36249",
-            "TE.38559",
-            "TE.43777",
-            "TE.49696",
-            "TE.54309",
-            "TE.79210",
-            "TE.11529",
-            "TE.28482",
-            "TE.19236",
-            "TE.63189",
-            "TE.63216",
-            "TE.82803",
-            "TE.63155",
-            "TE.180824",
-            "TE.180811",
-            "TE.177267",
-            "TE.149350",
-            "TE.35470",
-            "TE.184438",
-            "TE.47016",
-            "TE.50915",
-            "TE.50916",
-            "TE.50919",
-            "TE.50933",
-            "TE.50941",
-            "TE.183908",
-            "TE.60436",
-            "TE.66809",
-            "TE.67244",
-            "TE.54309",
-            "TE.178070",
-            "TE.190028",
-            "TE.185454",
-            "TE.74484",
-            "TE.74487",
-            "TE.184578",
-            "TE.185468"
-        ]
-        var deepConcepts2 = [
-            "TE.16026",
-            "TE.187947",
-            "TE.188763",
-            "TE.198950",
-            "TE.183942",
-            "TE.187554",
-            "TE.187554",
-            "TE.180974",
-            "TE.180972",
-            "TE.186020",
-            "TE.188040",
-            "TE.188598",
-            "TE.12183",
-            "TE.12194",
-            "TE.40250",
-            "TE.47575",
-            "TE.106226",
-            "TE.105268",
-            "TE.73448",
-            "TE.73451",
-            "TE.182636",
-            "TE.4128",
-            "TE.94947",
-            "TE.94360",
-            "TE.94371",
-            "TE.60588",
-            "TE.177022",
-            "TE.178716",
-            "TE.94625",
-            "TE.94367",
-            "TE.179897",
-            "TE.60182",
-            "TE.188152",
-            "TE.188153",
-            "TE.76227",
-            "TE.94964",
-            "TE.178292",
-            "TE.74620",
-            "TE.104545",
-            "TE.54934",
-            "TE.32455",
-            "TE.189437",
-            "TE.3819",
-            "TE.61009",
-            "TE.54934",
-            "TE.32455",
-            "TE.189437",
-            "TE.179893",
-            "TE.3819",
-            "TE.61009",
-            "TE.32455",
-            "TE.189437",
-            "TE.183766",
-            "TE.186833",
-            "TE.45682",
-            "TE.177594",
-            "TE.189414",
-            "TE.182229",
-            "TE.184589",
-            "TE.184590",
-            "TE.181315",
-            "TE.180214",
-            "TE.184589",
-            "TE.182229",
-            "TE.45682",
-            "TE.177594",
-            "TE.189414",
-            "TE.178823",
-            "TE.1238",
-            "TE.176880",
-            "TE.1588",
-            "TE.179897",
-            "TE.187599",
-            "TE.11922",
-            "TE.1457",
-            "TE.178673",
-            "TE.181315",
-            "TE.1418",
-            "TE.178050",
-            "TE.185208",
-            "TE.180005",
-            "TE.181226",
-            "TE.181295",
-            "TE.2555",
-            "TE.15857",
-            "TE.54934",
-            "TE.56473",
-            "TE.60000",
-            "TE.3819",
-            "TE.179433",
-            "TE.60004",
-            "TE.61009",
-            "TE.2555",
-            "TE.15857",
-            "TE.54934",
-            "TE.56473",
-            "TE.60000",
-            "TE.15530",
-            "TE.31541",
-            "TE.15534",
-            "TE.178091",
-            "TE.184050",
-            "TE.43725",
-            "TE.48916",
-            "TE.3819",
-            "TE.179433",
-            "TE.60004",
-            "TE.61009",
-            "TE.178095",
-            "TE.50437",
-            "TE.177373",
-            "TE.50437",
-            "TE.181291",
-            "TE.187108",
-            "TE.187109",
-            "TE.31213",
-            "TE.183742",
-            "TE.133",
-            "TE.13104",
-            "TE.3568",
-            "TE.23",
-            "TE.177",
-            "TE.77",
-            "TE.46810",
-            "TE.178497",
-            "TE.177670",
-            "TE.197832",
-            "TE.94964",
-            "TE.178292",
-            "TE.74620",
-            "TE.104545"
-        ]
-        var deepConcepts3 = [
-            "TE.16026",
-            "TE.183947",
-            "TE.94333",
-            "TE.94643",
-            "TE.100731",
-            "TE.95316",
-            "TE.104708",
-            "TE.95063",
-            "TE.94358",
-            "TE.29744",
-            "TE.52178",
-            "TE.94355",
-            "TE.100625",
-            "TE.96418",
-            "TE.183757",
-            "TE.103192",
-            "TE.177373",
-            "TE.45684",
-            "TE.45685",
-            "TE.45686",
-            "TE.65132",
-            "TE.177584",
-            "TE.177585",
-            "TE.45684",
-            "TE.45685",
-            "TE.45686",
-            "TE.65132",
-            "TE.177584",
-            "TE.177585",
-            "TE.2394",
-            "TE.7844",
-            "TE.11962",
-            "TE.53211",
-            "TE.183238",
-            "TE.186337",
-            "TE.65270",
-            "TE.667",
-            "TE.2389",
-            "TE.55830",
-            "TE.1309",
-            "TE.15867",
-            "TE.526",
-            "TE.81536",
-            "TE.184597",
-            "TE.1301",
-            "TE.12296",
-            "TE.67",
-            "TE.23797",
-            "TE.25639",
-            "TE.526",
-            "TE.182486",
-            "TE.182488",
-            "TE.60293",
-            "TE.21",
-            "TE.235",
-            "TE.7303",
-            "TE.7313",
-            "TE.389",
-            "TE.22671",
-            "TE.182486",
-            "TE.60296",
-            "TE.199063",
-            "TE.337",
-            "TE.338",
-            "TE.526",
-            "TE.21",
-            "TE.199077",
-            "TE.60320",
-            "TE.65235",
-            "TE.198918",
-            "TE.7312",
-            "TE.15902",
-            "TE.1301",
-            "TE.55830",
-            "TE.22670",
-            "TE.14",
-            "TE.656",
-            "TE.37458",
-            "TE.14",
-            "TE.4309",
-            "TE.184519",
-            "TE.1872",
-            "TE.69034",
-            "TE.1983",
-            "TE.197895",
-            "TE.197896",
-            "TE.59041",
-            "TE.671",
-            "TE.671",
-            "TE.617",
-            "TE.199089",
-            "TE.59050",
-            "TE.188143",
-            "TE.26253",
-            "TE.227",
-            "TE.201",
-            "TE.188100",
-            "TE.188098",
-            "TE.188099",
-            "TE.188102",
-            "TE.188101",
-            "TE.82726",
-            "TE.6938",
-            "TE.22993",
-            "TE.39633",
-            "TE.56710",
-            "TE.6845",
-            "TE.1801",
-            "TE.13111",
-            "TE.60322",
-            "TE.1801",
-            "TE.13111",
-            "TE.60322",
-            "TE.15902",
-            "TE.7313",
-            "TE.38272",
-            "TE.38272",
-            "TE.183776",
-            "TE.183651",
-            "TE.198832",
-            "TE.183084",
-            "TE.189589",
-            "TE.115",
-            "TE.189068",
-            "TE.410",
-            "TE.5635",
-            "TE.6833",
-            "TE.290",
-            "TE.13705",
-            "TE.46317",
-            "TE.687",
-            "TE.54589",
-            "TE.3337",
-            "TE.203504",
-            "TE.184309",
-            "TE.82892",
-            "TE.37371",
-            "TE.54600",
-            "TE.76258",
-            "TE.76260",
-            "TE.76260",
-            "TE.76262",
-            "TE.13709",
-            "TE.22580",
-            "TE.176552",
-            "TE.687",
-            "TE.183416",
-            "TE.185230",
-            "TE.189624",
-            "TE.53174",
-            "TE.53449",
-            "TE.198832",
-            "TE.71130",
-            "TE.189862",
-            "TE.82892",
-            "TE.3337",
-            "TE.34800",
-            "TE.25363",
-            "TE.76075",
-            "TE.7419",
-            "TE.75",
-            "TE.695",
-            "TE.13366",
-            "TE.39670",
-            "TE.185245",
-            "TE.39670",
-            "TE.21428",
-            "TE.186005",
-            "TE.185627",
-            "TE.185625",
-            "TE.185628",
-            "TE.185612",
-            "TE.182923",
-            "TE.183099",
-            "TE.53430",
-            "TE.53434",
-            "TE.51",
-            "TE.185242",
-            "TE.7419",
-            "TE.185241",
-            "TE.79886",
-            "TE.26232",
-            "TE.26233",
-            "TE.70469",
-            "TE.190624",
-            "TE.199107",
-            "TE.199108",
-            "TE.182859",
-            "TE.185239",
-            "TE.7412",
-            "TE.21428",
-            "TE.186992",
-            "TE.55327",
-            "TE.177"
+        var domains = [
+            "TE.177405,Spectrophotometry,Spectrophotometry, Infrared,1",
+            "TE.16021,Liquid chromatography,Ion exchange chromatography,1",
+            "TE.16026,Liquid chromatography,Gel permeation chromatography,1",
+            "TE.16036,Liquid chromatography,Paper chromatography,2",
+            "TE.183432,Ultrafiltration,Hemofiltration,1",
+            "TE.182772,Luminescent Measurements,Fluorometry,4",
+            "TE.177405,Spectrophotometry,Spectrophotometry, Infrared,1",
+            "TE.187612,Gels,Hydrogels,1",
+            "TE.28730,Electrophoresis,Capillary electrophoresis,2",
+            "TE.178241,Electrophoresis,Electrophoresis, Polyacrylamide Gel,2",
+            "TE.178251,Electrophoresis,Electrophoresis, Agar Gel,1",
+            "TE.28736,Electrophoresis,Paper electrophoresis,2",
+            "TE.41344,Electrophoresis,Immunoelectrophoresis,2",
+            "TE.183432,Ultrafiltration,Hemofiltration,1",
+            "TE.177771,Molecular Conformation,Nucleic Acid Conformation,2",
+            "TE.185234,Molecular Conformation,Protein Conformation,4",
+            "TE.188763,Aminoacid sequence,Amino Acid Motifs,7",
+            "TE.183942,Aminoacid sequence,Immunoglobulin Variable Region,3",
+            "TE.176825,Aminoacid sequence,Repetitive Sequences, Amino Acid,1",
+            "TE.176984,Aminoacid sequence,Protein Sorting Signals,2",
+            "TE.72553,Nucleotide sequence,GC rich sequence,1",
+            "TE.177513,Nucleotide sequence,Regulatory Sequences, Nucleic Acid,8",
+            "TE.180969,Nucleotide sequence,Repetitive Sequences, Nucleic Acid,3",
+            "TE.76227,Sulfuric acid,Sulfates,200",
+            "TE.10747,Acids, Noncarboxylic,Boric acid,1",
+            "TE.13135,Acids, Noncarboxylic,Carbonic acid,1",
+            "TE.15575,Acids, Noncarboxylic,Hydrochloric acid,1",
+            "TE.183735,Acids, Noncarboxylic,Hydrofluoric Acid,1",
+            "TE.183733,Acids, Noncarboxylic,Hydrogen Cyanide,1",
+            "TE.54598,Acids, Noncarboxylic,Nitrous acid,2",
+            "TE.54612,Acids, Noncarboxylic,Nitric acid,1",
+            "TE.73021,Acids, Noncarboxylic,Silicic acid,1",
+            "TE.179760,Acids, Noncarboxylic,Phosphorus Acids,4",
+            "TE.177381,Acids, Noncarboxylic,Sulfur Acids,4",
+            "TE.40240,Acids, Noncarboxylic,Hydrogen bromide,1",
+            "TE.183739,Acids, Noncarboxylic,Hydrogen Sulfide,1",
+            "TE.71825,Hyoscine,Scopolamine derivatives,2",
+            "TE.178684,Fatty Alcohols,Butanols,3",
+            "TE.184453,Fatty Alcohols,Dodecanol,1",
+            "TE.180930,Fatty Alcohols,Dolichol,1",
+            "TE.178685,Fatty Alcohols,Hexanols,1",
+            "TE.178686,Fatty Alcohols,Octanols,1",
+            "TE.180664,Amino Alcohols,Ethanolamines,18",
+            "TE.54934,Amino Alcohols,Norepinephrine,7",
+            "TE.185196,Amino Alcohols,Propanolamines,31",
+            "TE.74683,Amino Alcohols,Sphingosin,1",
+            "TE.180664,Ethanol,Ethanolamines,18",
+            "TE.178510,Glycols,Butylene Glycols,1",
+            "TE.178201,Glycols,Ethylene Glycols,4",
+            "TE.185193,Glycols,Propylene Glycols,7",
+            "TE.74683,Glycols,Sphingosin,1",
+            "TE.180705,Sugar Alcohols,Erythritol,1",
+            "TE.35851,Sugar Alcohols,Galactitol,2",
+            "TE.37326,Sugar Alcohols,Glycerol,2",
+            "TE.184049,Sugar Alcohols,Inositol,1",
+            "TE.184801,Sugar Alcohols,Mannitol,2",
+            "TE.73883,Sugar Alcohols,Sorbitol,2",
+            "TE.185196,Propanols,Propanolamines,31",
+            "TE.30570,Sterol,Ergocalciferol,2",
+            "TE.22130,Hydrogen Cyanide,Cyanides,6",
+            "TE.54613,Nitrous acid,Nitrites,2",
+            "TE.54583,Nitric acid,Nitrates,11",
+            "TE.179282,Quaternary Ammonium Compounds,Betalains,2",
+            "TE.178558,Quaternary Ammonium Compounds,Bethanechol Compounds,1",
+            "TE.181872,Quaternary Ammonium Compounds,Bretylium Compounds,1",
+            "TE.15857,Quaternary Ammonium Compounds,Choline,8",
+            "TE.179401,Quaternary Ammonium Compounds,Benzylammonium Compounds,5",
+            "TE.177858,Quaternary Ammonium Compounds,Bis-Trimethylammonium Compounds,2",
+            "TE.179400,Quaternary Ammonium Compounds,Phenylammonium Compounds,3",
+            "TE.179399,Quaternary Ammonium Compounds,Trimethyl Ammonium Compounds,9",
+            "TE.180600,Quaternary Ammonium Compounds,Methacholine Compounds,1",
+            "TE.189473,Quaternary Ammonium Compounds,Tetraethylammonium Compounds,1",
+            "TE.189360,Quaternary Ammonium Compounds,Toxiferine,1",
+            "TE.186934,Reactive Nitrogen Species,S-Nitrosothiols,2",
+            "TE.181237,Fatty acids,Decanoic Acids,1",
+            "TE.180819,Fatty acids,Eicosanoic Acids,1",
+            "TE.182586,Fatty acids,Fatty Acids, Unsaturated,13",
+            "TE.182587,Fatty acids,Fatty Acids, Volatile,5",
+            "TE.183522,Fatty acids,Heptanoic Acids,1",
+            "TE.184452,Fatty acids,Lauric Acids,1",
+            "TE.180440,Fatty acids,Myristic Acids,2",
+            "TE.180098,Fatty acids,Palmitic Acids,2",
+            "TE.189619,Fatty acids,Stearic Acids,1",
+            "TE.178493,Fatty acids,Caprylates,1",
+            "TE.46254,Fatty acids,Lipids,3",
+            "TE.182058,Alcohol,Benzyl Alcohols,1",
+            "TE.182588,Alcohol,Fatty Alcohols,10",
+            "TE.178665,Alcohol,Amino Alcohols,6",
+            "TE.181586,Alcohol,Chlorohydrins,4",
+            "TE.31421,Alcohol,Ethanol,6",
+            "TE.183124,Alcohol,Glycols,4",
+            "TE.49899,Alcohol,Methanol,1",
+            "TE.189590,Alcohol,Sugar Alcohols,10",
+            "TE.176867,Alcohol,Propanols,3",
+            "TE.75269,Alcohol,Sterol,3",
+            "TE.1428,Aminoacid,Aspartic acid,4",
+            "TE.1500,Aminoacid,Glutamic acid,3",
+            "TE.6832,Aminoacid,Arginine,7",
+            "TE.13360,Aminoacid,Carnitine,2",
+            "TE.22508,Aminoacid,Cysteine,5",
+            "TE.26451,Aminoacid,Dopa,3",
+            "TE.37365,Aminoacid,Glycine,2",
+            "TE.49937,Aminoacid,Methionine,5",
+            "TE.56707,Aminoacid,Ornithine,1",
+            "TE.59968,Aminoacid,Phenylalanine,4",
+            "TE.72605,Aminoacid,Serine,5",
+            "TE.77737,Aminoacid,Taurine,1",
+            "TE.82261,Aminoacid,Tryptophan,1",
+            "TE.82700,Aminoacid,Tyrosine,7",
+            "TE.83350,Aminoacid,Valine,1",
+            "TE.17435,Ester,Cocaine,1",
+            "TE.29180,Ester,Enbucrilate,1",
+            "TE.64134,Ester,Procaine,1",
+            "TE.4178,Carbohydrate,Starch,5",
+            "TE.14154,Carbohydrate,Cellulose,7",
+            "TE.37173,Carbohydrate,Glucose,1",
+            "TE.65238,Polymer,Protein,5",
+            "TE.82959,Polymer,Urea,9",
+            "TE.3246,aliphatic hydrocarbons,Alkane,9",
+            "TE.3263,aliphatic hydrocarbons,Alkene,1",
+            "TE.3328,aliphatic hydrocarbons,Alkyne,5",
+            "TE.18780,aromatic hydrocarbons,Polycyclic aromatic compound,2",
+            "TE.80325,aromatic hydrocarbons,Toluene,12",
+            "TE.96418,Apatite,carbonate apatite,1",
+            "TE.183757,Apatite,Hydroxyapatites,1",
+            "TE.103192,Apatite,hydroxylapatite,1",
+            "TE.5971,Calcium phosphate,Apatite,11",
+            "TE.25630,Phosphate polymer,Diphosphates,2",
+            "TE.36263,Gaseous state,Noble gas,9",
+            "TE.4357,Gases,Ammonia,1",
+            "TE.13118,Gases,Carbon dioxide,1",
+            "TE.36263,Gases,Noble gas,9",
+            "TE.183736,Gases,Hydrogen,3",
+            "TE.8538,Gases,Nitrogen oxide,3",
+            "TE.57341,Gases,Oxygen,1",
+            "TE.183739,Gases,Hydrogen Sulfide,1",
+            "TE.180300,Isotopes,Nitrogen Isotopes,1",
+            "TE.181826,Isotopes,Calcium Isotopes,1",
+            "TE.181784,Isotopes,Carbon Isotopes,1",
+            "TE.181636,Isotopes,Cerium Isotopes,1",
+            "TE.181650,Isotopes,Cesium Isotopes,1",
+            "TE.181558,Isotopes,Chromium Isotopes,1",
+            "TE.181499,Isotopes,Cobalt Isotopes,1",
+            "TE.24539,Isotopes,Deuterium,1",
+            "TE.184208,Isotopes,Iron Isotopes,1",
+            "TE.182932,Isotopes,Gallium Isotopes,1",
+            "TE.184164,Isotopes,Iodine Isotopes,1",
+            "TE.103659,Isotopes,stable isotopes,55",
+            "TE.180624,Isotopes,Mercury Isotopes,1",
+            "TE.183153,Isotopes,Gold Isotopes,1",
+            "TE.180110,Isotopes,Oxygen Isotopes,1",
+            "TE.179901,Isotopes,Phosphorus Isotopes,1",
+            "TE.177599,Isotopes,Potassium Isotopes,1",
+            "TE.66857,Isotopes,Radioisotope,76",
+            "TE.178244,Isotopes,Radioisotopes,37",
+            "TE.189709,Isotopes,Sodium Isotopes,1",
+            "TE.177379,Isotopes,Sulfur Isotopes,1",
+            "TE.189613,Isotopes,Strontium Isotopes,1",
+            "TE.189104,Isotopes,Xenon Isotopes,1",
+            "TE.189559,Isotopes,Yttrium Isotopes,1",
+            "TE.189563,Isotopes,Zinc Isotopes,1",
+            "TE.63190,Evoked potential,Auditory evoked potential,2",
+            "TE.63155,Membrane potential,Action potential,1",
+            "TE.183432,Ultrafiltration,Hemofiltration,1",
+            "TE.150030,Ge nord-ouest (L.),Kayap ň (L.),1",
+            "TE.50930,Electron microscopy,Transmission electron microscopy,2",
+            "TE.185475,Image Enhancement,Radiographic Image Enhancement,4",
+            "TE.80361,Image Enhancement,Emission tomography,2",
+            "TE.173883,Radioactivity,Radio élément,4",
+            "TE.56024,Non ionizing radiation,Electromagnetic wave,1",
+            "TE.181940,Radiation Monitoring,Body Burden,2",
+            "TE.184438,Light,Lasers,5",
+            "TE.47016,Light,Luminescence,1"
         ]
 
-        var tehcnoConcepts=[
-            'TE.8221',
-            'TE.184779',
-            'TE.77925',
-            'TE.87265',
-            'TE.185419',
-            'TE.28707',
-            'TE.184985',
-            'TE.70502',
-            'TE.184779',
-            'TE.77925',
-            'TE.78002',
-            'TE.80927',
-            'TE.83692',
-            'TE.217486',
+        /*   var rootTermId="TE.77922"
+           var hierarchy = {name: "conceptsTechnology", id: rootTermId, children: []}
+            crawler_termSciences.queryTermScience(rootTermId, function (err, result) {
+                if (err)
+                    return console.log(err);
+           var rootTermConcept = crawler_termSciences.xmlToSkosConcept(result);
 
-        ]
+                   async.eachSeries( rootTermConcept.narrowers,function(narrower1, callbackEach1){*/
 
-     /*   var rootTermId="TE.77922"
-        var hierarchy = {name: "conceptsTechnology", id: rootTermId, children: []}
-         crawler_termSciences.queryTermScience(rootTermId, function (err, result) {
-             if (err)
-                 return console.log(err);
-        var rootTermConcept = crawler_termSciences.xmlToSkosConcept(result);
+        /*    var hierarchy = {name: "domaines techniques", id: rootTermId, children: []}
+            async.eachSeries(domains, function (narrower1, callbackEach1) {*/
 
-                async.eachSeries( rootTermConcept.narrowers,function(narrower1, callbackEach1){*/
-
-    /*    var hierarchy = {name: "domaines techniques", id: rootTermId, children: []}
-        async.eachSeries(domains, function (narrower1, callbackEach1) {*/
-
-             var hierarchy = {name: "technoConcepts", id: rootTermId, children: []}
-              async.eachSeries(tehcnoConcepts, function (narrower1, callbackEach1) {
-
-                  //  var hierarchy = {name: "conceptsTechnology", id: rootTermId, children: []}
+        var hierarchy = {name: "TSterms", id: rootTermId, children: []}
+        async.eachSeries(domains, function (domain, callbackEach1) {
+            var narrower1 = domain.split(",")[0]
+            //  var hierarchy = {name: "conceptsTechnology", id: rootTermId, children: []}
             crawler_termSciences.queryTermScience(narrower1, function (err, result1) {
                 if (err)
                     return console.log(err);
@@ -852,8 +502,8 @@ var crawler_termSciences = {
                             var obj2 = {name: getPrefLabelEN(narrower2Concept.prefLabels), id: narrower2Concept.id, children: []}
                             console.log(obj1.name + " : " + obj2.name);
                             obj1.children.push(obj2);
-if(false)
-    return callbackEach2();
+                            if (false)
+                                return callbackEach2();
                             //  narrower2Concept.narrowers.forEach(function (narrower3, index3) {
                             async.eachSeries(narrower2Concept.narrowers, function (narrower3, callbackEach3) {
 
@@ -902,7 +552,7 @@ if(false)
             var xx = hierarchy
         })
 
-    //    })
+        //    })
 
 
     },
@@ -916,8 +566,8 @@ if(false)
         else if (key == "name")
             keyIndex = 0;
 
-       var TS_raw = "" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_raw.txt");
-     //  var TS_raw = "" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_technology_raw.txt");
+        var TS_raw = "" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_raw.txt");
+        //  var TS_raw = "" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_technology_raw.txt");
         var termScienceMap = {}
         var lines = TS_raw.split("\n");
         lines.forEach(function (line, index) {
@@ -970,15 +620,15 @@ if(false)
                 ctgMap[concept.prefLabel.toLowerCase()] = concept
             })
 
-           // var TS_Map = crawler_termSciences.getTermScienceMap("name");
-           var TS_Map = crawler_termSciences.getAllTermScienceMap("name");
+            // var TS_Map = crawler_termSciences.getTermScienceMap("name");
+            var TS_Map = crawler_termSciences.getAllTermScienceMap("name");
 
 
-            function getDistinctTokens(key){
-              var   tokens = key.split(/[\s-_;.]/g);
-              var distinctTokens=[];
-                tokens.forEach(function(token){
-                    if(distinctTokens.indexOf(token)<0)
+            function getDistinctTokens(key) {
+                var tokens = key.split(/[\s-_;.]/g);
+                var distinctTokens = [];
+                tokens.forEach(function (token) {
+                    if (distinctTokens.indexOf(token) < 0)
                         distinctTokens.push(token)
                 })
                 return distinctTokens;
@@ -991,13 +641,13 @@ if(false)
                 if (true || ctgKey == "defoliant") {
                     ctgCount += 1
                     ctgCount += 1
-                    var ctgTokens=getDistinctTokens(ctgKey)
+                    var ctgTokens = getDistinctTokens(ctgKey)
 
                     if (Array.isArray(ctgTokens)) {
                         for (var TS_Key in TS_Map) {
 
 
-                           var TS_Tokens=getDistinctTokens(TS_Key)
+                            var TS_Tokens = getDistinctTokens(TS_Key)
                             if (ctgTokens.length == TS_Tokens.length) {
                                 if (ctgTokens.length == 1 && TS_Tokens.length == 1) {
                                     if (isSame(ctgKey, TS_Key)) {
@@ -1031,16 +681,17 @@ if(false)
 
             var xx = commonConcepts;
             fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json", JSON.stringify(commonConcepts, null, 2))
-        //    fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_technology.json", JSON.stringify(commonConcepts, null, 2))
-        //    fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG.json", JSON.stringify(commonConcepts, null, 2))
+            //    fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_technology.json", JSON.stringify(commonConcepts, null, 2))
+            //    fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG.json", JSON.stringify(commonConcepts, null, 2))
         })
 
 
     },
     writeCommonConcepts_CSV: function (TS_Map) {
 
-      var commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG.json"));
-      // var  commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_technology.json"));
+        var commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG.json"));
+
+        // var  commonConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_technology.json"));
 
         function setIdsValues(TS_Map) {
             for (var key in TS_Map) {
@@ -1149,7 +800,7 @@ if(false)
             strOut += concept.name + "\t" + concept.id + "\t" + concept.parents + "\n"
         });
 
-     //   fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_raw.txt", strOut)
+        //   fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_raw.txt", strOut)
         fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\termSciences_technology_raw.txt", strOut)
 
 
@@ -1195,26 +846,23 @@ if(false)
     ,
     compareAll: function () {
         var commonConceptsA = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json"));
-       // var commonConceptsA = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_TS__CTGalphabetic.csv"));
+        // var commonConceptsA = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_TS__CTGalphabetic.csv"));
 
-        var existingTSCommon=[
-
-
-        ]
+        var existingTSCommon = []
 
 
         var conceptsA = []
 
 
-        function getTSIds(array){
-            var ids=[];
+        function getTSIds(array) {
+            var ids = [];
             array.forEach(function (item) {
-                if(ids.indexOf(item.TS_.id)<0)
-                ids.push(item.TS_.id)
-                })
+                if (ids.indexOf(item.TS_.id) < 0)
+                    ids.push(item.TS_.id)
+            })
             return ids
 
-            }
+        }
 
 
         function getCtgIds(array) {
@@ -1232,15 +880,15 @@ if(false)
 
 
         // var idsH = getCtgIds(commonConceptsH)
-      //  var idsA = getCtgIds(commonConceptsA)
+        //  var idsA = getCtgIds(commonConceptsA)
         var idsA = getTSIds(commonConceptsA)
 
         var conceptsA = []
-        idsA.forEach(function(id){
-            if(existingTSCommon.indexOf(id)<0)
-               conceptsA.push(id)
+        idsA.forEach(function (id) {
+            if (existingTSCommon.indexOf(id) < 0)
+                conceptsA.push(id)
         })
-var x=conceptsA;
+        var x = conceptsA;
 
         var nonCommonA = [];
         idsA.forEach(function (id) {
@@ -1256,28 +904,22 @@ var x=conceptsA;
 
 
     }
-    , getNewConceptsFromAll:function(){
+    , getNewConceptsFromAll: function () {
 
 
     }
 
-    ,processNewConcepts:function(){
+    , processNewConcepts: function () {
 
         var commonConceptsA = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json"));
         var newConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp\\newConcepts.json"));
         var commonConceptsA = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json"));
 
-     //   var oldConcepts= JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json"));
-        var newConceptsMap={}
-        newConcepts.forEach(function(concept){
-            newConceptsMap[concept.id]=concept;
+        //   var oldConcepts= JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\commonConcepts_LTS_CTG_all.json"));
+        var newConceptsMap = {}
+        newConcepts.forEach(function (concept) {
+            newConceptsMap[concept.id] = concept;
         })
-
-
-
-
-
-
 
 
         function getPrefLabelEN(prefLabels) {
@@ -1300,25 +942,26 @@ var x=conceptsA;
 
             return prefLabelStr
         }
-        var orphanConcepts=[]
-        commonConceptsA.forEach(function(concept,index){
 
-            var conceptX=newConceptsMap[concept.TS_.id]
+        var orphanConcepts = []
+        commonConceptsA.forEach(function (concept, index) {
 
-            if(!conceptX ||  !conceptX.broaders ) {
+            var conceptX = newConceptsMap[concept.TS_.id]
+
+            if (!conceptX || !conceptX.broaders) {
                 orphanConcepts.push(concept.TS_.id)
                 return;
             }
-            var parents="";
-            var parentNames="";
+            var parents = "";
+            var parentNames = "";
 
-            conceptX.broaders.forEach(function(broader,index2){
-                if(index!=0)
-                    parents+=","
-                parents+=broader.id;
-                if(parents==""){
+            conceptX.broaders.forEach(function (broader, index2) {
+                if (index != 0)
+                    parents += ","
+                parents += broader.id;
+                if (parents == "") {
                     orphanConcepts.push(concept)
-                }else {
+                } else {
                     var parentName = getPrefLabelEN(broader.prefLabels)
                     if (index != 0)
                         parentNames = "," + parentNames
@@ -1328,35 +971,358 @@ var x=conceptsA;
 
             })
 
-            concept.TS_.parents=parents;
-            concept.TS_.parentNames=parentNames;
-           // commonConceptsA[index]=concept;
+            concept.TS_.parents = parents;
+            concept.TS_.parentNames = parentNames;
+            // commonConceptsA[index]=concept;
 
         })
 
-        var x=orphanConcepts;
+        var x = orphanConcepts;
         var str = "CTG_concept\tCTG_id\tTS__concept\tTS__id\tTS__parents\n";
         commonConceptsA.forEach(function (item) {
 
 
-                var target = item.ctg
-                var targetId = "";
-                if (target.pathIds && target.pathIds.length > 0)
-                    targetId = target.pathIds[0];
-var TS_Item=item.TS_;
-            if (TS_Item.parents!="")
-             var xx=3
+            var target = item.ctg
+            var targetId = "";
+            if (target.pathIds && target.pathIds.length > 0)
+                targetId = target.pathIds[0];
+            var TS_Item = item.TS_;
+            if (TS_Item.parents != "")
+                var xx = 3
 
-                var str2 = target.prefLabel + "\t" + targetId + "\t" + TS_Item.name + "\t" + TS_Item.id + "\t" + TS_Item.parentNames + "\n"
-                if (str.indexOf(str2) < 0)
-                    str += str2
+            var str2 = target.prefLabel + "\t" + targetId + "\t" + TS_Item.name + "\t" + TS_Item.id + "\t" + TS_Item.parentNames + "\n"
+            if (str.indexOf(str2) < 0)
+                str += str2
 
-            })
-
+        })
 
 
         fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\temp\\commonConcepts_TS__CTG.csv", str)
 
+
+    }
+    , listHierarchy: function () {
+        var filter = [
+            "Chemistry,Biochemistry,16",
+            "Chemistry,Chemistry, Agricultural,1",
+            "Chemistry,Analytical chemistry,35",
+            "Chemistry,Inorganic chemistry,1",
+            "Chemistry,Organic chemistry,14",
+            "Chemistry,Chemistry, Pharmaceutical,2",
+            "Chemistry,Physical chemistry,38",
+            "Chemistry,Chemical compound,42",
+            "Chemistry,Chemical element,30",
+            "Chemistry,Chemical reaction,1",
+            "Chemistry,Chemical structure,2",
+            "Energy,Nuclear energy,2",
+            "Mathematics,Mathematical Computing,2",
+            "Physics,Acoustics,3",
+            "Physics,Biophysics,8",
+            "Physics,Displacement,5",
+            "Physics,Hardness,1",
+            "Physics,Electricity,7",
+            "Physics,Energy,9",
+            "Physics,Gravitation,1",
+            "Physics,Magnetics,1",
+            "Physics,Matter,9",
+            "Physics,Mechanics,13",
+            "Physics,Mesure physique,1",
+            "Physics,Optics,9",
+            "Physics,Ph énomène physique,16",
+            "Physics,Nuclear physics,11",
+            "Physics,Porosity,1",
+            "Physics,Pressure,5",
+            "Physics,Radiation,6",
+            "Physics,Rheology,4",
+            "Physics,Temperature,6",
+            "Physics,Thermodynamics,3",
+
+
+        ]
+        var terms = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciencesHierarchy_levels.txt"))
+        var terms2 = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\termSciencesHierarchy_technology.txt"))
+        terms.children = terms.children.concat(terms2.children)
+        var terms = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\conceptsLevel4.json"));
+
+
+        var array = [];
+        terms.children.forEach(function (term) {
+            term.children.forEach(function (child) {
+                var ok = true
+
+
+                /*   filter.forEach(function(item){
+                       if(item.indexOf(child.name)>-1)
+                           ok=true
+                   })*/
+                if (!ok)
+                    return;
+                if (child.children.length > 0) {
+                    array.push(child.id + "," + term.name + "," + child.name + "," + child.children.length)
+                    console.log(child.id + "," + term.name + "," + child.name + "," + child.children.length)
+                }
+
+
+            })
+
+        })
+        var x = array
+
+
+    }
+    , TS_ToFlat: function (options) {
+
+        function setMap() {
+            var map = {};
+
+            for (var i = 1; i < 5; i++) {
+                var terms = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\conceptsLevel" + i + ".json"));
+                var terms2 = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\conceptsLevel" + (i + 1) + ".json"));
+                terms.children.forEach(function (term, indexTerm) {
+                    if (i == 1)
+                        map[term.id] = term;
+
+                    terms2.children.forEach(function (term2) {
+                        if (term2.id == term.id)
+                            terms.children[indexTerm] = term2
+                    })
+                })
+
+                //  console.log(Object.keys(map).length)
+            }
+            return map;
+        }
+
+
+        var rootMap = setMap();
+        var allMap = {};
+        //  var x = Object.keys(map).length
+
+        var uniqueChildren = []
+
+        function recurseSetParents(node) {
+
+            if (!node)
+                return;
+
+            allMap[node.id] = node;
+            if (!Array.isArray(node.children))
+                return;
+            node.children.forEach(function (child2) {
+
+                if (uniqueChildren.indexOf(child2.id) < 0) {
+                    uniqueChildren.push(child2.id);
+                    if (child2.id != node.id) {
+                        if (child2.parents)
+                            var x = 3
+                        if (node.parents.length == 0)
+                            child2.parents = [node.id]
+                        else
+                            child2.parents = JSON.parse(JSON.stringify(node.parents))
+
+                        child2.parents.push(child2.id);
+                        recurseSetParents(child2);
+                    } else {
+                        var x = 3
+                    }
+                }
+            })
+
+
+        }
+
+        for (var key in rootMap) {
+            rootMap[key].parents = [];
+
+            recurseSetParents(rootMap[key])
+        }
+
+
+        var jsonArray = [];
+
+        function recurseSetArray(node) {
+            var parentNames = [];
+            if (!node.parents || !node.parents.forEach)
+                return;
+            node.parents.forEach(function (parent) {
+                var item = allMap[parent];
+                if (item)
+                    parentNames.push(item.name)
+
+            })
+            jsonArray.push({id: node.id, name: node.name, parents: node.parents, parentNames: parentNames})
+            if (!Array.isArray(node.children))
+                return;
+            node.children.forEach(function (child) {
+                recurseSetArray(child)
+            })
+        }
+
+
+        for (var key in rootMap) {
+            recurseSetArray(rootMap[key])
+        }
+
+        var x = jsonArray
+
+
+        var flatArray = [];
+        var skosEditorArray = [];
+
+
+        // creat flat json
+        jsonArray.forEach(function (item) {
+            var parentsStr = ""
+            item.parents.forEach(function (parent, index) {
+                if (index > 0)
+                    parentsStr += ","
+                parentsStr += parent
+            })
+            var parentNamesStr = ""
+            item.parentNames.forEach(function (parent, index) {
+                if (index > 0)
+                    parentNamesStr += ","
+                parentNamesStr += parent
+            })
+            flatArray.push({id: item.id, ancestorsIds: parentsStr, ancestors: parentNamesStr, prefLabels: item.name, altLabels: ""})
+        })
+        fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\TS_flat.json", JSON.stringify(flatArray, null, 2))
+
+
+        // create skos
+        var skosEditorArray = []
+        jsonArray.forEach(function (item) {
+            var broaders = [];
+            if (item.parents.length > 1)
+                broaders = [item.parents[item.parents.length - 2]]
+            var concept = {
+                id: item.id,
+                prefLabels: [{lang: "en", value: item.name}],
+                altLabels: [],
+                broaders: broaders,
+                relateds: [],
+                definitions: [],
+                notes: []
+            }
+
+            skosEditorArray.push(concept)
+
+        })
+
+        skosReader.skosEditorToRdf("D:\\NLP\\termScience\\consolidation\\temp2\\termScience.rdf", skosEditorArray)
+
+
+        return;
+
+        function recurseAncestors(nodeId, ancestorsIdsStr, level) {
+            var node = locMap[nodeId];
+            if (!node)
+                return ancestorsIdsStr;
+
+            if (ancestorsIdsStr != "")
+                ancestorsIdsStr = "," + ancestorsIdsStr
+            ancestorsIdsStr = node.id + ancestorsIdsStr;
+
+
+            if (node.parents) {
+                var parentsArray = node.parents.split(",")
+                parentsArray.forEach(function (parent, indexParent) {
+                    if (indexParent > 0)
+                        return; //  ancestorsIdsStr = "|" + ancestorsIdsStr
+                    ancestorsIdsStr = recurseAncestors(parent, ancestorsIdsStr, level + 1)
+
+
+                })
+            } else {
+                return ancestorsIdsStr;
+            }
+            return ancestorsIdsStr;
+        }
+
+
+        var jsonArray = [];
+        var str = "";
+
+        var uniqueTopConcepts = []
+        for (var key in map) {
+            var item = map[key]
+            var ancestorsIdStr = recurseAncestors(item.id, "", 0);
+
+            var ancestorsNames = "";
+            ancestorsIdStr.split("|").forEach(function (ancestorGroupId, groupIndex) {
+                if (groupIndex > 0)
+                    var x = 5;// ancestorsNames += "|"
+                ancestorGroupId.split(",").forEach(function (ancestorId, ancestorIndex) {
+                    if (ancestorIndex > 0)
+                        ancestorsNames += ","
+                    var ancestor = locMap[ancestorId];
+                    if (ancestor) {
+
+                        /*  if(uniqueTopConcepts.indexOf(ancestor.name)<0 )
+                              uniqueTopConcepts.push(ancestor.name)*/
+                        ancestorsNames += ancestor.name;
+                    } else {
+                        ancestorsNames += "?"
+                    }
+
+                })
+                if (options.output == 'json') {
+                    jsonArray.push({id: item.id, ancestorsIds: ancestorsIdStr, ancestors: ancestorsNames, prefLabels: item.name, altLabels: ""})
+                } else {
+                    str += item.id;
+                    if (options.withAncestors) {
+                        str += "\t" + ancestorsIdStr + "\t" + ancestorsNames
+                    }
+                    str += "\t" + item.name + "\t" + "" + "\n"
+                }
+
+            })
+
+
+        }
+
+        var xxx = uniqueTopConcepts.length
+        if (options.output == 'json') {
+            return jsonArray;
+        } else
+            return str
+    },
+
+    TStoElastic: function () {
+        var json = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\TS_flat.json"))
+
+        var all = [];
+        var fetch = []
+        var count = 0;
+        json.forEach(function (item) {
+            item.thesaurus = "TS"
+            fetch.push(item)
+            if (fetch.length > 1000) {
+                all.push(fetch)
+                fetch = [];
+            }
+        })
+        all.push(fetch)
+
+
+        async.eachSeries(all, function (json, callbackSeries) {
+                var x = json
+                skosToElastic.flatToElastic(json, count, function (err, result) {
+                    if (err)
+                        console.log(err)
+                    count += result
+                    console.log(count)
+                    var x = err;
+                    callbackSeries()
+                })
+            }
+
+
+            , function (err) {
+                if (err)
+                    console.log(err);
+                console.log("done" + count)
+            })
 
     }
 
@@ -1385,10 +1351,24 @@ if (false) {
 if (false) {
     crawler_termSciences.compareAll()
 }
-if(false){
+if (false) {
     crawler_termSciences.buildHierarchyBroaders();
 }
 
-if(true){
+if (false) {
     crawler_termSciences.processNewConcepts();
+}
+
+if (false) {
+    crawler_termSciences.listHierarchy()
+
+}
+
+if (false) {
+    crawler_termSciences.TS_ToFlat()
+
+}
+
+if(true){
+    crawler_termSciences.TStoElastic();
 }

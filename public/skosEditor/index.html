@@ -48,6 +48,8 @@
     <script src="js/simpleSkosEditor.js"></script>
     <script src="js/common.js"></script>
     <script src="js/theaususList.js"></script>
+    <script src="../js/others/async.js" charset="utf-8"></script>
+    <script src="js/authentification.js"></script>
 
 
     <script>
@@ -127,6 +129,11 @@
             }
         }
         $(function () {
+
+
+
+            config={loginMode:"none",appName:"CTG"};
+            authentication.init()
             skosEditor.initThesaurusSelects()
             // var to = false;
             $('#treeSearchInput1').keyup(function (e) {
@@ -185,6 +192,17 @@
             <span id='valid_indicator' class='label'></span>
         </div>
         <div id='editorDivId' class='medium-12 columns'></div>
+    </div>
+</div>
+<div id="loginDiv"
+     style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
+    <div> login<input id="loginInput">
+        password<input type="password" id="passwordInput" onkeydown="if (event.keyCode == 13)
+                        document.getElementById('loginButton').click()">
+        <button id="loginButton" onclick="authentication.doLogin()">OK</button>
+        <!--   <button id="xxx" onclick="Tablette.updateCotesParTabletteZeros()">TEST boites</button>-->
+
+        <div id="loginMessage"></div>
     </div>
 </div>
 

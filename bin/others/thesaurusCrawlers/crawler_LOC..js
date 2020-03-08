@@ -623,29 +623,34 @@ var crawler_LOC = {
 
     , locToFlat: function (options) {
 
-        function recurseAncestors(nodeId, ancestorsIdsStr, level) {
+
+var trace
+
+        function recurseAncestors(nodeId, ancestors, level) {
             var node = locMap[nodeId];
             if (!node)
-                return ancestorsIdsStr;
+                return ancestors;
 
-            if (ancestorsIdsStr != "")
-                ancestorsIdsStr = "," + ancestorsIdsStr
-            ancestorsIdsStr = node.id + ancestorsIdsStr;
-
+            ancestors+="|"
+            var parentsArray = node.parents.split(",");
+            var spaces=""
+            for(var i=0;i<level;i++){
+                spaces+="_"
+            }
+            ancestors+=spaces+node.id+";"+node.name;
 
             if (node.parents) {
-                var parentsArray = node.parents.split(",")
+                var level2 = level + 1
                 parentsArray.forEach(function (parent, indexParent) {
-                    if (indexParent > 0)
-                        return; //  ancestorsIdsStr = "|" + ancestorsIdsStr
-                    ancestorsIdsStr = recurseAncestors(parent, ancestorsIdsStr, level + 1)
+                    ancestors = recurseAncestors(parent, ancestors, level2)
+
 
 
                 })
             } else {
-                return ancestorsIdsStr;
+                return ancestors;
             }
-            return ancestorsIdsStr;
+            return ancestors;
         }
 
 
@@ -653,99 +658,47 @@ var crawler_LOC = {
         var jsonArray = [];
         var str = "";
 
-        var uniqueTopConcepts = []
+
         for (var key in locMap) {
             var item = locMap[key]
-            var ancestorsIdStr = recurseAncestors(item.id, "", 0);
 
-            var ancestorsNames = "";
-            ancestorsIdStr.split("|").forEach(function (ancestorGroupId, groupIndex) {
-              if (groupIndex > 0)
-                   var x=5;// ancestorsNames += "|"
-                ancestorGroupId.split(",").forEach(function (ancestorId, ancestorIndex) {
-                    if (ancestorIndex > 0)
-                        ancestorsNames += ","
-                    var ancestor = locMap[ancestorId];
-                    if (ancestor) {
+          var ancestors=  recurseAncestors(item.id, ancestors, 1);
 
-                        /*  if(uniqueTopConcepts.indexOf(ancestor.name)<0 )
-                              uniqueTopConcepts.push(ancestor.name)*/
-                        ancestorsNames += ancestor.name;
-                    } else {
-                        ancestorsNames += "?"
-                    }
 
-                })
-                if (options.output == 'json') {
-                    jsonArray.push({id: item.id, ancestorsIds: ancestorsIdStr, ancestors: ancestorsNames, prefLabels: item.name, altLabels: ""})
-                } else {
-                    str += item.id;
-                    if (options.withAncestors) {
-                        str += "\t" + ancestorsIdStr + "\t" + ancestorsNames
-                    }
-                    str += "\t" + item.name + "\t" + "" + "\n"
+            if (options.output == 'json') {
+                jsonArray.push({id: item.id, ancestors: ancestors, prefLabels: item.name, altLabels: ""})
+            } else {
+                str += item.id;
+                if (options.withAncestors) {
+                    str += "\t" + ancestors
                 }
-
-            })
-
-
+                str += "\t" + item.name + "\t" + "" + "\n"
+            }
 
         }
 
-        var xxx = uniqueTopConcepts.length
         if (options.output == 'json') {
             return jsonArray;
         } else
             return str
-    }
 
-    , indexLocToElastic: function (options_) {
+
+    },
+
+
+
+
+
+    indexLocToElastic: function (options_) {
         var skosToElastic = require('../skosToElastic.')
-        var indexer = require('../../backoffice/indexer.')
-        var request=require('request');
+
         var count = 0
-        var indexconfig = JSON.parse("" + fs.readFileSync("D:\\GitHub\\nlp2\\config\\elastic\\sources\\flat_thesaurus.json"))
-        var elasticUrl="http://localhost:9200/";
-        var elasticUrl="http://vps254642.ovh.net:2009/";
+
 
 
         async.series([
 
 
-            function (callbackSeries) {
-
-                if (!options_.deleteIndex)
-                    callbackSeries();
-                indexer.deleteIndex(indexconfig, function (err, result) {
-                    callbackSeries();
-                })
-            },
-            function (callbackSeries) {
-
-                if (!options_.deleteIndex)
-                    callbackSeries();
-                //updateRecordId  used for incremental update
-                var json= {
-                    mappings: indexconfig.schema.mappings
-                }
-
-                var options = {
-                    method: 'PUT',
-                    description: "create index",
-                    url: elasticUrl + "flat_thesaurus" ,
-                    json: json
-                };
-
-                request(options, function (error, response, body) {
-                    if (error)
-                        return callbackSeries(error);
-                    if (body.error)
-                        return callbackSeries(body.error);
-                   console.log("index  created");
-                    return callbackSeries();
-
-                })
-            },
 
             function (callbackSeries) {
                 var json = crawler_LOC.locToFlat({output: 'json'})
@@ -755,7 +708,7 @@ var crawler_LOC = {
                 json.forEach(function (item) {
                     item.thesaurus = "LOC"
                     fetch.push(item)
-                    if (fetch.length > 1000) {
+                    if (fetch.length > 5000) {
                         all.push(fetch)
                         fetch = [];
                     }
@@ -763,15 +716,18 @@ var crawler_LOC = {
                 all.push(fetch)
 
 
-                async.eachSeries(all, function (json, callbackSeries) {
-                    var x = json
-                    skosToElastic.flatToElastic(json, count,function (err, result) {
-                        if(err)
+                async.eachSeries(all, function (json, callbackEachSeries) {
+                    var x = json;
+                    var createIndex=false;
+                    if( count==0)
+                        createIndex=true;
+                    skosToElastic.flatToElastic(json, count, createIndex,function (err, result) {
+                        if (err)
                             console.log(err)
-                        count += result
+                        count += json.length
                         console.log(count)
                         var x = err;
-                        callbackSeries()
+                        callbackEachSeries()
                     })
                 })
             }
@@ -809,8 +765,11 @@ if (false) {
 
 }
 
-if (false) {
-    crawler_LOC.indexLocToElastic({deleteIndex:true});
+if (true) {
+    crawler_LOC.indexLocToElastic({deleteIndex: true});
 }
 
+if (false) {
+    crawler_LOC.locToFlat({});
+}
 

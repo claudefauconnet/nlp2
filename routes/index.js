@@ -218,6 +218,14 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                 processResponse(response, err, result)
             })
         }
+        if (req.body.tryLoginJSON) {
+
+          authentication.authentify(req.body.login,req.body.password,function (err, result) {
+                processResponse(response, err, result)
+            })
+        }
+
+
 
 
     },

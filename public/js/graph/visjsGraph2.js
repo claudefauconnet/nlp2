@@ -53,6 +53,8 @@ var visjsGraph = (function () {
         window.setTimeout(function () {
             self.network.stopSimulation();
             self.simulationOn = false;
+            if(_options.afterDrawing)
+                _options.afterDrawing()
         }, self.simulationTimeOut)
 
 
@@ -114,6 +116,28 @@ var visjsGraph = (function () {
 
 
         })
+
+
+
+
+       .on("dragEnd", function (params) {
+           if (params.nodes.length == 1) {
+
+               var nodeId = params.nodes[0];
+               var node = self.data.nodes.get(nodeId);
+               node._graphPosition = params.pointer.DOM;
+               var point = params.pointer.DOM;
+               var newNode={id:nodeId}
+               newNode.fixed={x:true,y:true}
+               newNode.x=point.x;
+               newNode.y=point.y;
+               visjsGraph.network.stopSimulation();
+               visjsGraph.simulationOn = false;
+            //   visjsGraph.data.nodes.update(newNode);
+
+           }
+        });
+
 
 
         /*   window.setTimeout(function () {

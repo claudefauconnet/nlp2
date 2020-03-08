@@ -82,58 +82,28 @@ var multiSkosGraph = (function () {
 
                     self.distinctThesaurus[thesaurus] = palette[Object.keys(self.distinctThesaurus).length]
                 }
-                if (true) {
-                    var ancestors = JSON.parse(hit._source.ancestors);
-                    var ancestorsIds = JSON.parse(hit._source.ancestorsIds);
-                    var uniqueNodes = {};
-                    var edges = [];
 
-                    function recurseAncestors(array) {
-                        array.forEach(function (node, arrayIndex) {
-                            if (Array.isArray(node)) {
+                var ancestorsStr = hit._source.ancestors;
+                ancestorsStr = thesaurus + "," + ancestorsStr;
+                var nodes = ancestorsStr.split(",");
 
-                                recurseAncestors(node)
-                            } else {
-                                if (!uniqueNodes[node.id]) {
-                                    uniqueNodes[node.id] = node;
-                                }
+                var ancestorsIdsStr = hit._source.ancestorsIds;
+                ancestorsIdsStr = "TH_" + thesaurus + "," + ancestorsIdsStr
+                var ancestorsIds = ancestorsIdsStr.split(",");
 
 
-                            }
-                        })
+                var lastNode = nodes[nodes.length - 1];
+                if (!options.keepMatchingConcepts) {
+                    var str3 = lastNode.toLocaleLowerCase()
+                    if (!uniqueMatchingConcepts[str3])
+                        uniqueMatchingConcepts[str3] = ""
+                    uniqueMatchingConcepts[str3] += thesaurus.substring(0, 5) + ","
 
 
-                    }
-
-                    recurseAncestors(ancestorsIds)
-
-
-                }
-                else {
-                    var ancestorsStr = hit._source.ancestors;
-
-
-                    ancestorsStr = thesaurus + "," + ancestorsStr;
-                    var nodes = ancestorsStr.split(",");
-
-                    var ancestorsIds = JSON.parse(hit._source.ancestorsIds);
-                    ancestorsIdsStr = "TH_" + thesaurus + "," + ancestorsIdsStr
-                    var ancestorsIds = ancestorsIdsStr.split(",");
-
-
-                    var lastNode = nodes[nodes.length - 1];
-                    if (!options.keepMatchingConcepts) {
-                        var str3 = lastNode.toLocaleLowerCase()
-                        if (!uniqueMatchingConcepts[str3])
-                            uniqueMatchingConcepts[str3] = ""
-                        uniqueMatchingConcepts[str3] += thesaurus.substring(0, 5) + ","
-
-
-                    }
                 }
                 if (exactMatch) {
 
-                    if (word.replace(/\*/g, "").toLowerCase() != hit._source.prefLabels.replace(/\*/g, "").toLowerCase())
+                    if (word.replace(/\*/g, "").toLowerCase() != lastNode.replace(/\*/g, "").toLowerCase())
                         return;
 
                 }
