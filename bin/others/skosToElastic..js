@@ -2,7 +2,7 @@ var fs = require('fs')
 var async = require('async')
 var request = require('request')
 var skosReader = require('../backoffice/skosReader.')
-var indexer=require('../backoffice/indexer.')
+var indexer = require('../backoffice/indexer.')
 var indexer = require('../backoffice/indexer.')
 
 var ndjson = require('ndjson');
@@ -15,23 +15,48 @@ var skosToElastic = {
             withSynonyms: true,
             // filterRegex: /corrosion/gi,
             withAncestors: true,
-            output:"json"
+            output: "json"
 
         }
 
 
-
-
-
         async.eachSeries(thesaurusList, function (thesaurusPath, callbackEach) {
-            var thesaurusName=thesaurusPath.substring(thesaurusPath.lastIndexOf("\\")+1)
-            thesaurusName=thesaurusName.substring(0,thesaurusName.indexOf("."))
+            var thesaurusName = thesaurusPath.substring(thesaurusPath.lastIndexOf("\\") + 1)
+            thesaurusName = thesaurusName.substring(0, thesaurusName.indexOf("."))
             skosReader.rdfToFlat(thesaurusPath, options, function (err, json) {
-                json.forEach(function(item){
-                    item.thesaurus=thesaurusName;
+
+                var newJson = [];
+                json.forEach(function (item) {
+
+                    var ancestors = "";
+                    var ancestorsArray = item.ancestors.split(",")
+                    var ancestorsIdsArray = item.ancestorsIds.split(",")
+                    var ancestorsArray2 = [];
+                    ancestorsArray.forEach(function (item) {
+                        ancestorsArray2.splice(0, 0, item)
+                    })
+                    var ancestorsIdsArray2 = [];
+                    ancestorsIdsArray.forEach(function (item) {
+                        ancestorsIdsArray2.splice(0, 0, item)
+                    })
+                    ancestorsArray2.forEach(function (ancestor, index) {
+                        var sep = "|";
+                        for (var i = 0; i <= index; i++) {
+                            sep += "_";
+                        }
+                        ancestors = ancestors + sep + ancestorsIdsArray[index] + ";" + ancestor
+                    })
+                    newJson.push({
+                        id: item.id,
+                        prefLabels: item.prefLabels,
+                        altLabels: item.altLabels,
+                        ancestors: ancestors,
+                        thesaurus: thesaurusName
+                    })
+
                 })
 
-                skosToElastic.flatToElastic(json,0, function (err, result) {
+                skosToElastic.flatToElastic(newJson, 0, false, function (err, result) {
                     if (err) {
                         return callbackEach(err)
                     }
@@ -49,19 +74,17 @@ var skosToElastic = {
         })
 
     },
-    flatToElastic: function (flatJson,startIdValue,createIndex,callback) {
-
-
+    flatToElastic: function (flatJson, startIdValue, createIndex, callback) {
 
 
         var elasticUrl = "http://localhost:9200/"
-        //  var elasticUrl="http://vps254642.ovh.net:2009/";
-        var indexName = "flat_thesaurus"
+        // var elasticUrl="http://vps254642.ovh.net:2009/";
+        // var indexName = "flat_thesaurus"
         var indexName = "flat_thesaurus2"
         var indexconfig = JSON.parse("" + fs.readFileSync("D:\\GitHub\\nlp2\\config\\elastic\\sources\\flat_thesaurus2.json"))
         var type = indexName;
 
-        var countCreated=0;
+        var countCreated = 0;
         async.series([
 
             function (callbackSeries) {
@@ -75,7 +98,7 @@ var skosToElastic = {
             function (callbackSeries) {
 
                 if (!createIndex)
-                   return callbackSeries();
+                    return callbackSeries();
                 //updateRecordId  used for incremental update
                 var json = {
                     mappings: indexconfig.schema.mappings
@@ -98,12 +121,12 @@ var skosToElastic = {
 
                 })
             },
-            function (callbackSeries){
+            function (callbackSeries) {
 
                 var bulkStr = "";
 
                 flatJson.forEach(function (record, indexedLine) {
-                    var id = record.thesaurus + "_" + (startIdValue+indexedLine)
+                    var id = record.thesaurus + "_" + (startIdValue + indexedLine)
 
                     bulkStr += JSON.stringify({index: {_index: indexName, _type: type, _id: id}}) + "\r\n"
                     bulkStr += JSON.stringify(record) + "\r\n";
@@ -153,7 +176,7 @@ var skosToElastic = {
                         errors = errors.slice(0, 20);
                         return callback(errors);
                     }
-                    countCreated=body.items.length;
+                    countCreated = body.items.length;
                     return callbackSeries(null, body.items.length);
 
 
@@ -162,30 +185,20 @@ var skosToElastic = {
             }
 
 
-
-
-        ],function(err){
-                if (err)
-                   return callback(err);
-            callback(null,countCreated)
+        ], function (err) {
+            if (err)
+                return callback(err);
+            callback(null, countCreated)
 
 
         })
-
-
-
-
-
-
-
-
 
 
     },
 
 
     getCommonConcepts: function (hitsIndexSource, indexTarget, callback) {
-        var commonConcepts=[]
+        var commonConcepts = []
         var hitsIndexTarget = [];
         async.series([
             //query first thersaurus
@@ -200,8 +213,8 @@ var skosToElastic = {
                 hitsIndexSource.forEach(function (item, index) {
 
 
-                 //   var label = item._source.concept;
-                  var label = item._source.name;
+                    //   var label = item._source.concept;
+                    var label = item._source.name;
 
 
                     var elasticQuery = {
@@ -299,7 +312,7 @@ var skosToElastic = {
         var hitsIndexSource = [];
         var hitsIndexTarget = [];
         var commonConcepts = [];
-        var totalHits=0
+        var totalHits = 0
         var scroll_id = "";
         async.series([
                 //query first thersaurus
@@ -307,8 +320,8 @@ var skosToElastic = {
                     var payload = {
                         "query":
                             {
-                               "match_all": {}
-                              //  "match":{"concept":"corrosion"}
+                                "match_all": {}
+                                //  "match":{"concept":"corrosion"}
                             }
                         ,
                         // "from": 4800,
@@ -366,12 +379,12 @@ var skosToElastic = {
                                     scroll_id = body._scroll_id;
                                     scrollSize = body.hits.hits.length;
                                     hitsIndexSource = hitsIndexSource.concat(body.hits.hits);
-                                    totalHits+=body.hits.hits.length;
+                                    totalHits += body.hits.hits.length;
                                     skosToElastic.getCommonConcepts(hitsIndexSource, indexTarget, function (err, result) {
                                         if (err)
                                             return callbackWhilst(err);
-                                        console.log(result.length+" /"+ totalHits)
-                                        commonConcepts=commonConcepts.concat(result)
+                                        console.log(result.length + " /" + totalHits)
+                                        commonConcepts = commonConcepts.concat(result)
                                         callbackWhilst();
 
                                     })
@@ -380,8 +393,8 @@ var skosToElastic = {
                                 })
                             },
                             function (err, n) {
-                                if(err)
-                                   return callbackSeries(err);
+                                if (err)
+                                    return callbackSeries(err);
                                 fs.writeFileSync("D:\\NLP\\LOC\\commonConcepts_" + indexTarget + ".json", JSON.stringify(commonConcepts, null, 2))
                                 callbackSeries();
                             })
@@ -426,19 +439,19 @@ function getThesaurusListFromNlp2App() {
 }
 
 
-if (false) {
+if (true) {
 
     var thesaurusList = getThesaurusListFromNlp2App();
 
 
- //   thesaursusList = ["D:\\NLP\\thesaurusCTG-02-20.rdf"]
+    //   thesaursusList = ["D:\\NLP\\thesaurusCTG-02-20.rdf"]
 
     var thesaurusList = [
         "D:\\NLP\\thesaurusCTG-02-20.rdf",
         "D:\\NLP\\quantum_F_all.rdf",
-     //   "D:\\NLP\\Tulsa_all.rdf",
+        //   "D:\\NLP\\Tulsa_all.rdf",
         "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
-      "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
+        "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
         "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
         "D:\\NLP\\Tulsa_EQUIPMENT.rdf",
         "D:\\NLP\\Tulsa_LIFE FORM.rdf",
@@ -449,9 +462,9 @@ if (false) {
         "D:\\NLP\\Tulsa_PROPERTY.rdf",
         "D:\\NLP\\unesco.rdf",
         "D:\\NLP\\thesaurusIngenieur.rdf",
-    ];
-  //  var thesaurusList = [ "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf"]
-  //  var thesaurusList = ["D:\\NLP\\unesco.rdf"]
+        "D:\\NLP\\termScience\\consolidation\\temp2\\TS.rdf"]
+    //  var thesaurusList = [ "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf"]
+    //  var thesaurusList = ["D:\\NLP\\unesco.rdf"]
     skosToElastic.load(thesaurusList, function (err, result) {
         if (err)
             return console.log(err);
@@ -461,8 +474,8 @@ if (false) {
 if (false) {
 
 
-  skosToElastic.compareThesaurus("libraryofcongress", "flat_thesaurus", function (err, result) {
-      //  skosToElastic.compareThesaurus("termscience_all", "flat_thesaurus", function (err, result) {
+    skosToElastic.compareThesaurus("libraryofcongress", "flat_thesaurus", function (err, result) {
+        //  skosToElastic.compareThesaurus("termscience_all", "flat_thesaurus", function (err, result) {
         var x = result;
     })
 }

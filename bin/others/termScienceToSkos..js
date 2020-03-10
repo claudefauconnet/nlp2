@@ -453,7 +453,7 @@ var termScienceToSkos = {
 
         }
 
-
+        pages=["C"]
         // var pages = [["A", 1], ["A", 2]]
 
         var terms = [];
@@ -462,7 +462,7 @@ var termScienceToSkos = {
         async.eachSeries(pages, function (page, callbackEachPageLetter) {
             var pageNums = []
             previousPageCount = -1
-            for (var i = 1; i <= 150; i++) {
+            for (var i = 1; i <= 500; i++) {
                 pageNums.push(i);
             }
             async.eachSeries(pageNums, function (pageNum, callbackEachPageNum) {
@@ -741,7 +741,7 @@ if (false) {
 
 
 }
-if (true) {
+if (false) {
  //   var data = JSON.parse("" + fs.readFileSync("d:\\NLP\\commonConcepts_TERM_SCIENCE_CTG.rdf"));
     var data = JSON.parse("" + fs.readFileSync("d:\\NLP\\temp.json"));
    // var rdfPath = "D:\\NLP\\commonConcepts_TERM_SCIENCE_CTG2.rdf";

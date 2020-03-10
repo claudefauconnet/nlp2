@@ -835,7 +835,7 @@ var skosReader = {
                     var strAltLabel = ""
                     var filterOk = false;
                     for (var key in concept.prefLabels) {
-                        if (options.lang == key || !options.lang)
+                        if (options.outputLangage == key || !options.outputLangage)
                             concept.prefLabels[key].forEach(function (label, indexLabel) {
                                 if (options.filterRegex && options.filterRegex.test(label))
                                     filterOk = true;

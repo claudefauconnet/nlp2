@@ -632,7 +632,6 @@ var trace
                 return ancestors;
 
             ancestors+="|"
-            var parentsArray = node.parents.split(",");
             var spaces=""
             for(var i=0;i<level;i++){
                 spaces+="_"
@@ -641,6 +640,7 @@ var trace
 
             if (node.parents) {
                 var level2 = level + 1
+                var parentsArray = node.parents.split(",");
                 parentsArray.forEach(function (parent, indexParent) {
                     ancestors = recurseAncestors(parent, ancestors, level2)
 
@@ -662,7 +662,7 @@ var trace
         for (var key in locMap) {
             var item = locMap[key]
 
-          var ancestors=  recurseAncestors(item.id, ancestors, 1);
+          var ancestors=  recurseAncestors(item.id, "", 1);
 
 
             if (options.output == 'json') {
@@ -719,7 +719,7 @@ var trace
                 async.eachSeries(all, function (json, callbackEachSeries) {
                     var x = json;
                     var createIndex=false;
-                    if( count==0)
+                    if( false && count==0)
                         createIndex=true;
                     skosToElastic.flatToElastic(json, count, createIndex,function (err, result) {
                         if (err)
