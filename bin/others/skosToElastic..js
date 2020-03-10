@@ -78,7 +78,7 @@ var skosToElastic = {
 
 
         var elasticUrl = "http://localhost:9200/"
-        // var elasticUrl="http://vps254642.ovh.net:2009/";
+       var elasticUrl="http://vps254642.ovh.net:2009/";
         // var indexName = "flat_thesaurus"
         var indexName = "flat_thesaurus2"
         var indexconfig = JSON.parse("" + fs.readFileSync("D:\\GitHub\\nlp2\\config\\elastic\\sources\\flat_thesaurus2.json"))
@@ -465,6 +465,7 @@ if (true) {
         "D:\\NLP\\termScience\\consolidation\\temp2\\TS.rdf"]
     //  var thesaurusList = [ "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf"]
     //  var thesaurusList = ["D:\\NLP\\unesco.rdf"]
+    var thesaurusList = [ "D:\\NLP\\termScience\\consolidation\\temp2\\TS.rdf"]
     skosToElastic.load(thesaurusList, function (err, result) {
         if (err)
             return console.log(err);

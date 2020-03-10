@@ -960,6 +960,9 @@ var crawler_termSciences = {
     }
     , TS_ToFlat: function (options) {
 
+
+
+
         var items = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\commonConcepts_08_03.json"))
 
 
@@ -986,7 +989,8 @@ var crawler_termSciences = {
 
 
         function recurseAncestors(node, ancestors, level) {
-
+if( node.id=="TE.84154")
+    var x=3
             if (!node)
                 return ancestors;
 
@@ -1029,248 +1033,7 @@ var crawler_termSciences = {
     },
 
 
-    TS_ToFlatOld: function (options) {
 
-        var termsBeginingWithN = []
-        var termsBeginingWithNids = []
-
-        function setMap() {
-            var map = {};
-
-
-            for (var i = 1; i < 5; i++) {
-                var terms = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\conceptsLevel" + 1 + ".json"));
-                var terms2 = JSON.parse("" + fs.readFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\conceptsLevel" + (i + 1) + ".json"));
-                terms.children.forEach(function (term, indexTerm) {
-                    if (term.name.indexOf("N") == 0) {
-                        if (termsBeginingWithNids.indexOf(term.id) < 0) {
-                            termsBeginingWithNids.push(term.id)
-                            termsBeginingWithN.push({
-                                "name": term.name,
-                                "id": term.id
-                            })
-                        }
-                    }
-
-                    if (i == 1)
-                        map[term.id] = term;
-
-                    terms2.children.forEach(function (term2) {
-                        if (term2.name.indexOf("N") == 0) {
-                            if (termsBeginingWithNids.indexOf(term2.id) < 0) {
-                                termsBeginingWithNids.push(term2.id)
-                                termsBeginingWithN.push({
-                                    "name": term2.name,
-                                    "id": term2.id
-                                })
-                            }
-                        }
-                        if (term2.id == term.id)
-                            terms.children[indexTerm] = term2
-                    })
-                })
-
-                //  console.log(Object.keys(map).length)
-            }
-            var xx = termsBeginingWithN;
-            return map;
-        }
-
-
-        var rootMap = setMap();
-        var allMap = {};
-        //  var x = Object.keys(map).length
-
-        var uniqueChildren = []
-
-        function recurseSetParents(node) {
-
-            if (!node)
-                return;
-
-            allMap[node.id] = node;
-            if (!Array.isArray(node.children))
-                return;
-            node.children.forEach(function (child2) {
-
-                if (uniqueChildren.indexOf(child2.id) < 0) {
-                    uniqueChildren.push(child2.id);
-                    if (child2.id != node.id) {
-                        if (child2.parents)
-                            var x = 3
-                        if (node.parents.length == 0)
-                            child2.parents = [node.id]
-                        else
-                            child2.parents = JSON.parse(JSON.stringify(node.parents))
-
-                        child2.parents.push(child2.id);
-                        recurseSetParents(child2);
-                    } else {
-                        var x = 3
-                    }
-                }
-            })
-
-
-        }
-
-        for (var key in rootMap) {
-            rootMap[key].parents = [];
-
-            recurseSetParents(rootMap[key])
-        }
-
-
-        var jsonArray = [];
-
-        function recurseSetArray(node) {
-            var parentNames = [];
-            if (!node.parents || !node.parents.forEach)
-                return;
-            node.parents.forEach(function (parent) {
-                var item = allMap[parent];
-                if (item)
-                    parentNames.push(item.name)
-
-            })
-            jsonArray.push({id: node.id, name: node.name, parents: node.parents, parentNames: parentNames})
-            if (!Array.isArray(node.children))
-                return;
-            node.children.forEach(function (child) {
-                recurseSetArray(child)
-            })
-        }
-
-
-        for (var key in rootMap) {
-            recurseSetArray(rootMap[key])
-        }
-
-        var x = jsonArray
-
-
-        var flatArray = [];
-        var skosEditorArray = [];
-
-
-        // creat flat json
-        jsonArray.forEach(function (item) {
-            var parentsStr = ""
-            item.parents.forEach(function (parent, index) {
-                if (index > 0)
-                    parentsStr += ","
-                parentsStr += parent
-            })
-            var parentNamesStr = ""
-            item.parentNames.forEach(function (parent, index) {
-                if (index > 0)
-                    parentNamesStr += ","
-                parentNamesStr += parent
-            })
-            flatArray.push({id: item.id, ancestorsIds: parentsStr, ancestors: parentNamesStr, prefLabels: item.name, altLabels: ""})
-        })
-        fs.writeFileSync("D:\\NLP\\termScience\\consolidation\\temp2\\TS_flat.json", JSON.stringify(flatArray, null, 2))
-
-
-        // create skos
-        var skosEditorArray = []
-        jsonArray.forEach(function (item) {
-            var broaders = [];
-            if (item.parents.length > 1)
-                broaders = [item.parents[item.parents.length - 2]]
-            var concept = {
-                id: item.id,
-                prefLabels: [{lang: "en", value: item.name}],
-                altLabels: [],
-                broaders: broaders,
-                relateds: [],
-                definitions: [],
-                notes: []
-            }
-
-            skosEditorArray.push(concept)
-
-        })
-
-
-        skosReader.skosEditorToRdf("D:\\NLP\\termScience\\consolidation\\temp2\\termScience.rdf", skosEditorArray)
-
-
-        return;
-
-        function recurseAncestors(nodeId, ancestorsIdsStr, level) {
-            var node = locMap[nodeId];
-            if (!node)
-                return ancestorsIdsStr;
-
-            if (ancestorsIdsStr != "")
-                ancestorsIdsStr = "," + ancestorsIdsStr
-            ancestorsIdsStr = node.id + ancestorsIdsStr;
-
-
-            if (node.parents) {
-                var parentsArray = node.parents.split(",")
-                parentsArray.forEach(function (parent, indexParent) {
-                    if (indexParent > 0)
-                        return; //  ancestorsIdsStr = "|" + ancestorsIdsStr
-                    ancestorsIdsStr = recurseAncestors(parent, ancestorsIdsStr, level + 1)
-
-
-                })
-            } else {
-                return ancestorsIdsStr;
-            }
-            return ancestorsIdsStr;
-        }
-
-
-        var jsonArray = [];
-        var str = "";
-
-        var uniqueTopConcepts = []
-        for (var key in map) {
-            var item = map[key]
-            var ancestorsIdStr = recurseAncestors(item.id, "", 0);
-
-            var ancestorsNames = "";
-            ancestorsIdStr.split("|").forEach(function (ancestorGroupId, groupIndex) {
-                if (groupIndex > 0)
-                    var x = 5;// ancestorsNames += "|"
-                ancestorGroupId.split(",").forEach(function (ancestorId, ancestorIndex) {
-                    if (ancestorIndex > 0)
-                        ancestorsNames += ","
-                    var ancestor = locMap[ancestorId];
-                    if (ancestor) {
-
-                        /*  if(uniqueTopConcepts.indexOf(ancestor.name)<0 )
-                              uniqueTopConcepts.push(ancestor.name)*/
-                        ancestorsNames += ancestor.name;
-                    } else {
-                        ancestorsNames += "?"
-                    }
-
-                })
-                if (options.output == 'json') {
-                    jsonArray.push({id: item.id, ancestorsIds: ancestorsIdStr, ancestors: ancestorsNames, prefLabels: item.name, altLabels: ""})
-                } else {
-                    str += item.id;
-                    if (options.withAncestors) {
-                        str += "\t" + ancestorsIdStr + "\t" + ancestorsNames
-                    }
-                    str += "\t" + item.name + "\t" + "" + "\n"
-                }
-
-            })
-
-
-        }
-
-        var xxx = uniqueTopConcepts.length
-        if (options.output == 'json') {
-            return jsonArray;
-        } else
-            return str
-    },
     TStoElastic: function () {
         var json = crawler_termSciences.TS_ToFlat({output: "json"})
 

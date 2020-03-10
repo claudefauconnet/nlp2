@@ -82,8 +82,8 @@ var multiSkosGraph2 = (function () {
 
 
                 if (exactMatch) {
-
-                    if (word.replace(/\*/g, "").toLowerCase() != hit._source.prefLabels.replace(/\*/g, "").toLowerCase())
+                    var histWords=hit._source.prefLabels.replace(/\*/g, "").toLowerCase().split(",")
+                    if (histWords.indexOf(word.replace(/\*/g, "").toLowerCase())<0 )
                         return;
 
                 }
@@ -97,7 +97,7 @@ var multiSkosGraph2 = (function () {
 
                 var thesaurusNodeId = "TH_" + thesaurus
                 var theaurusNodeEdge = false;
-                if (thesaurusNodeIds.indexOf(thesaurusNodeId) < 0) {
+                if (false && thesaurusNodeIds.indexOf(thesaurusNodeId) < 0) {
                     thesaurusNodeIds.push(thesaurusNodeId);
                     var theasaurusNode = {
                         label: thesaurus,
@@ -116,106 +116,102 @@ var multiSkosGraph2 = (function () {
                 var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
 
 
+                var regex = /(_*)(.*);(.*)/g
+                var array;
+                var previouslLevel = 1;
+                var uniqueNodesLevels = {}
+                while ((array = regex.exec(ancestorsStr)) != null) {
+                    var level = array[1].length;
+                    var id = array[2];
+                    var name = array[3];
 
 
-
-                    var regex = /(_*)(.*);(.*)/g
-                    var array;
-                    var previouslLevel = 1;
-                    var uniqueNodesLevels = {}
-                    while ((array = regex.exec(ancestorsStr)) != null) {
-                        var level = array[1].length;
-                        var id = array[2];
-                        var name = array[3];
+                    if (uniqueNodes.indexOf(id) < 0) {
+                        uniqueNodes.push(id);
+                        if (!uniqueNodesLevels[level])
+                            uniqueNodesLevels[level] = [];
+                        uniqueNodesLevels[level].push(id);
 
 
-                        if (uniqueNodes.indexOf(id) < 0) {
-                            uniqueNodes.push(id);
-                            if (!uniqueNodesLevels[level])
-                                uniqueNodesLevels[level] = [];
-                            uniqueNodesLevels[level].push(id);
+                        if (level == 1) {
+                            visjsData.edges.push({
+                                from: rooNode.id,
+                                to: id,
+                                type: "match"
+                            })
+                        } else if (level == previouslLevel) {
+                            var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
+                            visjsData.edges.push({
+                                from: parent,
+                                to: id,
+                                type: "match",
+                                arrow: "to"
 
+                            });
+                        } else if (level > previouslLevel) {
+                            visjsData.edges.push({
+                                from: uniqueNodes[uniqueNodes.length - 2],
+                                to: id,
+                                type: "match",
+                                arrow: "to"
 
-                            if (level == 1) {
-                                visjsData.edges.push({
-                                    from: rooNode.id,
-                                    to: id,
-                                    type: "match"
-                                })
-                            } else if (level == previouslLevel) {
-                                var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
-                                visjsData.edges.push({
-                                    from: parent,
-                                    to: id,
-                                    type: "match",
-                                    arrow: "to"
+                            });
+                        } else if (level < previouslLevel) {
+                            var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level].length]
+                            visjsData.edges.push({
+                                from: parent,
+                                to: id,
+                                type: "match",
+                                arrow: "to"
 
-                                });
-                            } else if (level > previouslLevel) {
-                                visjsData.edges.push({
-                                    from: uniqueNodes[uniqueNodes.length - 2],
-                                    to: id,
-                                    type: "match",
-                                    arrow: "to"
-
-                                });
-                            } else if (level < previouslLevel) {
-                                var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level].length]
-                                visjsData.edges.push({
-                                    from: parent,
-                                    to: id,
-                                    type: "match",
-                                    arrow: "to"
-
-                                });
-                                if (theasaurusNode && theasaurusNode.id && level > 1) {
-                                    var thesEdge = {
-                                        from:  id,
-                                        to: theasaurusNode.id,
-                                        type: "inThesaurus"
-                                    }
-                                    if (!theaurusNodeEdge)
-                                        theaurusNodeEdge = true;
-                                    else
-                                        thesEdge.physics = false;
-                                    visjsData.edges.push(thesEdge);
+                            });
+                            if (false && theasaurusNode && theasaurusNode.id && level > 1) {
+                                var thesEdge = {
+                                    from: id,
+                                    to: theasaurusNode.id,
+                                    type: "inThesaurus"
                                 }
-
+                                if (!theaurusNodeEdge)
+                                    theaurusNodeEdge = true;
+                                else
+                                    thesEdge.physics = false;
+                                visjsData.edges.push(thesEdge);
                             }
-
-
-                            if (level == 1) {
-                                shape = "dot";
-                                color = rootNodeColor;
-                                size = 10;
-                            } else {
-                                color = self.distinctThesaurus[thesaurus];
-                                var shape = "box";
-                                var size = 20;
-                            }
-
-
-                            var visjNode = {
-                                label: name,
-                                id: id,
-                                color: color,
-                                data: {thesaurus: thesaurus, ancestors: ancestorsStr},
-                                shape: shape,
-                                size: size,
-
-                            }
-
-                            visjsData.nodes.push(visjNode);
 
                         }
-                        previouslLevel = level;
 
 
+                        if (level == 1) {
+                            shape = "dot";
+                            //   color = rootNodeColor;
+                            size = 10;
+                        } else {
+                            color = self.distinctThesaurus[thesaurus];
+                            var shape = "box";
+                            var size = 20;
+                        }
+
+
+                        var visjNode = {
+                            label: name,
+                            id: id,
+                            color: color,
+                            data: {thesaurus: thesaurus, ancestors: ancestorsStr},
+                            shape: shape,
+                            size: size,
+
+                        }
+
+                        visjsData.nodes.push(visjNode);
 
                     }
-                if ( theasaurusNode && theasaurusNode.id && level > 1) {
+                    previouslLevel = level;
+
+
+                }
+                if (false && theasaurusNode && theasaurusNode.id && level > 1) {
                     var thesEdge = {
-                        from:  uniqueNodes[uniqueNodes.length-1],
+                        from: uniqueNodes[uniqueNodes.length - 1],
                         to: theasaurusNode.id,
                         type: "inThesaurus"
                     }
@@ -223,10 +219,7 @@ var multiSkosGraph2 = (function () {
                 }
 
 
-                })
-
-
-
+            })
 
 
             visjsGraph.draw("graphDiv", visjsData, {
@@ -284,21 +277,40 @@ var multiSkosGraph2 = (function () {
     }
 
     self.showNodeInfos = function (node) {
-        var queryString = "|_" + node.id + "*";
+        var str=node.id;
+        var p;
+        if((p=str.indexOf("."))>-1)
+           str=str.substring(p+1)
+        if((p=str.indexOf("/"))>-1)
+            str=str.substring(p+1)
+        if((p=str.indexOf("#"))>-1)
+            str=str.substring(p+1)
+        str=str.replace(/[-_]/g," ")
+        var queryString = "*" +str;
 
 
         self.queryElastic(queryString, {default_field: "ancestors"}, function (err, result) {
             if (err)
                 return console.log(err);
             var hits = result.hits.hits;
+            hits.sort(function(a,b){
+                if(a._source.prefLabels>b._source.prefLabels)
+                    return 1
+                if(b._source.prefLabels>a._source.prefLabels)
+                    return -1
+                return 0;
+            })
             var childrenStr = "<ul>"
             hits.forEach(function (hit) {
-                childrenStr += "<li><a href='multiSkosGraph2.drawConceptGraph(\"" + hit._source.id + "\")'>" + hit._source.name + "</a></li>"
+                var id=hit._source.prefLabels.split(",")[0]
+                if(id!="")
+                childrenStr += "<li onclick='multiSkosGraph2.drawConceptGraph(\"" + id+ "\")'>" + hit._source.prefLabels + "</li>"
 
             })
             childrenStr += "</ul>"
 
-            var str = "<span class=''title'>" + obj.name + "</span>";
+            var str = "<span class='title'>" + node.prefLabels + "</span>";
+            var str = "<span class='title'>" + node.id + "</span>";
             str += childrenStr;
 
             $("#infosDiv").html(str)
@@ -309,7 +321,7 @@ var multiSkosGraph2 = (function () {
     self.queryElastic = function (queryString, options, callback) {
         var default_field = "prefLabels";
         if (options.default_field)
-            default_field = "prefLabels"
+            default_field =options.default_field
         var query = {
 
             "query": {

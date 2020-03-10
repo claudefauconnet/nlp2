@@ -166,9 +166,12 @@ var skosReader = {
 
                     var lang = node.attributes["xml:lang"];
                     if (!lang) {
-                        currentTagName = "prefLabels_" + "X"
+                        currentTagName = "prefLabels_" + lang
                     }
                     if (options.extractedLangages.indexOf(lang) > -1) {
+                        currentTagName = "prefLabels_" + lang
+                    }
+                    else{
                         currentTagName = "prefLabels_" + lang
                     }
 
@@ -186,6 +189,8 @@ var skosReader = {
                     }
 
                     if (options.extractedLangages.indexOf(lang) > -1) {
+                        currentTagName = "altLabels_" + lang
+                    }else{
                         currentTagName = "altLabels_" + lang
                     }
 
@@ -799,6 +804,8 @@ var skosReader = {
             },
             function (callbackSeries) {
                 function recurseAncestors(nodeId, ancestorsIdsStr, level) {
+                    if(nodeId=="TE.84154")
+                        var x=3
                     var node = conceptMap[nodeId];
                     if (!node)
                         return ancestorsIdsStr;
@@ -813,6 +820,8 @@ var skosReader = {
                             var broader = conceptMap[broader];
                             if (!broader)
                                 return ancestorsIdsStr;
+                            if(broader.id=="TE.15439")
+                                var x=3
                             var branchSep = "";
                             for (var i = 0; i < level.length; i++) {// braoders branch separator
                                 ancestorsIdsStr += "|"
@@ -874,7 +883,11 @@ var skosReader = {
                                         if (ancestor.prefLabels[options.outputLangage] && ancestor.prefLabels[options.outputLangage].length > 0) {
                                             ancestorsStr+= ancestor.prefLabels[options.outputLangage][0];
                                         } else {
-                                            ancestorsStr += "?" ;
+                                            var xxx=ancestor
+                                            var str="?"
+
+                                            ancestorsStr +=str ;
+
                                         }
 
                                     }
