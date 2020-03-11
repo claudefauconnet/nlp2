@@ -35,7 +35,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             } else
                 indexesStr = indexes
             elasticRestProxy.executePostQuery(indexesStr + "/_search", queryObj, function (error, result) {
-                logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
+             //   logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
                 processResponse(response, error, result);
 
             });

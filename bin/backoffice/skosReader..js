@@ -253,9 +253,14 @@ var skosReader = {
             if (conceptTagNames.indexOf(node) > -1) {
                 countConceptsEnd += 1
 
+
                 if (!stop)
-                    if (true || Object.keys(currentConcept.prefLabels).length > 0)
+                    if ( Object.keys(currentConcept.prefLabels).length > 0)
                         conceptsMap[currentConcept.id] = currentConcept;
+                    else{
+                        var x=3
+                    }
+
 
 
             }
@@ -464,6 +469,7 @@ var skosReader = {
 
         var conceptsArray = []
 
+        var conceptsWithSeveralBoaders=[];
         for (var id in conceptsMap) {
 
 
@@ -472,10 +478,8 @@ var skosReader = {
 
 
             if (concept.broaders.length > 0) {
-                if (options.lastBroader)
-                    obj.parent = concept.broaders[concept.broaders.length - 1];
-                else
-                    obj.parent = concept.broaders[0];
+                obj.parent = concept.broaders[0];
+
 
             } else {
                 obj.parent = "#"
@@ -513,8 +517,6 @@ var skosReader = {
                 })
             }
 
-            if (concept.relateds.length > 0)
-                var x = 3
 
             obj.data.prefLabels = prefLabelsArray;
             obj.data.altLabels = altLabelsArray;
@@ -523,12 +525,29 @@ var skosReader = {
             obj.data.relateds = concept.relateds;
             obj.data.broaders = concept.broaders;
             obj.data.id = concept.id;
+            if (obj.data.id = "http://data.bnf.fr/ark:/12148/cb119554753")
+                var x = 3;
+
+            if (concept.broaders.length > 1) {
+                var broaders = concept.broaders.splice(0, 1);
+                conceptsWithSeveralBoaders.push[{node: obj, broaders: broaders}];
+            }
+
+
             if (obj.parent != "#" && !conceptsMap[obj.parent])
                 var x = 2;
-            else
-                conceptsArray.push(obj)
+            else if (Object.keys(concept.prefLabels).length > 0){
+                conceptsArray.push(obj);
+        }
 
         }
+        conceptsWithSeveralBoaders.forEach(function(item,index) {
+            var newNode = JSON.parse(JSON.stringify(item.node))
+            newNode.broaders.forEach(function (item, indexBroader) {
+                newNode.id = item.node.id + "clone_" + indexBroader
+                conceptsArray.push(newNode);
+            })
+        })
 
         return conceptsArray;
     }

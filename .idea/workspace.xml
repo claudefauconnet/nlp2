@@ -4,10 +4,10 @@
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/skosToElastic..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/skosToElastic..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/theaususList.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,9 +21,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="HTML File" />
         <option value="JS module" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -70,14 +70,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.skosToElastic..js">
+  <component name="RunManager" selected="Node.js.bin\www">
     <configuration name="crawler_LOC..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_LOC..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
-    <configuration name="crawler_termSciences..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_termSciences..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
+    <configuration name="crawler_rameau..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_rameau..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
-    <configuration name="locskos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="locskos..js" working-dir="$PROJECT_DIR$/bin/others">
+    <configuration name="crawler_termSciences..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_termSciences..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
     <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
@@ -88,11 +88,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.crawler_rameau..js" />
         <item itemvalue="Node.js.skosToElastic..js" />
         <item itemvalue="Node.js.skosReader..js" />
         <item itemvalue="Node.js.crawler_termSciences..js" />
         <item itemvalue="Node.js.crawler_LOC..js" />
-        <item itemvalue="Node.js.locskos..js" />
       </list>
     </recent_temporary>
   </component>
@@ -129,6 +129,7 @@
       <workItem from="1583235839973" duration="85143000" />
       <workItem from="1583659302686" duration="57731000" />
       <workItem from="1583831688727" duration="9147000" />
+      <workItem from="1583914227603" duration="21446000" />
     </task>
     <servers />
   </component>
@@ -214,8 +215,13 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
           <line>992</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3113" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_rameau..js</url>
+          <line>16</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3115" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

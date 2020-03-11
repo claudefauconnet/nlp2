@@ -1,5 +1,7 @@
 var multiSkosGraph2 = (function () {
     var self = {};
+
+    var maxEdges=200
     self.distinctThesaurus = {};
     self.context = {}
     var palette = [
@@ -28,7 +30,7 @@ var multiSkosGraph2 = (function () {
         var html = "<ul>"
         html += " <li><input type='checkbox' checked='checked' onchange='multiSkosGraph2.switchThesCbxs($(this))' class='thesCBXall' id='thes_all" + "'>"
         for (var key in thesaurusList) {
-            console.log(thesaurusList);
+            //    console.log(thesaurusList);
             var color = thesaurusList[key]
 
             html += "<li><input type='checkbox' checked='checked' class='thesCBX' id='thes_" + key + "'><span style='color:" + color + "'>" + key + "</span></li>"
@@ -40,223 +42,279 @@ var multiSkosGraph2 = (function () {
     }
 
     self.drawConceptGraph = function (word, options) {
+
         self.context.currentWord = word
         if (!options)
             options = {};
         $("#waitImg").css("display", "block");
         var uniqueMatchingConcepts = {}
         var exactMatch = $("#exactMatchCBX").prop("checked")
-        self.distinctThesaurus = {};
         var rootNodeColor = "#dda";
         var rootNodeSize = 20
         $("#graphDiv").width($(window).width() - 300)
-        self.queryElastic(word, options, function (err, result) {
-            if (err)
-                return console.log(err);
-            var hits = result.hits.hits;
-            var thesaurusNodeIds = [];
+
+        var thesaurusMatching = []
+        var visjsData = {nodes: [], edges: []}
+        var uniqueNodes = []
+        var uniqueEdges = [];
+        var edgesCount = 0;
+        var thesaurusNodeIds = [];
 
 
-            var thesaurusMatching = []
-            var visjsData = {nodes: [], edges: []}
-            var uniqueNodes = []
-            var uniqueEdges = [];
-            var rooNode = {
-                label: word,
-                id: word,
-                color: rootNodeColor,
-                size: rootNodeSize
-
-            }
-            visjsData.nodes.push(rooNode);
+        var rooNode = {
+            label: word,
+            id: word,
+            color: rootNodeColor,
+            size: rootNodeSize
+        }
+        visjsData.nodes.push(rooNode);
 
 
-            hits.forEach(function (hit) {
-
-                var thesaurus = hit._source.thesaurus.replace(/\s/g, "_");
-                if (!self.distinctThesaurus[thesaurus]) {
-
-                    self.distinctThesaurus[thesaurus] = palette[Object.keys(self.distinctThesaurus).length]
-                }
-                var color = self.distinctThesaurus[thesaurus];
 
 
-                if (exactMatch) {
-                    var histWords=hit._source.prefLabels.replace(/\*/g, "").toLowerCase().split(",")
-                    if (histWords.indexOf(word.replace(/\*/g, "").toLowerCase())<0 )
-                        return;
+        var paths=[];
+        async.series([
 
-                }
 
-                if (!options.keepMatchingConcepts) {
-                    var str3 = hit._source.prefLabels.toLocaleLowerCase()
-                    if (!uniqueMatchingConcepts[str3])
-                        uniqueMatchingConcepts[str3] = ""
-                    uniqueMatchingConcepts[str3] += thesaurus.substring(0, 5) + ","
-                }
+            // rootNode
+            function(callbackSeries) {
 
-                var thesaurusNodeId = "TH_" + thesaurus
-                var theaurusNodeEdge = false;
-                if (false && thesaurusNodeIds.indexOf(thesaurusNodeId) < 0) {
-                    thesaurusNodeIds.push(thesaurusNodeId);
-                    var theasaurusNode = {
-                        label: thesaurus,
-                        id: thesaurusNodeId,
-                        color: color,
-                        size: 30,
-                        shape: "star"
+                callbackSeries()
+            },
+
+
+            // query Sparql bnf
+            function(callbackSeries) {
+         //   return callbackSeries();
+                sparql.queryBNF(word, {exactMatch: exactMatch}, function (err, result) {
+                    if(err){
+                        console.log(err);
+                        callbackSeries()
                     }
-                    visjsData.nodes.push(theasaurusNode);
+                    paths=paths.concat(result)
+                    callbackSeries()
+                })
 
-                }
+            },
+            function(callbackSeries) {
+                return callbackSeries();
+                self.queryElastic(word, options, function (err, result) {
+                    if (err)
+                        return console.log(err);
+                    var hits = result.hits.hits;
+                    hits.forEach(function(hit){
+                        paths.push(hit._source)
+                    })
+                    callbackSeries()
 
-
-                var ancestorsStr = hit._source.ancestors;
-
-                var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
-
-
-                var regex = /(_*)(.*);(.*)/g
-                var array;
-                var previouslLevel = 1;
-                var uniqueNodesLevels = {}
-                while ((array = regex.exec(ancestorsStr)) != null) {
-                    var level = array[1].length;
-                    var id = array[2];
-                    var name = array[3];
-
-
-                    if (uniqueNodes.indexOf(id) < 0) {
-                        uniqueNodes.push(id);
-                        if (!uniqueNodesLevels[level])
-                            uniqueNodesLevels[level] = [];
-                        uniqueNodesLevels[level].push(id);
+                })
+            },
+            function(callbackSeries) {
 
 
-                        if (level == 1) {
-                            visjsData.edges.push({
-                                from: rooNode.id,
-                                to: id,
-                                type: "match"
-                            })
-                        } else if (level == previouslLevel) {
-                            var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
-                            visjsData.edges.push({
-                                from: parent,
-                                to: id,
-                                type: "match",
-                                arrow: "to"
 
-                            });
-                        } else if (level > previouslLevel) {
-                            visjsData.edges.push({
-                                from: uniqueNodes[uniqueNodes.length - 2],
-                                to: id,
-                                type: "match",
-                                arrow: "to"
+                paths.forEach(function (path) {
 
-                            });
-                        } else if (level < previouslLevel) {
-                            var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level].length]
-                            visjsData.edges.push({
-                                from: parent,
-                                to: id,
-                                type: "match",
-                                arrow: "to"
+                    var thesaurus = path.thesaurus.replace(/\s/g, "_");
 
-                            });
-                            if (false && theasaurusNode && theasaurusNode.id && level > 1) {
-                                var thesEdge = {
-                                    from: id,
-                                    to: theasaurusNode.id,
-                                    type: "inThesaurus"
+                    var color = self.distinctThesaurus[thesaurus];
+
+                    if (!options.keepMatchingConcepts) {
+                        var str3 = path.prefLabels.toLocaleLowerCase()
+                        if (!uniqueMatchingConcepts[str3])
+                            uniqueMatchingConcepts[str3] = ""
+                        uniqueMatchingConcepts[str3] += thesaurus.substring(0, 5) + ","
+                    }
+
+
+                    if (exactMatch) {
+                        var histWords = path.prefLabels.replace(/\*/g, "").toLowerCase().split(",")
+                        if (histWords.indexOf(word.replace(/\*/g, "").toLowerCase()) < 0)
+                            return;
+
+                    }
+
+
+                    var thesaurusNodeId = "TH_" + thesaurus
+                    var theaurusNodeEdge = false;
+                    if (false && thesaurusNodeIds.indexOf(thesaurusNodeId) < 0) {
+                        thesaurusNodeIds.push(thesaurusNodeId);
+                        var theasaurusNode = {
+                            label: thesaurus,
+                            id: thesaurusNodeId,
+                            color: color,
+                            size: 30,
+                            shape: "star"
+                        }
+                        visjsData.nodes.push(theasaurusNode);
+
+                    }
+
+
+                    var ancestorsStr = path.ancestors;
+
+                    var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
+
+
+                    var regex = /(_*)(.*);(.*)/g
+                    var array;
+                    var previouslLevel = 1;
+                    var uniqueNodesLevels = {}
+                    while ((array = regex.exec(ancestorsStr)) != null) {
+                        var level = array[1].length;
+                        var id = array[2];
+                        var name = array[3];
+
+
+                        if (uniqueNodes.indexOf(id) < 0) {
+                            uniqueNodes.push(id);
+                            if (!uniqueNodesLevels[level])
+                                uniqueNodesLevels[level] = [];
+                            uniqueNodesLevels[level].push(id);
+
+
+                            if (level == 1) {
+                                visjsData.edges.push({
+                                    from: rooNode.id,
+                                    to: id,
+                                    type: "match",
+                                    arrows: "to",
+                                    label: thesaurus,
+                                    font: {
+                                        color: color,
+                                        weight: "bold",
+                                        size: 12
+                                    }
+                                })
+                            } else if (level == previouslLevel) {
+                                var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
+                                visjsData.edges.push({
+                                    from: parent,
+                                    to: id,
+                                    type: "match",
+                                    arrows: "to",
+
+
+                                });
+                            } else if (level > previouslLevel) {
+                                visjsData.edges.push({
+                                    from: uniqueNodes[uniqueNodes.length - 2],
+                                    to: id,
+                                    type: "match",
+                                    arrows: "to",
+
+
+                                });
+                            } else if (level < previouslLevel) {
+                                var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
+                                visjsData.edges.push({
+                                    from: parent,
+                                    to: id,
+                                    type: "match",
+                                    arrows: "to",
+
+
+                                });
+                                if (false && theasaurusNode && theasaurusNode.id && level > 1) {
+                                    var thesEdge = {
+                                        from: id,
+                                        to: theasaurusNode.id,
+                                        type: "inThesaurus"
+                                    }
+                                    if (!theaurusNodeEdge)
+                                        theaurusNodeEdge = true;
+                                    else
+                                        thesEdge.physics = false;
+                                    visjsData.edges.push(thesEdge);
                                 }
-                                if (!theaurusNodeEdge)
-                                    theaurusNodeEdge = true;
-                                else
-                                    thesEdge.physics = false;
-                                visjsData.edges.push(thesEdge);
+
                             }
 
+
+                            if (level == 1) {
+                                shape = "dot";
+                                //   color = rootNodeColor;
+                                size = 10;
+                            } else {
+                                color = self.distinctThesaurus[thesaurus];
+                                var shape = "box";
+                                var size = 20;
+                            }
+
+
+                            var visjNode = {
+                                label: name,
+                                id: id,
+                                color: color,
+                                data: {thesaurus: thesaurus, ancestors: ancestorsStr},
+                                shape: shape,
+                                size: size,
+
+                            }
+
+                            visjsData.nodes.push(visjNode);
+
                         }
+                        previouslLevel = level;
 
-
-                        if (level == 1) {
-                            shape = "dot";
-                            //   color = rootNodeColor;
-                            size = 10;
-                        } else {
-                            color = self.distinctThesaurus[thesaurus];
-                            var shape = "box";
-                            var size = 20;
-                        }
-
-
-                        var visjNode = {
-                            label: name,
-                            id: id,
-                            color: color,
-                            data: {thesaurus: thesaurus, ancestors: ancestorsStr},
-                            shape: shape,
-                            size: size,
-
-                        }
-
-                        visjsData.nodes.push(visjNode);
 
                     }
-                    previouslLevel = level;
-
-
-                }
-                if (false && theasaurusNode && theasaurusNode.id && level > 1) {
-                    var thesEdge = {
-                        from: uniqueNodes[uniqueNodes.length - 1],
-                        to: theasaurusNode.id,
-                        type: "inThesaurus"
+                    if (false && theasaurusNode && theasaurusNode.id && level > 1) {
+                        var thesEdge = {
+                            from: uniqueNodes[uniqueNodes.length - 1],
+                            to: theasaurusNode.id,
+                            type: "inThesaurus"
+                        }
+                        visjsData.edges.push(thesEdge);
                     }
-                    visjsData.edges.push(thesEdge);
-                }
 
 
-            })
-
-
-            visjsGraph.draw("graphDiv", visjsData, {
-                onclickFn: multiSkosGraph2.onNodeClick,
-                afterDrawing: function () {
-                    $("#waitImg").css("display", "none")
-                }
-            })
-
-            if (!options.selectedThesaurus)
-                self.setTheaurusList(self.distinctThesaurus);
-
-
-            if (!options.keepMatchingConcepts) {
-                var array = [];
-                var keys = Object.keys(uniqueMatchingConcepts);
-                keys.sort();
-                keys.forEach(function (key) {
-
-                    array.push({text: key + " : " + uniqueMatchingConcepts[key], value: key})
                 })
-                //   $("#matchingConceptsSelect").val("");
-                $("#matchingConceptsSelect").prop("size", 10)
-                common.fillSelectOptions("matchingConceptsSelect", array, false, "text", "value")
+                callbackSeries()
+            },
+            function(callbackSeries) {
+                var edgesCount = visjsData.edges.length;
+                if (edgesCount > maxEdges) {
+                    return alert("too many edges :select a specific value")
+                }
+
+                visjsGraph.draw("graphDiv", visjsData, {
+                    onclickFn: multiSkosGraph2.onNodeClick,
+                    afterDrawing: function () {
+                        $("#waitImg").css("display", "none")
+                    }
+                })
+
+                if (!options.selectedThesaurus)
+                    self.setTheaurusList(self.distinctThesaurus);
+
+
+                if (!options.keepMatchingConcepts) {
+                    var array = [];
+                    var keys = Object.keys(uniqueMatchingConcepts);
+                    keys.sort();
+                    keys.forEach(function (key) {
+
+                        array.push({text: key + " : " + uniqueMatchingConcepts[key], value: key})
+                    })
+                    //   $("#matchingConceptsSelect").val("");
+                    $("#matchingConceptsSelect").prop("size", 10)
+                    common.fillSelectOptions("matchingConceptsSelect", array, false, "text", "value")
+                }
+
+
+                $(".thesCBX").parent().css("background-color", "none")
+                $(".thesCBX").parent().css("border", "none")
+                thesaurusMatching.forEach(function (thesaurus) {
+                    thesaurus = "thes_" + thesaurus
+                    $("#" + thesaurus).parent().css("background-color", "#ddd")
+
+                })
             }
+        ])
 
 
-            $(".thesCBX").parent().css("background-color", "none")
-            $(".thesCBX").parent().css("border", "none")
-            thesaurusMatching.forEach(function (thesaurus) {
-                thesaurus = "thes_" + thesaurus
-                $("#" + thesaurus).parent().css("background-color", "#ddd")
 
-            })
-
-
-        })
 
 
     }
@@ -277,41 +335,46 @@ var multiSkosGraph2 = (function () {
     }
 
     self.showNodeInfos = function (node) {
-        var str=node.id;
+        var str = node.id;
         var p;
-        if((p=str.indexOf("."))>-1)
-           str=str.substring(p+1)
-        if((p=str.indexOf("/"))>-1)
-            str=str.substring(p+1)
-        if((p=str.indexOf("#"))>-1)
-            str=str.substring(p+1)
-        str=str.replace(/[-_]/g," ")
-        var queryString = "*" +str;
+        if ((p = str.indexOf(".")) > -1)
+            str = str.substring(p + 1)
+        if ((p = str.indexOf("/")) > -1)
+            str = str.substring(p + 1)
+        if ((p = str.indexOf("#")) > -1)
+            str = str.substring(p + 1)
+        str = str.replace(/[-_]/g, " ")
+        var queryString = "*" + str;
 
 
         self.queryElastic(queryString, {default_field: "ancestors"}, function (err, result) {
             if (err)
                 return console.log(err);
             var hits = result.hits.hits;
-            hits.sort(function(a,b){
-                if(a._source.prefLabels>b._source.prefLabels)
+            hits.sort(function (a, b) {
+                if (a._source.prefLabels > b._source.prefLabels)
                     return 1
-                if(b._source.prefLabels>a._source.prefLabels)
+                if (b._source.prefLabels > a._source.prefLabels)
                     return -1
                 return 0;
             })
             var childrenStr = "<ul>"
             hits.forEach(function (hit) {
-                var id=hit._source.prefLabels.split(",")[0]
-                if(id!="")
-                childrenStr += "<li onclick='multiSkosGraph2.drawConceptGraph(\"" + id+ "\")'>" + hit._source.prefLabels + "</li>"
+                var id = path.prefLabels.split(",")[0]
+                if (id != "")
+                    childrenStr += "<li onclick='multiSkosGraph2.drawConceptGraph(\"" + id + "\")'>" + path.prefLabels + "</li>"
 
             })
             childrenStr += "</ul>"
 
-            var str = "<span class='title'>" + node.prefLabels + "</span>";
-            var str = "<span class='title'>" + node.id + "</span>";
+            var id2 = node.label.split(",")[0]
+            str = "<div>"
+            str += "<span class='title' onclick='multiSkosGraph2.drawConceptGraph(\"" + id2 + "\")'>" + node.label + "</span><br>";
+            str += "<span class='id'>" + node.id + "</span>";
+            str += "</div>"
+            str += "<div  style='width:280px;max-height:450px;font-size:12px;overflow:auto'>"
             str += childrenStr;
+            str += "</div>"
 
             $("#infosDiv").html(str)
         })
@@ -321,7 +384,7 @@ var multiSkosGraph2 = (function () {
     self.queryElastic = function (queryString, options, callback) {
         var default_field = "prefLabels";
         if (options.default_field)
-            default_field =options.default_field
+            default_field = options.default_field
         var query = {
 
             "query": {
@@ -417,6 +480,50 @@ var multiSkosGraph2 = (function () {
         self.drawConceptGraph(value, {keepMatchingConcepts: true});
     }
 
+    self.loadThesaurusList=function(callback) {
+
+        var query = {
+            "aggs": {
+                "thesaurus": {
+                    "terms": {
+                        "field": "thesaurus"
+                    }
+                }
+            }
+            , "size": 0
+        }
+        var payload = {
+            executeQuery: JSON.stringify(query),
+            indexes: JSON.stringify(["flat_thesaurus2"])
+
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/elastic",
+            data: payload,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+               var items=data.aggregations.thesaurus.buckets;
+                items.forEach(function(item){
+                        self.distinctThesaurus[item.key] = palette[Object.keys(self.distinctThesaurus).length]
+                })
+
+
+
+
+            }
+            , error: function (err) {
+                $("#waitImg").css("display", "none");
+                console.log(err.responseText)
+                if (callback) {
+                    return callback(err)
+                }
+                return (err);
+            }
+
+        });
+    }
 
     return self;
 
