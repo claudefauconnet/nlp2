@@ -14,6 +14,7 @@ var statistics = require("../bin/backoffice/statistics.")
 var questionAnswering = require("../bin/questionAnswering.");
 var annotator_skos = require("../bin/backoffice/annotator_skos.");
 var skosReader = require("../bin/backoffice/skosReader..js");
+var httpProxy=require("../bin/httpProxy.")
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('index', {title: 'Express'});
@@ -35,7 +36,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             } else
                 indexesStr = indexes
             elasticRestProxy.executePostQuery(indexesStr + "/_search", queryObj, function (error, result) {
-             //   logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
+                //   logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
                 processResponse(response, error, result);
 
             });
@@ -188,44 +189,41 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             })
         }
         if (req.body.skosEditorToRdf) {
-            skosReader.skosEditorToRdf(req.body.rdfPath,JSON.parse(req.body.data) ,JSON.parse(req.body.options), function (err, result) {
+            skosReader.skosEditorToRdf(req.body.rdfPath, JSON.parse(req.body.data), JSON.parse(req.body.options), function (err, result) {
                 processResponse(response, err, result)
             })
         }
         if (req.body.rdfToFlat) {
-            skosReader.rdfToFlat(req.body.rdfPath,JSON.parse(req.body.options), function (err, result) {
+            skosReader.rdfToFlat(req.body.rdfPath, JSON.parse(req.body.options), function (err, result) {
                 processResponse(response, err, result)
             })
         }
 
         if (req.body.rdfToVisjsGraph) {
-            skosReader.rdfToVisjsGraph(req.body.rdfPath,JSON.parse(req.body.options), function (err, result) {
+            skosReader.rdfToVisjsGraph(req.body.rdfPath, JSON.parse(req.body.options), function (err, result) {
                 processResponse(response, err, result)
             })
         }
 
         if (req.body.compareThesaurus) {
-            skosReader.compareThesaurus(req.body.rdfPath1,req.body.rdfPath2,JSON.parse(req.body.options), function (err, result) {
+            skosReader.compareThesaurus(req.body.rdfPath1, req.body.rdfPath2, JSON.parse(req.body.options), function (err, result) {
                 processResponse(response, err, result)
             })
         }
 
 
-
         if (req.body.getLOCchildren) {
-            var lockskos=require('../bin/others/locskos.')
-            lockskos.getLOCchildren(req.body.conceptId,req.body.maxLevels, function (err, result) {
+            var lockskos = require('../bin/others/locskos.')
+            lockskos.getLOCchildren(req.body.conceptId, req.body.maxLevels, function (err, result) {
                 processResponse(response, err, result)
             })
         }
         if (req.body.tryLoginJSON) {
 
-          authentication.authentify(req.body.login,req.body.password,function (err, result) {
+            authentication.authentify(req.body.login, req.body.password, function (err, result) {
                 processResponse(response, err, result)
             })
         }
-
-
 
 
     },
@@ -235,9 +233,15 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         statistics.getEntitiesMatrix(null, elasticQuery, function (err, result) {
             processResponse(res, err, result)
         })
+    }),
+
+    router.get('/httpProxy', function (req, res, next) {
+
+
+        httpProxy.get(req.url, function (err, result) {
+            processResponse(res, err, result)
+        })
     })
-
-
 )
 
 

@@ -1,7 +1,7 @@
 var multiSkosGraph2 = (function () {
     var self = {};
 
-    var maxEdges=200
+    var maxEdges = 200
     self.distinctThesaurus = {};
     self.context = {}
     var palette = [
@@ -47,11 +47,13 @@ var multiSkosGraph2 = (function () {
         if (!options)
             options = {};
         $("#waitImg").css("display", "block");
+        $("#rigthDivSelect").html("")
+        $("#rigthDivDetails").html("")
         var uniqueMatchingConcepts = {}
         var exactMatch = $("#exactMatchCBX").prop("checked")
         var rootNodeColor = "#dda";
         var rootNodeSize = 20
-        $("#graphDiv").width($(window).width() - 300)
+        $("#graphDiv").width($(window).width() - 600)
 
         var thesaurusMatching = []
         var visjsData = {nodes: [], edges: []}
@@ -70,47 +72,75 @@ var multiSkosGraph2 = (function () {
         visjsData.nodes.push(rooNode);
 
 
-
-
-        var paths=[];
+        var paths = [];
         async.series([
 
 
             // rootNode
-            function(callbackSeries) {
+            function (callbackSeries) {
 
                 callbackSeries()
             },
 
 
             // query Sparql bnf
-            function(callbackSeries) {
-         //   return callbackSeries();
+            function (callbackSeries) {
+                if (!$("#queryBNFcbx").prop("checked"))
+                    return callbackSeries();
+
                 sparql.queryBNF(word, {exactMatch: exactMatch}, function (err, result) {
-                    if(err){
+                    if (err) {
                         console.log(err);
                         callbackSeries()
                     }
-                    paths=paths.concat(result)
+                    paths = paths.concat(result)
                     callbackSeries()
                 })
 
             },
-            function(callbackSeries) {
+            function (callbackSeries) {
+                if (!$("#queryWikidataCbx").prop("checked"))
+                    return callbackSeries();
+
+                sparql.queryWikidata(word, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        callbackSeries()
+                    }
+                    self.wikidataData = result;
+                    var wikidataLabels = []
+                    result.forEach(function (item) {
+                        for (var key in item) {
+                            var labelOk = false;
+                            if (key == "Commons category") {
+                                labelOk = true
+                                wikidataLabels.push({id: item.id, label: item[key]})
+                            }
+                        }
+                        if (!labelOk)
+                            wikidataLabels.push({id: item.id, label: item.id})
+
+                    })
+                    common.fillSelectOptions("rigthDivSelect", wikidataLabels, null, "label", "id")
+
+                })
                 return callbackSeries();
+            },
+
+            function (callbackSeries) {
+                //   return callbackSeries();
                 self.queryElastic(word, options, function (err, result) {
                     if (err)
                         return console.log(err);
                     var hits = result.hits.hits;
-                    hits.forEach(function(hit){
+                    hits.forEach(function (hit) {
                         paths.push(hit._source)
                     })
                     callbackSeries()
 
                 })
             },
-            function(callbackSeries) {
-
+            function (callbackSeries) {
 
 
                 paths.forEach(function (path) {
@@ -272,7 +302,7 @@ var multiSkosGraph2 = (function () {
                 })
                 callbackSeries()
             },
-            function(callbackSeries) {
+            function (callbackSeries) {
                 var edgesCount = visjsData.edges.length;
                 if (edgesCount > maxEdges) {
                     return alert("too many edges :select a specific value")
@@ -314,9 +344,6 @@ var multiSkosGraph2 = (function () {
         ])
 
 
-
-
-
     }
 
 
@@ -335,7 +362,9 @@ var multiSkosGraph2 = (function () {
     }
 
     self.showNodeInfos = function (node) {
+        $("#infosDiv").html("")
         var str = node.id;
+        var _node=node
         var p;
         if ((p = str.indexOf(".")) > -1)
             str = str.substring(p + 1)
@@ -358,13 +387,41 @@ var multiSkosGraph2 = (function () {
                     return -1
                 return 0;
             })
-            var childrenStr = "<ul>"
+            var childrenStr = "<ul>";
+            var children = [];
             hits.forEach(function (hit) {
-                var id = path.prefLabels.split(",")[0]
-                if (id != "")
-                    childrenStr += "<li onclick='multiSkosGraph2.drawConceptGraph(\"" + id + "\")'>" + path.prefLabels + "</li>"
+                var ancestorsStr = hit._source.ancestors;
+                var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
 
+
+                var regex = /(_*)(.*);(.*)/g
+                var array;
+                var previouslLevel = 1;
+                var nodes = [];
+var selectNodeLevel=1000;
+                while ((array = regex.exec(ancestorsStr)) != null) {
+                    var level = array[1].length;
+                    var id = array[2];
+                    var name = array[3];
+                    nodes.push({id: id, name: name, level: level})
+                    if (id == _node.id) {
+                        selectNodeLevel = level;
+
+                    }
+                }
+                nodes.forEach(function(node){
+                    if(node.level== (selectNodeLevel-1)){
+                        childrenStr += "<li onclick='multiSkosGraph2.drawConceptGraph(\"" + node.name+ "\")'>" + node.name + "</li>"
+                    }
+                })
             })
+
+
+                /*   var id = hit._source.prefLabels.split(",")[0]
+                   if (id != "")
+                       childrenStr += "<li onclick='multiSkosGraph2.drawConceptGraph(\"" + id + "\")'>" + hit._source.prefLabels + "</li>"*/
+
+
             childrenStr += "</ul>"
 
             var id2 = node.label.split(",")[0]
@@ -480,7 +537,7 @@ var multiSkosGraph2 = (function () {
         self.drawConceptGraph(value, {keepMatchingConcepts: true});
     }
 
-    self.loadThesaurusList=function(callback) {
+    self.loadThesaurusList = function (callback) {
 
         var query = {
             "aggs": {
@@ -503,13 +560,12 @@ var multiSkosGraph2 = (function () {
             url: "/elastic",
             data: payload,
             dataType: "json",
+
             success: function (data, textStatus, jqXHR) {
-               var items=data.aggregations.thesaurus.buckets;
-                items.forEach(function(item){
-                        self.distinctThesaurus[item.key] = palette[Object.keys(self.distinctThesaurus).length]
+                var items = data.aggregations.thesaurus.buckets;
+                items.forEach(function (item) {
+                    self.distinctThesaurus[item.key] = palette[Object.keys(self.distinctThesaurus).length]
                 })
-
-
 
 
             }
@@ -523,6 +579,24 @@ var multiSkosGraph2 = (function () {
             }
 
         });
+    }
+
+    self.showWikiDataDetails = function (id) {
+
+        self.wikidataData.forEach(function (item) {
+            if (item.id == id) {
+                var str = ""
+                for (var key in item) {
+                    if (key.indexOf('image') > -1) {
+                        str += "<img src='" + item[key] + "' width='200px'/></br>"
+                    } else {
+                        str += "<span style='font-style: italic'>" + key + " : </span>" + "<span style='font-weight: bold'>" + item[key] + " : </span><br>";
+                    }
+                }
+                $("#rigthDivDetails").html(str)
+            }
+        })
+
     }
 
     return self;
