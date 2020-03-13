@@ -3,7 +3,7 @@ var sparql = (function () {
     var self = {};
 
     self.queryBNF = function (word, options, callback) {
-
+        word = word.charAt(0).toUpperCase() + word.slice(1)
         var query = "SELECT DISTINCT ?original_rameau ?prefLabel ?uri_a ?label_a ?uri_b ?label_b\n" +
             "WHERE {\n" +
             "?original_rameau skos:prefLabel ?prefLabel ;\n" +
@@ -14,7 +14,6 @@ var sparql = (function () {
             "OPTIONAL {\n" +
             "?uri_a skos:narrower ?uri_b .\n" +
             "?uri_b skos:prefLabel ?label_b .\n" +
-            " \n" +
             "}\n" +
             "}\n" +
             "\n" +
@@ -22,7 +21,7 @@ var sparql = (function () {
 
         var labelQuery = ""
         if (options.exactMatch)
-            labelQuery = "filter(str(LCASE(?prefLabel))=\"" + word + "\")"
+            labelQuery = "filter(str(?prefLabel)=\"" + word + "\")"
         else
             labelQuery = " filter contains(?prefLabel,\"" + word + "\") ";
 
@@ -34,29 +33,41 @@ var sparql = (function () {
             "  ?broaderId1 skos:prefLabel ?broader1\n"
 
         query += labelQuery + "\n";
-        query += "OPTIONAL {\n" +
-            "?broaderId1 skos:broader ?broaderId2 .\n" +
-            "?broaderId2 skos:prefLabel ?broader2 .\n" +
-            " ?broaderId2 skos:broader ?broaderId3 .\n" +
-            "?broaderId3 skos:prefLabel ?broader3 .\n" +
-            "    ?broaderId3 skos:broader ?broaderId4 .\n" +
-            "?broaderId4 skos:prefLabel ?broader4 .\n" +
-            "     ?broaderId4 skos:broader ?broaderId5 .\n" +
-            "?broaderId5 skos:prefLabel ?broader5 .\n" +
-            "     ?broaderId5 skos:broader ?broaderId6 .\n" +
-            "?broaderId6 skos:prefLabel ?broader6 .\n" +
+        query +=
+            "OPTIONAL {\n" +
+            "    ?broaderId1 skos:broader ?broaderId2 .\n" +
+            "    ?broaderId2 skos:prefLabel ?broader2 .\n" +
+            "     OPTIONAL {\n" +
+            "   \n" +
+            "       ?broaderId2 skos:broader ?broaderId3 .\n" +
+            "    \t?broaderId3 skos:prefLabel ?broader3 .\n" +
+            "       OPTIONAL {\n" +
+            "       ?broaderId3 skos:broader ?broaderId4 .\n" +
+            "    \t?broaderId4 skos:prefLabel ?broader4 .\n" +
+            "           OPTIONAL {\n" +
+            "       ?broaderId4 skos:broader ?broaderId5 .\n" +
+            "    \t?broaderId5 skos:prefLabel ?broader5 .\n" +
+            "         OPTIONAL {   \n" +
+            "       ?broaderId5 skos:broader ?broaderId6 .\n" +
+            "    \t?broaderId6 skos:prefLabel ?broader6 .\n" +
+            "               OPTIONAL {   \n" +
             "       ?broaderId6 skos:broader ?broaderId7 .\n" +
-            "?broaderId7 skos:prefLabel ?broader7 .\n" +
-            "        ?broaderId7 skos:broader ?broaderId8 .\n" +
-            "?broaderId8 skos:prefLabel ?broader8 .\n" +
-            "        ?broaderId8 skos:broader ?broaderId9 .\n" +
-            "?broaderId9 skos:prefLabel ?broader9 .\n" +
-            "            ?broaderId9 skos:broader ?broaderId10 .\n" +
-            "?broaderId10 skos:prefLabel ?broader10 .\n" +
-            "}\n" +
-            "}\n" +
-            "\n" +
+            "    \t?broaderId7 skos:prefLabel ?broader7 .\n" +
+            "                 OPTIONAL {   \n" +
+            "       ?broaderId7 skos:broader ?broaderId8 .\n" +
+            "    \t?broaderId8 skos:prefLabel ?broader8 .\n" +
+            "              }\n" +
+            "            }\n" +
+            "        }\n" +
+            "        }\n" +
+            "     \n" +
+            "    }\n" +
+            "    }\n" +
+            " \n" +
+            "  }\n" +
+            "  }\n" +
             "LIMIT 100"
+        console.log(query)
         query = encodeURIComponent(query)
 
         var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=5000&should-sponge=&debug=on"
@@ -65,7 +76,7 @@ var sparql = (function () {
             if (err) {
                 return callback(err);
             }
-            var json = self.processDataOld(result)
+            var json = self.processData(result)
             callback(null, json)
 
         })
@@ -112,83 +123,90 @@ var sparql = (function () {
 
 
     }
-    self.processData = function (data) {
 
+
+    self.processData = function (data) {
+        var nLevels = 8;
 
         var bindings = data.results.bindings;
         var paths = []
+        var rootNodes = {};
+        var X = {};
 
-        var X = [];
-        bindings.forEach(function (binding) {
-            var array = []
-            for (var i = 0; i < 11; i++) {
-                array.push([])
-            }
-            X.push(array)
-        })
-        bindings.forEach(function (binding, bindingIndex) {
 
-            var str = "";
-            str += "|";
-            str += "_" + binding.id.value + ";" + binding.prefLabel.value;
-            if (X[bindingIndex][0].indexOf(str) < 0)
-                X[bindingIndex][0].push(str)
+        var currentPathTree = {}
 
-            for (var i = 1; i < 11; i++) {
-                var str = "";
-                str += "|";
-                var broaderName = "broader" + i;
-                var broaderIdName = "broaderId" + i;
+
+        function recurseChildren(parent, level) {
+            if (level > nLevels)
+                return;
+            if (!parent.children)
+                parent.children = {};
+            var broaderName = "broader" + (level);
+            var broaderIdName = "broaderId" + (level);
+            bindings.forEach(function (binding, bindingIndex) {
                 if (binding[broaderName]) {
-                    var sep = ""
-                    for (var j = 1; j <= i + 1; j++) {
-                        sep += "_";
-                    }
+                    //  var str= sep + binding[broaderIdName].value + ";" + binding[broaderName].value;
+                    var child = {level: level, id: binding[broaderIdName].value, name: binding[broaderName].value, children: {}}
+                    if (!parent.children[binding[broaderIdName].value])
+                        parent.children[binding[broaderIdName].value] = child
 
-                    str += sep + binding[broaderIdName].value + ";" + binding[broaderName].value
-                    if (!X[bindingIndex][i] || !X[bindingIndex][i].indexOf)
-                        var x = 3
-                    if (X[bindingIndex][i].indexOf(str) < 0)
-                        X[bindingIndex][i].push(str)
+                    recurseChildren(child, level + 1)
                 }
-            }
-        })
+            })
 
 
-        function getPath(binding, str) {
-            var path = {
-                "id": binding.id.value,
-                "prefLabels": binding.prefLabel.value,
-                "altLabels": "",
-                "thesaurus": "BNF",
-                "ancestors": str
-            }
-            return path
         }
 
 
         var str = "";
-        //    console.log(JSON.stringify(X,null,2))
-        X.forEach(function (x, bindingIndex) {
 
-            for (var i = 0; i < 11; i++) {
-                if (x[i].length == 0)
-                    return;
-                if (i == 0) {
-                    paths.push(getPath(bindings[bindingIndex], x[i]))
-                } else {
-                    if (i == 3)
-                        var x = 3
-                    paths[paths.length - 1].ancestors += x[i]
-                }
+        function recursePath(node, str,level) {
+            var sep = "|"
+            for (var j = 1; j <= node.level + 1; j++) {
+                sep += "_";
             }
-        })
+            var str2=sep + node.id + ";" + node.name
+            if(str.indexOf(str2)<0)
+                str+=str2
+
+            for (var key in node.children) {
+                var child = node.children[key]
 
 
+          str= recursePath(child, str,level+1)
+
+            }
+            return str;
+
+
+
+        }
+
+        var tree = {path: "", children: []}
+        recurseChildren(tree, 1);
+        var paths = [];
+        for (var key in tree.children) {
+            var child = tree.children[key]
+       var ancestors= recursePath(child, "",1);
+
+         //   console.log(ancestors)
+            paths.push({
+                "id": child.id,
+                "prefLabels": child.name,
+                "altLabels": "",
+                "thesaurus": "BNF",
+                "ancestors": ancestors
+            })
+
+        }
         return paths;
-
-
     }
+
+
+
+
+
 
 
     self.queryWikidata = function (word, callback) {
@@ -285,4 +303,5 @@ var sparql = (function () {
 
 
     return self;
-})();
+})
+();
