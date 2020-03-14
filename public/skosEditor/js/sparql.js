@@ -66,6 +66,7 @@ var sparql = (function () {
             " \n" +
             "  }\n" +
             "  }\n" +
+            "ORDER BY ASC(?broaderId1)" +
             "LIMIT 100"
         console.log(query)
         query = encodeURIComponent(query)
@@ -76,7 +77,7 @@ var sparql = (function () {
             if (err) {
                 return callback(err);
             }
-            var json = self.processData(result)
+            var json = self.processDataBNF(result)
             callback(null, json)
 
         })
@@ -85,131 +86,52 @@ var sparql = (function () {
     }
 
 
-    self.processDataOld = function (data) {
-
-
+    self.processDataBNF = function (data) {
+        var nLevels = 8;
         var bindings = data.results.bindings;
         var paths = []
-        var str = "";
+        var str2 = "";
+        var topNodes = {}
         bindings.forEach(function (binding) {
 
-            str += "|";
-            str += "_" + binding.id.value + ";" + binding.prefLabel.value
-            for (var i = 1; i < 11; i++) {
-                var broaderName = "broader" + i;
-                var broaderIdName = "broaderId" + i;
+            for (var level = 0; level < nLevels; level++) {
+                var bindingId = binding.id.value;
+                if (!topNodes[bindingId] && level == 0) {
+                    var str0 = "|_" + binding.id.value + ";" + binding.prefLabel.value;
+                    topNodes[bindingId] = {id: binding.id.value, name: binding.prefLabel.value, path: str0}
+                }
+                var str = ""
+                var broaderName = "broader" + (level);
+                var broaderIdName = "broaderId" + (level);
                 if (binding[broaderName]) {
                     var sep = "|"
-                    for (var j = 1; j <= i + 1; j++) {
+                    for (var j = 1; j <= level + 1; j++) {
                         sep += "_";
                     }
-                    str += sep + binding[broaderIdName].value + ";" + binding[broaderName].value
-
+                    str = sep + binding[broaderIdName].value + ";" + binding[broaderName].value
+                    if (topNodes[bindingId].path.indexOf(str) < 0)
+                        topNodes[bindingId].path += str
                 }
             }
-
-
-            var path = {
-                "id": binding.id.value,
-                "prefLabels": binding.prefLabel.value,
-                "altLabels": "",
-                "thesaurus": "BNF",
-                "ancestors": str
-            }
-            paths.push(path)
-
         })
-        return paths;
-
-
-    }
-
-
-    self.processData = function (data) {
-        var nLevels = 8;
-
-        var bindings = data.results.bindings;
-        var paths = []
-        var rootNodes = {};
-        var X = {};
-
-
-        var currentPathTree = {}
-
-
-        function recurseChildren(parent, level) {
-            if (level > nLevels)
-                return;
-            if (!parent.children)
-                parent.children = {};
-            var broaderName = "broader" + (level);
-            var broaderIdName = "broaderId" + (level);
-            bindings.forEach(function (binding, bindingIndex) {
-                if (binding[broaderName]) {
-                    //  var str= sep + binding[broaderIdName].value + ";" + binding[broaderName].value;
-                    var child = {level: level, id: binding[broaderIdName].value, name: binding[broaderName].value, children: {}}
-                    if (!parent.children[binding[broaderIdName].value])
-                        parent.children[binding[broaderIdName].value] = child
-
-                    recurseChildren(child, level + 1)
-                }
-            })
-
-
-        }
-
-
-        var str = "";
-
-        function recursePath(node, str,level) {
-            var sep = "|"
-            for (var j = 1; j <= node.level + 1; j++) {
-                sep += "_";
-            }
-            var str2=sep + node.id + ";" + node.name
-            if(str.indexOf(str2)<0)
-                str+=str2
-
-            for (var key in node.children) {
-                var child = node.children[key]
-
-
-          str= recursePath(child, str,level+1)
-
-            }
-            return str;
-
-
-
-        }
-
-        var tree = {path: "", children: []}
-        recurseChildren(tree, 1);
-        var paths = [];
-        for (var key in tree.children) {
-            var child = tree.children[key]
-       var ancestors= recursePath(child, "",1);
-
-         //   console.log(ancestors)
+        for (var key in topNodes) {
+            var topNode = topNodes[key]
             paths.push({
-                "id": child.id,
-                "prefLabels": child.name,
+                "id": topNode.id,
+                "prefLabels": topNode.name,
                 "altLabels": "",
                 "thesaurus": "BNF",
-                "ancestors": ancestors
+                "ancestors": topNode.path
             })
-
         }
+
         return paths;
+
+
     }
 
 
-
-
-
-
-
-    self.queryWikidata = function (word, callback) {
+    self.queryWikidataList = function (word, callback) {
         /*   var query="SELECT ?wdwork\n" +
                "WHERE {\n" +
                "?wdwork wdt:P268 ?idbnf\n" +
@@ -227,7 +149,7 @@ var sparql = (function () {
             async.eachSeries(result.search, function (item, callbackEach) {
                 var url2 = "https://query.wikidata.org/sparql?query="
                 var query2 = "\n" +
-                    "SELECT ?wdLabel ?ps_Label ?wdpqLabel ?pq_Label {\n" +
+                    "SELECT ?wd ?wdLabel  ?ps_Label ?wdpqLabel ?pq_Label {\n" +
                     "  VALUES (?company) {(wd:" + item.id + ")}\n" +
                     "\n" +
                     "  ?company ?p ?statement .\n" +
@@ -247,9 +169,39 @@ var sparql = (function () {
                 self.querySPARQL_GET(url2, query2, "&origin=*", function (err, result) {
                     if (err)
                         return callbackEach(err);
-                    var obj = {id: item.id};
+
+
+
+                    var obj = {id: item.id,linkedData: {}, others: {}, names: {}};
+                    var linkedDataIds = ['Q18618628',
+                        'Q19595382',
+                        'Q19829908',
+                        'Q19833377',
+                        'Q19833835',
+                        'Q21745557',
+                        'Q23673786',
+                        'Q24075706',
+                        'Q24575337',
+                        'Q26696664',
+                        'Q26883022',
+                        'Q27048688',
+                        'Q42396390',
+                        'Q42415497',
+                        'Q52063969',
+                        'Q55586529',
+                        'Q56216056',
+                    ]
                     result.results.bindings.forEach(function (item2) {
-                        obj[item2.wdLabel.value] = item2.ps_Label.value
+
+                        var propId = item2.wd.value.substring(item2.wd.value.lastIndexOf("/") + 1)
+
+                        if (item2.ps_Label.value.indexOf(word) > -1) {
+                            obj.names[item2.wdLabel.value] = item2.ps_Label.value
+                        } else if (linkedDataIds.indexOf(propId) > -1) {
+                            obj.others[item2.wdLabel.value] = item2.ps_Label.value
+                        } else if (true) {
+                            obj.others[item2.wdLabel.value] = item2.ps_Label.value
+                        }
                     })
 
                     wikidataArray.push(obj);
@@ -269,6 +221,113 @@ var sparql = (function () {
 
 
     }
+
+    self.getWikidataDetails = function (word) {
+        var query = ""
+    }
+
+    self.getWikidataAncestors = function (wikidataObj,callback) {
+        var query = "SELECT\n" +
+            "?broaderId1 ?broaderId1Label \n" +
+            "?broaderId2 ?broaderId2Label\n" +
+            "?broaderId3 ?broaderId3Label\n" +
+            "?broaderId4 ?broaderId4Label\n" +
+            "?broaderId5 ?broaderId5Label\n" +
+            "?broaderId6 ?broaderId6Label\n" +
+            "?broaderId7 ?broaderId7Label\n" +
+            "?broaderId8 ?broaderId8Label\n" +
+            "WHERE \n" +
+            "{\n" +
+            "\n" +
+            "  wd:"+wikidataObj.id+" wdt:P31 ?broaderId1 .\n" +
+            "  OPTIONAL {\n" +
+            "     ?broaderId1 wdt:P279 ?broaderId2 .\n" +
+            "      OPTIONAL {\n" +
+            "     ?broaderId2 wdt:P279 ?broaderId3 .\n" +
+            "           OPTIONAL {\n" +
+            "     ?broaderId3 wdt:P279 ?broaderId4 .\n" +
+            "  }\n" +
+            "           OPTIONAL {\n" +
+            "     ?broaderId4 wdt:P279 ?broaderId5 .\n" +
+            "  }\n" +
+            "           OPTIONAL {\n" +
+            "     ?broaderId5 wdt:P279 ?broaderId6 .\n" +
+            "                 OPTIONAL {\n" +
+            "     ?broaderId6 wdt:P279 ?broaderId7 .\n" +
+            "  }\n" +
+            "                 OPTIONAL {\n" +
+            "     ?broaderId7 wdt:P279 ?broaderId8 .\n" +
+            "  }\n" +
+            "  }\n" +
+            "  }\n" +
+            "    }\n" +
+            "\n" +
+            "  \n" +
+            "  SERVICE wikibase:label{\n" +
+            "     bd:serviceParam wikibase:language \"en\" .\n" +
+            " }\n" +
+            "\n" +
+            "  \n" +
+            "  \n" +
+            "\n" +
+            "  }"
+        query = encodeURIComponent(query);
+        var url = "https://query.wikidata.org/sparql?query="
+        self.querySPARQL_GET(url, query, "&origin=*", function (err, result) {
+            if (err)
+                return callback(err);
+           var paths= self.processDataWikiData(wikidataObj,result)
+            return callback(null,paths)
+        })
+
+
+
+        }
+
+    self.processDataWikiData = function (wikidataObj,data) {
+        var nLevels = 8;
+        var bindings = data.results.bindings;
+        var paths = []
+        var str2 = "";
+        var topNodes = {}
+        bindings.forEach(function (binding) {
+
+            for (var level = 1; level <= nLevels; level++) {
+                var bindingId = wikidataObj.id;
+                if (!topNodes[bindingId] && level == 1) {
+                    var str0 = "|_" + wikidataObj.id+ ";" + wikidataObj.label;
+                    topNodes[bindingId] = {id: wikidataObj.id, name:  wikidataObj.label, path: str0}
+                }
+                var str = ""
+                var broaderName = "broaderId"+level+"Label";
+                var broaderIdName = "broaderId" + (level);
+                if (binding[broaderName]) {
+                    var sep = "|"
+                    for (var j = 1; j <= level + 1; j++) {
+                        sep += "_";
+                    }
+                    str = sep + binding[broaderIdName].value + ";" + binding[broaderName].value
+                    if (topNodes[bindingId].path.indexOf(str) < 0)
+                        topNodes[bindingId].path += str
+                }
+            }
+        })
+        for (var key in topNodes) {
+            var topNode = topNodes[key]
+            paths.push({
+                "id": topNode.id,
+                "prefLabels": topNode.name,
+                "altLabels": "",
+                "thesaurus": "Wikidata",
+                "ancestors": topNode.path
+            })
+        }
+
+        return paths
+
+
+    }
+
     self.querySPARQL_GET = function (url, query, queryOptions, callback) {
 
         var url = url + query + queryOptions

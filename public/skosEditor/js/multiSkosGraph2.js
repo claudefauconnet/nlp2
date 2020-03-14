@@ -41,6 +41,111 @@ var multiSkosGraph2 = (function () {
         $(".thesCBX").bind('change', multiSkosGraph2.onThesCBXChange);
     }
 
+
+    self.pathsToVisjsData=function(path){
+        var thesaurus=path.thesaurus
+        var color = self.distinctThesaurus[thesaurus];
+        var ancestorsStr = path.ancestors;
+        var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
+
+var visjsData={nodes:[],edges:[]}
+        var regex = /(_*)(.*);(.*)/g
+        var array;
+        var previouslLevel = 1;
+        var uniqueNodesLevels = {}
+        var uniqueNodes =[]
+        while ((array = regex.exec(ancestorsStr)) != null) {
+            var level = array[1].length;
+            var id = array[2];
+            var name = array[3];
+
+
+            if (uniqueNodes.indexOf(id) < 0) {
+                uniqueNodes.push(id);
+                if (!uniqueNodesLevels[level])
+                    uniqueNodesLevels[level] = [];
+                uniqueNodesLevels[level].push(id);
+
+
+                if (level == 1) {
+                    visjsData.edges.push({
+                        from: self.rootNode.id,
+                        to: id,
+                        type: "match",
+                        arrows: "to",
+                        label: thesaurus,
+                        font: {
+                            color: color,
+                            weight: "bold",
+                            size: 12
+                        }
+                    })
+                } else if (level == previouslLevel) {
+                    var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
+                    visjsData.edges.push({
+                        from: parent,
+                        to: id,
+                        type: "match",
+                        arrows: "to",
+
+
+                    });
+                } else if (level > previouslLevel) {
+                    visjsData.edges.push({
+                        from: uniqueNodes[uniqueNodes.length - 2],
+                        to: id,
+                        type: "match",
+                        arrows: "to",
+
+
+                    });
+                } else if (level < previouslLevel) {
+
+                    var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
+                    visjsData.edges.push({
+                        from: parent,
+                        to: id,
+                        type: "match",
+                        arrows: "to",
+
+
+                    });
+                }
+
+                if (level == 1) {
+                    shape = "dot";
+                    //   color = rootNodeColor;
+                    size = 10;
+                } else {
+                    color = self.distinctThesaurus[thesaurus];
+                    var shape = "box";
+                    var size = 20;
+                }
+
+
+                var visjNode = {
+                    label: name,
+                    id: id,
+                    color: color,
+                    data: {thesaurus: thesaurus, ancestors: ancestorsStr},
+                    shape: shape,
+                    size: size,
+
+                }
+
+                visjsData.nodes.push(visjNode);
+
+            }
+            previouslLevel = level;
+
+
+        }
+
+
+        return visjsData;
+
+}
+
     self.drawConceptGraph = function (word, options) {
 
         self.context.currentWord = word
@@ -63,13 +168,13 @@ var multiSkosGraph2 = (function () {
         var thesaurusNodeIds = [];
 
 
-        var rooNode = {
+       self.rootNode = {
             label: word,
             id: word,
             color: rootNodeColor,
             size: rootNodeSize
         }
-        visjsData.nodes.push(rooNode);
+        visjsData.nodes.push(self.rootNode);
 
 
         var paths = [];
@@ -99,26 +204,29 @@ var multiSkosGraph2 = (function () {
 
             },
             function (callbackSeries) {
-                if (!$("#queryWikidataCbx").prop("checked"))
+                if ( !$("#queryWikidataCbx").prop("checked"))
                     return callbackSeries();
 
-                sparql.queryWikidata(word, function (err, result) {
+                sparql.queryWikidataList(word, function (err, result) {
                     if (err) {
                         console.log(err);
                         callbackSeries()
                     }
                     self.wikidataData = result;
-                    var wikidataLabels = []
+
+                   var wikidataLabels=[]
                     result.forEach(function (item) {
-                        for (var key in item) {
-                            var labelOk = false;
-                            if (key == "Commons category") {
+
+                        var labelOk = false;
+                        for (var key in item.names) {
+
+                            if (key == "Encyclopædia Britannica Online ID") {
                                 labelOk = true
-                                wikidataLabels.push({id: item.id, label: item[key]})
+                               wikidataLabels.push({id: item.id, label: item.names[key]})
                             }
                         }
-                        if (!labelOk)
-                            wikidataLabels.push({id: item.id, label: item.id})
+                      /*  if (!labelOk)
+                            wikidataLabels.push({id: item.id, label: item[key]})*/
 
                     })
                     common.fillSelectOptions("rigthDivSelect", wikidataLabels, null, "label", "id")
@@ -128,7 +236,7 @@ var multiSkosGraph2 = (function () {
             },
 
             function (callbackSeries) {
-                //   return callbackSeries();
+                 return callbackSeries();
                 self.queryElastic(word, options, function (err, result) {
                     if (err)
                         return console.log(err);
@@ -169,140 +277,25 @@ var multiSkosGraph2 = (function () {
                     var theaurusNodeEdge = false;
                     if (false && thesaurusNodeIds.indexOf(thesaurusNodeId) < 0) {
                         thesaurusNodeIds.push(thesaurusNodeId);
-                        var theasaurusNode = {
+                        var thesaurusNode = {
                             label: thesaurus,
                             id: thesaurusNodeId,
                             color: color,
                             size: 30,
                             shape: "star"
                         }
-                        visjsData.nodes.push(theasaurusNode);
+                        visjsData.nodes.push(thesaurusNode);
 
                     }
-
-
-                    var ancestorsStr = path.ancestors;
-
-                    var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
-
-
-                    var regex = /(_*)(.*);(.*)/g
-                    var array;
-                    var previouslLevel = 1;
-                    var uniqueNodesLevels = {}
-                    while ((array = regex.exec(ancestorsStr)) != null) {
-                        var level = array[1].length;
-                        var id = array[2];
-                        var name = array[3];
-
-
-                        if (uniqueNodes.indexOf(id) < 0) {
-                            uniqueNodes.push(id);
-                            if (!uniqueNodesLevels[level])
-                                uniqueNodesLevels[level] = [];
-                            uniqueNodesLevels[level].push(id);
-
-
-                            if (level == 1) {
-                                visjsData.edges.push({
-                                    from: rooNode.id,
-                                    to: id,
-                                    type: "match",
-                                    arrows: "to",
-                                    label: thesaurus,
-                                    font: {
-                                        color: color,
-                                        weight: "bold",
-                                        size: 12
-                                    }
-                                })
-                            } else if (level == previouslLevel) {
-                                var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
-                                visjsData.edges.push({
-                                    from: parent,
-                                    to: id,
-                                    type: "match",
-                                    arrows: "to",
-
-
-                                });
-                            } else if (level > previouslLevel) {
-                                visjsData.edges.push({
-                                    from: uniqueNodes[uniqueNodes.length - 2],
-                                    to: id,
-                                    type: "match",
-                                    arrows: "to",
-
-
-                                });
-                            } else if (level < previouslLevel) {
-                                var parent = uniqueNodesLevels[level - 1][uniqueNodesLevels[level - 1].length - 1]
-                                visjsData.edges.push({
-                                    from: parent,
-                                    to: id,
-                                    type: "match",
-                                    arrows: "to",
-
-
-                                });
-                                if (false && theasaurusNode && theasaurusNode.id && level > 1) {
-                                    var thesEdge = {
-                                        from: id,
-                                        to: theasaurusNode.id,
-                                        type: "inThesaurus"
-                                    }
-                                    if (!theaurusNodeEdge)
-                                        theaurusNodeEdge = true;
-                                    else
-                                        thesEdge.physics = false;
-                                    visjsData.edges.push(thesEdge);
-                                }
-
-                            }
-
-
-                            if (level == 1) {
-                                shape = "dot";
-                                //   color = rootNodeColor;
-                                size = 10;
-                            } else {
-                                color = self.distinctThesaurus[thesaurus];
-                                var shape = "box";
-                                var size = 20;
-                            }
-
-
-                            var visjNode = {
-                                label: name,
-                                id: id,
-                                color: color,
-                                data: {thesaurus: thesaurus, ancestors: ancestorsStr},
-                                shape: shape,
-                                size: size,
-
-                            }
-
-                            visjsData.nodes.push(visjNode);
-
-                        }
-                        previouslLevel = level;
-
-
-                    }
-                    if (false && theasaurusNode && theasaurusNode.id && level > 1) {
-                        var thesEdge = {
-                            from: uniqueNodes[uniqueNodes.length - 1],
-                            to: theasaurusNode.id,
-                            type: "inThesaurus"
-                        }
-                        visjsData.edges.push(thesEdge);
-                    }
-
-
+                   visjsData= self.pathsToVisjsData(path)
                 })
+
+
                 callbackSeries()
             },
             function (callbackSeries) {
+
+
                 var edgesCount = visjsData.edges.length;
                 if (edgesCount > maxEdges) {
                     return alert("too many edges :select a specific value")
@@ -582,20 +575,42 @@ var selectNodeLevel=1000;
     }
 
     self.showWikiDataDetails = function (id) {
-
+var strAll=""
         self.wikidataData.forEach(function (item) {
             if (item.id == id) {
-                var str = ""
+
+                sparql.getWikidataAncestors(item,function(err, result){
+                    if(err)
+                        return console.log(err);
+                            result.forEach(function(item) {
+                                var newVisjsData = self.pathsToVisjsData(item)
+
+                                newVisjsData.nodes.forEach(function(node){
+                                    visjsGraph.data.nodes.add(node)
+                                })
+                                newVisjsData.edges.forEach(function(edge){
+                                    visjsGraph.data.edges.add(edge)
+                                })
+                            })
+
+                })
+
                 for (var key in item) {
-                    if (key.indexOf('image') > -1) {
-                        str += "<img src='" + item[key] + "' width='200px'/></br>"
-                    } else {
-                        str += "<span style='font-style: italic'>" + key + " : </span>" + "<span style='font-weight: bold'>" + item[key] + " : </span><br>";
+                    var str = ""
+                    for (var key2 in item[key]) {
+                        if (key2.indexOf('image') > -1) {
+                            str += "<img src='" + item[key][key2] + "' width='200px'/></br>"
+                        } else {
+                            str += "<span style='font-style: italic'>" + key2 + " : </span>" + "<span style='font-weight: bold'>" + item[key][key2] + " : </span><br>";
+                        }
                     }
+                    strAll+=str
+
                 }
-                $("#rigthDivDetails").html(str)
+                strAll+="<hr>"
             }
         })
+        $("#rigthDivDetails").html(strAll)
 
     }
 
