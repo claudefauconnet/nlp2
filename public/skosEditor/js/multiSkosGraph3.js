@@ -42,8 +42,6 @@ var multiSkosGraph2 = (function () {
     }
 
 
-
-
     self.drawConceptGraph = function (word, options) {
 
         self.context.currentWord = word
@@ -85,8 +83,6 @@ var multiSkosGraph2 = (function () {
 
                 callbackSeries()
             },
-
-
 
 
             function (callbackSeries) {
@@ -237,13 +233,13 @@ var multiSkosGraph2 = (function () {
                         var labelOk = false;
 
                         for (var key in item.others) {
-                            if(!FrenchVikidiaID)
+                            if (!FrenchVikidiaID)
                                 if (key == "French Vikidia ID") {
                                     FrenchVikidiaID = item.others[key]
                                 }
                         }
                         for (var key in item.linkedData) {
-                            if(!FrenchVikidiaID)
+                            if (!FrenchVikidiaID)
                                 if (key == "French Vikidia ID") {
                                     FrenchVikidiaID = item.others[key]
                                 }
@@ -256,16 +252,16 @@ var multiSkosGraph2 = (function () {
 
 
                     if (wikidataLabels.length > 0) {
-                        sparql.getWikidataAncestors(wikidataLabels[0],function (err, result) {
+                        sparql.getWikidataAncestors(wikidataLabels[0], function (err, result) {
                             if (err)
                                 return console.log(err);
-                            var existingNodes= visjsGraph.data.nodes.getIds()
+                            var existingNodes = visjsGraph.data.nodes.getIds()
                             result.forEach(function (item) {
                                 var newVisjsData = self.pathsToVisjsData(item)
 
                                 newVisjsData.nodes.forEach(function (node) {
-                                    if(existingNodes.indexOf(node.id<0))
-                                    visjsGraph.data.nodes.add(node)
+                                    if (existingNodes.indexOf(node.id < 0))
+                                        visjsGraph.data.nodes.add(node)
                                 })
                                 newVisjsData.edges.forEach(function (edge) {
                                     visjsGraph.data.edges.add(edge)
@@ -285,17 +281,17 @@ var multiSkosGraph2 = (function () {
                             common.fillSelectOptions("rigthDivBNFSelect", bnfLabels, null, "label", "id")
 
                             if (bnfLabels.length > 0)
-                                sparql.queryBNF_ancestors(bnfLabels[0], {exectMatch:exactMatch},function (err, result) {
+                                sparql.queryBNF_ancestors(bnfLabels[0], {exectMatch: exactMatch}, function (err, result) {
 
                                     if (err)
                                         return console.log(err);
-                                    var existingNodes= visjsGraph.data.nodes.getIds()
+                                    var existingNodes = visjsGraph.data.nodes.getIds()
                                     result.forEach(function (item) {
                                         var newVisjsData = self.pathsToVisjsData(item)
 
                                         newVisjsData.nodes.forEach(function (node) {
-                                            if(existingNodes.indexOf(node.id<0))
-                                            visjsGraph.data.nodes.add(node)
+                                            if (existingNodes.indexOf(node.id < 0))
+                                                visjsGraph.data.nodes.add(node)
                                         })
                                         newVisjsData.edges.forEach(function (edge) {
                                             visjsGraph.data.edges.add(edge)
@@ -419,10 +415,16 @@ var multiSkosGraph2 = (function () {
 
 
     self.onNodeClick = function (obj, point) {
-
-        self.showNodeInfos(obj);
         $(".thesCBX").parent().css("border-style", "none")
         $("#" + "thes_" + obj.data.thesaurus).parent().css("border", "2px blue solid")
+
+        if (obj.data.thesaurus == "BNF") {
+            self.showNodeInfosBNF(obj);
+        } else if (obj.data.thesaurus == "Wikidata") {
+            self.showNodeInfosWikidata(obj);
+        } else {
+            self.showNodeInfosElastic(obj);
+        }
     }
 
     self.onThesCBXChange = function (ev) {
@@ -432,7 +434,7 @@ var multiSkosGraph2 = (function () {
 
     }
 
-    self.showNodeInfos = function (node) {
+    self.showNodeInfosElastic = function (node) {
         $("#infosDiv").html("")
         var str = node.id;
         var _node = node
@@ -506,6 +508,43 @@ var multiSkosGraph2 = (function () {
 
             $("#infosDiv").html(str)
         })
+    }
+
+
+    self.showNodeInfosBNF = function (obj) {
+        sparql.queryBNFchildren(obj.id, function (err, result) {
+            if (err)
+                return console.log(err);
+
+            var newNodes=[];
+            var newEdges=[];
+            var existingNodes=  visjsGraph.data.nodes.getIds()
+            result.forEach(function(item){
+                if(existingNodes.indexOf(item.narrowerId.value)<0) {
+                    newNodes.push({
+                        label: item.narrowerLabel.value,
+                        id: item.narrowerId.value,
+                        shape: "box"
+
+                    })
+                    newEdges.push({
+                        from: obj.id,
+                        to: item.narrowerId.value
+
+                    })
+
+                }
+                })
+                visjsGraph.data.nodes.add(newNodes)
+                visjsGraph.data.edges.add(newEdges)
+
+            })
+
+
+    }
+
+    self.showNodeInfosWikidata = function (obj) {
+
     }
 
 
@@ -661,27 +700,23 @@ var multiSkosGraph2 = (function () {
             if (item.id == id) {
 
 
-
-
-
-
-
                 sparql.getWikidataAncestors(item, function (err, result) {
                     if (err)
                         return console.log(err);
 
-                 //   var existingNodes= visjsGraph.data.nodes.getIds()
-                    function removeThesaurusNodes(thesaurus){
-                        var allNodes= visjsGraph.data.nodes.get();
-                        var thesaurusNodes=[];
-                        allNodes.forEach(function(item){
-                            if( item.data && item.data.thesaurus == thesaurus)
-                               thesaurusNodes.push(item.id)
+                    //   var existingNodes= visjsGraph.data.nodes.getIds()
+                    function removeThesaurusNodes(thesaurus) {
+                        var allNodes = visjsGraph.data.nodes.get();
+                        var thesaurusNodes = [];
+                        allNodes.forEach(function (item) {
+                            if (item.data && item.data.thesaurus == thesaurus)
+                                thesaurusNodes.push(item.id)
 
                         });
                         visjsGraph.data.nodes.remove(thesaurusNodes)
 
                     }
+
                     removeThesaurusNodes("Wikidata")
 
 
@@ -700,7 +735,7 @@ var multiSkosGraph2 = (function () {
 
                 for (var key in item) {
                     var str = ""
-                    if(typeof item[key] !="object")
+                    if (typeof item[key] != "object")
                         continue
                     for (var key2 in item[key]) {
 

@@ -2,8 +2,8 @@ var sparql = (function () {
 
     var self = {};
 
-    self.queryBNF = function (word, options, callback) {
-        word = word.charAt(0).toUpperCase() + word.slice(1)
+    self.queryBNF_ancestors = function (item, options, callback) {
+        var word = item.label.charAt(0).toUpperCase() +  item.label.slice(1)
         var query = "SELECT DISTINCT ?original_rameau ?prefLabel ?uri_a ?label_a ?uri_b ?label_b\n" +
             "WHERE {\n" +
             "?original_rameau skos:prefLabel ?prefLabel ;\n" +
@@ -67,7 +67,7 @@ var sparql = (function () {
             "  }\n" +
             "  }\n" +
             "ORDER BY ASC(?broaderId1)" +
-            "LIMIT 100"
+            "LIMIT 1000"
         console.log(query)
         query = encodeURIComponent(query)
 
@@ -84,6 +84,34 @@ var sparql = (function () {
 
 
     }
+    self.queryBNF_list = function (word, callback) {
+        word = word.charAt(0).toUpperCase() + word.slice(1)
+        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+            "SELECT DISTINCT *\n" +
+            "WHERE {\n" +
+            "?id skos:prefLabel ?prefLabel .\n" +
+            " filter(str(?prefLabel)='" + word + "')\n" +
+            "  ?id ?prop ?valueId .\n" +
+            "  ?valueId skos:prefLabel ?value.\n" +
+            "\n" +
+            "}\n" +
+            "\n" +
+            "LIMIT 1000"
+        console.log(query)
+        query = encodeURIComponent(query)
+
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=5000&should-sponge=&debug=on"
+        var url = "https://data.bnf.fr/sparql?default-graph-uri=&query=";// + query + queryOptions
+        self.querySPARQL_GET(url, query, queryOptions, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+
+            callback(null, result.results.bindings)
+
+        })
+    }
+
 
 
     self.processDataBNF = function (data) {
@@ -131,14 +159,9 @@ var sparql = (function () {
     }
 
 
+
     self.queryWikidataList = function (word, callback) {
-        /*   var query="SELECT ?wdwork\n" +
-               "WHERE {\n" +
-               "?wdwork wdt:P268 ?idbnf\n" +
-               "FILTER CONTAINS(?idbnf, \""+idBNF+"\") .\n" +
-               "}"
-                 var url="https://query.wikidata.org/sparql?query="
-               */
+
         var url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" + word + "&format=json&errorformat=plaintext&language=en&uselang=en&type=item&origin=*"
 
         self.querySPARQL_GET(url, "", "", function (err, result) {
@@ -165,6 +188,7 @@ var sparql = (function () {
                     "\n" +
                     "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\" }\n" +
                     "} ORDER BY ?wd ?statement ?ps_";
+                console.log(query2);
                 query2 = encodeURIComponent(query2);
                 self.querySPARQL_GET(url2, query2, "&origin=*", function (err, result) {
                     if (err)
@@ -172,7 +196,7 @@ var sparql = (function () {
 
 
 
-                    var obj = {id: item.id,linkedData: {}, others: {}, names: {}};
+                    var obj = {label:item.label,id: item.id,linkedData: {}, others: {}, names: {},description:item.description};
                     var linkedDataIds = ['Q18618628',
                         'Q19595382',
                         'Q19829908',
@@ -198,7 +222,7 @@ var sparql = (function () {
                         if (item2.ps_Label.value.indexOf(word) > -1) {
                             obj.names[item2.wdLabel.value] = item2.ps_Label.value
                         } else if (linkedDataIds.indexOf(propId) > -1) {
-                            obj.others[item2.wdLabel.value] = item2.ps_Label.value
+                            obj.linkedData[item2.wdLabel.value] = item2.ps_Label.value
                         } else if (true) {
                             obj.others[item2.wdLabel.value] = item2.ps_Label.value
                         }
@@ -239,28 +263,32 @@ var sparql = (function () {
             "WHERE \n" +
             "{\n" +
             "\n" +
-            "  wd:"+wikidataObj.id+" wdt:P31 ?broaderId1 .\n" +
+            "  wd:"+wikidataObj.id+" wdt:P31|wdt:P279 ?broaderId1 .\n" +
             "  OPTIONAL {\n" +
             "     ?broaderId1 wdt:P279 ?broaderId2 .\n" +
             "      OPTIONAL {\n" +
             "     ?broaderId2 wdt:P279 ?broaderId3 .\n" +
             "           OPTIONAL {\n" +
             "     ?broaderId3 wdt:P279 ?broaderId4 .\n" +
-            "  }\n" +
-            "           OPTIONAL {\n" +
+            " OPTIONAL {\n" +
+
             "     ?broaderId4 wdt:P279 ?broaderId5 .\n" +
-            "  }\n" +
+
             "           OPTIONAL {\n" +
             "     ?broaderId5 wdt:P279 ?broaderId6 .\n" +
             "                 OPTIONAL {\n" +
             "     ?broaderId6 wdt:P279 ?broaderId7 .\n" +
-            "  }\n" +
+
             "                 OPTIONAL {\n" +
             "     ?broaderId7 wdt:P279 ?broaderId8 .\n" +
             "  }\n" +
             "  }\n" +
             "  }\n" +
             "    }\n" +
+            "  }\n" +
+            "  }\n" +
+            " }\n" +
+
             "\n" +
             "  \n" +
             "  SERVICE wikibase:label{\n" +
