@@ -14,7 +14,7 @@ var sparql_LOC = (function () {
 var maxLevels=8
 
         var skosMap = {};
-var broaderEachEnd=false;
+var broadersDoneByLevel={};
         function recurseParents(id, level) {
 
 
@@ -33,22 +33,32 @@ var broaderEachEnd=false;
                     }
                     var broaders = result["http://www.w3.org/2004/02/skos/core#broader"]
                     if (broaders) {
-
+                        var level2=level+1
                         broaders.forEach(function (broader,index) {
-                            broaderEachEnd=index>=broaders.length
+                            broadersDoneByLevel[level]=    broadersDoneByLevel[level] || (index>=(broaders.length-1))
                             var broaderId = broader["@id"].substring(broader["@id"].lastIndexOf("/") + 1)
                             skosMap[id].broaders.push({lang: "en", value: broaderId})
-                            recurseParents(broaderId, level + 1);
+
+                            recurseParents(broaderId, level2);
 
                         })
                     } else {
-                        if(broaderEachEnd || level>=maxLevels){
-                            var x =skosMap
-                            var concepts=[]
-                            for(var key in skosMap){
-                                concepts.push(skosMap[key])
-                            }
-                        }
+                       if( level>=8 ) {
+                           var end = true;
+                           for (var key in broadersDoneByLevel) {
+                               end = end & broadersDoneByLevel[key]
+                           }
+
+
+                           if (end) {
+                               var concepts=[];
+                               for (var key in skosMap) {
+                                   concepts.push(skosMap[key])
+                               }
+                               var path = sparql_abstract.skosToFlat(id, concepts)
+                               console.log(JSON.stringify(path,null,2))
+                           }
+                       }
 
 
                     }

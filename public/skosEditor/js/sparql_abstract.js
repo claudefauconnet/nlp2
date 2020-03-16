@@ -94,75 +94,75 @@ var sparql_abstract = (function () {
 
     }
 
-    self.skosToFlat = function (conceptMap) {
+    self.skosToFlat = function (id,concepts) {
+        var conceptsMap = {}
+        var allItems = [];
+        var allUniqueItems = [];
 
-        function recurseAncestors(concept) {
-            if (node.parent) {
-
-                if (treeMap[node.parent] && treeMap[node.parent].parent) {
-                    node.ancestors.push(treeMap[node.parent].parent);
-                    recurseAncestors(treeMap[node.parent].parent)
-                }
-
-            }
-
-        }
-
-        for (var key1 in conceptMap) {
-            var concept = conceptMap[key1];
-
-            var ancestorsStr = "";
-            var ancestorsIdsStr = ""
-
-            //   strAncestors = recurseAncestors(concept.id, "", 0)
-                    ancestorsIdsStr = recurseAncestors(concept.id, "", 0)
-                    ancestorsIdsStr.split("|").forEach(function (ancestorId2) {
-                        ancestorId2.split(",").forEach(function (ancestorId) {
-                            var ancestor = conceptMap[ancestorId];
-                            if (ancestor && ancestor.prefLabels) {
-                                if (ancestorsStr != "")
-                                    ancestorsStr += ","
-                                if (ancestor.prefLabels[options.outputLangage] && ancestor.prefLabels[options.outputLangage].length > 0) {
-                                    ancestorsStr += ancestor.prefLabels[options.outputLangage][0];
-                                } else {
-                                    var xxx = ancestor
-                                    var str = "?"
-
-                                    ancestorsStr += str;
-
-                                }
-
-                            }
-
-
-                        })
+        function recurseAllItems(node) {
+            if (allUniqueItems.indexOf(node.id) < 0) {
+                allUniqueItems.push(node.id)
+                allItems.push(node);
+                if (!node.broaders || !Array.isArray(node.broaders)) {
+                    node.broaders.forEach(function (broader, indexParent) {
+                        recurseAllItems(broader)
                     })
                 }
+            } else {
+                var x = 3
+            }
+        }
 
-                if (options.output == 'json') {
-                    jsonArray.push({id: concept.id, ancestorsIds: ancestorsIdsStr, ancestors: ancestorsStr, prefLabels: strPrefLabel, altLabels: strAltLabel})
-
-                } else {
-
-
-                    str += concept.id;
-
-                    if (options.withAncestors) {
-                        str += "\t" + ancestorsStr + "\t" + ancestorsIdsStr
-                    }
-                    str += "\t" + strPrefLabel + "\t" + strAltLabel + "\n"
-                }
+        concepts.forEach(function (item) {
+            conceptsMap[item.id] = item;
+            recurseAllItems(item)
+        })
 
 
+        function recurseAncestors(node, ancestors, level) {
+
+            if (!node)
+                return ancestors;
+
+            ancestors += "|"
+            var spaces = ""
+            for (var i = 0; i < level; i++) {
+                spaces += "_"
+            }
+            var prefLabel = "?";
+            if (node.prefLabels && Array.isArray(node.prefLabels && node.prefLabels.length > 0))
+                prefLabel = node.prefLabels[0].value
+            ancestors += spaces + node.id + ";" + prefLabel;
+            var level2 = level + 1;
+            if (!node.broaders || !Array.isArray(node.broaders))
+                return ancestors
+            node.broaders.forEach(function (broader, indexParent) {
+                var broaderObj = conceptsMap[broader.value];
+
+                ancestors = recurseAncestors(broaderObj, ancestors, level2)
+            })
+            return ancestors;
+        }
 
 
+        var jsonArray = []
+        allItems.forEach(function (item) {
+         //   if (item.id == id) {
+                var ancestors = recurseAncestors(item, "", 1);
 
+                jsonArray.push({id: item.id, ancestors: ancestors, prefLabels: item.name, altLabels: ""})
+         //   }
+
+
+        })
+
+
+        return jsonArray;
 
     }
-})
 
 
-return self;
+    return self;
 
 })
 ()
