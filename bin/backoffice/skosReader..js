@@ -839,8 +839,6 @@ var skosReader = {
                             var broader = conceptMap[broader];
                             if (!broader)
                                 return ancestorsIdsStr;
-                            if(broader.id=="TE.15439")
-                                var x=3
                             var branchSep = "";
                             for (var i = 0; i < level.length; i++) {// braoders branch separator
                                 ancestorsIdsStr += "|"

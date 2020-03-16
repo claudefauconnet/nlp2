@@ -3,7 +3,8 @@ var multiSkosGraph2 = (function () {
 
     var maxEdges = 200
     self.distinctThesaurus = {};
-    self.context = {}
+    self.context = {currentSelectdNode: null};
+
     var palette = [
         "#0072d5",
         '#FF7D07',
@@ -84,7 +85,6 @@ var multiSkosGraph2 = (function () {
                 callbackSeries()
             },
 
-
             function (callbackSeries) {
                 if (!$("#queryElasticCbx").prop("checked"))
                     return callbackSeries();
@@ -100,8 +100,6 @@ var multiSkosGraph2 = (function () {
                 })
             },
             function (callbackSeries) {
-
-
                 paths.forEach(function (path) {
 
                     var thesaurus = path.thesaurus.replace(/\s/g, "_");
@@ -153,24 +151,10 @@ var multiSkosGraph2 = (function () {
 
                 callbackSeries()
             },
-            // query Sparql bnf
+
+
+// draw graph with ElasticData
             function (callbackSeries) {
-                if (true || !$("#queryBNFcbx").prop("checked"))
-                    return callbackSeries();
-
-                sparql.queryBNF(word, {exactMatch: exactMatch}, function (err, result) {
-                    if (err) {
-                        console.log(err);
-                        callbackSeries()
-                    }
-                    paths = paths.concat(result)
-                    callbackSeries()
-                })
-
-            },
-
-            function (callbackSeries) {
-
 
                 var edgesCount = visjsData.edges.length;
                 if (edgesCount > maxEdges) {
@@ -201,107 +185,52 @@ var multiSkosGraph2 = (function () {
                     common.fillSelectOptions("matchingConceptsSelect", array, false, "text", "value")
                 }
 
-
                 $(".thesCBX").parent().css("background-color", "none")
                 $(".thesCBX").parent().css("border", "none")
                 thesaurusMatching.forEach(function (thesaurus) {
                     thesaurus = "thes_" + thesaurus
                     $("#" + thesaurus).parent().css("background-color", "#ddd")
-
                 })
                 callbackSeries()
             },
+
+
+            //get Wikidata and BNF -> show first items
             function (callbackSeries) {
                 if (!$("#queryWikidataCbx").prop("checked"))
                     return callbackSeries();
-
-                sparql.queryWikidataList(word, function (err, result) {
+                sparql_abstract.list("Wikidata", word, {}, function (err, bindings) {
                     if (err) {
                         console.log(err);
                         callbackSeries()
                     }
-                    self.wikidataData = result;
-                    var FrenchVikidiaID = null;
-                    var wikidataLabels = [];
-                    result.forEach(function (item, index) {
-                        var parent = "";
-                        if (item.others["subclass of"])
-                            parent = "/" + item.others["subclass of"]
-                        else if (item.others["instance of"])
-                            parent = "/" + item.others["instance of"]
-                        wikidataLabels.push({id: item.id, label: item.label + parent})
-                        var labelOk = false;
 
-                        for (var key in item.others) {
-                            if (!FrenchVikidiaID)
-                                if (key == "French Vikidia ID") {
-                                    FrenchVikidiaID = item.others[key]
-                                }
-                        }
-                        for (var key in item.linkedData) {
-                            if (!FrenchVikidiaID)
-                                if (key == "French Vikidia ID") {
-                                    FrenchVikidiaID = item.others[key]
-                                }
-                        }
-                        if (index == 0)
-                            $("#definitionsDiv").append("<B>Wikidata</B> :" + item.description)
-
-                    })
-                    common.fillSelectOptions("rigthDivWikidataSelect", wikidataLabels, null, "label", "id")
-
-
-                    if (wikidataLabels.length > 0) {
-                        sparql.getWikidataAncestors(wikidataLabels[0], function (err, result) {
-                            if (err)
-                                return console.log(err);
-                            var existingNodes = visjsGraph.data.nodes.getIds()
-                            result.forEach(function (item) {
-                                var newVisjsData = self.pathsToVisjsData(item)
-
-                                newVisjsData.nodes.forEach(function (node) {
-                                    if (existingNodes.indexOf(node.id < 0))
-                                        visjsGraph.data.nodes.add(node)
-                                })
-                                newVisjsData.edges.forEach(function (edge) {
-                                    visjsGraph.data.edges.add(edge)
-                                })
-                            })
-
-                        })
-
-                    }
-                    if (FrenchVikidiaID) {
-                        sparql.queryBNF_list(FrenchVikidiaID, function (err, result) {
-                            var bnfLabels = []
-                            result.forEach(function (item, index) {
-                                bnfLabels.push({id: item.id.value, label: item.value.value})
+                    var index = 0;
+                    async.eachSeries(bindings, function (item, callbackEach) {
+                            sparql_abstract.getDetails("Wikidata", item.id, {}, function (err, details) {
+                                bindings[index].FrenchVikidiaID = details.properties["P7818"]
+                                bindings[index].parent = details.properties["P31"] || details.properties["P279"];
+                                index++;
+                                callbackEach()
 
                             })
-                            common.fillSelectOptions("rigthDivBNFSelect", bnfLabels, null, "label", "id")
+                        }
+                        ,
 
-                            if (bnfLabels.length > 0)
-                                sparql.queryBNF_ancestors(bnfLabels[0], {exectMatch: exactMatch}, function (err, result) {
-
-                                    if (err)
-                                        return console.log(err);
-                                    var existingNodes = visjsGraph.data.nodes.getIds()
-                                    result.forEach(function (item) {
-                                        var newVisjsData = self.pathsToVisjsData(item)
-
-                                        newVisjsData.nodes.forEach(function (node) {
-                                            if (existingNodes.indexOf(node.id < 0))
-                                                visjsGraph.data.nodes.add(node)
-                                        })
-                                        newVisjsData.edges.forEach(function (edge) {
-                                            visjsGraph.data.edges.add(edge)
-                                        })
-                                    })
-
-                                })
+                        function (err) {
+                            var wikiDatList = [];
+                            bindings.forEach(function (item, index) {
+                                var parent = "/";
+                                wikiDatList.push({id: item.id, label: item.label + " / " + item.parent.value})
+                            })
+                            common.fillSelectOptions("rigthDivWikidataSelect", wikiDatList, null, "label", "id")
                         })
 
-                    }
+
+
+
+
+
                 })
                 return callbackSeries();
             },
@@ -338,6 +267,7 @@ var multiSkosGraph2 = (function () {
                     visjsData.edges.push({
                         from: self.rootNode.id,
                         to: id,
+                        id:self.rootNode.id+"_" +id,
                         type: "match",
                         arrows: "to",
                         label: thesaurus,
@@ -354,15 +284,18 @@ var multiSkosGraph2 = (function () {
                         to: id,
                         type: "match",
                         arrows: "to",
+                        id:parent+"_" +id
 
 
                     });
                 } else if (level > previouslLevel) {
+                    var from=uniqueNodes[uniqueNodes.length - 2];
                     visjsData.edges.push({
-                        from: uniqueNodes[uniqueNodes.length - 2],
+                        from: from,
                         to: id,
                         type: "match",
                         arrows: "to",
+                        id:from+"_" +id
 
 
                     });
@@ -374,7 +307,7 @@ var multiSkosGraph2 = (function () {
                         to: id,
                         type: "match",
                         arrows: "to",
-
+                        id:parent+"_" +id
 
                     });
                 }
@@ -418,13 +351,34 @@ var multiSkosGraph2 = (function () {
         $(".thesCBX").parent().css("border-style", "none")
         $("#" + "thes_" + obj.data.thesaurus).parent().css("border", "2px blue solid")
 
-        if (obj.data.thesaurus == "BNF") {
-            self.showNodeInfosBNF(obj);
-        } else if (obj.data.thesaurus == "Wikidata") {
-            self.showNodeInfosWikidata(obj);
+        var webThesaurus=["Wikidata","BNF"]
+        if(webThesaurus.indexOf(obj.data.thesaurus)>-1){
+            self.showNodeChildren(obj);
         } else {
             self.showNodeInfosElastic(obj);
         }
+    }
+
+
+    self.showBNFgraph = function (item) {
+        sparql_abstract.getAncestor("BNF", item.id, {exectMatch: exactMatch}, function (err, result) {
+
+            if (err)
+                return console.log(err);
+            var existingNodes = visjsGraph.data.nodes.getIds()
+            result.forEach(function (item) {
+                var newVisjsData = self.pathsToVisjsData(item)
+
+                newVisjsData.nodes.forEach(function (node) {
+                    if (existingNodes.indexOf(node.id < 0))
+                        visjsGraph.data.nodes.add(node)
+                })
+                newVisjsData.edges.forEach(function (edge) {
+                    visjsGraph.data.edges.add(edge)
+                })
+            })
+
+        })
     }
 
     self.onThesCBXChange = function (ev) {
@@ -437,111 +391,106 @@ var multiSkosGraph2 = (function () {
     self.showNodeInfosElastic = function (node) {
         $("#infosDiv").html("")
         var str = node.id;
-        var _node = node
-        var p;
-        if ((p = str.indexOf(".")) > -1)
-            str = str.substring(p + 1)
-        if ((p = str.indexOf("/")) > -1)
-            str = str.substring(p + 1)
-        if ((p = str.indexOf("#")) > -1)
-            str = str.substring(p + 1)
-        str = str.replace(/[-_]/g, " ")
+        str=str.replace(/[:\/\.@#]/g," ")
         var queryString = "*" + str;
-
 
         self.queryElastic(queryString, {default_field: "ancestors"}, function (err, result) {
             if (err)
                 return console.log(err);
             var hits = result.hits.hits;
-            hits.sort(function (a, b) {
-                if (a._source.prefLabels > b._source.prefLabels)
-                    return 1
-                if (b._source.prefLabels > a._source.prefLabels)
-                    return -1
-                return 0;
-            })
-            var childrenStr = "<ul>";
+
             var children = [];
             hits.forEach(function (hit) {
-                var ancestorsStr = hit._source.ancestors;
-                var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
-
-
-                var regex = /(_*)(.*);(.*)/g
-                var array;
-                var previouslLevel = 1;
-                var nodes = [];
-                var selectNodeLevel = 1000;
-                while ((array = regex.exec(ancestorsStr)) != null) {
-                    var level = array[1].length;
-                    var id = array[2];
-                    var name = array[3];
-                    nodes.push({id: id, name: name, level: level})
-                    if (id == _node.id) {
-                        selectNodeLevel = level;
+                var ancestors=hit._source.ancestors;
+               var p=ancestors.indexOf(node.id)
+                   var childrenStr=ancestors.substring(0,p);
+               var q=childrenStr.lastIndexOf("|")
+                if(q>-1){
+                    var q2=childrenStr.lastIndexOf("|")
+                    if(q2>-1){
+                        var array=childrenStr.split(";")
+                        children.push({id:nodeId,narrowerId:array[0],narrowerLabel:array[1]});
 
                     }
                 }
-                nodes.forEach(function (node) {
-                    if (node.level == (selectNodeLevel - 1)) {
-                        childrenStr += "<li onclick='multiSkosGraph2.drawConceptGraph(\"" + node.name + "\")'>" + node.name + "</li>"
-                    }
-                })
             })
-
-
-            /*   var id = hit._source.prefLabels.split(",")[0]
-               if (id != "")
-                   childrenStr += "<li onclick='multiSkosGraph2.drawConceptGraph(\"" + id + "\")'>" + hit._source.prefLabels + "</li>"*/
-
-
-            childrenStr += "</ul>"
-
-            var id2 = node.label.split(",")[0]
-            str = "<div>"
-            str += "<span class='title' onclick='multiSkosGraph2.drawConceptGraph(\"" + id2 + "\")'>" + node.label + "</span><br>";
-            str += "<span class='id'>" + node.id + "</span>";
-            str += "</div>"
-            str += "<div  style='width:280px;max-height:450px;font-size:12px;overflow:auto'>"
-            str += childrenStr;
-            str += "</div>"
-
-            $("#infosDiv").html(str)
+            self.addChildrenNodesToGraph(obj,children)
         })
     }
 
 
-    self.showNodeInfosBNF = function (obj) {
-        sparql.queryBNFchildren(obj.id, function (err, result) {
+    self.showNodeChildren = function (obj) {
+        sparql_abstract.getChildren(obj.data.thesaurus, obj.id, {}, function (err, children) {
             if (err)
                 return console.log(err);
+            self.addChildrenNodesToGraph(obj,children)
 
-            var newNodes=[];
-            var newEdges=[];
-            var existingNodes=  visjsGraph.data.nodes.getIds()
-            result.forEach(function(item){
-                if(existingNodes.indexOf(item.narrowerId.value)<0) {
-                    newNodes.push({
-                        label: item.narrowerLabel.value,
-                        id: item.narrowerId.value,
-                        shape: "box"
+        })
+    }
 
-                    })
-                    newEdges.push({
-                        from: obj.id,
-                        to: item.narrowerId.value
 
-                    })
 
-                }
-                })
-                visjsGraph.data.nodes.add(newNodes)
-                visjsGraph.data.edges.add(newEdges)
 
-            })
+    self.addVisJsDataToGraph=function(newVisjsData){
+
+        var existingNodes = visjsGraph.data.nodes.getIds();
+        var existingEdges = visjsGraph.data.edges.getIds();
+        newVisjsData.nodes.forEach(function (node) {
+            if (existingNodes.indexOf(node.id) < 0) {
+                visjsGraph.data.nodes.add(node)
+            }
+        })
+        newVisjsData.edges.forEach(function (edge) {
+            if (existingEdges.indexOf(edge.from+"_"+edge.to) < 0) {
+                visjsGraph.data.edges.add(edge)
+            }
+        })
+
 
 
     }
+    self.addChildrenNodesToGraph=function(parent,children){
+
+        if (self.context.selectedNode && self.context.selectedNode.id == parent.id) {//bascule
+            visjsGraph.data.nodes.remove(self.newNodes)
+            visjsGraph.data.edges.remove(self.newEdges)
+            self.context.selectedNode.id = null;
+
+        } else {
+
+
+            self.context.newNodes = [];
+            self.context.newEdges = [];
+            var existingNodes = visjsGraph.data.nodes.getIds();
+            var existingEdges = visjsGraph.data.edges.getIds();
+
+            var color = parent.color;
+            children.forEach(function (item) {
+                if (existingNodes.indexOf(item.narrowerId) < 0) {
+                    self.context.newNodes.push({
+                        label: item.narrowerLabel,
+                        id: item.narrowerId,
+                        shape: "triangle",
+                        data: {thesaurus: parent.data.thesaurus, parent: parent.id},
+                        color: color
+                    })
+                    if (existingEdges.indexOf(parent.id+"_"+item.narrowerId) < 0) {
+                        self.context.newEdges.push({
+                            from: parent.id,
+                            to: item.narrowerId,
+                            id: parent.id + "_" + item.narrowerId
+
+                        })
+                    }
+                }
+            })
+            visjsGraph.data.nodes.add(self.context.newNodes)
+            visjsGraph.data.edges.add(self.context.newEdges)
+            self.context.selectedNode = parent;
+        }
+
+    }
+
 
     self.showNodeInfosWikidata = function (obj) {
 
@@ -694,34 +643,103 @@ var multiSkosGraph2 = (function () {
         });
     }
 
-    self.showWikiDataDetails = function (id) {
-        var strAll = ""
-        self.wikidataData.forEach(function (item) {
-            if (item.id == id) {
+    self.removeThesaurusNodes = function (thesaurus) {
+        var allNodes = visjsGraph.data.nodes.get();
+        var thesaurusNodes = [];
+        allNodes.forEach(function (item) {
+            if (item.data && item.data.thesaurus == thesaurus)
+                thesaurusNodes.push(item.id)
 
+        });
+        visjsGraph.data.nodes.remove(thesaurusNodes)
 
-                sparql.getWikidataAncestors(item, function (err, result) {
+    }
+
+    self.showWikiDataDetailsAndAncestors = function (id) {
+        var BNFid = null;
+        var LOCid=null;
+        async.series([
+            //draw ancestors
+            function (callbackSeries) {
+                sparql_abstract.getAncestor("Wikidata", id, {}, function (err, result) {
                     if (err)
-                        return console.log(err);
+                        return callbackSeries(err);
 
-                    //   var existingNodes= visjsGraph.data.nodes.getIds()
-                    function removeThesaurusNodes(thesaurus) {
-                        var allNodes = visjsGraph.data.nodes.get();
-                        var thesaurusNodes = [];
-                        allNodes.forEach(function (item) {
-                            if (item.data && item.data.thesaurus == thesaurus)
-                                thesaurusNodes.push(item.id)
+                    self.removeThesaurusNodes("Wikidata")
+                    result.forEach(function (item) {
+                        var newVisjsData = self.pathsToVisjsData(item);
+                        self.addVisJsDataToGraph(newVisjsData);
 
-                        });
-                        visjsGraph.data.nodes.remove(thesaurusNodes)
+                    })
+                })
 
+                return callbackSeries()
+            },
+            //showDetails
+            function (callbackSeries) {
+                sparql_abstract.getDetails("Wikidata", id,{}, function (err, result) {
+                    var str = ""
+                    for (var key in result.properties) {
+                        if (key == "P268")
+                            BNFid = result.properties[key].value
+                        if(key=="P244")
+                            LOCid= result.properties[key].value
+
+                        if (key.indexOf('image') > -1) {
+                            str += "<img src='" +  result.properties[key].value + "' width='200px'/></br>"
+                        } else {
+//var link="<a target='_blank' href='"+result.properties[key].id+"'>"
+                            str += "<span style='font-style: italic'>" + result.properties[key].name + " : </span>" + "<span style='font-weight: bold'>" +  result.properties[key].value + "</span><br>";
+                        }
                     }
 
-                    removeThesaurusNodes("Wikidata")
+                    $("#rigthDivDetails").html(str)
+                    return callbackSeries()
+                })
 
+            },
 
-                    result.forEach(function (item) {
+            //show BNF ancestors
+            function (callbackSeries) {
+                if (!BNFid)
+                    return callbackSeries()
+
+                sparql_abstract.getAncestor("BNF", "http://data.bnf.fr/ark:/12148/cb"+BNFid, {}, function (err, bindings) {
+                    if (err)
+                        return callbackSeries();
+                    self.removeThesaurusNodes("BNF")
+                    bindings.forEach(function (item) {
                         var newVisjsData = self.pathsToVisjsData(item)
+                        self.addVisJsDataToGraph(newVisjsData);
+
+
+                    })
+
+
+
+                    return callbackSeries()
+                })
+
+
+            }
+,
+            //show BNF ancestors
+            function (callbackSeries) {
+                if (!LOCid)
+                    return callbackSeries()
+
+                sparql_abstract.getAncestor("LOC", LOCid, {}, function (err, bindings) {
+                    if (err)
+                        return callbackSeries();
+
+
+                    return
+                    self.addVisJsDataToGraph(newVisjsData);
+                    self.removeThesaurusNodes("BNF")
+                    bindings.forEach(function (item) {
+                        var newVisjsData = self.pathsToVisjsData(item)
+
+
 
                         newVisjsData.nodes.forEach(function (node) {
                             visjsGraph.data.nodes.add(node)
@@ -731,27 +749,19 @@ var multiSkosGraph2 = (function () {
                         })
                     })
 
+
+
+                    return callbackSeries()
                 })
 
-                for (var key in item) {
-                    var str = ""
-                    if (typeof item[key] != "object")
-                        continue
-                    for (var key2 in item[key]) {
-
-                        if (key2.indexOf('image') > -1) {
-                            str += "<img src='" + item[key][key2] + "' width='200px'/></br>"
-                        } else {
-                            str += "<span style='font-style: italic'>" + key2 + " : </span>" + "<span style='font-weight: bold'>" + item[key][key2] + "</span><br>";
-                        }
-                    }
-                    strAll += str
-                    strAll += "<hr>"
-                }
 
             }
+
+
+        ], function (err) {
+            if (err)
+                return console.log(err);
         })
-        $("#rigthDivDetails").html(strAll)
 
     }
 

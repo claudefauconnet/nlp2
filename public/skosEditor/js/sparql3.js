@@ -380,18 +380,11 @@ self.processDataWikiData = function (wikidataObj, data) {
 self.querySPARQL_GET = function (url, query, queryOptions, callback) {
 
     var url = url + query + queryOptions
-    // var url="https://www.wikidata.org/w/api.php?action=wbsearchentities&search=zinc&format=json&errorformat=plaintext&language=en&uselang=en&type=item"
     $.ajax({
         type: "GET",
         url: url,
         dataType: "json",
-        /*   headers: {
-               "accept": "application/json",
-               "accept-encoding": "gzip, deflate",
-               "accept-language": "en-US,en;q=0.8",
-               "content-type": "application/json",
-               "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
-           },*/
+
         success: function (data, textStatus, jqXHR) {
             var xx = data;
             callback(null, data)

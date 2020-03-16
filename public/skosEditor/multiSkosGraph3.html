@@ -5,8 +5,12 @@
     <title>Souslesens MultiSkosGraph</title>
     <script src="../js/jquery/jquery.min.js"></script>
     <script src="../js/others/async.js" charset="utf-8"></script>
-    <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
-    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>
+ <!--   <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
+    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>-->
+
+    <script type="text/javascript" src="visjs/vis-network.min.js"></script>
+    <link href="visjs/vis-network.css" rel="stylesheet" type="text/css"/>
+
     <script src="../js/graph/visjsGraph2.js"></script>
 
     <script src="js/common.js"></script>
@@ -15,7 +19,11 @@
 
     <script src="js/multiSkosGraph3.js"></script>
     <script src="js/authentification.js"></script>
-    <script src="js/sparql3.js"></script>
+    <script src="js/sparql_abstract.js"></script>
+    <script src="js/sparql_BNF.js"></script>
+    <script src="js/sparql_Wikidata.js"></script>
+    <script src="js/sparql_LOC.js"></script>
+    <script src="js/sparql_termsciences.js"></script>
 
     <script>
         $(function () {
@@ -72,7 +80,7 @@
     </div>
 
     <div>
-        &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"></span>
+        &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px">  <span id="messageDiv"></span>
         <div id="definitionsDiv" style="width:1000px;"></div>
         <div id="graphDiv" style="width:1000px;height: 1000px"></div>
     </div>
@@ -85,8 +93,8 @@
             <input type="checkbox" id="queryElasticCbx"  checked="checked"> Others<br>
 
         </div>
-        <select id="rigthDivWikidataSelect" onclick="multiSkosGraph2.showWikiDataDetails($(this).val())" style='width: 270px' size='5'></select>
-        <select id="rigthDivBNFSelect" onclick="multiSkosGraph2.showWikiDataDetails($(this).val())" style='width: 270px' size='5'></select>
+        <select id="rigthDivWikidataSelect" onclick="multiSkosGraph2.showWikiDataDetailsAndAncestors($(this).val())" style='width: 270px' size='5'></select>
+        <select id="rigthDivBNFSelect" onclick="multiSkosGraph2.showBNFgraph($(this).val())" style='width: 270px' size='5'></select>
         <div id="rigthDivDetails" style='width: 270px;max-height: 600px;overflow: auto;font-size: 10px'></div>
 
     </div>
