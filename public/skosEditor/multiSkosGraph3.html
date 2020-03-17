@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Souslesens MultiSkosGraph</title>
     <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+
     <script src="../js/others/async.js" charset="utf-8"></script>
  <!--   <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
     <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>-->
@@ -37,6 +40,15 @@
                 }
             });
 
+            $("#dialogDiv").dialog({
+                autoOpen: false,
+                height: 500,
+                width: 500,
+                modal: true,
+            })
+
+            $("#dialogDiv").dialog("open")
+
 
         })
 
@@ -64,12 +76,8 @@
 
 
     <div style="width:300px">
-        <input id="searchWordInput" value="zinc">
-        <button onclick="multiSkosGraph2.drawConceptGraph($('#searchWordInput').val())">Graph</button>
 
-        <br><input type="checkbox" checked='checked' onchange="multiSkosGraph2.drawConceptGraph($('#searchWordInput').val())" id="exactMatchCBX">exactMatch
 
-        <select id="matchingConceptsSelect" size="0" style="width:300px" onchange="multiSkosGraph2.zoomOnSelectedMatchingConcept()"></select>
         <div id="thesaurusListDiv"></div>
 
         <div id="infosDiv" style='width:300px'>
@@ -90,11 +98,10 @@
 
             <input type="checkbox" id="queryBNFcbx" checked="checked"> BNF<br>
             <input type="checkbox" id="queryWikidataCbx" checked="checked"> Wikidata<br>
-            <input type="checkbox" id="queryElasticCbx"  checked="checked"> Others<br>
+
 
         </div>
-        <select id="rigthDivWikidataSelect" onclick="multiSkosGraph2.showWikiDataDetailsAndAncestors($(this).val())" style='width: 270px' size='5'></select>
-        <select id="rigthDivBNFSelect" onclick="multiSkosGraph2.showBNFgraph($(this).val())" style='width: 270px' size='5'></select>
+
         <div id="rigthDivDetails" style='width: 270px;max-height: 600px;overflow: auto;font-size: 10px'></div>
 
     </div>
@@ -114,6 +121,18 @@
 
         <div id="loginMessage"></div>
     </div>
-</div>
+
+
+    <div id ="dialogDiv" style="display: flex;flex-direction: column">
+        <input id="searchWordInput" value="zinc">
+        <button onclick="multiSkosGraph2.drawConceptGraph($('#searchWordInput').val())">Graph</button>
+        <span><input type="checkbox" checked='checked' onchange="multiSkosGraph2.drawConceptGraph($('#searchWordInput').val())" id="exactMatchCBX">exactMatch</span>
+        <span>    <input type="checkbox" id="queryElasticCbx" > private thesaurus<br></span>
+<div  style="display: flex;flex-direction: column;align-items: center">
+   <div> <span>  Wikidata </span> <select id="conceptsWikidata_Select" onclick="multiSkosGraph2.showWikiDataDetailsAndAncestors($(this).val())" style='width: 270px' size='5'></select></div>
+    <div>  <span>   LOC</span>  <select id="conceptsLOC_Select" onclick="multiSkosGraph2.showWikiDataDetailsAndAncestors($(this).val())" style='width: 270px' size='5'></select></div>
+    <div>   <span>  BNF </span> <select id="conceptsBNF_Select" onclick="multiSkosGraph2.showBNFgraph($(this).val())" style='width: 270px' size='5'></select></div>
+    <div> <span> pricate sources</span>  <select id="matchingConceptsSelect" size="5" style="width:300px" onchange="multiSkosGraph2.zoomOnSelectedMatchingConcept()"></select></div>
+    </div>
 </body>
 </html>

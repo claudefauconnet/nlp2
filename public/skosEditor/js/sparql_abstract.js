@@ -1,3 +1,6 @@
+
+//https://anjackson.github.io/zombse/062013%20Libraries%20&%20Information%20Science/static/questions/556.html
+
 var sparql_abstract = (function () {
 
 
@@ -94,7 +97,7 @@ var sparql_abstract = (function () {
 
     }
 
-    self.skosToFlat = function (id,concepts) {
+    self.skosToFlat = function (id,concepts,thesaurus) {
         var conceptsMap = {}
         var allItems = [];
         var allUniqueItems = [];
@@ -130,7 +133,7 @@ var sparql_abstract = (function () {
                 spaces += "_"
             }
             var prefLabel = "?";
-            if (node.prefLabels && Array.isArray(node.prefLabels && node.prefLabels.length > 0))
+            if (node.prefLabels && Array.isArray(node.prefLabels) && node.prefLabels.length > 0)
                 prefLabel = node.prefLabels[0].value
             ancestors += spaces + node.id + ";" + prefLabel;
             var level2 = level + 1;
@@ -146,11 +149,13 @@ var sparql_abstract = (function () {
 
 
         var jsonArray = []
-        allItems.forEach(function (item) {
+        allItems.forEach(function (item,index) {
          //   if (item.id == id) {
+            if(index==0) {
                 var ancestors = recurseAncestors(item, "", 1);
 
-                jsonArray.push({id: item.id, ancestors: ancestors, prefLabels: item.name, altLabels: ""})
+                jsonArray.push({id: item.id, ancestors: ancestors, prefLabels: item.name,thesaurus:thesaurus, altLabels: ""})
+            }
          //   }
 
 

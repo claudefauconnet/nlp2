@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_LOC.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_LOC.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -124,7 +126,7 @@
       <workItem from="1583659302686" duration="57731000" />
       <workItem from="1583831688727" duration="9147000" />
       <workItem from="1583914227603" duration="59182000" />
-      <workItem from="1584173332084" duration="74716000" />
+      <workItem from="1584173332084" duration="83075000" />
     </task>
     <servers />
   </component>
@@ -244,6 +246,12 @@
           <line>171</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3144" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_BNF.js</url>
+          <line>18</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3147" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

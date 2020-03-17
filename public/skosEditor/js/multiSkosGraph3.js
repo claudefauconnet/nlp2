@@ -26,7 +26,21 @@ var multiSkosGraph2 = (function () {
 
     var colorsMap = {}
 
+self.searchConcepts=function(word){
+    var exactMatch = $("#exactMatchCBX").prop("checked")
+        var sources=["private","LOC","Wikidata","BNF"];
+   var concepts={}
+        sources.forEach(function(source){
+        sparql_abstract.list(source,word,{exactMatch:exactMatch},function(err,result){
 
+
+        })
+
+    })
+
+
+
+}
     self.setTheaurusList = function (thesaurusList) {
         var html = "<ul>"
         html += " <li><input type='checkbox' checked='checked' onchange='multiSkosGraph2.switchThesCbxs($(this))' class='thesCBXall' id='thes_all" + "'>"
@@ -49,7 +63,7 @@ var multiSkosGraph2 = (function () {
         if (!options)
             options = {};
         $("#waitImg").css("display", "block");
-        $("#rigthDivWikidataSelect").html("")
+        $("#conceptsWikidata_Select").html("")
         $("#rigthDivDetails").html("")
         $("#definitionsDiv").html("")
         var uniqueMatchingConcepts = {}
@@ -223,7 +237,7 @@ var multiSkosGraph2 = (function () {
                                 var parent = "/";
                                 wikiDatList.push({id: item.id, label: item.label + " / " + item.parent.value})
                             })
-                            common.fillSelectOptions("rigthDivWikidataSelect", wikiDatList, null, "label", "id")
+                            common.fillSelectOptions("conceptsWikidata_Select", wikiDatList, null, "label", "id")
                         })
 
 
@@ -351,7 +365,7 @@ var multiSkosGraph2 = (function () {
         $(".thesCBX").parent().css("border-style", "none")
         $("#" + "thes_" + obj.data.thesaurus).parent().css("border", "2px blue solid")
 
-        var webThesaurus=["Wikidata","BNF"]
+        var webThesaurus=["Wikidata","BNF","LOC"]
         if(webThesaurus.indexOf(obj.data.thesaurus)>-1){
             self.showNodeChildren(obj);
         } else {
@@ -723,7 +737,7 @@ var multiSkosGraph2 = (function () {
 
             }
 ,
-            //show BNF ancestors
+            //show LOC ancestors
             function (callbackSeries) {
                 if (!LOCid)
                     return callbackSeries()
@@ -733,13 +747,11 @@ var multiSkosGraph2 = (function () {
                         return callbackSeries();
 
 
-                    return
-                    self.addVisJsDataToGraph(newVisjsData);
-                    self.removeThesaurusNodes("BNF")
+
+
+                    self.removeThesaurusNodes("LOC")
                     bindings.forEach(function (item) {
                         var newVisjsData = self.pathsToVisjsData(item)
-
-
 
                         newVisjsData.nodes.forEach(function (node) {
                             visjsGraph.data.nodes.add(node)
