@@ -12,7 +12,7 @@ var sparql_termsciences=(function(){
         return callback(null,bindings);
     }
 
-    self.getAncestor=function(id,options,callback){
+    self.getAncestors=function(id,options,callback){
         var bindings=[];
 
 

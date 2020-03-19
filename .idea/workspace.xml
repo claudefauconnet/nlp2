@@ -3,10 +3,19 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/skosToElastic..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/skosToElastic..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph2.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_BNF.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_BNF.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_LOC.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_LOC.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_Wikidata.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_Wikidata.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_termsciences.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_termsciences.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -76,7 +85,7 @@
     <configuration name="crawler_rameau..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_rameau..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
-    <configuration name="crawler_termSciences..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_termSciences..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
+    <configuration name="httpProxy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="httpProxy..js" working-dir="$PROJECT_DIR$/bin">
       <method v="2" />
     </configuration>
     <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
@@ -87,11 +96,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.crawler_rameau..js" />
+        <item itemvalue="Node.js.httpProxy..js" />
+        <item itemvalue="Node.js.crawler_LOC..js" />
         <item itemvalue="Node.js.skosToElastic..js" />
         <item itemvalue="Node.js.skosReader..js" />
-        <item itemvalue="Node.js.crawler_termSciences..js" />
-        <item itemvalue="Node.js.crawler_LOC..js" />
+        <item itemvalue="Node.js.crawler_rameau..js" />
       </list>
     </recent_temporary>
   </component>
@@ -126,7 +135,7 @@
       <workItem from="1583659302686" duration="57731000" />
       <workItem from="1583831688727" duration="9147000" />
       <workItem from="1583914227603" duration="59182000" />
-      <workItem from="1584173332084" duration="83075000" />
+      <workItem from="1584173332084" duration="125842000" />
     </task>
     <servers />
   </component>
@@ -186,7 +195,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/skosToElastic..js</url>
-          <line>114</line>
+          <line>119</line>
           <option name="timeStamp" value="3025" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -216,18 +225,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/routes/index.js</url>
-          <line>241</line>
+          <line>247</line>
           <option name="timeStamp" value="3131" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
-          <line>6</line>
-          <option name="timeStamp" value="3133" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/routes/index.js</url>
-          <line>240</line>
-          <option name="timeStamp" value="3134" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph2.js</url>
@@ -249,9 +248,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_BNF.js</url>
-          <line>18</line>
+          <line>20</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3147" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
+          <line>22</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3164" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js</url>
+          <line>100</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3165" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/routes/index.js</url>
+          <line>246</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3166" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_LOC.js</url>
+          <line>20</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3181" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

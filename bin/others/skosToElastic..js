@@ -6,6 +6,10 @@ var indexer = require('../backoffice/indexer.')
 var indexer = require('../backoffice/indexer.')
 
 var ndjson = require('ndjson');
+
+var elasticUrl = "http://localhost:9200/"
+//  var elasticUrl="http://vps254642.ovh.net:2009/";
+
 var skosToElastic = {
 
     load: function (thesaurusPaths, callback) {
@@ -44,7 +48,9 @@ var skosToElastic = {
                         for (var i = 0; i <= index; i++) {
                             sep += "_";
                         }
-                        ancestors = ancestors + sep + ancestorsIdsArray[index] + ";" + ancestor
+                           if(ancestor.indexOf("GROUP IIB")>-1)
+                            var x=3
+                        ancestors = ancestors + sep + ancestorsIdsArray2[index] + ";" + ancestor
                     })
                     newJson.push({
                         id: item.id,
@@ -77,8 +83,7 @@ var skosToElastic = {
     flatToElastic: function (flatJson, startIdValue, createIndex, callback) {
 
 
-        var elasticUrl = "http://localhost:9200/"
-       var elasticUrl="http://vps254642.ovh.net:2009/";
+
         // var indexName = "flat_thesaurus"
         var indexName = "flat_thesaurus2"
         var indexconfig = JSON.parse("" + fs.readFileSync("D:\\GitHub\\nlp2\\config\\elastic\\sources\\flat_thesaurus2.json"))
@@ -439,33 +444,52 @@ function getThesaurusListFromNlp2App() {
 }
 
 
-if (true) {
+if (false) {
 
     var thesaurusList = getThesaurusListFromNlp2App();
+
+
+
+    /*
+    http://localhost:9200/flat_thesaurus2/_delete_by_query
+    {
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+         "terms":{"thesaurus":["LOC","TS"]}
+        }
+      ]
+    }
+  }
+
+}
+     */
+
 
 
     //   thesaursusList = ["D:\\NLP\\thesaurusCTG-02-20.rdf"]
 
     var thesaurusList = [
-        "D:\\NLP\\thesaurusCTG-02-20.rdf",
-        "D:\\NLP\\quantum_F_all.rdf",
+        "D:\\NLP\\rdfs\\thesaurusCTG-02-20.rdf",
+        "D:\\NLP\\rdfs\\quantum_F_all.rdf",
         //   "D:\\NLP\\Tulsa_all.rdf",
-        "D:\\NLP\\Tulsa_COMMON ATTRIBUTE.rdf",
-        "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
-        "D:\\NLP\\Tulsa_ECONOMIC FACTOR.rdf",
-        "D:\\NLP\\Tulsa_EQUIPMENT.rdf",
-        "D:\\NLP\\Tulsa_LIFE FORM.rdf",
-        "D:\\NLP\\Tulsa_MATERIAL.rdf",
-        "D:\\NLP\\Tulsa_OPERATING CONDITION.rdf",
-        "D:\\NLP\\Tulsa_PHENOMENON.rdf",
-        "D:\\NLP\\Tulsa_PROCESS.rdf",
-        "D:\\NLP\\Tulsa_PROPERTY.rdf",
-        "D:\\NLP\\unesco.rdf",
-        "D:\\NLP\\thesaurusIngenieur.rdf",
-        "D:\\NLP\\termScience\\consolidation\\temp2\\TS.rdf"]
+        "D:\\NLP\\rdfs\\Tulsa_COMMON ATTRIBUTE.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_EARTH AND SPACE CONCEPTS.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_ECONOMIC FACTOR.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_EQUIPMENT.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_LIFE FORM.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_MATERIAL.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_OPERATING CONDITION.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_PHENOMENON.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_PROCESS.rdf",
+        "D:\\NLP\\rdfs\\Tulsa_PROPERTY.rdf",
+        "D:\\NLP\\rdfs\\unesco.rdf",
+        "D:\\NLP\\rdfs\\thesaurusIngenieur.rdf",
+      ]
     //  var thesaurusList = [ "D:\\NLP\\Tulsa_EARTH AND SPACE CONCEPTS.rdf"]
     //  var thesaurusList = ["D:\\NLP\\unesco.rdf"]
-    var thesaurusList = [ "D:\\NLP\\termScience\\consolidation\\temp2\\TS.rdf"]
+ //   var thesaurusList = [   "D:\\NLP\\rdfs\\Tulsa_MATERIAL.rdf",]
     skosToElastic.load(thesaurusList, function (err, result) {
         if (err)
             return console.log(err);

@@ -392,7 +392,8 @@ var multiSkosGraph2 = (function () {
                     var shape = "box";
                     var size = 20;
                 }
-
+if(name=="GROUP IIB")
+    var x=3
 
                 var visjNode = {
                     label: name,

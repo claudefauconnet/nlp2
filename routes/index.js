@@ -224,6 +224,12 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                 processResponse(response, err, result)
             })
         }
+        if (req.body.httpProxy) {
+
+            httpProxy.get(req.body.url,function (err, result) {
+                processResponse(response, err, result)
+            })
+        }
 
 
     },
@@ -238,7 +244,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
     router.get('/httpProxy', function (req, res, next) {
 
 
-        httpProxy.get(req.url, function (err, result) {
+        httpProxy.get(req.query, function (err, result) {
             processResponse(res, err, result)
         })
     })

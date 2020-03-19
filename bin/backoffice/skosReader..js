@@ -914,7 +914,9 @@ var skosReader = {
                             })
                         }
 
+
                             if (options.output == 'json') {
+
                                 jsonArray.push({id: concept.id, ancestorsIds:ancestorsIdsStr, ancestors: ancestorsStr, prefLabels: strPrefLabel, altLabels: strAltLabel})
 
                             } else {
@@ -1283,8 +1285,8 @@ if (false) {
 
     var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf";
     var sourcePath = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
-
-    skosReader.rdfToFlat(sourcePath, null, function (err, result) {
+    var sourcePath = "D:\\NLP\\rdfs\\Tulsa_MATERIAL.rdf";
+    skosReader.rdfToFlat(sourcePath, {output:'json',extractedLangages:"en",outputLangage:"en"}, function (err, result) {
         //   fs.writeFileSync(sourcePath.replace(".rdf", "_flat.json"), JSON.stringify(result, null, 2))
 
     })

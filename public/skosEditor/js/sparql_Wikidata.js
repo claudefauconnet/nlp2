@@ -12,13 +12,13 @@ var sparql_Wikidata = (function () {
 
             var bindings = [];
             result.search.forEach(function (item) {
-                bindings.push({id: item.id, label: item.label})
+                bindings.push({id: item.id, label: item.label,description:item.description})
             })
             return callback(null, bindings);
         })
     }
 
-    self.getAncestor = function (id, options, callback) {
+    self.getAncestors = function (id, options, callback) {
         var query = "SELECT\n" +
             "?broaderId1 ?broaderId1Label \n" +
             "?broaderId2 ?broaderId2Label\n" +
@@ -182,7 +182,7 @@ var sparql_Wikidata = (function () {
                 "id": topNode.id,
                 "prefLabels": topNode.name,
                 "altLabels": "",
-                "thesaurus": "Wikidata",
+                "source": "Wikidata",
                 "ancestors": topNode.path
             })
         }

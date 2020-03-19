@@ -1,4 +1,4 @@
-var sparql_BNF = (function () {
+var sparql_DBpedia = (function () {
 
 
     var self = {};
@@ -21,7 +21,7 @@ var sparql_BNF = (function () {
         query = encodeURIComponent(query)
 
         var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=5000&should-sponge=&debug=on"
-        var url = "https://data.bnf.fr/sparql?default-graph-uri=&query=";// + query + queryOptions
+        var url = "http://fr.dbpedia.org/sparql?query=";// + query + queryOptions
         sparql_abstract.querySPARQL_GET(url, query, queryOptions, function (err, result) {
             if (err) {
                 return callback(err);
@@ -85,12 +85,12 @@ var sparql_BNF = (function () {
         query = encodeURIComponent(query)
 
         var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=5000&should-sponge=&debug=on"
-        var url = "https://data.bnf.fr/sparql?default-graph-uri=&query=";// + query + queryOptions
+        var url = "http://fr.dbpedia.org/sparql?query=";// + query + queryOptions
         sparql_abstract.querySPARQL_GET(url, query, queryOptions, function (err, result) {
             if (err) {
                 return callback(err);
             }
-            var json = sparql_abstract.processData_SKOS("BNF",id,result.results.bindings)
+            var json = self.processDataBNF(id,result.results.bindings)
             callback(null, json)
 
         })
@@ -108,7 +108,7 @@ var sparql_BNF = (function () {
         query = encodeURIComponent(query)
 
         var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=5000&should-sponge=&debug=on"
-        var url = "https://data.bnf.fr/sparql?default-graph-uri=&query=";// + query + queryOptions
+        var url = "http://fr.dbpedia.org/sparql?query=";// + query + queryOptions
         sparql_abstract.querySPARQL_GET(url, query, queryOptions, function (err, result) {
             if (err) {
                 return callback(err);

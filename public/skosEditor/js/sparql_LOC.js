@@ -2,139 +2,139 @@ var sparql_LOC = (function () {
 
 
     var self = {};
-
+var url = "http://vps475829.ovh.net:8890/sparql?default-graph-uri=&query=";// + query + queryOptions
     self.list = function (word, options, callback) {
-        var bindings = [];
 
+        word = word.charAt(0).toUpperCase() + word.slice(1)
+        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+            "SELECT DISTINCT *" +
+            "WHERE {" +
+            "?id skos:prefLabel ?prefLabel ." +
+            " filter(str(?prefLabel)='" + word + "')" +
+            "  ?id ?prop ?valueId ." +
+            "  ?valueId skos:prefLabel ?value." +
+            "?id skos:broader ?broaderId ." +
+            "  ?broaderId skos:prefLabel ?broader." +
+            "}" +
+            "LIMIT 1000"
 
-        return callback(null, bindings);
-    }
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
 
-    self.getAncestor = function (id, options, callback) {
-        var maxLevels = 8
-
-        var skosMap = {};
-        var broadersDoneByLevel = {};
-        var done = false;
-
-        function recurseParents(id, level) {
-
-
-            if (!skosMap[id])
-                skosMap[id] = {prefLabels: [], id: id, broaders: []}
-
-
-            self.getDetails(id, options, function (err, result) {
-                if (err)
-                    return callback(err);
-
-                if (result["http://www.w3.org/2004/02/skos/core#prefLabel"]) {
-                    result["http://www.w3.org/2004/02/skos/core#prefLabel"].forEach(function (name) {
-                        skosMap[id].prefLabels.push({lang: name["@language"], value: name["@value"]})
-                    })
+        sparql_abstract.querySPARQL_GET_proxy(url, query,queryOptions, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            var bindings=[];
+            var ids=[];
+            result.results.bindings.forEach(function(item){
+                if(ids.indexOf(item.id<0)){
+                    ids.push(item.id)
+                    bindings.push({id:item.id.value,label:item.prefLabel.value,description:item.broader.value})
                 }
-                var broaders = result["http://www.w3.org/2004/02/skos/core#broader"]
-                if (broaders) {
-                    var level2 = level + 1
-                    broaders.forEach(function (broader, index) {
-                        broadersDoneByLevel[level] = broadersDoneByLevel[level] || (index >= (broaders.length - 1))
-                        var broaderId = broader["@id"].substring(broader["@id"].lastIndexOf("/") + 1)
-                        skosMap[id].broaders.push({lang: "en", value: broaderId})
-
-                        recurseParents(broaderId, level2);
-
-                    })
-                } else {
-                    if (!done && level >= 8) {
-                        var end = true;
-                        for (var key in broadersDoneByLevel) {
-                            end = end & broadersDoneByLevel[key]
-                        }
-
-
-                        if (end) {
-                            done=true;
-                            var concepts = [];
-                            for (var key in skosMap) {
-                                concepts.push(skosMap[key])
-                            }
-                            var paths = sparql_abstract.skosToFlat(id, concepts,"LOC")
-
-                            return callback(null, paths)
-                           // console.log(JSON.stringify(path, null, 2))
-                        }
-                    }
-
-
-                }
-
 
             })
-
-        }
-
-        recurseParents(id, 0);
-
+            callback(null, bindings)
+        })
 
     }
 
+    self.getAncestors = function (id, options, callback) {
+
+
+        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+            "SELECT DISTINCT *" +
+            "WHERE {" +
+            "<" + id + "> skos:prefLabel ?prefLabel ;" +
+            "skos:broader ?broaderId1 . " +
+            "  ?broaderId1 skos:prefLabel ?broader1"
+
+
+        query +=
+            "OPTIONAL {" +
+            "    ?broaderId1 skos:broader ?broaderId2 ." +
+            "    ?broaderId2 skos:prefLabel ?broader2 ." +
+            "     OPTIONAL {" +
+            "   " +
+            "       ?broaderId2 skos:broader ?broaderId3 ." +
+            "    \t?broaderId3 skos:prefLabel ?broader3 ." +
+            "       OPTIONAL {" +
+            "       ?broaderId3 skos:broader ?broaderId4 ." +
+            "    \t?broaderId4 skos:prefLabel ?broader4 ." +
+            "           OPTIONAL {" +
+            "       ?broaderId4 skos:broader ?broaderId5 ." +
+            "    \t?broaderId5 skos:prefLabel ?broader5 ." +
+            "         OPTIONAL {   " +
+            "       ?broaderId5 skos:broader ?broaderId6 ." +
+            "    \t?broaderId6 skos:prefLabel ?broader6 ." +
+            "               OPTIONAL {   " +
+            "       ?broaderId6 skos:broader ?broaderId7 ." +
+            "    \t?broaderId7 skos:prefLabel ?broader7 ." +
+            "                 OPTIONAL {   " +
+            "       ?broaderId7 skos:broader ?broaderId8 ." +
+            "    \t?broaderId8 skos:prefLabel ?broader8 ." +
+            "              }" +
+            "            }" +
+            "        }" +
+            "        }" +
+            "     " +
+            "    }" +
+            "    }" +
+            " " +
+            "  }" +
+            "  }" +
+            "ORDER BY ASC(?broaderId1)" +
+            "LIMIT 1000"
+        console.log(query)
+
+
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+
+        sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            var json = sparql_abstract.processData_SKOS("LOC",id,result.results.bindings)
+            callback(null, json)
+
+        })
+    }
 
     self.getChildren = function (id, options, callback) {
-        var bindings=[]
+        var query = " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+            "SELECT DISTINCT *" +
+            "WHERE {" +
+            "<" + id + "> skos:narrower ?narrowerId ." +
+            "  ?narrowerId skos:prefLabel ?narrowerLabel ." +
+            "}" +
 
-        self.getDetails(id, options, function (err, result) {
-            if (err)
+            "LIMIT 1000"
+
+
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+
+        sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, function (err, result) {
+            if (err) {
                 return callback(err);
-
-            var narrowers = result["http://www.w3.org/2004/02/skos/core#narrower"]
-            if (!narrowers) {
-                return callback(null, [])
             }
-            else{
-                async.eachSeries(narrowers, function (narrower, callbackEach) {
-                    var narrowerID = narrower["@id"].substring(narrower["@id"].lastIndexOf("/") + 1)
-                    self.getDetails(narrowerID, options, function (err, result) {
-                        if (err)
-                            return callbackEach(err);
-                        var narrowerLabel = result["http://www.w3.org/2004/02/skos/core#prefLabel"][0]["@value"]
-                        bindings.push({narrowerId: narrowerID, narrowerLabel: narrowerLabel})
-                        callbackEach()
-                    })
+            var bindings=[]
+            result.results.bindings.forEach(function(item){
+                bindings.push({id:id,narrowerId:item.narrowerId.value,narrowerLabel:item.narrowerLabel.value})
+            })
+            callback(null, bindings)
 
-                }, function (err) {
-                    if (err)
-                        return callback(err);
-                    callback(null, bindings)
-
-                })
-            }
         })
 
+
     }
+
 
     self.getDetails = function (id, options, callback) {
-        var url = "http://id.loc.gov/authorities/subjects/" + id
-        sparql_abstract.querySPARQL_GET(url, "", "", function (err, result) {
-            if (err)
-                return callback(err);
-
-          //  console.log(JSON.stringify(result, null, 2))
-            var obj = {}
-            result.forEach(function (item) {
-                if (item["@id"].indexOf(id) > -1)
-                    if (item["@type"].indexOf("http://www.loc.gov/mads/rdf/v1#Authority") > -1)
-                        if (item["@type"].indexOf("http://www.loc.gov/mads/rdf/v1#Topic") > -1)
-                            if (item["@type"].indexOf("http://www.w3.org/2004/02/skos/core#Concept") > -1)
-                                obj = item;
-            })
-
-            callback(null, obj)
-        })
-
+        callback(null, [])
     }
+
+
 
 
     return self;
 
-})
-()
+})()

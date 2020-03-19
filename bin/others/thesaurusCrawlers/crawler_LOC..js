@@ -745,8 +745,8 @@ var trace
 
 module.exports = crawler_LOC
 
-if (false) {
-    crawler_LOC.readCsv("D:\\NLP\\LOC\\lcsh.skos.ndjson");
+if (true) {
+    crawler_LOC.readCsv("D:\\NLP\\importedResources\\authoritiessubjects.nt.madsrdf");
 }
 if (false) {
     crawler_LOC.setElasticCommonConcepts_LOC_CTG();
@@ -765,7 +765,7 @@ if (false) {
 
 }
 
-if (true) {
+if (false) {
     crawler_LOC.indexLocToElastic({deleteIndex: true});
 }
 
