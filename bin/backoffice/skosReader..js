@@ -170,8 +170,7 @@ var skosReader = {
                     }
                     if (options.extractedLangages.indexOf(lang) > -1) {
                         currentTagName = "prefLabels_" + lang
-                    }
-                    else{
+                    } else {
                         currentTagName = "prefLabels_" + lang
                     }
 
@@ -190,7 +189,7 @@ var skosReader = {
 
                     if (options.extractedLangages.indexOf(lang) > -1) {
                         currentTagName = "altLabels_" + lang
-                    }else{
+                    } else {
                         currentTagName = "altLabels_" + lang
                     }
 
@@ -255,12 +254,11 @@ var skosReader = {
 
 
                 if (!stop)
-                    if ( Object.keys(currentConcept.prefLabels).length > 0)
+                    if (Object.keys(currentConcept.prefLabels).length > 0)
                         conceptsMap[currentConcept.id] = currentConcept;
-                    else{
-                        var x=3
+                    else {
+                        var x = 3
                     }
-
 
 
             }
@@ -469,7 +467,7 @@ var skosReader = {
 
         var conceptsArray = []
 
-        var conceptsWithSeveralBoaders=[];
+        var conceptsWithSeveralBoaders = [];
         for (var id in conceptsMap) {
 
 
@@ -536,12 +534,12 @@ var skosReader = {
 
             if (obj.parent != "#" && !conceptsMap[obj.parent])
                 var x = 2;
-            else if (Object.keys(concept.prefLabels).length > 0){
+            else if (Object.keys(concept.prefLabels).length > 0) {
                 conceptsArray.push(obj);
-        }
+            }
 
         }
-        conceptsWithSeveralBoaders.forEach(function(item,index) {
+        conceptsWithSeveralBoaders.forEach(function (item, index) {
             var newNode = JSON.parse(JSON.stringify(item.node))
             newNode.broaders.forEach(function (item, indexBroader) {
                 newNode.id = item.node.id + "clone_" + indexBroader
@@ -812,112 +810,112 @@ var skosReader = {
         var jsonArray = [];
         async.series([
 
-            function (callbackSeries) {
-                skosReader.parseRdfXml(rdfPath, options, function (err, result) {
-                    if (err)
-                        return callbackSeries(err)
-                    conceptMap = result;
-                    return callbackSeries();
+                function (callbackSeries) {
+                    skosReader.parseRdfXml(rdfPath, options, function (err, result) {
+                        if (err)
+                            return callbackSeries(err)
+                        conceptMap = result;
+                        return callbackSeries();
 
-                })
-            },
-            function (callbackSeries) {
-                function recurseAncestors(nodeId, ancestorsIdsStr, level) {
-                    if(nodeId=="TE.84154")
-                        var x=3
-                    var node = conceptMap[nodeId];
-                    if (!node)
-                        return ancestorsIdsStr;
+                    })
+                },
+                function (callbackSeries) {
+                    function recurseAncestors(nodeId, ancestorsIdsStr, level) {
+                        if (nodeId == "TE.84154")
+                            var x = 3
+                        var node = conceptMap[nodeId];
+                        if (!node)
+                            return ancestorsIdsStr;
 
-                    if (ancestorsIdsStr != "")
-                        ancestorsIdsStr = "," + ancestorsIdsStr
-                    ancestorsIdsStr =  node.id  + ancestorsIdsStr;
-
-
-                    if (node.broaders && node.broaders.length > 0) {
-                        node.broaders.forEach(function (broader) {
-                            var broader = conceptMap[broader];
-                            if (!broader)
-                                return ancestorsIdsStr;
-                            var branchSep = "";
-                            for (var i = 0; i < level.length; i++) {// braoders branch separator
-                                ancestorsIdsStr += "|"
-                            }
-                            ancestorsIdsStr = recurseAncestors(broader.id, ancestorsIdsStr, level + 1)
+                        if (ancestorsIdsStr != "")
+                            ancestorsIdsStr = "," + ancestorsIdsStr
+                        ancestorsIdsStr = node.id + ancestorsIdsStr;
 
 
-                        })
-                    } else {
-                        return ancestorsIdsStr;
-                    }
-                    return ancestorsIdsStr;
-                }
+                        if (node.broaders && node.broaders.length > 0) {
+                            node.broaders.forEach(function (broader) {
+                                var broader = conceptMap[broader];
+                                if (!broader)
+                                    return ancestorsIdsStr;
+                                var branchSep = "";
+                                for (var i = 0; i < level.length; i++) {// braoders branch separator
+                                    ancestorsIdsStr += "|"
+                                }
+                                ancestorsIdsStr = recurseAncestors(broader.id, ancestorsIdsStr, level + 1)
 
-
-                for (var key1 in conceptMap) {
-                    var concept = conceptMap[key1];
-
-                    var strPrefLabel = "";
-                    var strAltLabel = ""
-                    var filterOk = false;
-                    for (var key in concept.prefLabels) {
-                        if (options.outputLangage == key || !options.outputLangage)
-                            concept.prefLabels[key].forEach(function (label, indexLabel) {
-                                if (options.filterRegex && options.filterRegex.test(label))
-                                    filterOk = true;
-
-                                if (indexLabel > 0)
-                                    strPrefLabel += ","
-                                strPrefLabel += label
 
                             })
+                        } else {
+                            return ancestorsIdsStr;
+                        }
+                        return ancestorsIdsStr;
                     }
 
-                    for (var key in concept.altLabels) {
-                        if (options.lang == key || !options.lang)
-                            concept.altLabels[key].forEach(function (label, indexLabel) {
-                                if (options.filterRegex && options.filterRegex.test(label))
-                                    filterOk = true;
-                                if (indexLabel > 0)
-                                    strAltLabel += ","
-                                strAltLabel += label
 
-                            })
-                    }
-                    var ancestorsStr = "";
-                    var ancestorsIdsStr = ""
-                    if (!options.filterRegex || (options.filterRegex && filterOk)) {
+                    for (var key1 in conceptMap) {
+                        var concept = conceptMap[key1];
 
-                        if (options.withAncestors) {
-                            //   strAncestors = recurseAncestors(concept.id, "", 0)
-                            ancestorsIdsStr = recurseAncestors(concept.id, "", 0)
-                            ancestorsIdsStr.split("|").forEach(function (ancestorId2) {
-                                ancestorId2.split(",").forEach(function (ancestorId) {
-                                    var ancestor = conceptMap[ancestorId];
-                                    if (ancestor && ancestor.prefLabels) {
-                                        if (ancestorsStr != "")
-                                            ancestorsStr += ","
-                                        if (ancestor.prefLabels[options.outputLangage] && ancestor.prefLabels[options.outputLangage].length > 0) {
-                                            ancestorsStr+= ancestor.prefLabels[options.outputLangage][0];
-                                        } else {
-                                            var xxx=ancestor
-                                            var str="?"
+                        var strPrefLabel = "";
+                        var strAltLabel = ""
+                        var filterOk = false;
+                        for (var key in concept.prefLabels) {
+                            if (options.outputLangage == key || !options.outputLangage)
+                                concept.prefLabels[key].forEach(function (label, indexLabel) {
+                                    if (options.filterRegex && options.filterRegex.test(label))
+                                        filterOk = true;
 
-                                            ancestorsStr +=str ;
+                                    if (indexLabel > 0)
+                                        strPrefLabel += ","
+                                    strPrefLabel += label
+
+                                })
+                        }
+
+                        for (var key in concept.altLabels) {
+                            if (options.lang == key || !options.lang)
+                                concept.altLabels[key].forEach(function (label, indexLabel) {
+                                    if (options.filterRegex && options.filterRegex.test(label))
+                                        filterOk = true;
+                                    if (indexLabel > 0)
+                                        strAltLabel += ","
+                                    strAltLabel += label
+
+                                })
+                        }
+                        var ancestorsStr = "";
+                        var ancestorsIdsStr = ""
+                        if (!options.filterRegex || (options.filterRegex && filterOk)) {
+
+                            if (options.withAncestors) {
+                                //   strAncestors = recurseAncestors(concept.id, "", 0)
+                                ancestorsIdsStr = recurseAncestors(concept.id, "", 0)
+                                ancestorsIdsStr.split("|").forEach(function (ancestorId2) {
+                                    ancestorId2.split(",").forEach(function (ancestorId) {
+                                        var ancestor = conceptMap[ancestorId];
+                                        if (ancestor && ancestor.prefLabels) {
+                                            if (ancestorsStr != "")
+                                                ancestorsStr += ","
+                                            if (ancestor.prefLabels[options.outputLangage] && ancestor.prefLabels[options.outputLangage].length > 0) {
+                                                ancestorsStr += ancestor.prefLabels[options.outputLangage][0];
+                                            } else {
+                                                var xxx = ancestor
+                                                var str = "?"
+
+                                                ancestorsStr += str;
+
+                                            }
 
                                         }
 
-                                    }
 
-
+                                    })
                                 })
-                            })
-                        }
+                            }
 
 
                             if (options.output == 'json') {
 
-                                jsonArray.push({id: concept.id, ancestorsIds:ancestorsIdsStr, ancestors: ancestorsStr, prefLabels: strPrefLabel, altLabels: strAltLabel})
+                                jsonArray.push({id: concept.id, ancestorsIds: ancestorsIdsStr, ancestors: ancestorsStr, prefLabels: strPrefLabel, altLabels: strAltLabel})
 
                             } else {
 
@@ -925,7 +923,7 @@ var skosReader = {
                                 str += concept.id;
 
                                 if (options.withAncestors) {
-                                    str += "\t" + ancestorsStr+"\t"+ancestorsIdsStr
+                                    str += "\t" + ancestorsStr + "\t" + ancestorsIdsStr
                                 }
                                 str += "\t" + strPrefLabel + "\t" + strAltLabel + "\n"
                             }
@@ -941,17 +939,69 @@ var skosReader = {
 
             ],
 
-                function (err) {
-                    if (err)
-                        return callback(err);
-                    if (options.output == 'json') {
-                        return callback(null, jsonArray);
-                    } else {
-                        return callback(null, str);
-                    }
+            function (err) {
+                if (err)
+                    return callback(err);
+                if (options.output == 'json') {
+                    return callback(null, jsonArray);
+                } else {
+                    return callback(null, str);
+                }
+            }
+        )
+    },
+
+    skosToNt: function (rdfPath) {
+        skosReader.parseRdfXml(rdfPath, null, function (err, result) {
+            if (err)
+                return console.log(err);
+            var conceptsMap = result;
+            var str ="";
+            for (var key in conceptsMap) {
+                 str += "<" + key + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .\n";
+                var concept = conceptsMap[key];
+                for (var lang in concept.prefLabels) {
+                    concept.prefLabels[lang].forEach(function (label) {
+                        str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + label + "\"@" + lang + " .\n";
+                    })
+                }
+                for (var lang in concept.altLabels) {
+                    concept.altLabels[lang].forEach(function (label) {
+                        str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#altLabel> \"" + label + "\"@" + lang + " .\n";
+                    })
                 }
 
-            )
+                concept.broaders.forEach(function (id) {
+                    str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#broader> <" + id + "> .\n";
+                })
+
+                concept.narrowers.forEach(function (id) {
+                    str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#narrower> <" + id + "> .\n";
+                })
+
+                concept.relateds.forEach(function (id) {
+                    str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#related> <" + id + "> .\n";
+                })
+
+                for (var lang in concept.definitions) {
+                    concept.definitions[lang].forEach(function (label) {
+                        str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#definition> \"" + label + "\"@" + lang + " .\n";
+                    })
+                }
+
+                for (var lang in concept.notes) {
+                    concept.notes[lang].forEach(function (label) {
+                        str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#note> \"" + label + "\"@" + lang + " .\n";
+                    })
+                }
+
+
+            }
+            str=str.replace(/thesaurusIngenieur\.jstree\.json/g,"thesaurusIngenieur")
+            fs.writeFileSync(rdfPath + ".nt", str)
+        })
+
+
     },
 
 
@@ -1286,7 +1336,7 @@ if (false) {
     var sourcePath = "D:\\NLP\\thesaurus_CTG_Product.rdf";
     var sourcePath = "D:\\NLP\\termScience\\termScience_Chemistry.rdf";
     var sourcePath = "D:\\NLP\\rdfs\\Tulsa_MATERIAL.rdf";
-    skosReader.rdfToFlat(sourcePath, {output:'json',extractedLangages:"en",outputLangage:"en"}, function (err, result) {
+    skosReader.rdfToFlat(sourcePath, {output: 'json', extractedLangages: "en", outputLangage: "en"}, function (err, result) {
         //   fs.writeFileSync(sourcePath.replace(".rdf", "_flat.json"), JSON.stringify(result, null, 2))
 
     })
@@ -1325,4 +1375,13 @@ if (false) {
     })
 
 
+}
+
+if(false){
+    var sourcePath = "D:\\NLP\\rdfs\\thesaurusIngenieur.rdf";
+
+  /*  var str=""+fs.readFileSync(sourcePath);
+
+    fs.writeFileSync(rdfPath,str);*/
+    skosReader.skosToNt(sourcePath)
 }

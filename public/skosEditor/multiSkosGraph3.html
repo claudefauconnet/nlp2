@@ -52,6 +52,13 @@
                 modal: true,
             })
 
+            $("#detailsDiv").dialog({
+                autoOpen: false,
+                height: 500,
+                width: 500,
+                modal: true,
+            })
+
             $("#dialogDiv").dialog("open")
 
 
@@ -64,7 +71,7 @@
 
         body {
             font-family: Verdana;
-            font-size: 10px;
+            font-size: 14px;
         }
 
         .title {
@@ -73,6 +80,13 @@
 
         .id {
             font-size: 8px;
+        }
+
+        .popupMenuItem{
+            text-align: center;
+            margin: 5px;
+            padding: 3px;
+            font-weight: bold;
         }
 
     </style>
@@ -133,22 +147,27 @@
 
     <div id="dialogDiv" style="display: flex;flex-direction: column">
         <input id="searchWordInput" value="zinc">
-        <button onclick="multiSkosGraph2.searchConcepts($('#searchWordInput').val())">Graph</button>
+        <button onclick="multiSkosGraph2.searchConcepts($('#searchWordInput').val())">Search</button>
         <div id="conceptsJstreeDiv" style="width: 500px;height: 800px;overflow: auto"></div>
 
         <div id="conceptOperationsDiv">
 
-        <button onclick="multiSkosGraph2.searchMore()">search more</button>
+        <button onclick="multiSkosGraph2.searchConceptsContainWord()">search more concepts</button>
         <button onclick="multiSkosGraph2.displayGraph()">display Graph</button>
         </div>
     </div>
 </div>
 
-<div id="graphPopupDiv" onclick="multiSkosGraph2.graphActions.hidePopup();" style="position:absolute;flex-direction:column;width: 200px;height: 200px;border-radius:5px;font-size:12px;text-align:center;isplay: none;background-color: #ddd">
-    <span onclick="multiSkosGraph2.graphActions.drawChildren();"> draw children</span>
-    <span onclick="multiSkosGraph2.graphActions.showDetails();"> show details</span>
-    <span onclick="multiSkosGraph2.graphActions.setAsRootNode();"> set a rootNode</span>
+<div id="graphPopupDiv" onclick="multiSkosGraph2.graphActions.hidePopup();" style="position:absolute;flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+    <span class="popupMenuItem" onclick="multiSkosGraph2.graphActions.drawChildren();"> draw children</span>
+    <span  class="popupMenuItem"onclick="multiSkosGraph2.graphActions.showDetails();"> show details</span>
+    <span  class="popupMenuItem" onclick="multiSkosGraph2.graphActions.setAsRootNode();"> set a rootNode</span>
     
 </div>
+<div id="detailsDiv"  style="flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+
+
+</div>
+
 </body>
 </html>

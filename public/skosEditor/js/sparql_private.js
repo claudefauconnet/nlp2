@@ -8,7 +8,8 @@ var sparql_private=(function(){
     self.list=function(word,options,callback){
         self.currentWord=word
         var bindings=[];
-        self.queryElastic(word, { default_field:"prefLabels"}, function (err, result) {
+        options.default_field="prefLabels"
+        self.queryElastic(word, options, function (err, result) {
             if (err)
                 return console.log(err);
             var hits = result.hits.hits;
@@ -30,10 +31,10 @@ var sparql_private=(function(){
         return callback(null,bindings);
     }
 
+
+
     self.getAncestors=function(id,options,callback) {
-        var str = id;
-        id = id.substring(id.lastIndexOf("#") + 1)
-        str = id.replace(/[:\-\/.@#]/g, " ")
+        var str = self.parseId(id);
         var queryString = "*" + str;
 
         self.queryElastic(queryString, {}, function (err, result) {
@@ -48,15 +49,16 @@ var sparql_private=(function(){
                         return;
 
                 }
-                bindings.push(hit._source)
+                var binding=hit._source
+                binding.source="private";
+                bindings.push(binding)
             })
             return callback(null, bindings)
 
         })
     }
     self.getChildren=function(id,options,callback){
-        var str = id;
-        str=str.replace(/[:\-/.@#]/g," ")
+        var str = self.parseId(id);
         var queryString = "*" + str;
 
         self.queryElastic(queryString, {default_field: "ancestors"}, function (err, result) {
@@ -68,14 +70,15 @@ var sparql_private=(function(){
             var children = [];
             hits.forEach(function (hit) {
                 var ancestors=hit._source.ancestors;
-                var p=ancestors.indexOf(node.id)
+                var childId=hit._source.id;
+                var p=ancestors.indexOf(id)
                 var childrenStr=ancestors.substring(0,p);
                 var q=childrenStr.lastIndexOf("|")
                 if(q>-1){
                     var q2=childrenStr.lastIndexOf("|")
                     if(q2>-1){
                         var array=childrenStr.split(";")
-                        children.push({id:nodeId,narrowerId:array[0],narrowerLabel:array[1]});
+                        children.push({id:id,narrowerId:array[0],narrowerLabel:array[1]});
 
                     }
                 }
@@ -91,6 +94,15 @@ var sparql_private=(function(){
         var bindings=[];
 
         return bindings;
+    }
+
+    self.parseId=function(str){
+        var p=str.lastIndexOf("#");
+        if( p==-1)
+            var p=str.lastIndexOf("/");
+        str = str.substring(p + 1)
+        str = str.replace(/[:\-\/.@#]/g, " ")
+        return str;
     }
 
 
@@ -122,7 +134,7 @@ var sparql_private=(function(){
 
 
         if (options.selectedThesaurus) {
-            query.query.bool.must.push({terms: {thesaurus: options.selectedThesaurus}})
+            query.query.bool.must.push({terms: {thesaurus: [options.selectedThesaurus]}})
         }
         if(options.source)
             query._source=options.source

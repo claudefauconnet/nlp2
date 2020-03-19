@@ -33,7 +33,7 @@ var multiSkosGraph2 = (function () {
 
 
         var exactMatch = $("#exactMatchCBX").prop("checked")
-        var sources = ["DBpedia", "private", "LOC", "Wikidata", "BNF"];
+        var sources = ["private", "LOC", "Wikidata", "BNF","DBpedia"];
         // var sources = ["DBpedia","private", "Wikidata", "BNF"];
 
         var bindings = {}
@@ -91,6 +91,50 @@ var multiSkosGraph2 = (function () {
 
     }
 
+    self.searchConceptsContainWord=function(){
+        var selectedConcepts = []
+        var xx = $("#conceptsJstreeDiv").jstree(true).get_checked(null, true)
+        xx.forEach(function (nodeId) {
+            if (conceptsMap[nodeId])
+                selectedConcepts.push(conceptsMap[nodeId]);
+        });
+        $("#conceptsJstreeDiv").jstree(true).uncheck_all ( )
+        var xx = selectedConcepts;
+        selectedConcepts.forEach(function (concept) {
+            sparql_abstract.list(concept.source, self.context.currentWord, {exactMatch: false,selectedThesaurus:concept.thesaurus}, function (err, result) {
+
+                if (err) {
+                    return console.log(err);
+                }
+                result.forEach(function (item) {
+                    if (!conceptsMap[item.id]) {
+                        conceptsMap[item.id] = item;
+                        item.source = concept.source;
+                        item.title = item.label + " / " + item.description
+                        if (concept.source == "private") {
+                            item.title = item.thesaurus + " : " + item.title
+                        }
+                        var newNode = {id: item.id, text: item.title, data: item}
+                        setTimeout(function () {
+                            $("#conceptsJstreeDiv").jstree(true).create_node(concept.id, newNode, "first", function () {
+                                $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
+
+                            }, false);
+                        }, 1000)
+                    }
+
+                })
+
+            })
+
+
+        })
+
+
+
+
+    }
+
     self.displayGraph = function () {
         $('#dialogDiv').dialog('close')
         var selectedConcepts = []
@@ -108,6 +152,10 @@ var multiSkosGraph2 = (function () {
 
                 sparql_abstract.getAncestors(concept.source, concept.id, {exactMatch: true}, function (err, result) {
                     result.forEach(function (binding) {
+                        binding.source=concept.source;
+                        if(!binding.thesaurus)
+                        binding.thesaurus=concept.source;
+
                         var visjsData = self.pathsToVisjsData(binding)
 
                         self.addVisJsDataToGraph(visjsData)
@@ -165,9 +213,12 @@ var multiSkosGraph2 = (function () {
         hidePopup: function () {
             $("#graphPopupDiv").css("display", "none")
         },
+
+
+
         drawChildren: function () {
             self.graphActions.hidePopup();
-            sparql_abstract.getChildren(self.graphActions.currentNode.data.thesaurus, self.graphActions.currentNode.id, {}, function (err, children) {
+            sparql_abstract.getChildren(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, {}, function (err, children) {
                 if (err)
                     return console.log(err);
                 self.addChildrenNodesToGraph(self.graphActions.currentNode, children)
@@ -175,7 +226,29 @@ var multiSkosGraph2 = (function () {
         }
         ,
         showDetails: function () {
-            self.graphActions.hidePopup();
+           self.graphActions.hidePopup();
+
+            sparql_abstract.getDetails(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, {}, function (err, details) {
+                var str=""
+                for (var key in details) {
+                    if (key == "P268")
+                        self.context.currentNode.BNFid = details.properties[key].value
+                    if (key == "P244")
+                        self.context.currentNode.LOCid = details.properties[key].value
+
+                    if (key.indexOf('image') > -1) {
+                        str += "<img src='" + details.properties[key].value + "' width='200px'/></br>"
+                    } else {
+//var link="<a target='_blank' href='"+result.properties[key].id+"'>"
+                        str += "<span style='font-style: italic'>" + details.properties[key].name + " : </span>" + "<span style='font-weight: bold'>" + details.properties[key].value + "</span><br>";
+                    }
+                }
+
+                $("#detailsDiv").html(str)
+                $("#detailsDiv").dialog(open);
+
+
+            })
 
         }
         ,
@@ -189,7 +262,7 @@ var multiSkosGraph2 = (function () {
 
     self.pathsToVisjsData = function (node) {
         var thesaurus = node.thesaurus
-        var source = node.thesaurus
+        var source = node.source
         var color = self.distinctThesaurus[thesaurus];
         var ancestorsStr = node.ancestors;
         var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
@@ -752,7 +825,7 @@ var multiSkosGraph2 = (function () {
                         }
                     }
 
-                    $("#rigthDivDetails").html(str)
+                    $("#detailsDiv").html(str)
                     return callbackSeries()
                 })
 

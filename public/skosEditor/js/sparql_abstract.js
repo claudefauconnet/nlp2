@@ -1,5 +1,15 @@
 //https://anjackson.github.io/zombse/062013%20Libraries%20&%20Information%20Science/static/questions/556.html
 //https://joernhees.de/blog/2015/11/23/setting-up-a-linked-data-mirror-from-rdf-dumps-dbpedia-2015-04-freebase-wikidata-linkedgeodata-with-virtuoso-7-2-1-and-docker-optional/
+
+//sparql loader virtuoso NT
+//isql-vt
+
+//ld_dir ('/etc/virtuosoData/import', '*.*', 'http://www.souslesens.org/thesaurusIngenieur/')
+//select * from DB.DBA.load_list;
+//rdf_loader_run();
+
+
+
 var sparql_abstract = (function () {
 
 
