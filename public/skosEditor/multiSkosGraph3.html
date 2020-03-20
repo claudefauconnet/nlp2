@@ -29,6 +29,9 @@
     <script src="js/sparql_private.js"></script>
     <script src="js/sparql_termsciences.js"></script>
     <script src="js/sparql_DBpedia.js"></script>
+    <script src="js/sparql_skos_generic.js"></script>
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
   <!--  <script src="js/jstreeCF.js"></script>-->
@@ -37,7 +40,7 @@
         $(function () {
             config = {loginMode: "none", appName: "CTG"};
             authentication.init()
-          //  multiSkosGraph2.loadThesaurusList();
+         multiSkosGraph2.initRdfResources();
 //multiSkosGraph.setTheaurusList()
             $("#searchWordInput").bind('keyup', function (e) {
                 if (e.keyCode == 13) {
@@ -86,9 +89,12 @@
             text-align: center;
             margin: 5px;
             padding: 3px;
-            font-weight: bold;
+            font-weight: normal;
         }
 
+        .tree_level_1{
+            font-weight: bold;
+        }
     </style>
 
 </head>
@@ -147,7 +153,7 @@
 
     <div id="dialogDiv" style="display: flex;flex-direction: column">
         <input id="searchWordInput" value="zinc">
-        <button onclick="multiSkosGraph2.searchConcepts($('#searchWordInput').val())">Search</button>
+        <div><button onclick="multiSkosGraph2.searchConcepts($('#searchWordInput').val())">Search</button><input type="checkbox" checked="checked" i="exactMatchCBX">Exact Match</div>
         <div id="conceptsJstreeDiv" style="width: 500px;height: 800px;overflow: auto"></div>
 
         <div id="conceptOperationsDiv">

@@ -71,14 +71,20 @@ var sparql_private=(function(){
             hits.forEach(function (hit) {
                 var ancestors=hit._source.ancestors;
                 var childId=hit._source.id;
-                var p=ancestors.indexOf(id)
+                var p=ancestors.indexOf(id+";")
                 var childrenStr=ancestors.substring(0,p);
                 var q=childrenStr.lastIndexOf("|")
                 if(q>-1){
                     var q2=childrenStr.lastIndexOf("|")
                     if(q2>-1){
                         var array=childrenStr.split(";")
-                        children.push({id:id,narrowerId:array[0],narrowerLabel:array[1]});
+                        if(array.length==2) {
+                            var label = array[1]
+                            label = label.substring(0, label.lastIndexOf("|"))
+                            var data={source:"private",thesaurus:"private",parent:id}
+                            var narrowerId=array[0].substring(array[0].indexOf("_")+1)
+                            children.push({id: id, narrowerId:narrowerId, narrowerLabel: label,data:data});
+                        }
 
                     }
                 }

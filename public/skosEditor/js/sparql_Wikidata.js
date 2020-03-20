@@ -12,7 +12,7 @@ var sparql_Wikidata = (function () {
 
             var bindings = [];
             result.search.forEach(function (item) {
-                bindings.push({id: item.id, label: item.label,description:item.description})
+                bindings.push({id: item.id, label: item.label, description: item.description})
             })
             return callback(null, bindings);
         })
@@ -99,9 +99,10 @@ var sparql_Wikidata = (function () {
             if (err)
                 return callback(err);
 
-            var bindings=[];
-            result.results.bindings.forEach(function(item){
-                bindings.push({id:id,narrowerId:item.narrower.value,narrowerLabel:item.narrowerLabel.value})
+            var bindings = [];
+            result.results.bindings.forEach(function (item) {
+                var data={source:"Wikidata",thesaurus:"Wikidata",parent:id}
+                bindings.push({id: id, narrowerId: item.narrower.value, narrowerLabel: item.narrowerLabel.value,data:data})
             })
 
             callback(null, bindings)
@@ -110,6 +111,7 @@ var sparql_Wikidata = (function () {
 
     self.getDetails = function (id, options, callback) {
         var count = 0
+        id = id.substring(id.lastIndexOf("/") + 1)
 
         var url2 = "https://query.wikidata.org/sparql?query="
         var query2 = "\n" +

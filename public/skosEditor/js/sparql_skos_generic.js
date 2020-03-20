@@ -1,16 +1,17 @@
-var sparql_LOC = (function () {
+var sparql_skos_generic = (function () {
 
 
     var self = {};
-var url = "http://vps475829.ovh.net:8890/sparql?default-graph-uri=&query=";// + query + queryOptions
-    self.list = function (word, options, callback) {
 
+    self.list = function (source,word, options, callback) {
+
+        var url = source.sparql_url+"?default-graph-uri="+encodeURIComponent(source.graphIRI)+"&query=";// + query + queryOptions
         word = word.charAt(0).toUpperCase() + word.slice(1)
         var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
             "SELECT DISTINCT *" +
             "WHERE {" +
             "?id skos:prefLabel ?prefLabel ." +
-            " filter(str(?prefLabel)='" + word + "')" +
+            " filter(lcase(str(?prefLabel)) = '" + word.toLowerCase() + "')" +
             "  ?id ?prop ?valueId ." +
             "  ?valueId skos:prefLabel ?value." +
             "?id skos:broader ?broaderId ." +
@@ -38,8 +39,8 @@ var url = "http://vps475829.ovh.net:8890/sparql?default-graph-uri=&query=";// + 
 
     }
 
-    self.getAncestors = function (id, options, callback) {
-
+    self.getAncestors = function (source,id, options, callback) {
+        var url = source.sparql_url+"?default-graph-uri="+encodeURIComponent(source.graphIRI)+"&query=";// + query + queryOptions
 
         var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
             "SELECT DISTINCT *" +
@@ -99,7 +100,7 @@ var url = "http://vps475829.ovh.net:8890/sparql?default-graph-uri=&query=";// + 
         })
     }
 
-    self.getChildren = function (id, options, callback) {
+    self.getChildren = function (source,id, options, callback) {
         var query = " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
             "SELECT DISTINCT *" +
             "WHERE {" +

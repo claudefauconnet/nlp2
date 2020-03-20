@@ -70,6 +70,7 @@ var visjsGraph = (function () {
                 }
                 self.simulationOn = !self.simulationOn;
                 // graphController.hideNodePopover();
+                $("#graphPopupDiv").css("display", "none")
             }
 
             // select node
@@ -97,6 +98,19 @@ var visjsGraph = (function () {
                 edge.toNode = self.data.nodes.get(edge.to);
 
             }
+
+        }).on("hoverNode", function (params) {
+            var nodeId = params.node;
+            var node = self.data.nodes.get(nodeId);
+            node._graphPosition = params.pointer.DOM;
+            var point = params.pointer.DOM;
+            self.context.currentNode = node;
+            var options = {}
+            if(_options.onHoverNodeFn)
+                _options.onHoverNodeFn(node, point,options)
+
+        }).on("blurNode", function (params) {
+            $("#graphPopupDiv").css("display", "none")
 
         }).on("zoom", function (params) {
             self.onScaleChange()

@@ -26,42 +26,24 @@ var multiSkosGraph2 = (function () {
 
     var colorsMap = {}
 
-    var conceptsMap = {};
-
-
-  var sources=[];
-
-    self.initRdfResources=function(){
-        for (var key in sparql_abstract.rdfsMap){
-           var source =sparql_abstract.rdfsMap[key]
-            source.name=key;
-            source.color=  palette[Object.keys(sources).length]
-            sources.push(source)
-        }
-
-
-    }
-
-
-
-
+    var conceptsMap = {}
     self.searchConcepts = function (word) {
         self.context.currentWord = word
         conceptsMap = {}
 
 
         var exactMatch = $("#exactMatchCBX").prop("checked")
+        var sources = ["private", "LOC", "Wikidata", "BNF","DBpedia"];
+        // var sources = ["DBpedia","private", "Wikidata", "BNF"];
 
         var bindings = {}
         var sourceNodes = [];
 
         sources.forEach(function (source) {
-            sourceNodes.push({id: source.name, text:"<span class='tree_level_1'>"+source.name+"</span>", chldren: [], parent: "#"})
-
+            sourceNodes.push({id: source, text: source, chldren: [], parent: "#"})
+            self.distinctThesaurus[source] = palette[Object.keys(self.distinctThesaurus).length]
 
         })
-        if ($('#conceptsJstreeDiv').jstree)
-            $('#conceptsJstreeDiv').jstree("destroy")
         $("#conceptsJstreeDiv").jstree({
 
             "checkbox": {
@@ -73,12 +55,11 @@ var multiSkosGraph2 = (function () {
                 'data': sourceNodes
             }
 
-
         });
 
 
         sources.forEach(function (source) {
-            sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
+            sparql_abstract.list(source, word, {exactMatch: true}, function (err, result) {
 
                 if (err) {
                     return console.log(err);
@@ -86,12 +67,14 @@ var multiSkosGraph2 = (function () {
                 result.forEach(function (item) {
                     if (!conceptsMap[item.id]) {
                         conceptsMap[item.id] = item;
-                        item.source = source.name;
+                        item.source = source;
                         item.title = item.label + " / " + item.description
-
-                        var newNode = {id: item.id, text: item.title, data: item }
+                        if (source == "private") {
+                            item.title = item.thesaurus + " : " + item.title
+                        }
+                        var newNode = {id: item.id, text: item.title, data: item}
                         setTimeout(function () {
-                            $("#conceptsJstreeDiv").jstree(true).create_node(source.name, newNode, "first", function () {
+                            $("#conceptsJstreeDiv").jstree(true).create_node(source, newNode, "first", function () {
                                 $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
 
                             }, false);
@@ -281,7 +264,7 @@ var multiSkosGraph2 = (function () {
     self.pathsToVisjsData = function (node) {
         var thesaurus = node.thesaurus
         var source = node.source
-        var color =sparql_abstract.rdfsMap[node.source].color;
+        var color = self.distinctThesaurus[thesaurus];
         var ancestorsStr = node.ancestors;
         var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
 
@@ -358,7 +341,7 @@ var multiSkosGraph2 = (function () {
                     //   color = rootNodeColor;
                     size = 10;
                 } else {
-                    color =sparql_abstract.rdfsMap[node.source].color;
+                    color = self.distinctThesaurus[thesaurus];
                     var shape = "box";
                     var size = 20;
                 }
