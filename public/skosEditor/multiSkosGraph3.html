@@ -50,14 +50,14 @@
 
             $("#dialogDiv").dialog({
                 autoOpen: false,
-                height: 500,
+                height: 800,
                 width: 500,
                 modal: true,
             })
 
             $("#detailsDiv").dialog({
                 autoOpen: false,
-                height: 500,
+                height: 800,
                 width: 500,
                 modal: true,
             })
@@ -93,7 +93,15 @@
         }
 
         .tree_level_1{
-            font-weight: bold;
+          //  font-weight: bold;
+            padding: 2px;
+            border-radius: 3px;
+        }
+        .tree_level_2{
+       //  font-weight: bold;
+            padding: 2px;
+            border-radius: 3px;
+            background-color: #ddd;
         }
     </style>
 
@@ -153,12 +161,12 @@
 
     <div id="dialogDiv" style="display: flex;flex-direction: column">
         <input id="searchWordInput" value="zinc">
-        <div><button onclick="multiSkosGraph2.searchConcepts($('#searchWordInput').val())">Search</button><input type="checkbox" checked="checked" i="exactMatchCBX">Exact Match</div>
+        <div><button onclick="multiSkosGraph2.searchConcepts($('#searchWordInput').val())">Search</button><input type="checkbox" checked="checked" id="exactMatchCBX">Exact Match</div>
         <div id="conceptsJstreeDiv" style="width: 500px;height: 800px;overflow: auto"></div>
 
         <div id="conceptOperationsDiv">
 
-        <button onclick="multiSkosGraph2.searchConceptsContainWord()">search more concepts</button>
+     <!-   <button onclick="multiSkosGraph2.searchConceptsContainWord()">search more concepts</button>-->
         <button onclick="multiSkosGraph2.displayGraph()">display Graph</button>
         </div>
     </div>

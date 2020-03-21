@@ -290,7 +290,7 @@ var crawler_termSciences = {
 
 
     },
-    buildHierarchy: function () {
+    buildHierarchy: function (ids) {
 
         function getPrefLabelEN(prefLabels) {
             var prefLabelStr = null;
@@ -314,33 +314,13 @@ var crawler_termSciences = {
         }
 
         var rootTermId = "TE.192836" //domaines techniques
-        var filter = [
-            //"Mathematics",
-            "Physics",
-            // "Energy",
-            // "Civil service",
-            "Chemistry",
-            "Building industry",
-            "Industrial Entreprises",
-            "Information",
-            "Computer science",
-            "Spare-time activities"]
-        var filter = [
-            "Analytical chemistry",
-            "Inorganic chemistry",
-            "Organic chemistry",
-            "Physical chemistry",
-            "Chemical compound",
-            "Chemical element",
-            "Chemical reaction",
-            "Chemical structure",
-        ]
+
 
         var domains = ["TE.31503"]
         var filter = [];
 
         var rootTermId = "TE.31503"
-        var domains = JSON.parse("" + fs.readFileSync(("D:\\NLP\\termScience\\consolidation\\temp2\\narrowers.json")))
+   //     var domains = JSON.parse("" + fs.readFileSync(("D:\\NLP\\termScience\\consolidation\\temp2\\narrowers.json")))
         /*  var hierarchy = {name: "conceptsTechnology", id: rootTermId, children: []}
            crawler_termSciences.queryTermScience(rootTermId, function (err, result) {
                if (err)
@@ -352,7 +332,11 @@ var crawler_termSciences = {
         /*    var hierarchy = {name: "domaines techniques", id: rootTermId, children: []}
             async.eachSeries(domains, function (narrower1, callbackEach1) {*/
 
-        var hierarchy = {name: "TSterms", id: rootTermId, children: []}
+       var hierarchy = {name: "TSterms", id: rootTermId, children: []}
+
+
+        if(ids)
+            domains=ids
         async.eachSeries(domains, function (domain, callbackEach1) {
             //  var narrower1 = domain.split(",")[0]
             //  var hierarchy = {name: "conceptsTechnology", id: rootTermId, children: []}
@@ -1390,6 +1374,93 @@ if (false) {
 if (false) {
     crawler_termSciences.TStoElastic();
 }
-if (true) {
+if (false) {
     crawler_termSciences.hierarchiesToRdf();
 }
+
+if( false){
+
+    var leavesArrray=JSON.parse(""+fs.readFileSync("D:\\NLP\\drafts\\termScience\\consolidation\\temp2\\leaves3.json"))
+    var x=3
+
+    const path=require('path')
+    var pathStr=path.resolve(__dirname,"../../../config/elastic/thesauri/termsciences_no_n.csv")
+    var listArray=JSON.parse(""+fs.readFileSync(pathStr))
+    var conceptsMap={}
+    listArray.forEach(function(item){
+        conceptsMap[item.name.toLowerCase()]=item;
+    })
+var ids=[]
+    leavesArrray.forEach(function(name){
+        if(conceptsMap[name.toLowerCase()]){
+            ids.push(conceptsMap[name.toLowerCase()].id)
+        }
+        else{
+            console.log(name)
+        }
+
+
+
+
+
+    })
+    crawler_termSciences.buildHierarchy(ids)
+
+
+
+
+
+}
+
+if(true){
+
+
+    var items = JSON.parse("" + fs.readFileSync("D:\\NLP\\drafts\\termScience\\consolidation\\temp2\\narrowers2.json"))
+
+    var leavesArrray=JSON.parse(""+fs.readFileSync("D:\\NLP\\drafts\\termScience\\consolidation\\temp2\\leaves3.json"))
+    var x=3
+
+    const path=require('path')
+    var pathStr=path.resolve(__dirname,"../../../config/elastic/thesauri/termsciences_no_n.csv")
+    var listArray=JSON.parse(""+fs.readFileSync(pathStr))
+    var conceptsMap={}
+    listArray.forEach(function(item){
+        conceptsMap[item.id]=item;
+    })
+
+
+    var allItems = [];
+    var allUniqueItems = [];
+
+    function recurseAllItems(node) {
+        if (allUniqueItems.indexOf(node.id) < 0) {
+            var newBroaders=[]
+            node.id="http://api.termsciences.fr/termsciences/"+node.id.replace(".",("-"))
+            node.broaders.forEach(function(broader){
+                var broaderStr="http://api.termsciences.fr/termsciences/"+broader.replace(".",("-"))
+                if(conceptsMap[broader])
+                    newBroaders.push(broaderStr)
+            })
+            node.broaders=newBroaders
+            allUniqueItems.push(node.id)
+            allItems.push(node);
+
+                node.children.forEach(function (child, indexParent) {
+
+                    recurseAllItems(child)
+                })
+            }
+        }
+
+
+
+       items.children.forEach(function (child, indexParent) {
+           recurseAllItems(child)
+       })
+
+
+    var w=allItems;
+    skosReader.skosEditorToRdf("D:\\NLP\\drafts\\termScience\\consolidation\\temp2\\narrowers2.rdf",allItems);
+
+}
+

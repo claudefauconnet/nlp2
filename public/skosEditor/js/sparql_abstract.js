@@ -69,7 +69,7 @@ var sparql_abstract = (function () {
 
 
         if (sparqlBuilder == "sparql_Wikidata")
-            return sparql_Wikidata.list(word, options, callback)
+            return sparql_Wikidata.list(source,word, options, callback)
         
      /* 
          if (sparqlBuilder == "BNF")
@@ -97,7 +97,7 @@ var sparql_abstract = (function () {
             return  sparql_skos_generic.getAncestors(source,id, options, callback)
 
         if (sparqlBuilder == "sparql_Wikidata")
-            return sparql_Wikidata.getAncestors(id, options, callback)
+            return sparql_Wikidata.getAncestors(source,id, options, callback)
 
       /*
         if (source == "BNF")
@@ -127,7 +127,7 @@ var sparql_abstract = (function () {
             return  sparql_skos_generic.getDetails(source,id, options, callback)
 
         if (sparqlBuilder == "sparql_Wikidata")
-            return sparql_Wikidata.getDetails(id, options, callback)
+            return sparql_Wikidata.getDetails(source,id, options, callback)
 
        /* if (source == "BNF")
             return sparql_BNF.getDetails(id, options, callback)
@@ -156,7 +156,7 @@ var sparql_abstract = (function () {
             return  sparql_skos_generic.getChildren(source,id, options, callback)
 
         if (sparqlBuilder == "sparql_Wikidata")
-            return sparql_Wikidata.getChildren(id, options, callback)
+            return sparql_Wikidata.getChildren(source,id, options, callback)
 
      /*   if (source == "BNF")
             return sparql_BNF.getChildren(id, options, callback)

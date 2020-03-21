@@ -5,13 +5,19 @@ var sparql_skos_generic = (function () {
 
     self.list = function (source,word, options, callback) {
 
+        var filter=" (lcase(str(?prefLabel)) = \"" + word.toLowerCase() + "\")";
+        if(!options.exactMatch){
+            filter="contains(lcase(str(?prefLabel)),\"" + word.toLowerCase() + "\")" ;
+        }
+
+
         var url = source.sparql_url+"?default-graph-uri="+encodeURIComponent(source.graphIRI)+"&query=";// + query + queryOptions
         word = word.charAt(0).toUpperCase() + word.slice(1)
         var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-            "SELECT DISTINCT *" +
+            "SELECT DISTINCT * " +
             "WHERE {" +
             "?id skos:prefLabel ?prefLabel ." +
-            " filter(lcase(str(?prefLabel)) = '" + word.toLowerCase() + "')" +
+            " filter " +filter +
             "  ?id ?prop ?valueId ." +
             "  ?valueId skos:prefLabel ?value." +
             "?id skos:broader ?broaderId ." +
@@ -47,7 +53,7 @@ var sparql_skos_generic = (function () {
             "WHERE {" +
             "<" + id + "> skos:prefLabel ?prefLabel ;" +
             "skos:broader ?broaderId1 . " +
-            "  ?broaderId1 skos:prefLabel ?broader1"
+            "  ?broaderId1 skos:prefLabel ?broader1 ."
 
 
         query +=
@@ -101,14 +107,29 @@ var sparql_skos_generic = (function () {
     }
 
     self.getChildren = function (source,id, options, callback) {
-        var query = " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+        var url = source.sparql_url+"?default-graph-uri="+encodeURIComponent(source.graphIRI)+"&query=";// + query + queryOptions
+
+      /*  var query = " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
             "SELECT DISTINCT *" +
             "WHERE {" +
             "<" + id + "> skos:narrower ?narrowerId ." +
             "  ?narrowerId skos:prefLabel ?narrowerLabel ." +
             "}" +
 
-            "LIMIT 1000"
+            "LIMIT 1000"*/
+
+        var query="PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+            "SELECT DISTINCT * WHERE {" +
+            "OPTIONAL{" +
+            "?narrowerId skos:broader <" + id + "> ." +
+            "?narrowerId skos:prefLabel ?narrowerLabel" +
+            "}" +
+            "OPTIONAL{" +
+            "<" + id + ">  skos:narrower ?narrowerId ." +
+            "?narrowerId skos:prefLabel ?narrowerLabel" +
+            "}" +
+            "" +
+            "}LIMIT 1000"
 
 
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
@@ -119,8 +140,10 @@ var sparql_skos_generic = (function () {
             }
             var bindings=[]
             result.results.bindings.forEach(function(item){
-                var data={source:"LOC",thesaurus:"LOC",parent:id}
-                bindings.push({id:id,narrowerId:item.narrowerId.value,narrowerLabel:item.narrowerLabel.value,data:data})
+                if(item.narrowerId) {
+                    var data = {source: source, parent: id}
+                    bindings.push({id: id, narrowerId: item.narrowerId.value, narrowerLabel: item.narrowerLabel.value, data: data})
+                }
             })
             callback(null, bindings)
 
@@ -130,8 +153,46 @@ var sparql_skos_generic = (function () {
     }
 
 
-    self.getDetails = function (id, options, callback) {
-        callback(null, [])
+    self.getDetails = function (source,id, options, callback) {
+        var url = source.sparql_url+"?default-graph-uri="+encodeURIComponent(source.graphIRI)+"&query=";// + query + queryOptions
+
+        var query="PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+            "" +
+            "select distinct *" +
+            "" +
+            "where {" +
+            "<"+id+"> ?prop ?value ." +
+            "" +
+            " optional{\n" +
+            "?prop rdf:label ?propLabel .\n" +
+            "}\n" +
+            " optional{\n" +
+            "?value rdf:label ?valueLabel .\n" +
+            "}\n" +
+            "\n" +
+            "}"
+            "" +
+            "}" +
+            "limit 100"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+
+        sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            var bindings = []
+            var obj = {label: options.label, id: id , properties: {}};
+            result.results.bindings.forEach(function (item) {
+                var propName= item.prop.value
+                var p=propName.lastIndexOf("#")
+                if(p==-1)
+                    var p=propName.lastIndexOf("/")
+                if(p>-1)
+                var propName= item.prop.value.substring(p + 1)
+                obj.properties[item.prop.value] = {name: propName,value: item.value.value}
+            })
+            callback(null, obj)
+        })
     }
 
 

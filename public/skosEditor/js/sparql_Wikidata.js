@@ -3,7 +3,7 @@ var sparql_Wikidata = (function () {
 
     var self = {};
 
-    self.list = function (word, options, callback) {
+    self.list = function (source,word, options, callback) {
         var url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +
             word + "&format=json&errorformat=plaintext&language=en&uselang=en&type=item&origin=*"
         sparql_abstract.querySPARQL_GET(url, "", "", function (err, result) {
@@ -18,7 +18,7 @@ var sparql_Wikidata = (function () {
         })
     }
 
-    self.getAncestors = function (id, options, callback) {
+    self.getAncestors = function (source,id, options, callback) {
         var query = "SELECT\n" +
             "?broaderId1 ?broaderId1Label \n" +
             "?broaderId2 ?broaderId2Label\n" +
@@ -76,7 +76,7 @@ var sparql_Wikidata = (function () {
             return callback(null, paths)
         })
     }
-    self.getChildren = function (id, options, callback) {
+    self.getChildren = function (source,id, options, callback) {
         var p = id.lastIndexOf("/")
         if (p > -1)
             id = id.substring(p + 1)
@@ -101,7 +101,8 @@ var sparql_Wikidata = (function () {
 
             var bindings = [];
             result.results.bindings.forEach(function (item) {
-                var data={source:"Wikidata",thesaurus:"Wikidata",parent:id}
+             //   var data={source:"Wikidata",thesaurus:"Wikidata",parent:id}
+                var data = {source: source, parent: id}
                 bindings.push({id: id, narrowerId: item.narrower.value, narrowerLabel: item.narrowerLabel.value,data:data})
             })
 
@@ -109,7 +110,7 @@ var sparql_Wikidata = (function () {
         })
     }
 
-    self.getDetails = function (id, options, callback) {
+    self.getDetails = function (source,id, options, callback) {
         var count = 0
         id = id.substring(id.lastIndexOf("/") + 1)
 

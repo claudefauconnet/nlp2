@@ -24,6 +24,41 @@ var multiSkosGraph2 = (function () {
         '#B3B005',
     ]
 
+    var palette=[
+
+
+
+     /*   '#fe6666',
+        '#f49e19',// '#fdfe67',
+        '#6cff66',
+        '#6678fe',
+        '#fe66f9',
+
+        '#f49e19',
+        '#fbdf6b',
+        '#909dc1',
+        '#a5cca5',
+        '#7da6d4',
+
+
+        '#aba4d9',
+        '#c7c7c7',
+        '#858585',
+        '#a68f81',
+        '#e0d6b8',*/
+        '#f9e1e0',
+        '#feadb9',
+        '#bc85a3',
+        '#9799ba',
+        '#5c85a3',
+        '#b8dae0',
+        '#f2b2b0',
+        '#f8a09f',
+        '#3d956b',
+        '#985624',
+
+    ]
+
     var colorsMap = {}
 
     var conceptsMap = {};
@@ -56,7 +91,7 @@ var multiSkosGraph2 = (function () {
         var sourceNodes = [];
 
         sources.forEach(function (source) {
-            sourceNodes.push({id: source.name, text:"<span class='tree_level_1'>"+source.name+"</span>", chldren: [], parent: "#"})
+            sourceNodes.push({id: source.name, text:"<span class='tree_level_1' style='background-color: "+source.color+"'>"+source.name+"</span>", chldren: [], parent: "#"})
 
 
         })
@@ -76,23 +111,27 @@ var multiSkosGraph2 = (function () {
 
         });
 
-
+        var selectedIds=[];
         sources.forEach(function (source) {
             sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
 
                 if (err) {
                     return console.log(err);
                 }
+
                 result.forEach(function (item) {
-                    if (!conceptsMap[item.id]) {
+                    if (!conceptsMap[item.id] ) {
+                        if(result.length==1)
+                        selectedIds.push(item.id)
                         conceptsMap[item.id] = item;
                         item.source = source.name;
-                        item.title = item.label + " / " + item.description
+                        item.title = item.label + " / " + (item.description || "")
 
-                        var newNode = {id: item.id, text: item.title, data: item }
+                        var newNode = {id: item.id, text: "<span class='tree_level_2'>"+item.title+"</span>", data: item }
                         setTimeout(function () {
                             $("#conceptsJstreeDiv").jstree(true).create_node(source.name, newNode, "first", function () {
                                 $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
+
 
                             }, false);
                         }, 1000)
@@ -100,10 +139,16 @@ var multiSkosGraph2 = (function () {
 
                 })
 
+
             })
 
 
         })
+       setTimeout(function(){
+
+                $("#conceptsJstreeDiv").jstree(true).select_node(selectedIds);
+
+       },3000)
 
 
     }
@@ -403,12 +448,16 @@ var multiSkosGraph2 = (function () {
 
             var color = parent.color;
             children.forEach(function (item) {
+                var data={
+                    source:item.data.source.name,
+                    parent:parent.id
+                }
                 if (existingNodes.indexOf(item.narrowerId) < 0) {
                     self.context.newNodes.push({
                         label: item.narrowerLabel,
                         id: item.narrowerId,
                         shape: "triangle",
-                        data: item.data,
+                        data: data,
                         color: color
                     })
                     if (existingEdges.indexOf(parent.id + "_" + item.narrowerId) < 0) {
