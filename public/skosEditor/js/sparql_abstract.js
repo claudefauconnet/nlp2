@@ -258,6 +258,18 @@ var sparql_abstract = (function () {
         });
     }
 
+    self.getLinkedData=function(){
+
+
+
+
+
+
+
+
+
+    }
+
 
     self.clearMessage = function () {
 
