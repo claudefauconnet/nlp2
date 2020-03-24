@@ -28,7 +28,7 @@ var multiSkosGraph2 = (function () {
 
 
 
-     /*   '#fe6666',
+       '#fe6666',
         '#f49e19',// '#fdfe67',
         '#6cff66',
         '#6678fe',
@@ -45,7 +45,7 @@ var multiSkosGraph2 = (function () {
         '#c7c7c7',
         '#858585',
         '#a68f81',
-        '#e0d6b8',*/
+        '#e0d6b8',
         '#f9e1e0',
         '#feadb9',
         '#bc85a3',
@@ -311,12 +311,18 @@ var multiSkosGraph2 = (function () {
                 $("#detailsDiv").dialog("open");
 
 
+
             })
 
         }
         ,
         setAsRootNode: function () {
             self.graphActions.hidePopup();
+            var word=self.graphActions.currentNode.label
+            $('#searchWordInput').val(word)
+            $('#dialogDiv').dialog('open')
+            self.searchConcepts(word) ;
+
 
         }
 

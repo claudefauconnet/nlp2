@@ -32,7 +32,7 @@ var authentication = (function () {
 
     }
 
-    self.doLogin = function () {
+    self.doLogin = function (callback) {
         var login = $("#loginInput").val();
         var password = $("#passwordInput").val();
         $("#main").css("visibility", "hidden");
@@ -102,7 +102,9 @@ var authentication = (function () {
 
             $("#loginDiv").css("visibility", "hidden");
             $("#main").css("visibility", "visible");
+            $("#dialogDiv").dialog("open")
             self.currentUser=user;
+
            // mainController.init0();
 
         })

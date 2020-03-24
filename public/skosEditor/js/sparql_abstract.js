@@ -19,37 +19,31 @@ WHERE {
  */
 
 
-
-
-
 var sparql_abstract = (function () {
     var self = {};
 
 
-   self.rdfsMap={
+    self.rdfsMap = {
 
-        'BNF':{sparql_url:'https://data.bnf.fr/sparql',graphIRI:'http://data.bnf.fr',sparqlBuilder:"sparql_skos_generic"},
-        'Dbpedia':{sparql_url:'http://dbpedia.org/sparql',graphIRI:'http://dbpedia.org',sparqlBuilder:"sparql_skos_generic"},
+        'BNF': {sparql_url: 'https://data.bnf.fr/sparql', graphIRI: 'http://data.bnf.fr', sparqlBuilder: "sparql_skos_generic"},
+        'Dbpedia': {sparql_url: 'http://dbpedia.org/sparql', graphIRI: 'http://dbpedia.org', sparqlBuilder: "sparql_skos_generic"},
 
-        'LibraryOfCongress':{sparql_url:'http://vps475829.ovh.net:8890/sparql',graphIRI:'http://www.loc.gov/',sparqlBuilder:"sparql_skos_generic"},
-        'Oil&Gas-Upstream':{sparql_url:'http://vps475829.ovh.net:8890/sparql',graphIRI:'http://souslesens.org/oil-gas/upstream/',sparqlBuilder:"sparql_skos_generic"},
-        'TermSciences':{sparql_url:'http://vps475829.ovh.net:8890/sparql',graphIRI:'http://api.termsciences.fr/termsciences/',sparqlBuilder:"sparql_skos_generic"},
-        'ThesaurusIngenieur':{sparql_url:'http://vps475829.ovh.net:8890/sparql',graphIRI:'http://www.souslesens.org/thesaurusIngenieur/',sparqlBuilder:"sparql_skos_generic"},
-        'Total-CTG':{sparql_url:'http://vps475829.ovh.net:8890/sparql',graphIRI:'http://thesaurus.ctg.total.com/',sparqlBuilder:"sparql_skos_generic"},
-        'Unesco':{sparql_url:'http://vps475829.ovh.net:8890/sparql',graphIRI:'http://skos.um.es/unesco6/',sparqlBuilder:"sparql_skos_generic"},
+        'LibraryOfCongress': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.loc.gov/', sparqlBuilder: "sparql_skos_generic"},
+        'Oil&Gas-Upstream': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
+        'TermSciences': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"},
+        'ThesaurusIngenieur': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.souslesens.org/thesaurusIngenieur/', sparqlBuilder: "sparql_skos_generic"},
+        'Total-CTG': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://thesaurus.ctg.total.com/', sparqlBuilder: "sparql_skos_generic"},
+        'Unesco': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_skos_generic"},
 
-        'Wikidata':{sparql_url:'https://query.wikidata.org/',graphIRI:'http://skos.um.es/unesco6/',sparqlBuilder:"sparql_Wikidata"},
+        'Wikidata': {sparql_url: 'https://query.wikidata.org/', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_Wikidata"},
+        'Microsoft-accademic': {sparql_url: 'http://ma-graph.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_microsoft-accademic"},
+        'BabelNet': {sparql_url: 'https://babelnet.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_babelNet"},
 
 
     }
-
-
-
-
-
-
-
-
+    /* self.rdfsMap = {
+          'Microsoft-accademic': {sparql_url: 'http://ma-graph.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_microsoft-accademic"},
+      }*/
 
     /**
      *
@@ -58,89 +52,64 @@ var sparql_abstract = (function () {
      *
      */
     self.list = function (sourceName, word, options, callback) {
-        var source=self.rdfsMap[sourceName]
-        var sparqlBuilder=source.sparqlBuilder
-
+        var source = self.rdfsMap[sourceName]
+        var sparqlBuilder = source.sparqlBuilder
 
 
         $("#messageDiv").html("searching " + source);
         if (sparqlBuilder == "sparql_skos_generic")
-            return  sparql_skos_generic.list(source,word, options, callback)
+            return sparql_skos_generic.list(source, word, options, callback)
 
 
         if (sparqlBuilder == "sparql_Wikidata")
-            return sparql_Wikidata.list(source,word, options, callback)
-        
-     /* 
-         if (sparqlBuilder == "BNF")
-            return sparql_BNF.list(word, options, callback)
-       if (sparqlBuilder == "LOC")
-            return sparql_LOC.list(word, options, callback)
-        if (sparqlBuilder == "termsciences")
-            return sparql_termsciences.list(word, options, callback)
-        if (sparqlBuilder == "DBpedia")
-            return sparql_DBpedia.list(word, options, callback)
+            return sparql_Wikidata.list(source, word, options, callback)
 
-        if (sparqlBuilder == "private")
-            return sparql_private.list(word, options, callback)*/
+        if (sparqlBuilder == "sparql_microsoft-accademic")
+            return sparql_microsoft_accademic.list(source, word, options, callback)
+
+        if (sparqlBuilder == "sparql_babelNet")
+            return sparql_babelNet.list(source, word, options, callback)
+
 
         return callback(null, []);
     }
 
     self.getAncestors = function (sourceName, id, options, callback) {
 
-        var source=self.rdfsMap[sourceName]
-        var sparqlBuilder=source.sparqlBuilder
+        var source = self.rdfsMap[sourceName]
+        var sparqlBuilder = source.sparqlBuilder
 
         $("#messageDiv").html("searching " + source);
         if (sparqlBuilder == "sparql_skos_generic")
-            return  sparql_skos_generic.getAncestors(source,id, options, callback)
+            return sparql_skos_generic.getAncestors(source, id, options, callback)
 
         if (sparqlBuilder == "sparql_Wikidata")
-            return sparql_Wikidata.getAncestors(source,id, options, callback)
+            return sparql_Wikidata.getAncestors(source, id, options, callback)
 
-      /*
-        if (source == "BNF")
-            return sparql_BNF.getAncestors(id, options, callback)
-        if (source == "Wikidata")
-            return sparql_Wikidata.getAncestors(id, options, callback)
-        if (source == "LOC")
-            return sparql_LOC.getAncestors(id, options, callback)
-        if (source == "termsciences")
-            return sparql_termsciences.getAncestors(id, options, callback)
-        if (source == "DBpedia")
-            return sparql_DBpedia.getAncestors(id, options, callback)
-        if (source == "private")
-            return sparql_private.getAncestors(id, options, callback)*/
-
+        if (sparqlBuilder == "sparql_microsoft-accademic")
+            return sparql_microsoft_accademic.getAncestors(source, id, options, callback)
         return callback(null, []);
+        if (sparqlBuilder == "sparql_babelNet")
+            return sparql_babelNet.getAncestors(source, id, options, callback)
     }
 
 
     self.getDetails = function (sourceName, id, options, callback) {
         $("#messageDiv").html("searching " + source);
-        var source=self.rdfsMap[sourceName]
-        var sparqlBuilder=source.sparqlBuilder
+        var source = self.rdfsMap[sourceName]
+        var sparqlBuilder = source.sparqlBuilder
 
         $("#messageDiv").html("searching " + source);
         if (sparqlBuilder == "sparql_skos_generic")
-            return  sparql_skos_generic.getDetails(source,id, options, callback)
+            return sparql_skos_generic.getDetails(source, id, options, callback)
 
         if (sparqlBuilder == "sparql_Wikidata")
-            return sparql_Wikidata.getDetails(source,id, options, callback)
+            return sparql_Wikidata.getDetails(source, id, options, callback)
 
-       /* if (source == "BNF")
-            return sparql_BNF.getDetails(id, options, callback)
-        if (source == "Wikidata")
-            return sparql_Wikidata.getDetails(id, options, callback)
-        if (source == "LOC")
-            return sparql_LOC.getDetails(id, options, callback)
-        if (source == "termsciences")
-            return sparql_termsciences.getDetails(id, options, callback)
-        if (source == "DBpedia")
-            return sparql_DBpedia.getDetails(id, options, callback)
-        if (source == "private")
-            return sparql_private.getDetails(id, options, callback)*/
+        if (sparqlBuilder == "sparql_microsoft-accademic")
+            return sparql_microsoft_accademic.getDetails(source, id, options, callback)
+        if (sparqlBuilder == "sparql_babelNet")
+            return sparql_babelNet.getDetails(source, id, options, callback)
 
         return callback(null, []);
     }
@@ -148,29 +117,20 @@ var sparql_abstract = (function () {
 
     self.getChildren = function (sourceName, id, options, callback) {
         $("#messageDiv").html("searching " + source);
-        var source=self.rdfsMap[sourceName]
-        var sparqlBuilder=source.sparqlBuilder
+        var source = self.rdfsMap[sourceName]
+        var sparqlBuilder = source.sparqlBuilder
 
         $("#messageDiv").html("searching " + source);
         if (sparqlBuilder == "sparql_skos_generic")
-            return  sparql_skos_generic.getChildren(source,id, options, callback)
+            return sparql_skos_generic.getChildren(source, id, options, callback)
 
         if (sparqlBuilder == "sparql_Wikidata")
-            return sparql_Wikidata.getChildren(source,id, options, callback)
+            return sparql_Wikidata.getChildren(source, id, options, callback)
 
-     /*   if (source == "BNF")
-            return sparql_BNF.getChildren(id, options, callback)
-        if (source == "Wikidata")
-            return sparql_Wikidata.getChildren(id, options, callback)
-        if (source == "LOC")
-            return sparql_LOC.getChildren(id, options, callback)
-        if (source == "termsciences")
-            return sparql_termsciences.getChildren(id, options, callback)
-        if (source == "DBpedia")
-            return sparql_DBpedia.getChildren(id, options, callback)
-        if (source == "private")
-            return sparql_private.getChildren(id, options, callback)
-        callback(null, [])*/
+        if (sparqlBuilder == "sparql_microsoft-accademic")
+            return sparql_microsoft_accademic.getChildren(source, id, options, callback)
+        if (sparqlBuilder == "sparql_babelNet")
+            return sparql_babelNet.getChildren(source, id, options, callback)
     }
 
     self.querySPARQL_GET = function (url, query, queryOptions, callback) {
@@ -216,11 +176,14 @@ var sparql_abstract = (function () {
             var x = result;
         });
     }
-    self.querySPARQL_GET_proxy = function (url, query,queryOptions, callback) {
-
-        query=encodeURIComponent(query);
-        query=query.replace(/%2B/g,"+")
-        url=url+query+queryOptions;
+    self.querySPARQL_GET_proxy = function (url, query, queryOptions, options, callback) {
+        if (!options)
+            options = {}
+        if (!options.doNotEncode) {
+            query = encodeURIComponent(query);
+            query = query.replace(/%2B/g, "+")
+        }
+        url = url + query + queryOptions;
         console.log(url)
 
         $("#waitImg").css("display", "block");
@@ -228,6 +191,7 @@ var sparql_abstract = (function () {
         var payload = {
             httpProxy: 1,
             url: url,
+            options: JSON.stringify(options)
         }
         $.ajax({
             type: "POST",
@@ -240,7 +204,7 @@ var sparql_abstract = (function () {
 
             success: function (data, textStatus, jqXHR) {
                 var xx = data;
-                $("#messageDiv").html("found : " + data.results.bindings.length);
+              //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
                 callback(null, data)
 
@@ -258,14 +222,7 @@ var sparql_abstract = (function () {
         });
     }
 
-    self.getLinkedData=function(){
-
-
-
-
-
-
-
+    self.getLinkedData = function () {
 
 
     }
@@ -343,7 +300,7 @@ var sparql_abstract = (function () {
         return jsonArray;
 
     }
-    self.processData_SKOS = function (source,id,bindings) {
+    self.processData_SKOS = function (source, id, bindings) {
         var nLevels = 8;
 
         var paths = []
@@ -354,8 +311,8 @@ var sparql_abstract = (function () {
             for (var level = 0; level < nLevels; level++) {
                 var bindingId = id;
                 if (!topNodes[bindingId] && level == 0) {
-                    var str0 = "|_" + id + ";" +"" ;
-                    topNodes[bindingId] = {id:id, name:binding.prefLabel.value, path: str0}
+                    var str0 = "|_" + id + ";" + "";
+                    topNodes[bindingId] = {id: id, name: binding.prefLabel.value, path: str0}
                 }
                 var str = ""
                 var broaderName = "broader" + (level);
