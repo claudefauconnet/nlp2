@@ -321,6 +321,7 @@ var annotator_skos = {
                                 "properties": {
 
                                     id: {type: "keyword"},
+                                    id_str: {type: "text"},
                                     offsets: {
                                         "properties": {
                                             start: {type: "integer"},
@@ -370,6 +371,8 @@ var annotator_skos = {
 
             if (!entity.documentsMap)
                 return;
+
+
             for (var docId in entity.documentsMap) {
                 var doc = entity.documentsMap[docId];
                 if (!documentsEntitiesMap[doc.id])
@@ -409,7 +412,7 @@ var annotator_skos = {
 
 
                 entities.forEach(function (entity) {
-
+                    entity.id_str = entity.id;
 
                     var script = {
                         "script": {
@@ -588,8 +591,7 @@ var annotator_skos = {
                             var newElasticId = Math.round(Math.random() * 10000000)
                             serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
                             serialize.write(entity);
-                        }
-                        else if (globalOptions.indexEntitiesWithhoutDocs){
+                        } else if (globalOptions.indexEntitiesWithhoutDocs) {
                             serialize.write({"index": {"_index": globalOptions.thesaurusIndex, "_type": globalOptions.thesaurusIndex, "_id": newElasticId}})
                             serialize.write(entity);
                         }
@@ -723,7 +725,7 @@ if (false) {
         var options = {
             thesaurusIndex: thesaurusConfig.name,
             elasticUrl: "http://localhost:9200/",
-            indexEntitiesWithhoutDocs:true
+            indexEntitiesWithhoutDocs: true
 
         }
         annotator_skos.indexThesaurus(options, entities, function (err, result) {

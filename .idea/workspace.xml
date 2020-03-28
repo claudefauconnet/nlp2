@@ -3,47 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_regex..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/annotator_regex..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/annotator_skos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/annotator_skos..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/linkedDataProcessor..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/linkedDataProcessor..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/authentification.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/authentification.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_BNF.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_DBpedia.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_LOC.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_Wikidata.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_Wikidata.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_microsoft-accademic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_microsoft-accademic.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_termsciences.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/test.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/Entities.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/TMA.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/Thesaurus.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/async.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/asyncDialog.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/authentification.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/bootstrap.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/config.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/configEditor.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/context.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/imapUI.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/indexes.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/jobScheduler.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/jquery-ui.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/jquery-ui.min.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/jquery.json-editor.min.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/jquery.min.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/jsonform.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/jstree.min.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/jsv.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/logoATD.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/mainController.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/profiles.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/socket.io.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/style.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/ui.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/underscore.js.téléchargement" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/souslesens search BO_files/waitAnimated.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,8 +27,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
-        <option value="JavaScript File" />
         <option value="JS module" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -74,24 +43,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/skosEditor/js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/ontograph/js" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
+      <recent name="D:\GitHub\nlp2\public\ontograph" />
+      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
+      <recent name="D:\GitHub\nlp2\config\elastic\thesauri" />
+      <recent name="D:\GitHub\nlp2\public\skosEditor" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\bin" />
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
       <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
       <recent name="D:\GitHub\nlp2\public\index2.html" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
-      <recent name="D:\GitHub\nlp2\config\elastic\thesauri" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor" />
-      <recent name="D:\GitHub\nlp2\config\elastic\sources" />
-      <recent name="D:\GitHub\nlp2\bin\others" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -106,17 +75,17 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.linkedDataProcessor..js">
-    <configuration name="crawler_termSciences..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_termSciences..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
+  <component name="RunManager" selected="Node.js.ontologyCTG..js">
+    <configuration name="annotator_regex..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_regex..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
-    <configuration name="httpProxy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="httpProxy..js" working-dir="$PROJECT_DIR$/bin">
+    <configuration name="crawler_termSciences..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_termSciences..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
     <configuration name="linkedDataProcessor..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="linkedDataProcessor..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
-    <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
+    <configuration name="ontologyCTG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyCTG..js" working-dir="$PROJECT_DIR$/bin/others/ontologyCTG">
       <method v="2" />
     </configuration>
     <configuration name="termSciencesSkosproxy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="termSciencesSkosproxy..js" working-dir="$PROJECT_DIR$/bin/others">
@@ -124,11 +93,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.ontologyCTG..js" />
+        <item itemvalue="Node.js.annotator_regex..js" />
         <item itemvalue="Node.js.linkedDataProcessor..js" />
         <item itemvalue="Node.js.crawler_termSciences..js" />
         <item itemvalue="Node.js.termSciencesSkosproxy..js" />
-        <item itemvalue="Node.js.skosReader..js" />
-        <item itemvalue="Node.js.httpProxy..js" />
       </list>
     </recent_temporary>
   </component>
@@ -163,7 +132,9 @@
       <workItem from="1583659302686" duration="57731000" />
       <workItem from="1583831688727" duration="9147000" />
       <workItem from="1583914227603" duration="59182000" />
-      <workItem from="1584173332084" duration="227403000" />
+      <workItem from="1584173332084" duration="235274000" />
+      <workItem from="1585067450331" duration="13499000" />
+      <workItem from="1585209102222" duration="30268000" />
     </task>
     <servers />
   </component>
@@ -259,98 +230,93 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph2.js</url>
           <line>316</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3140" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql.js</url>
           <line>219</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3142" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql.js</url>
           <line>171</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3144" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
           <line>22</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3164" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js</url>
-          <line>148</line>
-          <properties lambdaOrdinal="-1" />
+          <line>155</line>
           <option name="timeStamp" value="3165" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/routes/index.js</url>
           <line>246</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3166" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
           <line>1000</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3187" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js</url>
           <line>17</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3188" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/termSciencesSkosproxy..js</url>
           <line>11</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3194" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
           <line>1462</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3211" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1006</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3263" />
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_regex..js</url>
+          <line>68</line>
+          <option name="timeStamp" value="3382" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>944</line>
+          <line>1091</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3271" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/authentication..js</url>
-          <line>15</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3274" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/authentication..js</url>
-          <line>16</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3275" />
+          <option name="timeStamp" value="3400" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1071</line>
+          <line>1066</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3315" />
+          <option name="timeStamp" value="3401" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1023</line>
+          <line>1088</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3331" />
+          <option name="timeStamp" value="3404" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
+          <line>1090</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3405" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
+          <line>1013</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3408" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_regex..js</url>
+          <line>233</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3409" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

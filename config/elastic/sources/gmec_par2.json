@@ -1,0 +1,167 @@
+{
+  "general": {
+    "description": "gmec_par2",
+    "label": "gmec_par2",
+    "indexName": "gmec_par2"
+  },
+  "connector": {
+    "type": "csv",
+    "filePath": "D:\\Total\\graphNLP\\export_doc_chapter_neo_2.csv",
+    "contentField": "attachment.content"
+  },
+  "schema": {
+    "contentField": "attachment.content",
+    "analyzer": "lowercase_asciifolding",
+    "mappings": {
+      "gmec_par2": {
+    "properties": {
+          "iD": {
+            "type": "text"
+          },
+          "document": {
+            "type": "text"
+          },
+          "title": {
+            "type": "text"
+          },
+          "purpose": {
+            "type": "text"
+          },
+
+          "chapterTitle1": {
+            "type": "text"
+          },
+          "chapterTitle2": {
+            "type": "text"
+          },
+          "chapterTitle3": {
+            "type": "text"
+          },
+          "paragraphText": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  },
+  "display": [
+    {
+      "iD": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "document": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "title": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "purpose": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "textOffset": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "chapterOffset": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "chapterTitle1": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "chapterTitle2": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "chapterTitle3": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "paragraphText": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "styleParagraph": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "nLPParagraphText": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "paragraphTextStopWords": {
+        "cssClass": "text"
+      }
+    },
+    {
+      "equipment": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "component": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "phenomenon": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "characterisation": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "method": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "time": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "temperature": {
+        "cssClass": "excerpt"
+      }
+    },
+    {
+      "vibration": {
+        "cssClass": "excerpt"
+      }
+    }
+  ],
+  "thesauri": {
+    "thesaurus_CTG_2020": {
+      "name": "thesaurus_CTG_2020",
+      "skosXmlPath": "D:\\NLP\\rdfs\\thesaurusCTG-02-20b.rdf",
+      "highlightFields": [
+        "text",
+        "docTitle",
+        "chapter"
+      ],
+      "extractedLangages": "en",
+      "outputLangage": "en"
+    }
+  }
+}

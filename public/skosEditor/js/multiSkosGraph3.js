@@ -67,6 +67,8 @@ var multiSkosGraph2 = (function () {
   var sources=[];
 
     self.initRdfResources=function(){
+        if(sources.length>0)
+            return;
         for (var key in sparql_abstract.rdfsMap){
            var source =sparql_abstract.rdfsMap[key]
             source.name=key;
@@ -81,6 +83,8 @@ var multiSkosGraph2 = (function () {
 
 
     self.searchConcepts = function (word) {
+
+        self.initRdfResources()
         self.context.currentWord = word
         conceptsMap = {}
 
@@ -213,6 +217,10 @@ var multiSkosGraph2 = (function () {
             selectedConcepts.forEach(function (concept) {
 
                 sparql_abstract.getAncestors(concept.source, concept.id, {exactMatch: true}, function (err, result) {
+                    if(err)
+                        return console.log(err)
+                    if(!result ||!result.forEach)
+                        return;
                     result.forEach(function (binding) {
                         binding.source=concept.source;
                         if(!binding.thesaurus)
@@ -454,6 +462,12 @@ var multiSkosGraph2 = (function () {
 
             var color = parent.color;
             children.forEach(function (item) {
+var size=12;
+                var shape="triangle";
+                if( item.countNarrowers2<1) {
+                    var shape = "dot";
+                    size=6
+                }
                 var data={
                     source:item.data.source.name,
                     parent:parent.id
@@ -462,9 +476,10 @@ var multiSkosGraph2 = (function () {
                     self.context.newNodes.push({
                         label: item.narrowerLabel,
                         id: item.narrowerId,
-                        shape: "triangle",
+                        shape: shape,
                         data: data,
-                        color: color
+                        color: color,
+                        size:size
                     })
                     if (existingEdges.indexOf(parent.id + "_" + item.narrowerId) < 0) {
                         self.context.newEdges.push({

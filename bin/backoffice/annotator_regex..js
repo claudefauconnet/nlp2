@@ -65,6 +65,9 @@ var annotator_regex = {
                 request(options, function (error, response, body) {
                     if (error)
                         return callbackIter(error);
+                    if(!body || !body.hits )
+                        return callbackIter(error);
+
                     var hits = body.hits.hits;
 
 
@@ -240,7 +243,7 @@ var annotator_regex = {
                                 headers: {
                                     'content-type': 'application/json'
                                 },
-                                url: globalOptions.elasticUrl + "_bulk&refresh=wait_for"
+                                url: globalOptions.elasticUrl + "_bulk"
                             };
 
                             request(options, function (error, response, body) {
@@ -358,11 +361,11 @@ async.series([
         var options = {
 
             elasticUrl: "http://localhost:9200/",
-            corpusIndex: "gmec_par",
+            corpusIndex: "gmec_par2",
             regexEntities: measurementUnits.measurementUnits,
             regexEntitiesFieldName: "measurement_units",
             conversions: measurementUnits.conversions,
-            highlightFields: ["text"]
+            highlightFields: ["paragraphText"]
         }
         annotator_regex.annotateCorpus(options, function (err, result) {
             var x = result;
@@ -379,7 +382,8 @@ async.series([
             corpusIndex: "gmec_par",
             regexEntities: prepositions.prepositions,
             regexEntitiesFieldName: "prepositions",
-            highlightFields: ["text"]
+            highlightFields: ["paragraphText"],
+            valueMappingType:"text"
         }
         annotator_regex.annotateCorpus(options, function (err, result) {
             var x = result;

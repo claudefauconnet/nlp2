@@ -2,15 +2,15 @@ var authentication = (function () {
 
     var self = {}
 // pb avec l'url sur serveur a cause d'nginx qui n'adment pas authentication ??? voir config version antérieure déployéee
-   // self.authenticationUrl = "../authentication";
+    // self.authenticationUrl = "../authentication";
     var authenticationDBUrl = "/elastic";
     self.userIndexes = [];
-    self.currentUser={};
+    self.currentUser = {};
 
 
     self.init = function (activate) {
         var url = window.location.host;
-        if (config.loginMode != "none"){//  && url.indexOf("localhost")<0 && url.indexOf("127.0.0.1")<0){
+        if (config.loginMode != "none") {//  && url.indexOf("localhost")<0 && url.indexOf("127.0.0.1")<0){
 
 
             $("#loginDiv").css("visibility", "visible");
@@ -21,13 +21,15 @@ var authentication = (function () {
             ;
             // $("#panels").css("display", "none")
 
-        }else {
+        } else {
             authentication.currentUser = {
                 identifiant: "admin",
                 login: "none",
                 groupes: "admin"
             }
-         //   mainController.init0();
+            if (typeof sparql_abstract !== 'undefined')
+            sparql_abstract.initSources()
+            //   mainController.init0();
         }
 
     }
@@ -43,10 +45,12 @@ var authentication = (function () {
         var user = null;
         async.series([
             function (callbackSeries) {
-                if (config.loginMode == "none"){
-                    user={identifiant:"none",
-                        login:"none",
-                        groups:"ADMIN"}
+                if (config.loginMode == "none") {
+                    user = {
+                        identifiant: "none",
+                        login: "none",
+                        groupes: "admin"
+                    }
                 }
                 if (config.loginMode != "database")
                     return callbackSeries();
@@ -73,51 +77,48 @@ var authentication = (function () {
 
         ], function (err) {
             if (err && err.responseJSON) {
-                if ( err.responseJSON.ERROR == "changePassword") {
+                if (err.responseJSON.ERROR == "changePassword") {
                     //    $("#loginMessage").html("le mot de passe doit être changé (<a href='htmlSnippets/changerMotDePasse.html'>cliquer ici</a>)");
                     $("#loginMessage").html("le mot de passe doit être changé <button onclick=tools.execTool('changerMotDePasse')>OK</button>");
-                    self.currentUser=user;
+                    self.currentUser = user;
                     mainController.init0();
 
                     return
-                }
-                else if ( err.responseJSON.ERROR == "invalidLogin") {
+                } else if (err.responseJSON.ERROR == "invalidLogin") {
                     return $("#loginMessage").html("identifiant et/ou mot de passe invalide");
 
 
-                }
-                else{
+                } else {
                     return $("#loginMessage").html(err);
                 }
 
 
             }
-            if(!user)
+            if (!user)
                 return $("#loginMessage").html("invalid  login or password");
-            var userGroups=user.groupes;
-            if(!Array.isArray(userGroups))
-            userGroups=user.groupes.split(",");
-            if(userGroups.indexOf("admin")<0 && userGroups.indexOf(config.appName)<0 )
-                return $("#loginMessage").html("user not allowed on this application  : "+config.appName);
+            var userGroups = user.groupes;
+            if (!Array.isArray(userGroups))
+                userGroups = user.groupes.split(",");
+            /*   if(false | userGroups.indexOf("admin")<0 && userGroups.indexOf(config.appName)<0 )
+                   return $("#loginMessage").html("user not allowed on this application  : "+config.appName);*/
 
             $("#loginDiv").css("visibility", "hidden");
             $("#main").css("visibility", "visible");
             $("#dialogDiv").dialog("open")
-            self.currentUser=user;
+            self.currentUser = user;
+            if (typeof sparql_abstract !== 'undefined')
+                sparql_abstract.initSources()
 
-           // mainController.init0();
+
+            // mainController.init0();
 
         })
-
 
 
     }
 
 
-    self.doLoginDatabase = function (login, password,callback) {
-
-
-
+    self.doLoginDatabase = function (login, password, callback) {
 
 
         var payload = {
@@ -134,7 +135,7 @@ var authentication = (function () {
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
-                return callback(null,data);
+                return callback(null, data);
 
 
             }, error: function (err) {
@@ -158,7 +159,7 @@ var authentication = (function () {
 
     }
 
-    self.doLoginJson = function (login, password,callback) {
+    self.doLoginJson = function (login, password, callback) {
 
 
         var payload = {
@@ -169,7 +170,7 @@ var authentication = (function () {
         }
         $.ajax({
             type: "POST",
-            url:authenticationDBUrl,
+            url: authenticationDBUrl,
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
@@ -181,12 +182,13 @@ var authentication = (function () {
                     return callback();
 
                 }
-                var   user = {
+                var user = {
                     identifiant: login,
-                    nomComplet:login,
-                    groupes:data,
+                    nomComplet: login,
+                    groupes: data,
                 };
-                return callback(null,user);
+                self.currentUser = user;
+                return callback(null, user);
 
                 // $("#panels").css("display", "block")
 
@@ -200,7 +202,7 @@ var authentication = (function () {
 
     }
 
-    self.changePassword=function() {//page htmlSnippets/ changerMotDePasse.html
+    self.changePassword = function () {//page htmlSnippets/ changerMotDePasse.html
         $("#changePassword_message").html("");
         var login = $("#changePassword_identifiant").val();
         var password = $("#changePassword_ancienMotDePasse").val();
@@ -216,7 +218,7 @@ var authentication = (function () {
             changePassword: 1,
             login: login,
             oldPassword: password,
-            newPassword:newPassword,
+            newPassword: newPassword,
 
         }
 
@@ -242,15 +244,15 @@ var authentication = (function () {
     }
 
     //save record for authentication : call special method to encrypt password on server
-    self.onBeforeSave=function(options,callback){
-        for (var key in options.changes){
-            options.currentRecord[key]=options.changes[key];
+    self.onBeforeSave = function (options, callback) {
+        for (var key in options.changes) {
+            options.currentRecord[key] = options.changes[key];
         }
 
         var authenticationUrl = "../authDB";
         var payload = {
             enrole: 1,
-            users:JSON.stringify(options.currentRecord)
+            users: JSON.stringify(options.currentRecord)
 
 
         }

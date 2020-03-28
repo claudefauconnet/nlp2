@@ -102,7 +102,7 @@ var sparql_skos_generic = (function () {
             if (err) {
                 return callback(err);
             }
-            var json = sparql_abstract.processData_SKOS("LOC", id, result.results.bindings)
+            var json = sparql_abstract.processData_SKOS(source, id, result.results.bindings)
             callback(null, json)
 
         })
@@ -121,14 +121,20 @@ var sparql_skos_generic = (function () {
               "LIMIT 1000"*/
 
         var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-            "SELECT DISTINCT * WHERE {" +
+            "SELECT DISTINCT ?narrowerId ?narrowerLabel  (count(?narrowerId2) as ?countNarrowers2) WHERE {" +
             "OPTIONAL{" +
             "?narrowerId skos:broader <" + id + "> ." +
-            "?narrowerId skos:prefLabel ?narrowerLabel" +
+            "?narrowerId skos:prefLabel ?narrowerLabel ." +"" +
+            "OPTIONAL{" +
+            "?narrowerId2 skos:broader ?narrowerId." +
+            "}"+
             "}" +
             "OPTIONAL{" +
             "<" + id + ">  skos:narrower ?narrowerId ." +
-            "?narrowerId skos:prefLabel ?narrowerLabel" +
+            "?narrowerId skos:prefLabel ?narrowerLabel ." +
+                "OPTIONAL{" +
+            "?narrowerId2 skos:broader ?narrowerId." +
+            "}"+
             "}" +
             "" +
             "}LIMIT 1000"
@@ -143,8 +149,11 @@ var sparql_skos_generic = (function () {
             var bindings = []
             result.results.bindings.forEach(function (item) {
                 if (item.narrowerId) {
+                 var countNarrowers2=10
+                    if(item.countNarrowers2)
+                    countNarrowers2=parseInt(item.countNarrowers2.value)
                     var data = {source: source, parent: id}
-                    bindings.push({id: id, narrowerId: item.narrowerId.value, narrowerLabel: item.narrowerLabel.value, data: data})
+                    bindings.push({id: id, narrowerId: item.narrowerId.value, narrowerLabel: item.narrowerLabel.value,countNarrowers2:countNarrowers2, data: data})
                 }
             })
             callback(null, bindings)

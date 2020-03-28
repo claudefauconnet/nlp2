@@ -1,0 +1,14 @@
+{
+  "name": "thesaurus_CTG_2020",
+  "skosXmlPath": "D:\\NLP\\rdfs\\thesaurusCTG-02-20b.rdf",
+  "highlightFields": [
+    "paragraphText",
+    "title",
+    "chapterTitle1",
+	"chapterTitle2",
+	"purpose",
+	"chapterTitle3"
+  ],
+  "extractedLangages": "en",
+  "outputLangage": "en"
+}

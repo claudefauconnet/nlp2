@@ -81,7 +81,23 @@ var sparql_Wikidata = (function () {
         if (p > -1)
             id = id.substring(p + 1)
         var url = "https://query.wikidata.org/sparql?query="
-        var query = "SELECT\n" +
+
+
+        var query="select ?narrower ?narrowerLabel  (COUNT(?narrower2) AS ?countNarrowers2)\n" +
+            "\n" +
+            "WHERE \n" +
+            "{\n" +
+            " ?narrower wdt:P31|wdt:P279 wd:" + id + "  .\n" +
+            "  optional{\n" +
+            "    ?narrower2 wdt:P31|wdt:P279 ?narrower\n" +
+            "    }\n" +
+            "\n" +
+            "  SERVICE wikibase:label{\n" +
+            "     bd:serviceParam wikibase:language \"en\" .\n" +
+            " }\n" +
+            "  }\n" +
+            "GROUP BY ?narrower ?narrowerLabel"
+      /*  var query = "SELECT\n" +
             "\n" +
             "?narrower ?narrowerLabel \n" +
             "\n" +
@@ -94,7 +110,7 @@ var sparql_Wikidata = (function () {
             " }\n" +
             "\n" +
             "  }\n" +
-            "LIMIT 100"
+            "LIMIT 100"*/
         sparql_abstract.querySPARQL_GET(url, query, "&origin=*", function (err, result) {
             if (err)
                 return callback(err);
@@ -103,7 +119,10 @@ var sparql_Wikidata = (function () {
             result.results.bindings.forEach(function (item) {
              //   var data={source:"Wikidata",thesaurus:"Wikidata",parent:id}
                 var data = {source: source, parent: id}
-                bindings.push({id: id, narrowerId: item.narrower.value, narrowerLabel: item.narrowerLabel.value,data:data})
+                var countNarrowers2=10
+                if(item.countNarrowers2)
+                    countNarrowers2=parseInt(item.countNarrowers2.value)
+                bindings.push({id: id, narrowerId: item.narrower.value, narrowerLabel: item.narrowerLabel.value,countNarrowers2:countNarrowers2,data:data})
             })
 
             callback(null, bindings)

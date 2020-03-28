@@ -22,25 +22,32 @@ WHERE {
 var sparql_abstract = (function () {
     var self = {};
 
+    self.initSources = function (all) {
+        self.rdfsMap = {
 
-    self.rdfsMap = {
+            'BNF': {sparql_url: 'https://data.bnf.fr/sparql', graphIRI: 'http://data.bnf.fr', sparqlBuilder: "sparql_skos_generic"},
+            'Dbpedia': {sparql_url: 'http://dbpedia.org/sparql', graphIRI: 'http://dbpedia.org', sparqlBuilder: "sparql_skos_generic"},
 
-        'BNF': {sparql_url: 'https://data.bnf.fr/sparql', graphIRI: 'http://data.bnf.fr', sparqlBuilder: "sparql_skos_generic"},
-        'Dbpedia': {sparql_url: 'http://dbpedia.org/sparql', graphIRI: 'http://dbpedia.org', sparqlBuilder: "sparql_skos_generic"},
+            'LibraryOfCongress': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.loc.gov/', sparqlBuilder: "sparql_skos_generic"},
+            //    'Oil&Gas-Upstream': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
+            'TermSciences': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"},
+            'ThesaurusIngenieur': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.souslesens.org/thesaurusIngenieur/', sparqlBuilder: "sparql_skos_generic"},
+            'Unesco': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_skos_generic"},
 
-        'LibraryOfCongress': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.loc.gov/', sparqlBuilder: "sparql_skos_generic"},
-        'Oil&Gas-Upstream': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
-        'TermSciences': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"},
-        'ThesaurusIngenieur': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.souslesens.org/thesaurusIngenieur/', sparqlBuilder: "sparql_skos_generic"},
-        'Total-CTG': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://thesaurus.ctg.total.com/', sparqlBuilder: "sparql_skos_generic"},
-        'Unesco': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_skos_generic"},
-
-        'Wikidata': {sparql_url: 'https://query.wikidata.org/', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_Wikidata"},
-        'Microsoft-accademic': {sparql_url: 'http://ma-graph.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_microsoft-accademic"},
-        'BabelNet': {sparql_url: 'https://babelnet.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_babelNet"},
+            'Wikidata': {sparql_url: 'https://query.wikidata.org/', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_Wikidata"},
+            'Microsoft-accademic': {sparql_url: 'http://ma-graph.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_microsoft-accademic"},
+             'BabelNet': {sparql_url: 'https://babelnet.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_babelNet"},
 
 
+        }
+
+        var userGroups = authentication.currentUser.groupes;
+        if (all || userGroups.indexOf("admin") > -1 || userGroups.indexOf("CTG") > -1) {
+            self.rdfsMap['Total-CTG'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://thesaurus.ctg.total.com/', sparqlBuilder: "sparql_skos_generic"};
+            self.rdfsMap['Oil&Gas-Upstream'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"};
+        }
     }
+
     /* self.rdfsMap = {
           'Microsoft-accademic': {sparql_url: 'http://ma-graph.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_microsoft-accademic"},
       }*/
@@ -56,7 +63,7 @@ var sparql_abstract = (function () {
         var sparqlBuilder = source.sparqlBuilder
 
 
-        $("#messageDiv").html("searching " + source);
+        $("#messageDiv").html("searching " + sourceName);
         if (sparqlBuilder == "sparql_skos_generic")
             return sparql_skos_generic.list(source, word, options, callback)
 
@@ -79,7 +86,7 @@ var sparql_abstract = (function () {
         var source = self.rdfsMap[sourceName]
         var sparqlBuilder = source.sparqlBuilder
 
-        $("#messageDiv").html("searching " + source);
+        $("#messageDiv").html("searching " + sourceName);
         if (sparqlBuilder == "sparql_skos_generic")
             return sparql_skos_generic.getAncestors(source, id, options, callback)
 
@@ -95,11 +102,11 @@ var sparql_abstract = (function () {
 
 
     self.getDetails = function (sourceName, id, options, callback) {
-        $("#messageDiv").html("searching " + source);
+        $("#messageDiv").html("searching " + sourceName);
         var source = self.rdfsMap[sourceName]
         var sparqlBuilder = source.sparqlBuilder
 
-        $("#messageDiv").html("searching " + source);
+        $("#messageDiv").html("searching " + sourceName);
         if (sparqlBuilder == "sparql_skos_generic")
             return sparql_skos_generic.getDetails(source, id, options, callback)
 
@@ -116,11 +123,11 @@ var sparql_abstract = (function () {
 
 
     self.getChildren = function (sourceName, id, options, callback) {
-        $("#messageDiv").html("searching " + source);
+        $("#messageDiv").html("searching " + sourceName);
         var source = self.rdfsMap[sourceName]
         var sparqlBuilder = source.sparqlBuilder
 
-        $("#messageDiv").html("searching " + source);
+        $("#messageDiv").html("searching " + sourceName);
         if (sparqlBuilder == "sparql_skos_generic")
             return sparql_skos_generic.getChildren(source, id, options, callback)
 
@@ -148,7 +155,8 @@ var sparql_abstract = (function () {
 
             success: function (data, textStatus, jqXHR) {
                 var xx = data;
-                $("#messageDiv").html("found : " + data.length);
+                if(data&& data.search)
+                $("#messageDiv").html("found : " + data.search.length);
                 $("#waitImg").css("display", "none");
                 callback(null, data)
 
@@ -204,7 +212,7 @@ var sparql_abstract = (function () {
 
             success: function (data, textStatus, jqXHR) {
                 var xx = data;
-              //  $("#messageDiv").html("found : " + data.results.bindings.length);
+                //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
                 callback(null, data)
 

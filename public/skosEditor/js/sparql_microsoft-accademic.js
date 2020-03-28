@@ -28,7 +28,7 @@ var sparql_microsoft_accademic = (function () {
             "SELECT distinct * " +
             "WHERE { " +
             " " +
-            "?id foaf:name \"Corrosion\"^^xsd:string . " +
+            "?id foaf:name \""+word+"\"^^xsd:string . " +
             "?id  foaf:name ?prefLabel . " +
             "?id map:hasParent ?broaderId . " +
             "?broaderId foaf:name ?broader. }" + " LIMIT 100"
@@ -114,8 +114,12 @@ var sparql_microsoft_accademic = (function () {
               "}" +
 
               "LIMIT 1000"*/
-
-        var query = " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+var query=" PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX map: <http://ma-graph.org/property/> " +
+    " SELECT DISTINCT ?narrowerId ?narrowerLabel (count(?narrowerId2) as ?countNarrowers2)" +
+    "   WHERE { ?narrowerId map:hasParent <" + id + "> ." +
+    "OPTIONAL{?narrowerId2  map:hasParent ?narrowerId .}" +
+    "?narrowerId foaf:name ?narrowerLabel} LIMIT 100"
+     /*   var query = " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
             "PREFIX foaf: <http://xmlns.com/foaf/0.1/> " +
             "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
             "PREFIX map: <http://ma-graph.org/property/> " +
@@ -125,7 +129,7 @@ var sparql_microsoft_accademic = (function () {
             "?narrowerId map:hasParent <" + id + "> ." +
             "?narrowerId foaf:name ?narrowerLabel" +
 
-            "}LIMIT 100"
+            "}LIMIT 100"*/
 
 
         var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
@@ -138,7 +142,11 @@ var sparql_microsoft_accademic = (function () {
             result.results.bindings.forEach(function (item) {
                 if (item.narrowerId) {
                     var data = {source: source, parent: id}
-                    bindings.push({id: id, narrowerId: item.narrowerId.value, narrowerLabel: item.narrowerLabel.value, data: data})
+                    var countNarrowers2=10
+                    if(item.countNarrowers2)
+                        countNarrowers2=parseInt(item.countNarrowers2.value)
+                    var data = {source: source, parent: id}
+                    bindings.push({id: id, narrowerId: item.narrowerId.value, narrowerLabel: item.narrowerLabel.value,countNarrowers2:countNarrowers2, data: data})
                 }
             })
             callback(null, bindings)
