@@ -3,16 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/linkedDataProcessor..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/linkedDataProcessor..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_Wikidata.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_Wikidata.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_microsoft-accademic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_microsoft-accademic.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparql.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -134,7 +126,7 @@
       <workItem from="1583914227603" duration="59182000" />
       <workItem from="1584173332084" duration="235274000" />
       <workItem from="1585067450331" duration="13499000" />
-      <workItem from="1585209102222" duration="70156000" />
+      <workItem from="1585209102222" duration="72056000" />
     </task>
     <servers />
   </component>

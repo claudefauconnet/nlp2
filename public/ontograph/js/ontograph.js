@@ -2,7 +2,7 @@ var ontograph = (function () {
 
     var self = {};
 
-    self.context={}
+    self.context = {}
     self.context.conceptsMap = {};
     self.context.currentParagraphs = {};
     self.entityTypeColors = {
@@ -245,6 +245,7 @@ var ontograph = (function () {
 
 
                 var paragraphId = item.paragraph.value
+                self.context.currentParagraphs[paragraphId] = item.paragraphText.value
                 allParagraphIds.push(paragraphId)
 
                 var paragraphIdStr = paragraphId.substring(paragraphId.lastIndexOf("/") + 1)
@@ -267,8 +268,8 @@ var ontograph = (function () {
 
 
                 selectedEntities.forEach(function (entity, index) {
-if(! item["entity" + index]) //optional
-    return ;
+                    if (!item["entity" + index]) //optional
+                        return;
 
                     var entityId = item["entity" + index].value
                     var entityLabel = item["entity" + index + "Label"].value
@@ -327,7 +328,8 @@ if(! item["entity" + index]) //optional
                     result.forEach(function (item, indexLine) {
                         var index = 0;
                         var paragraphId = item.paragraph.value;
-                        self.context.currentParagraphs[paragraphId]=item.paragraphText.value
+
+
                         var entityId = item["entity" + index].value
                         var entityLabel = item["entity" + index + "Label"].value
                         var type = item["entity" + index + "Type"].value
@@ -386,22 +388,34 @@ if(! item["entity" + index]) //optional
     }
 
 
-
-    self.onNodeHover=function(obj, point){
-       var text= self.context.currentParagraphs[obj.id]
-        $("#messageDiv").html(text);
+    self.onNodeHover = function (obj, point) {
+        $("#messageDiv").html("");
+        var text = self.context.currentParagraphs[obj.id]
+        if (text)
+            $("#messageDiv").html(text);
     }
 
-    self.onNodeClick=function(obj, point){
-      if(obj.id.indexOf("Entity")>0){
-          ;
-      }
+    self.onNodeClick = function (obj, point) {
+        if (obj.id.indexOf("Entity") > 0) {
+            sparql.queryEntitiesCooccurrencesParagraphs([obj.id], {minManadatoryEntities: 1}, function (err, result) {
+                if(err)
+                    return console.log(err);
+                ontograph.addChildrenNodesToGraph(obj.id,result)
+            })
+
+
+            }
     }
 
     self.addChildrenNodesToGraph = function (parentNode, children) {
+        children.forEach(function(){
 
 
-    }
+            
+        })
+
+
+        }
 
     self.graphActions = {
 

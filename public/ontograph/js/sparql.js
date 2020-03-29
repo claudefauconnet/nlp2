@@ -107,6 +107,7 @@ var sparql = (function () {
         var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
             "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
             "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "" +
             "        select *" +
             "        where{ "
@@ -117,6 +118,7 @@ var sparql = (function () {
             query +=
                 "  ?paragraph terms:subject ?entity" + index + " . " +
                 "    FILTER (?entity" + index + " in(<" + id + ">))" +
+                "?paragraph mime:Text ?paragraphText ." +
                 "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
                 "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
                 "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
@@ -229,10 +231,10 @@ var sparql = (function () {
         if (!options)
             options = {}
         if (!options.doNotEncode) {
-            query = encodeURIComponent(query);
-            query = query.replace(/%2B/g, "+")
+            var query2 = encodeURIComponent(query);
+            query2 = query2.replace(/%2B/g, "+")
         }
-        url = url + query + queryOptions;
+        url = url + query2+ queryOptions;
         console.log(url)
 
         $("#waitImg").css("display", "block");
@@ -256,13 +258,17 @@ var sparql = (function () {
                 var xx = data;
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
+               if(data.results.bindings.length==0)
+                   return  callback("no result")
                 callback(null, data)
 
             }
             , error: function (err) {
                 $("#messageDiv").html(err.responseText);
+
                 $("#waitImg").css("display", "none");
                 console.log(JSON.stringify(err))
+                console.log(JSON.stringify(query))
                 if (callback) {
                     return callback(err)
                 }
