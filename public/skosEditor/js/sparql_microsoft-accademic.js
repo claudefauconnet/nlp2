@@ -64,9 +64,10 @@ var sparql_microsoft_accademic = (function () {
             "SELECT distinct * " +
             "WHERE { " +
             " " +
-            "?id foaf:name \"Corrosion\"^^xsd:string . " +
-            "?id  foaf:name ?prefLabel . " +
-            "?id map:hasParent ?broaderId1 . " +
+       //     "?id foaf:name \"Corrosion\"^^xsd:string . " +
+            //  "?id map:hasParent ?broaderId1 . " +
+           "<"+id+"> foaf:name ?prefLabel . " +
+            "<"+id+"> map:hasParent ?broaderId1 . " +
             "?broaderId1 foaf:name ?broader1 . " +
             "OPTIONAL{ " +
             "?broaderId1 map:hasParent ?broaderId2 . " +

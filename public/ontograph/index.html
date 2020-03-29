@@ -18,6 +18,7 @@
 
     <script src="js/common.js"></script>
     <script src="js/ontograph.js"></script>
+    <script src="js/sparql.js"></script>
     <script src="../js/others/async.js"></script>
 
 
@@ -32,11 +33,11 @@
 
 
 //multiSkosGraph.setTheaurusList()
-            $("#searchWordInput").bind('keyup', function (e) {
+        /*    $("#searchWordInput").bind('keyup', function (e) {
                 if (e.keyCode == 13) {
                     multiSkosGraph2.drawConceptGraph($('#searchWordInput').val());
                 }
-            });
+            });*/
 
             $("#dialogDiv").dialog({
                 autoOpen: false,
@@ -57,7 +58,7 @@
 
             }
             else{
-                sparql_abstract.initSources(true)
+
                 $("#dialogDiv").dialog("open")
             }
 
@@ -125,8 +126,8 @@
 
     <div>
         <button onclick="$('#dialogDiv').dialog('open')">...</button>
-        &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"> <span id="messageDiv"></span>
-        <div id="definitionsDiv" style="width:1000px;"></div>
+        &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/> <span id="messageDiv"></span>
+        <span id="paragraphTextDiv" style="background-color: #ddd4b0;height: 30px"></span>
         <div id="graphDiv" style="width:1000px;height: 1000px"></div>
     </div>
 <!--
@@ -159,22 +160,23 @@
 
 
     <div id="dialogDiv" style="display: flex;flex-direction: column">
-        <input id="searchWordInput" value="zinc">
-        <div><button onclick="multiSkosGraph2.searchConcepts($('#searchWordInput').val())">Search</button><input type="checkbox" checked="checked" id="exactMatchCBX">Exact Match</div>
+        <input id="searchWordInput" value="flow">
+        <div><button onclick="ontograph.searchItem($('#searchWordInput').val())">Search</button><input type="checkbox" checked="checked" id="exactMatchCBX">Exact Match</div>
         <div id="conceptsJstreeDiv" style="width: 500px;height: 800px;overflow: auto"></div>
 
         <div id="conceptOperationsDiv">
 
      <!--  <button onclick="multiSkosGraph2.searchConceptsContainWord()">search more concepts</button>-->
-        <button onclick="multiSkosGraph2.displayGraph()">display Graph</button>
+        <button onclick="ontograph.displayGraph()">display Graph</button>
+            <button onclick="ontograph.displayGraphParagraphs()">display Graph Paragraphs</button>min entities<input id="minManadatoryEntities" value="2" size="3">
         </div>
     </div>
 </div>
 
-<div id="graphPopupDiv" onclick="multiSkosGraph2.graphActions.hidePopup();" style="position:absolute;flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
-    <span class="popupMenuItem" onclick="multiSkosGraph2.graphActions.drawChildren();"> draw children</span>
-    <span  class="popupMenuItem"onclick="multiSkosGraph2.graphActions.showDetails();"> show details</span>
-    <span  class="popupMenuItem" onclick="multiSkosGraph2.graphActions.setAsRootNode();"> set a rootNode</span>
+<div id="graphPopupDiv" onclick="ontograph.graphActions.hidePopup();" style="position:absolute;flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+    <span class="popupMenuItem" onclick="ontograph.graphActions.drawChildren();"> draw children</span>
+    <span  class="popupMenuItem"onclick="ontograph.graphActions.showDetails();"> show details</span>
+    <span  class="popupMenuItem" onclick="ontograph.graphActions.setAsRootNode();"> set a rootNode</span>
     
 </div>
 <div id="detailsDiv"  style="flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">

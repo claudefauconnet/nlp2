@@ -20,6 +20,7 @@ var sparql_Wikidata = (function () {
 
     self.getAncestors = function (source,id, options, callback) {
         var query = "SELECT\n" +
+            "?prefLabel "+
             "?broaderId1 ?broaderId1Label \n" +
             "?broaderId2 ?broaderId2Label\n" +
             "?broaderId3 ?broaderId3Label\n" +
@@ -31,6 +32,8 @@ var sparql_Wikidata = (function () {
             "WHERE \n" +
             "{\n" +
             "\n" +
+            " wd:" + id + " rdfs:label ?prefLabel.\n" +
+            "  FILTER (lang(?prefLabel)=\"en\")"+
             "  wd:" + id + " wdt:P31|wdt:P279 ?broaderId1 .\n" +
             "  OPTIONAL {\n" +
             "     ?broaderId1 wdt:P279 ?broaderId2 .\n" +
@@ -180,12 +183,13 @@ var sparql_Wikidata = (function () {
 
             for (var level = 1; level <= nLevels; level++) {
                 var bindingId = id;
+                var broaderName = "broaderId" + level + "Label";
                 if (!topNodes[bindingId] && level == 1) {
-                    var str0 = "|_" + id + ";" + "";
+                 //   var str0 = "|_" + id + ";" + "";
+                    var str0 = "|_" + id + ";" + binding.prefLabel.value
                     topNodes[bindingId] = {id: id, name: "", path: str0}
                 }
                 var str = ""
-                var broaderName = "broaderId" + level + "Label";
                 var broaderIdName = "broaderId" + (level);
                 if (binding[broaderName]) {
                     var sep = "|"

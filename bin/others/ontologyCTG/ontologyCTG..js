@@ -33,7 +33,7 @@ var ontologyCTG = {
     buildNTfile: function () {
         var jsonArray = ontologyCTG.loaSourceFile();
 
-
+var entityIdCount=0
         var chaptersMap = {}
         var docsMap = {}
         var entitiesMap = {
@@ -89,7 +89,7 @@ var ontologyCTG = {
 
 
                         if (!entitiesMap[key][entityName]) {
-                            var entityId =(Object.keys(entitiesMap).length*1000) + Object.keys(entitiesMap[key]).length
+                            var entityId =(entityIdCount++)+1000
                             entitiesMap[key][entityName] = "<http://onto.ctg.total.com#Entity/" + entityId + ">"
 
                             strEntities += entitiesMap[key][entityName] + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + entityName + "\"@en .\n"

@@ -319,7 +319,8 @@ var sparql_abstract = (function () {
             for (var level = 0; level < nLevels; level++) {
                 var bindingId = id;
                 if (!topNodes[bindingId] && level == 0) {
-                    var str0 = "|_" + id + ";" + "";
+                //    var str0 = "|_" + id + ";" + "";
+                    var str0 = "|_" + id + ";" + binding.prefLabel.value;
                     topNodes[bindingId] = {id: id, name: binding.prefLabel.value, path: str0}
                 }
                 var str = ""

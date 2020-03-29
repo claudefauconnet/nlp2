@@ -225,10 +225,15 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             })
         }
         if (req.body.httpProxy) {
-
-            httpProxy.get(req.body.url,JSON.parse(req.body.options),function (err, result) {
-                processResponse(response, err, result)
-            })
+            if (req.body.POST) {
+                httpProxy.post(req.body.url, JSON.parse(req.body.options), function (err, result) {
+                    processResponse(response, err, result)
+                })
+            }else{
+                httpProxy.get(req.body.url, JSON.parse(req.body.options), function (err, result) {
+                    processResponse(response, err, result)
+                })
+            }
         }
 
 

@@ -24,11 +24,10 @@ var multiSkosGraph2 = (function () {
         '#B3B005',
     ]
 
-    var palette=[
+    var palette = [
 
 
-
-       '#fe6666',
+        '#fe6666',
         '#f49e19',// '#fdfe67',
         '#6cff66',
         '#6678fe',
@@ -64,22 +63,20 @@ var multiSkosGraph2 = (function () {
     var conceptsMap = {};
 
 
-  var sources=[];
+    var sources = [];
 
-    self.initRdfResources=function(){
-        if(sources.length>0)
+    self.initRdfResources = function () {
+        if (sources.length > 0)
             return;
-        for (var key in sparql_abstract.rdfsMap){
-           var source =sparql_abstract.rdfsMap[key]
-            source.name=key;
-            source.color=  palette[Object.keys(sources).length]
+        for (var key in sparql_abstract.rdfsMap) {
+            var source = sparql_abstract.rdfsMap[key]
+            source.name = key;
+            source.color = palette[Object.keys(sources).length]
             sources.push(source)
         }
 
 
     }
-
-
 
 
     self.searchConcepts = function (word) {
@@ -95,7 +92,7 @@ var multiSkosGraph2 = (function () {
         var sourceNodes = [];
 
         sources.forEach(function (source) {
-            sourceNodes.push({id: source.name, text:"<span class='tree_level_1' style='background-color: "+source.color+"'>"+source.name+"</span>", chldren: [], parent: "#"})
+            sourceNodes.push({id: source.name, text: "<span class='tree_level_1' style='background-color: " + source.color + "'>" + source.name + "</span>", chldren: [], parent: "#"})
 
 
         })
@@ -115,7 +112,7 @@ var multiSkosGraph2 = (function () {
 
         });
 
-        var selectedIds=[];
+        var selectedIds = [];
         sources.forEach(function (source) {
             sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
 
@@ -124,14 +121,14 @@ var multiSkosGraph2 = (function () {
                 }
 
                 result.forEach(function (item) {
-                    if (!conceptsMap[item.id] ) {
-                        if(result.length==1)
-                        selectedIds.push(item.id)
+                    if (!conceptsMap[item.id]) {
+                        if (result.length == 1)
+                            selectedIds.push(item.id)
                         conceptsMap[item.id] = item;
                         item.source = source.name;
                         item.title = item.label + " / " + (item.description || "")
 
-                        var newNode = {id: item.id, text: "<span class='tree_level_2'>"+item.title+"</span>", data: item }
+                        var newNode = {id: item.id, text: "<span class='tree_level_2'>" + item.title + "</span>", data: item}
                         setTimeout(function () {
                             $("#conceptsJstreeDiv").jstree(true).create_node(source.name, newNode, "first", function () {
                                 $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
@@ -148,26 +145,26 @@ var multiSkosGraph2 = (function () {
 
 
         })
-       setTimeout(function(){
+        setTimeout(function () {
 
-                $("#conceptsJstreeDiv").jstree(true).select_node(selectedIds);
+            $("#conceptsJstreeDiv").jstree(true).select_node(selectedIds);
 
-       },3000)
+        }, 3000)
 
 
     }
 
-    self.searchConceptsContainWord=function(){
+    self.searchConceptsContainWord = function () {
         var selectedConcepts = []
         var xx = $("#conceptsJstreeDiv").jstree(true).get_checked(null, true)
         xx.forEach(function (nodeId) {
             if (conceptsMap[nodeId])
                 selectedConcepts.push(conceptsMap[nodeId]);
         });
-        $("#conceptsJstreeDiv").jstree(true).uncheck_all ( )
+        $("#conceptsJstreeDiv").jstree(true).uncheck_all()
         var xx = selectedConcepts;
         selectedConcepts.forEach(function (concept) {
-            sparql_abstract.list(concept.source, self.context.currentWord, {exactMatch: false,selectedThesaurus:concept.thesaurus}, function (err, result) {
+            sparql_abstract.list(concept.source, self.context.currentWord, {exactMatch: false, selectedThesaurus: concept.thesaurus}, function (err, result) {
 
                 if (err) {
                     return console.log(err);
@@ -197,12 +194,11 @@ var multiSkosGraph2 = (function () {
         })
 
 
-
-
     }
 
     self.displayGraph = function () {
-        $('#dialogDiv').dialog('close')
+      $('#dialogDiv').dialog('close')
+      //  self.fadeDialog();
         var selectedConcepts = []
         var xx = $("#conceptsJstreeDiv").jstree(true).get_checked(null, true)
         xx.forEach(function (nodeId) {
@@ -217,14 +213,14 @@ var multiSkosGraph2 = (function () {
             selectedConcepts.forEach(function (concept) {
 
                 sparql_abstract.getAncestors(concept.source, concept.id, {exactMatch: true}, function (err, result) {
-                    if(err)
+                    if (err)
                         return console.log(err)
-                    if(!result ||!result.forEach)
+                    if (!result || !result.forEach)
                         return;
                     result.forEach(function (binding) {
-                        binding.source=concept.source;
-                        if(!binding.thesaurus)
-                        binding.thesaurus=concept.source;
+                        binding.source = concept.source;
+                        if (!binding.thesaurus)
+                            binding.thesaurus = concept.source;
 
                         var visjsData = self.pathsToVisjsData(binding)
 
@@ -286,7 +282,6 @@ var multiSkosGraph2 = (function () {
         },
 
 
-
         drawChildren: function () {
             self.graphActions.hidePopup();
             sparql_abstract.getChildren(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, {}, function (err, children) {
@@ -297,10 +292,10 @@ var multiSkosGraph2 = (function () {
         }
         ,
         showDetails: function () {
-           self.graphActions.hidePopup();
+            self.graphActions.hidePopup();
 
             sparql_abstract.getDetails(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, {}, function (err, details) {
-                var str=""
+                var str = ""
                 for (var key in details.properties) {
                     if (key == "P268")
                         self.context.currentBNFid = details.properties[key].value
@@ -319,17 +314,16 @@ var multiSkosGraph2 = (function () {
                 $("#detailsDiv").dialog("open");
 
 
-
             })
 
         }
         ,
         setAsRootNode: function () {
             self.graphActions.hidePopup();
-            var word=self.graphActions.currentNode.label
+            var word = self.graphActions.currentNode.label
             $('#searchWordInput').val(word)
             $('#dialogDiv').dialog('open')
-            self.searchConcepts(word) ;
+            self.searchConcepts(word);
 
 
         }
@@ -340,7 +334,7 @@ var multiSkosGraph2 = (function () {
     self.pathsToVisjsData = function (node) {
         var thesaurus = node.thesaurus
         var source = node.source
-        var color =sparql_abstract.rdfsMap[node.source].color;
+        var color = sparql_abstract.rdfsMap[node.source].color;
         var ancestorsStr = node.ancestors;
         var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
 
@@ -369,7 +363,9 @@ var multiSkosGraph2 = (function () {
                         to: id,
                         id: self.rootNode.id + "_" + id,
                         type: "match",
-                        arrows: "to",
+                       // arrows: "to",
+                        color:color,
+                        width:6,
                         label: thesaurus,
                         font: {
                             color: color,
@@ -417,7 +413,7 @@ var multiSkosGraph2 = (function () {
                     //   color = rootNodeColor;
                     size = 10;
                 } else {
-                    color =sparql_abstract.rdfsMap[node.source].color;
+                    color = sparql_abstract.rdfsMap[node.source].color;
                     var shape = "box";
                     var size = 20;
                 }
@@ -427,7 +423,7 @@ var multiSkosGraph2 = (function () {
                     label: name,
                     id: id,
                     color: color,
-                    data: {source:source,thesaurus: thesaurus, ancestors: ancestorsStr},
+                    data: {source: source, thesaurus: thesaurus, ancestors: ancestorsStr},
                     shape: shape,
                     size: size,
 
@@ -462,15 +458,15 @@ var multiSkosGraph2 = (function () {
 
             var color = parent.color;
             children.forEach(function (item) {
-var size=12;
-                var shape="triangle";
-                if( item.countNarrowers2<1) {
+                var size = 12;
+                var shape = "triangle";
+                if (item.countNarrowers2 < 1) {
                     var shape = "dot";
-                    size=6
+                    size = 6
                 }
-                var data={
-                    source:item.data.source.name,
-                    parent:parent.id
+                var data = {
+                    source: item.data.source.name,
+                    parent: parent.id
                 }
                 if (existingNodes.indexOf(item.narrowerId) < 0) {
                     self.context.newNodes.push({
@@ -479,14 +475,14 @@ var size=12;
                         shape: shape,
                         data: data,
                         color: color,
-                        size:size
+                        size: size
                     })
                     if (existingEdges.indexOf(parent.id + "_" + item.narrowerId) < 0) {
                         self.context.newEdges.push({
                             from: parent.id,
                             to: item.narrowerId,
                             id: parent.id + "_" + item.narrowerId,
-                            dashes:[5,5]
+                            dashes: [5, 5]
 
                         })
                     }
@@ -495,8 +491,17 @@ var size=12;
             visjsGraph.data.nodes.add(self.context.newNodes)
             visjsGraph.data.edges.add(self.context.newEdges)
             self.context.selectedNode = parent;
+
+
+
         }
 
+    }
+
+    self.fadeDialog=function(){
+        $("#dialogDiv").css("opacity",0.5);
+        $("#dialogDiv").css("left",0);
+        $("#dialogDiv").css("top",0);
     }
 
     /*-------------------------------------------------------------------------------------------*/
@@ -769,7 +774,6 @@ var size=12;
 
 
     }
-
 
 
     self.showNodeInfosWikidata = function (obj) {

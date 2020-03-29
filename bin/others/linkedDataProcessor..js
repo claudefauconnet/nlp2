@@ -989,29 +989,29 @@ var linkedDataProcessor = {
     },
 
     toCsv: function () {
-    //    var jsonArray = JSON.parse("" + fs.readFileSync("D:\LP\\synthese\\linkedDataCTG_W.json"))
-        var jsonArray = JSON.parse("" + fs.readFileSync("D:\\NLP\\synthese\\linkedDataCTGBabelNetConceptsDefs.json"))
+        //    var jsonArray = JSON.parse("" + fs.readFileSync("D:\LP\\synthese\\linkedDataCTG_W.json"))
+      //  var jsonArray = JSON.parse("" + fs.readFileSync("D:\\NLP\\synthese\\linkedDataCTGBabelNetConceptsDefs.json"))
+        var jsonArray = JSON.parse("" + fs.readFileSync("D:\\NLP\\synthese\\linkedDataCTG-wikidata.json"))
+
 
         var str = "";
         jsonArray.forEach(function (item) {
             if (item.source == "Wikidata") {
-                str += item.labelCTG + "\t" + item.source + "\t" + item.linkedId + "\t" + item.linkedDefinition + "\t" + "\t" + "" + "";
+                str += item.labelCTG + "\t" + item.source + "\t" + item.linkedId + "\t" + item.description + "\t" +item.linkedLabel+ "\t" + "" + "\n";
 
             } else {
-                var broader = "";
-                if (item.broader)
-                    broader = item.broader.value;
-                var definition = "";
-                if (item.linkedDefinition)
-                    definition = item.linkedDefinition;
 
-                str += item.labelCTG + "\t" + item.source + "\t" + item.linkedId + "\t" + definition + "\t" + broader + "\t"+item.license+"\n";
+                var description = "";
+                if (item.description)
+                    description = item.description;
+
+                str += item.labelCTG + "\t" + item.source + "\t" + item.linkedId + "\t" + description + "\t" + linkedLabel + "\t" + "" + "\n";
             }
 
         })
 
 
-        fs.writeFileSync("D:\\NLP\\synthese\\linkedDataCTG_W.csv", str)
+        fs.writeFileSync("D:\\NLP\\synthese\\linkedDataCTG-wikidata.csv", str)
     }
 
     , processCTG_babelNet: function () {
@@ -1019,7 +1019,7 @@ var linkedDataProcessor = {
         var allWords = [];
         var key = "a7371c22-6f58-40d0-b3ae-85ae3a33923e"
 
-        var key="a7371c22-6f58-40d0-b3ae-85ae3a33923e"
+        var key = "a7371c22-6f58-40d0-b3ae-85ae3a33923e"
         async.series([
             function (callbackSeries) {
                 return callbackSeries();
@@ -1048,13 +1048,13 @@ var linkedDataProcessor = {
                 var linkedConcepts = JSON.parse("" + fs.readFileSync("D:\\NLP\\synthese\\linkedDataCTGBabelNetConcepts.csv"))
                 var countConcepts = 0
 
-              /*  linkedConcepts.sort(function (a, b) {
-                    if (a.id > b.id)
-                        return 1;
-                    if (a.id < b.id)
-                        return -1;
-                    return 0;
-                })*/
+                /*  linkedConcepts.sort(function (a, b) {
+                      if (a.id > b.id)
+                          return 1;
+                      if (a.id < b.id)
+                          return -1;
+                      return 0;
+                  })*/
 
                 async.eachSeries(linkedConcepts, function (concept, callbackEachConcept) {
 
@@ -1065,45 +1065,45 @@ var linkedDataProcessor = {
                     countConcepts += 1
                     if (countConcepts % 200 == 0)
                         console.log("concepts " + countConcepts)
-            /*        var url2 = "https://babelnet.org/sparql?default-graph-uri=http://babelnet.org/rdf/&query="
-                 var query = "SELECT DISTINCT *WHERE {   <http://babelnet.org/rdf/s"+id+">  bn-lemon:synsetID ?synsetID . " +
-                     "    OPTIONAL {          <http://babelnet.org/rdf/s"+id+"> bn-lemon:definition ?definition .   " +
-                     "       ?definition  lemon:language  'EN' .  " +
-                     "        ?definition bn-lemon:gloss  ?gloss .  " +
-                     "?definition dcterms:license ?license ." +
-                     "          ?definition dc:source ?sourceurl . " +
-                     " }" +
-                     "}"
+                    /*        var url2 = "https://babelnet.org/sparql?default-graph-uri=http://babelnet.org/rdf/&query="
+                         var query = "SELECT DISTINCT *WHERE {   <http://babelnet.org/rdf/s"+id+">  bn-lemon:synsetID ?synsetID . " +
+                             "    OPTIONAL {          <http://babelnet.org/rdf/s"+id+"> bn-lemon:definition ?definition .   " +
+                             "       ?definition  lemon:language  'EN' .  " +
+                             "        ?definition bn-lemon:gloss  ?gloss .  " +
+                             "?definition dcterms:license ?license ." +
+                             "          ?definition dc:source ?sourceurl . " +
+                             " }" +
+                             "}"
 
-                      query = encodeURIComponent(query);
-                      query = query.replace(/%20/g, "+")
+                              query = encodeURIComponent(query);
+                              query = query.replace(/%20/g, "+")
 
 
-                 //   query="SELECT+DISTINCT+*WHERE+%7B+++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2F"+id+"%3E++bn-lemon%3AsynsetID+%3FsynsetID+.+++++OPTIONAL+%7B++++++++++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs00022872n%3E+bn-lemon%3Adefinition+%3Fdefinition+.++++++++++%3Fdefinition+lemon%3Alanguage+%27EN%27+.++++++++++%3Fdefinition+bn-lemon%3Agloss+%3Fgloss+.++++++++++%3Fdefinition+dcterms%3Alicense+%3Flicense+.++++++++++%3Fdefinition+dc%3Asource+%3Fsourceurl+.+++++%7D%7D"
-                    var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
-                    url2 = url2 + query + queryOptions;*/
-                 var url2 = "https://babelnet.org/sparql/?query=SELECT+DISTINCT+*WHERE+%7B+++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs" + id + "%3E++bn-lemon%3AsynsetID+%3FsynsetID+.+++++OPTIONAL+%7B++++++++++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs"+id+"%3E+bn-lemon%3Adefinition+%3Fdefinition+.++++++++++%3Fdefinition+lemon%3Alanguage+%27EN%27+.++++++++++%3Fdefinition+bn-lemon%3Agloss+%3Fgloss+.++++++++++%3Fdefinition+dcterms%3Alicense+%3Flicense+.++++++++++%3Fdefinition+dc%3Asource+%3Fsourceurl+.+++++%7D%7D&format=application%2Fsparql-results%2Bjson"
+                         //   query="SELECT+DISTINCT+*WHERE+%7B+++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2F"+id+"%3E++bn-lemon%3AsynsetID+%3FsynsetID+.+++++OPTIONAL+%7B++++++++++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs00022872n%3E+bn-lemon%3Adefinition+%3Fdefinition+.++++++++++%3Fdefinition+lemon%3Alanguage+%27EN%27+.++++++++++%3Fdefinition+bn-lemon%3Agloss+%3Fgloss+.++++++++++%3Fdefinition+dcterms%3Alicense+%3Flicense+.++++++++++%3Fdefinition+dc%3Asource+%3Fsourceurl+.+++++%7D%7D"
+                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                            url2 = url2 + query + queryOptions;*/
+                    var url2 = "https://babelnet.org/sparql/?query=SELECT+DISTINCT+*WHERE+%7B+++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs" + id + "%3E++bn-lemon%3AsynsetID+%3FsynsetID+.+++++OPTIONAL+%7B++++++++++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs" + id + "%3E+bn-lemon%3Adefinition+%3Fdefinition+.++++++++++%3Fdefinition+lemon%3Alanguage+%27EN%27+.++++++++++%3Fdefinition+bn-lemon%3Agloss+%3Fgloss+.++++++++++%3Fdefinition+dcterms%3Alicense+%3Flicense+.++++++++++%3Fdefinition+dc%3Asource+%3Fsourceurl+.+++++%7D%7D&format=application%2Fsparql-results%2Bjson"
 
 
                     httpProxy.get(url2, {}, function (err, definitions) {
                         if (err)
                             return callbackEachConcept(err);
-                        if(countConcepts>800)
-                           return callbackEachConcept();
+                        if (countConcepts > 800)
+                            return callbackEachConcept();
 
-                            if (definitions.results) {
+                        if (definitions.results) {
                             definitions.results.bindings.forEach(function (item) {
-                                var linkedDefinition=""
-                                if(item.gloss)
-                                   linkedDefinition= item.gloss.value
-                                var license=""
-                                if(item.license)
-                                    license= item.license.value
+                                var linkedDefinition = ""
+                                if (item.gloss)
+                                    linkedDefinition = item.gloss.value
+                                var license = ""
+                                if (item.license)
+                                    license = item.license.value
 
-                                    var id = "babelnet.org/rdf/s" + item.synsetID.value.substring(item.synsetID.value.indexOf(":") + 1)
-                                    lindedDataArray.push({source: "BabelNet", labelCTG: concept.lemma, linkedId: id, linkedDefinition: linkedDefinition, broader: "", license: license})
-                                    if (lindedDataArray.length % 10 == 0)
-                                        console.log(lindedDataArray.length)
+                                var id = "babelnet.org/rdf/s" + item.synsetID.value.substring(item.synsetID.value.indexOf(":") + 1)
+                                lindedDataArray.push({source: "BabelNet", labelCTG: concept.lemma, linkedId: id, linkedDefinition: linkedDefinition, broader: "", license: license})
+                                if (lindedDataArray.length % 10 == 0)
+                                    console.log(lindedDataArray.length)
 
                             })
                         }
@@ -1126,15 +1126,53 @@ var linkedDataProcessor = {
             fs.writeFileSync("D:\\NLP\\synthese\\linkedDataCTG-babelNet.json", JSON.stringify(lindedDataArray, null, 2))
         })
 
+    },
+
+    getCTGWikidataDescription: function () {
+
+var lindedDataArray=[];
+            async.eachSeries(ctgWords, function (word, callbackEach) {
+                word= word.replace(/\s/g,"+")
+                var url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +
+                    word + "&format=json&errorformat=plaintext&language=en&uselang=en&type=item&origin=*"
+
+                httpProxy.get(url, {}, function (err, definitions) {
+                    if (err)
+                        return callbackEach(err);
+
+
+                    if (definitions.search) {
+                        definitions.search.forEach(function (item) {
+
+
+                            lindedDataArray.push({source: "Wikidata", labelCTG: word, linkedId: item.concepturi, linkedLabel:item.label,description: item.description})
+                            if (lindedDataArray.length % 10 == 0)
+                                console.log(lindedDataArray.length)
+
+                        })
+                    }
+
+                    return callbackEach();
+
+
+                })
+
+            }, function (err) {
+                if (err)
+                    return console.log(err);
+                fs.writeFileSync("D:\\NLP\\synthese\\linkedDataCTG-wikidata.json", JSON.stringify(lindedDataArray, null, 2))
+            })
+
+        }
+
+
     }
-
-
-}
 
 
 //linkedDataProcessor.processCTG();
 
-linkedDataProcessor.toCsv()
+   linkedDataProcessor.toCsv()
 
+//linkedDataProcessor.getCTGWikidataDescription()
 //linkedDataProcessor.processCTG_babelNet()
-module.exports = linkedDataProcessor;
+    module.exports = linkedDataProcessor;
