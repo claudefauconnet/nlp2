@@ -14,6 +14,8 @@ var ontograph = (function () {
         "Method": "#BCD2FF",
     }
 
+    self.paragraphNodeColor = "#ddd";
+
 
     self.searchItem = function (word) {
         self.context.conceptsMap = {}
@@ -256,8 +258,8 @@ var ontograph = (function () {
                     var node = {
                         label: paragraphIdStr,
                         id: paragraphId,
-                        color: "#ddd",
-                        shape: "square",
+                        color: self.paragraphNodeColor,
+                        shape: "ellipse",
                         /*   x: x1,
                            y: (y1 += y1Offset),
                            fixed: {x: false, y: false}*/
@@ -398,24 +400,77 @@ var ontograph = (function () {
     self.onNodeClick = function (obj, point) {
         if (obj.id.indexOf("Entity") > 0) {
             sparql.queryEntitiesCooccurrencesParagraphs([obj.id], {minManadatoryEntities: 1}, function (err, result) {
-                if(err)
+                if (err)
                     return console.log(err);
-                ontograph.addChildrenNodesToGraph(obj.id,result)
+                ontograph.addChildrenNodesToGraph(obj.id, result)
             })
 
 
-            }
-    }
-
-    self.addChildrenNodesToGraph = function (parentNode, children) {
-        children.forEach(function(){
-
-
-            
-        })
+        }
+       else if (obj.id.indexOf("Paragraph") > 0) {
+            sparql.queryParagraphsEntities([obj.id], {}, function (err, result) {
+                if (err)
+                    return console.log(err);
+                ontograph.addChildrenNodesToGraph(obj.id, result)
+            })
 
 
         }
+    }
+
+    self.addChildrenNodesToGraph = function (parentNodeId, children) {
+
+        self.context.newNodes = [];
+        self.context.newEdges = [];
+        var existingNodes = visjsGraph.data.nodes.getIds();
+        var existingEdges = visjsGraph.data.edges.getIds();
+
+        var color = parent.color;
+        children.forEach(function (item) {
+            var size = 12;
+            var shape;
+            var childId;
+            var childLabel;
+            if (parentNodeId.indexOf("Entity") > -1) {
+                childId = item.paragraph.value
+                self.context.currentParagraphs[childId] = item.paragraphText.value
+                childLabel = childId.substring(childId.lastIndexOf("/") + 1)
+                shape = "ellipse"
+            }else if (parentNodeId.indexOf("Paragraph") > -1){
+
+                    childId = item.entity0.value
+                    childLabel = item.entity0Label.value
+                    shape = "box"
+
+            }
+
+            if (existingNodes.indexOf(childId) < 0) {
+                self.context.newNodes.push({
+                    label: childLabel,
+                    id: childId,
+                    shape: shape,
+                    color: self.paragraphNodeColor,
+
+                })
+                var edgeId = parentNodeId + "_" + childId
+                if (existingEdges.indexOf(edgeId) < 0) {
+                    self.context.newEdges.push({
+                        from: parentNodeId,
+                        to: childId,
+                        id: edgeId,
+                        dashes: [5, 5]
+
+                    })
+                }
+            }
+        })
+        visjsGraph.data.nodes.add(self.context.newNodes)
+        visjsGraph.data.edges.add(self.context.newEdges)
+        self.context.selectedNode = parent;
+
+
+    }
+
 
     self.graphActions = {
 
@@ -480,4 +535,5 @@ var ontograph = (function () {
 
     return self;
 
-})()
+})
+()
