@@ -5,6 +5,8 @@ var ontograph = (function () {
     self.context = {}
     self.context.conceptsMap = {};
     self.context.currentParagraphs = {};
+    var uniqueNodeIds = [];
+    var uniqueEdgesIds = [];
     self.entityTypeColors = {
 
         "Equipment": "#F5B8F9",
@@ -12,9 +14,14 @@ var ontograph = (function () {
         "Phenomenon ": "#91F7C1",
         "Characterisation": "#91D3F7",
         "Method": "#BCD2FF",
+
+
+
+        "clusteredEntities":"#a51544",
+        "paragraph":"#ddd",
     }
 
-    self.paragraphNodeColor = "#ddd";
+
 
 
     self.searchItem = function (word) {
@@ -73,145 +80,7 @@ var ontograph = (function () {
 
     }
 
-    self.displayGraph = function () {
-        $('#dialogDiv').dialog('close')
 
-        var selectedEntities = []
-        var xx = $("#conceptsJstreeDiv").jstree(true).get_checked(null, true)
-        xx.forEach(function (nodeId) {
-            if (self.context.conceptsMap[nodeId])
-                selectedEntities.push(nodeId);
-        });
-        var xx = selectedEntities;
-
-        sparql.queryEntitiesCooccurrences(selectedEntities, null, function (err, result) {
-            if (err)
-                return $("#messageDiv").html(err);
-
-            var visjsData = {
-                nodes: [],
-                edges: []
-            }
-            var entityTypesMap = {};
-            var uniqueNodeIds = [];
-            var uniqueEdgesIds = [];
-            var visjNodes = [];
-
-            var width = $(window).width();
-            var height = $(window).height();
-            var x1 = -(width / 2) + 50
-            var y1 = -(height / 2) + 50
-            var y1Offset = 200
-
-            var x2 = 0
-            var y2 = -(height / 2) + 50
-            var y2Offset = 100
-
-            var x3 = (width) - 100
-            var y3 = -(height / 2) + 50
-            var y3Offset = 100
-            result.forEach(function (item, index) {
-
-
-                if (!entityTypesMap[item.entity2Type.value]) {
-                    entityTypesMap[item.entity2Type.value] = []
-                }
-                var type = item.entity2Type.value.substring(item.entity2Type.value.lastIndexOf("/") + 1)
-                entityTypesMap[item.entity2Type.value].push({id: item.entity2.value, label: item.entity2Label.value, type: type})
-                console.log("---2----" + item.entity2Type.value)
-                if (uniqueNodeIds.indexOf(item.entity2Type.value) < 0) {
-                    uniqueNodeIds.push(item.entity2Type.value)
-
-                    var node = {
-                        label: type,
-                        id: item.entity2Type.value,
-                        color: self.entityTypeColors[type],
-                        shape: "box",
-
-                        /*    x: x2,
-                            y: (y2 += y2Offset),
-                            fixed: {x: false, y: false}*/
-                    }
-                    visjsData.nodes.push(node)
-                }
-
-                console.log("---2----" + item.entity1.value)
-                if (uniqueNodeIds.indexOf(item.entity1.value) < 0) {
-                    uniqueNodeIds.push(item.entity1.value)
-                    var type = item.entity1Type.value.substring(item.entity1Type.value.lastIndexOf("/") + 1)
-                    var node = {
-                        label: item.entity1Label.value,
-                        id: item.entity1.value,
-                        color: self.entityTypeColors[type],
-                        shape: "box",
-                        /*   x: x1,
-                           y: (y1 += y1Offset),
-                           fixed: {x: false, y: false}*/
-
-                    }
-                    visjsData.nodes.push(node)
-                }
-
-                var edgeId = item.entity1.value + "_" + item.entity2Type.value
-                if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                    uniqueEdgesIds.push(edgeId)
-                    var edge = {
-                        from: item.entity1.value,
-                        to: item.entity2Type.value,
-                        id: edgeId,
-                        value: item.nOccurences.value,
-                    }
-                    visjsData.edges.push(edge)
-                }
-
-
-            })
-
-            var nodes = [];
-            for (var key in entityTypesMap) {
-                var entities = entityTypesMap[key]
-                entities.forEach(function (entity) {
-                    if (uniqueNodeIds.indexOf(entity.id) < 0) {
-                        uniqueNodeIds.push(entity.id)
-                        var node = {
-                            label: entity.label,
-                            id: entity.id,
-                            color: self.entityTypeColors[entity.type],
-                            shape: "dot",
-                            /*     x: x3,
-                                 y: (y3+= y1Offset),
-                                 fixed: {x: false, y: false}*/
-
-                        }
-                        visjsData.nodes.push(node)
-                    }
-                    var edgeId = key + "_" + entity.id;
-                    if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                        uniqueEdgesIds.push(edgeId)
-                        var edge = {
-                            from: key,
-                            to: entity.id,
-                            id: edgeId,
-                            value: entities.length,
-                        }
-                        visjsData.edges.push(edge)
-                    }
-                })
-            }
-
-            $("#graphDiv").width($(window).width() - 20)
-
-            visjsGraph.draw("graphDiv", visjsData, {
-                onclickFn: ontograph.onNodeClick,
-                onHoverNodeFn: ontograph.onNodeClick,
-                afterDrawing: function () {
-                    $("#waitImg").css("display", "none")
-                }
-            })
-
-        })
-
-    }
 
     self.displayGraphParagraphs = function () {
         $('#dialogDiv').dialog('close')
@@ -235,8 +104,8 @@ var ontograph = (function () {
                 edges: []
             }
 
-            var uniqueNodeIds = [];
-            var uniqueEdgesIds = [];
+           uniqueNodeIds = [];
+           uniqueEdgesIds = [];
             var visjNodes = [];
 
             var width = $(window).width();
@@ -258,7 +127,7 @@ var ontograph = (function () {
                     var node = {
                         label: paragraphIdStr,
                         id: paragraphId,
-                        color: self.paragraphNodeColor,
+                        color: self.entityTypeColors["paragraph"],
                         shape: "ellipse",
                         /*   x: x1,
                            y: (y1 += y1Offset),
@@ -267,53 +136,99 @@ var ontograph = (function () {
                     }
                     visjsData.nodes.push(node)
                 }
+                if (false) { // draw each entity selected in main dialog
+                    selectedEntities.forEach(function (entity, index) {
+                        if (!item["entity" + index]) //optional
+                            return;
 
+                        var entityId = item["entity" + index].value
+                        var entityLabel = item["entity" + index + "Label"].value
+                        var type = item["entity" + index + "Type"].value
+                        type = type.substring(type.lastIndexOf("/") + 1)
 
-                selectedEntities.forEach(function (entity, index) {
-                    if (!item["entity" + index]) //optional
-                        return;
+                        if (uniqueNodeIds.indexOf(entityId) < 0) {
+                            uniqueNodeIds.push(entityId)
 
-                    var entityId = item["entity" + index].value
-                    var entityLabel = item["entity" + index + "Label"].value
-                    var type = item["entity" + index + "Type"].value
-                    type = type.substring(type.lastIndexOf("/") + 1)
+                            var node = {
+                                label: entityLabel,
+                                id: entityId,
+                                color: self.entityTypeColors[type],
+                                shape: "box",
+                                /*   x: x1,
+                                   y: (y1 += y1Offset),
+                                   fixed: {x: false, y: false}*/
 
-                    if (uniqueNodeIds.indexOf(entityId) < 0) {
-                        uniqueNodeIds.push(entityId)
+                            }
+                            visjsData.nodes.push(node)
+                        }
 
+                        //  var previousEntityId = item["entity" + (index - 1)].value
+                        var edgeId = paragraphId + "_" + entityId
+                        if (uniqueEdgesIds.indexOf(edgeId) < 0) {
+                            uniqueEdgesIds.push(edgeId)
+                            var edge = {
+                                from: paragraphId,
+                                to: entityId,
+                                id: edgeId,
+
+                            }
+                            visjsData.edges.push(edge)
+                        }
+
+                    })
+                } else {// a single noe for selected entities in main dialog
+                    var clusterId = "";
+                    var clusterLabel = "";
+                    selectedEntities.forEach(function (entity, index) {
+                        if (!item["entity" + index]) //optional
+                            return;
+                        var entityId = item["entity" + index].value
+                        uniqueNodeIds.push(entityId);
+                        if (index > 0) {
+
+                            clusterLabel += " + "
+                        }
+                        clusterId += "_"
+                        clusterId += entityId
+                        clusterLabel += item["entity" + index + "Label"].value
+
+                    })
+                    if (uniqueNodeIds.indexOf(clusterId) < 0) {
+                        uniqueNodeIds.push(clusterId)
                         var node = {
-                            label: entityLabel,
-                            id: entityId,
-                            color: self.entityTypeColors[type],
+                            label: clusterLabel,
+                            id: clusterId,
+                            color: self.entityTypeColors["clusteredEntities"],
                             shape: "box",
-                            /*   x: x1,
-                               y: (y1 += y1Offset),
-                               fixed: {x: false, y: false}*/
+                            font: {size: 18, color:"white"}
+
 
                         }
                         visjsData.nodes.push(node)
                     }
 
-                    //  var previousEntityId = item["entity" + (index - 1)].value
-                    var edgeId = paragraphId + "_" + entityId
+
+                    var edgeId = paragraphId + "_" + clusterId
                     if (uniqueEdgesIds.indexOf(edgeId) < 0) {
                         uniqueEdgesIds.push(edgeId)
                         var edge = {
                             from: paragraphId,
-                            to: entityId,
+                            to: clusterId,
                             id: edgeId,
 
                         }
                         visjsData.edges.push(edge)
                     }
 
-                })
 
-
+                }
             })
+
             var paragraphSlices = [];
             var slice = [];
             allParagraphIds.forEach(function (paragraph) {
+                if(paragraph.indexOf("20")>-1)
+                    var x=3
                 slice.push(paragraph)
                 if (slice.length > 50) {
                     paragraphSlices.push(slice);
@@ -406,8 +321,7 @@ var ontograph = (function () {
             })
 
 
-        }
-       else if (obj.id.indexOf("Paragraph") > 0) {
+        } else if (obj.id.indexOf("Paragraph") > 0) {
             sparql.queryParagraphsEntities([obj.id], {}, function (err, result) {
                 if (err)
                     return console.log(err);
@@ -436,24 +350,25 @@ var ontograph = (function () {
                 self.context.currentParagraphs[childId] = item.paragraphText.value
                 childLabel = childId.substring(childId.lastIndexOf("/") + 1)
                 shape = "ellipse"
-            }else if (parentNodeId.indexOf("Paragraph") > -1){
+            } else if (parentNodeId.indexOf("Paragraph") > -1) {
 
-                    childId = item.entity0.value
-                    childLabel = item.entity0Label.value
-                    shape = "box"
+                childId = item.entity0.value
+                childLabel = item.entity0Label.value
+                shape = "box"
 
             }
 
-            if (existingNodes.indexOf(childId) < 0) {
+            if (existingNodes.indexOf(childId) < 0 && uniqueNodeIds.indexOf(childId)<0) {
+                existingNodes.push(childId)
                 self.context.newNodes.push({
                     label: childLabel,
                     id: childId,
                     shape: shape,
-                    color: self.paragraphNodeColor,
+                    color:  self.entityTypeColors["paragraph"],
 
                 })
                 var edgeId = parentNodeId + "_" + childId
-                if (existingEdges.indexOf(edgeId) < 0) {
+                if (existingEdges.indexOf(edgeId) < 0  && uniqueEdgesIds.indexOf(edgeId)<0) {
                     self.context.newEdges.push({
                         from: parentNodeId,
                         to: childId,

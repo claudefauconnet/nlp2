@@ -2,7 +2,8 @@ var sparql = (function () {
     var self = {}
     self.source = {
         sparql_url: 'http://vps475829.ovh.net:8890/sparql',
-        graphIRI: 'http://onto.ctg.total.com/'
+       // graphIRI: 'http://onto.ctg.total.com/'
+        graphIRI:"http://data.total.com/resource/ontology/"
     }
 
     self.listEntities = function (words, options, callback) {
@@ -211,7 +212,7 @@ var sparql = (function () {
             "" +
             "}" +
             "" +
-            "limit 10"
+
         "limit 10000" +
         ""
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"

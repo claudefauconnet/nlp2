@@ -3,7 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparql.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/visjs/vis-network.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/visjs/vis-network.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/visjs/vis-network.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/visjs/vis-network.min.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,11 +52,11 @@
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\js" />
       <recent name="D:\GitHub\nlp2\bin" />
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
       <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
-      <recent name="D:\GitHub\nlp2\public\index2.html" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -66,7 +71,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
+  <component name="RunManager" selected="Node.js.ontologyCTG..js">
     <configuration name="annotator_regex..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_regex..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
@@ -84,8 +89,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.linkedDataProcessor..js" />
         <item itemvalue="Node.js.ontologyCTG..js" />
+        <item itemvalue="Node.js.linkedDataProcessor..js" />
         <item itemvalue="Node.js.annotator_regex..js" />
         <item itemvalue="Node.js.crawler_termSciences..js" />
         <item itemvalue="Node.js.termSciencesSkosproxy..js" />
@@ -125,7 +130,7 @@
       <workItem from="1583914227603" duration="59182000" />
       <workItem from="1584173332084" duration="235274000" />
       <workItem from="1585067450331" duration="13499000" />
-      <workItem from="1585209102222" duration="74729000" />
+      <workItem from="1585209102222" duration="96265000" />
     </task>
     <servers />
   </component>
@@ -320,6 +325,36 @@
           <line>1160</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3428" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
+          <line>221</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3445" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
+          <line>184</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3465" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
+          <line>294</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3467" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
+          <line>152</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3468" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
+          <line>173</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3470" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
