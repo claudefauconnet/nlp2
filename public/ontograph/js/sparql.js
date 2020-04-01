@@ -2,8 +2,8 @@ var sparql = (function () {
     var self = {}
     self.source = {
         sparql_url: 'http://vps475829.ovh.net:8890/sparql',
-       // graphIRI: 'http://onto.ctg.total.com/'
-        graphIRI:"http://data.total.com/resource/ontology/"
+        // graphIRI: 'http://onto.ctg.total.com/'
+        graphIRI: "http://data.total.com/resource/ontology/ctg/"
     }
 
     self.listEntities = function (words, options, callback) {
@@ -64,7 +64,7 @@ var sparql = (function () {
             "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             "" +
             // "select distinct *" +
-            "select distinct ?entity1Type ?entity1 ?entity1Label ?entity2Type ?entity2 ?entity2Label (count (?paragraph) as?nOccurences)" +
+            "select distinct ?entity1Type ?entity1 ?entity1Label ?entity2Type ?entity2 ?entity2Label (count (?paragraph) as?nOccurrences)" +
             "where{" +
             "" +
             "?paragraph terms:subject ?entity1 ." +
@@ -85,6 +85,51 @@ var sparql = (function () {
             " ORDER BY  ?entity1 ?entity2Type " +
             "limit 10000" +
             ""
+
+
+
+
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            var bindings = [];
+            var ids = [];
+            return callback(null, result.results.bindings);
+
+
+        })
+    }
+    self.queryParagraphsDetails = function (pargagraphsIds, options, callback) {
+        var pargagraphsIdsStr = "";
+        pargagraphsIds.forEach(function (id, index) {
+            if (index > 0)
+                pargagraphsIdsStr += ","
+            pargagraphsIdsStr += "<" + id + ">"
+        })
+
+        var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.source.graphIRI) + "&query=";// + query + queryOptions
+
+        var query = "PREFIX terms:<http://purl.org/dc/terms/>" +
+            "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
+            "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
+            "" +
+            // "select distinct *" +
+            "select distinct *" +
+            "where{" +
+            "?paragraph mime:Text ?paragraphText ." +
+            " filter (?paragraph in(" + pargagraphsIdsStr + "))"
+        if (options.offsets)
+            query += "?paragraph <http://open.vocab.org/terms/hasOffset> ?offset ."
+        if (options.containers) {
+            query += "?paragraph <http://purl.org/dc/terms/isPartOf> ?container ."+
+            " OPTIONAL {?container <http://www.w3.org/2000/01/rdf-schema#label> ?documentLabel .}"
+        }
+        query += "} limit 10000"
+
+
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
@@ -119,7 +164,6 @@ var sparql = (function () {
             query +=
                 "  ?paragraph terms:subject ?entity" + index + " . " +
                 "    FILTER (?entity" + index + " in(<" + id + ">))" +
-                "?paragraph mime:Text ?paragraphText ." +
                 "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
                 "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
                 "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
@@ -205,7 +249,7 @@ var sparql = (function () {
             "select *        where{ " +
             "" +
             "  ?paragraph terms:subject ?entity0 . " +
-            "?paragraph mime:Text ?paragraphText ." +
+       //     "?paragraph mime:Text ?paragraphText ." +
             "    FILTER (?paragraph in(" + paragraphIdsStr + "))  " +
             "?entity0 rdfs:label ?entity0Label .   FILTER (lang(?entity0Label)=\"en\") " +
             "  ?entity0 rdfsyn:type ?entity0Type ." +
@@ -213,8 +257,8 @@ var sparql = (function () {
             "}" +
             "" +
 
-        "limit 10000" +
-        ""
+            "limit 10000" +
+            ""
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
@@ -235,7 +279,7 @@ var sparql = (function () {
             var query2 = encodeURIComponent(query);
             query2 = query2.replace(/%2B/g, "+")
         }
-        url = url + query2+ queryOptions;
+        url = url + query2 + queryOptions;
         console.log(url)
 
         $("#waitImg").css("display", "block");
@@ -259,8 +303,8 @@ var sparql = (function () {
                 var xx = data;
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
-               if(data.results.bindings.length==0)
-                   return  callback("no result")
+                if (data.results.bindings.length == 0)
+                    return callback("no result")
                 callback(null, data)
 
             }

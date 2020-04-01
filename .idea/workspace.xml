@@ -7,8 +7,6 @@
       <change beforePath="$PROJECT_DIR$/public/ontograph/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparql.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/visjs/vis-network.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/visjs/vis-network.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/visjs/vis-network.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/visjs/vis-network.min.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,7 +37,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../standalone" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../souslesensGraph" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -130,7 +128,7 @@
       <workItem from="1583914227603" duration="59182000" />
       <workItem from="1584173332084" duration="235274000" />
       <workItem from="1585067450331" duration="13499000" />
-      <workItem from="1585209102222" duration="96265000" />
+      <workItem from="1585209102222" duration="138753000" />
     </task>
     <servers />
   </component>
@@ -328,33 +326,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>221</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3445" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>184</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3465" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>294</line>
+          <line>613</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3467" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>152</line>
+          <line>625</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3468" />
+          <option name="timeStamp" value="3472" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>173</line>
+          <line>540</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3470" />
+          <option name="timeStamp" value="3473" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
+          <line>503</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3482" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
+          <line>299</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3487" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

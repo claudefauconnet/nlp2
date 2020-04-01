@@ -104,6 +104,18 @@
             border-radius: 3px;
             background-color: #ddd;
         }
+
+
+        .paragraph-docTitle{
+            color: #003eff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .paragraph-chapter{
+            color: #007fff;
+            font-weight: bold;
+            font-size: 12px;
+        }
     </style>
 
 </head>
@@ -125,9 +137,19 @@
     -->
 
     <div>
+        <div>
         <button onclick="$('#dialogDiv').dialog('open')">...</button>
-        &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/> <span id="messageDiv"></span>
+        &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/> <select onchange="ontograph.graphActions.modifyGraph($(this).val())">
+            <option></option>
+            <option>showDocumentNodes</option>
+            <option>hideParagraphs</option>
+            <option>expand</option>
+        </select>
+        </div>
+        <div>
+        <span id="messageDiv"></span>
         <span id="paragraphTextDiv" style="background-color: #ddd4b0;height: 30px"></span>
+        </div>
         <div id="graphDiv" style="width:1000px;height: 1000px"></div>
     </div>
 <!--
@@ -170,6 +192,7 @@
      <!--  <button onclick="multiSkosGraph2.searchConceptsContainWord()">search more concepts</button>-->
 
             <button onclick="ontograph.displayGraphParagraphs()">display Graph Paragraphs</button>min entities<input id="minManadatoryEntities" value="2" size="3">
+            <button onclick="ontograph.displayGraphEntitiesCooccurrences()">display Cooccurences</button>
         </div>
     </div>
 </div>
