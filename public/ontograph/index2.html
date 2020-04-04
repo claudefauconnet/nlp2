@@ -22,6 +22,7 @@
     <script src="js/cooccurrences.js"></script>
     <script src="js/paragraphs.js"></script>
     <script src="js/thesaurus.js"></script>
+    <script src="js/corpus.js"></script>
     <script src="js/relations.js"></script>
 
 
@@ -130,14 +131,17 @@
         </div>
         <div style="margin:5px">
             <span class="title">Concepts</span>
-            <div><input size="15" id="searchWordInput" value="flow">
-                <button onclick="thesaurus.searchConcept($('#searchWordInput').val())">Search</button>
+            <div><input size="15" id="searchConceptInput" value="flow">
+                <button onclick="thesaurus.searchConcept($('#searchConceptInput').val())">Search</button>
             </div>
             <div id="jstreeConceptDiv" style="width:100%;height: 300px;overflow: auto" ;></div>
         </div>
         <div style="margin:5px">
-            <span class="title">Resources</span>
-            <div id="jstreeResourceDiv" style="width:100%;height: 300px;overflow: auto"></div>
+            <span class="title">Corpus</span>
+            <div><input size="15" id="searchCorpusInput" value="117">
+                <button onclick="corpus.searchResource($('#searchCorpusInput').val())">Search</button>
+            </div>
+            <div id="jstreeCorpusDiv" style="width:100%;height: 300px;overflow: auto"></div>
         </div>
 
 

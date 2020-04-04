@@ -377,6 +377,7 @@ var sparql = (function () {
     }
 
 
+
     self.querySPARQL_GET_proxy = function (url, query, queryOptions, options, callback) {
         if (!options)
             options = {}
