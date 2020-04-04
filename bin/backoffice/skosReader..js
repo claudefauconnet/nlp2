@@ -951,7 +951,7 @@ var skosReader = {
         )
     },
 
-    skosToNt: function (rdfPath) {
+    skosToNt: function (rdfPath, removeAltLabels) {
         skosReader.parseRdfXml(rdfPath, null, function (err, result) {
             if (err)
                 return console.log(err);
@@ -965,10 +965,12 @@ var skosReader = {
                         str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + label + "\"@" + lang + " .\n";
                     })
                 }
-                for (var lang in concept.altLabels) {
-                    concept.altLabels[lang].forEach(function (label) {
-                        str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#altLabel> \"" + label + "\"@" + lang + " .\n";
-                    })
+                if(!removeAltLabels) {
+                    for (var lang in concept.altLabels) {
+                        concept.altLabels[lang].forEach(function (label) {
+                            str += "<" + key + "> <http://www.w3.org/2004/02/skos/core#altLabel> \"" + label + "\"@" + lang + " .\n";
+                        })
+                    }
                 }
 
                 concept.broaders.forEach(function (id) {
@@ -997,7 +999,7 @@ var skosReader = {
 
 
             }
-            str=str.replace(/thesaurusIngenieur\.jstree\.json/g,"thesaurusIngenieur")
+         //   str=str.replace(/thesaurusIngenieur\.jstree\.json/g,"thesaurusIngenieur")
             fs.writeFileSync(rdfPath + ".nt", str)
         })
 
@@ -1378,10 +1380,10 @@ if (false) {
 }
 
 if(false){
-    var sourcePath = "D:\\NLP\\rdfs\\thesaurusIngenieur.rdf";
+    var sourcePath = "D:\\NLP\\rdfs\\Total\\Method.rdf";
 
   /*  var str=""+fs.readFileSync(sourcePath);
 
     fs.writeFileSync(rdfPath,str);*/
-    skosReader.skosToNt(sourcePath)
+    skosReader.skosToNt(sourcePath,true)
 }

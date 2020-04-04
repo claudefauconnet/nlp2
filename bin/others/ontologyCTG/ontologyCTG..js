@@ -127,9 +127,13 @@ var ontologyCTG = {
                 var strEntities = "";
                 var strDocs = "";
 
+                var strRelations = "";
+                var relationsCounter = 1000;
+
 
                 function formatString(str) {
-
+                    if (!str.replace)
+                        var x = 3
 
                     str = str.replace(/"/gm, "\\\"")
                     str = str.replace(/;/gm, " ")
@@ -189,13 +193,15 @@ var ontologyCTG = {
 
                     var entitiesUriMap = {}
                     var entitiesUriStr = item["Entity_URI"];
-                    if(entitiesUriStr && entitiesUriStr.split) {
+                    if (entitiesUriStr && entitiesUriStr.split) {
 
-                        entitiesUriStr.split(";").forEach(function (itemEntity) {
+                        entitiesUriStr.split(";").forEach(function (itemEntity, indexX) {
                             var splitArray = itemEntity.split("|")
-                            var entityId = splitArray[1]
+                            var entityId = splitArray[2]
                             var type = splitArray[0]
-                            var label = item[type]
+                            var label = splitArray[1]
+                            if (!label)
+                                return console.log("ERROR " + paragraphUrl + " :  " + splitArray.toString());
 
                             if (uniqueEntities.indexOf(entityId) < 0) {
                                 uniqueEntities.push(entityId);
@@ -206,6 +212,13 @@ var ontologyCTG = {
                             str += paragraphUrl + " <http://purl.org/dc/terms/subject> " + "<" + entityId + ">.\n"
                             str += paragraphUrl + " <http://open.vocab.org/terms/hasOffset> \"" + itemEntity + "\" .\n";
 
+                            if (quantumMap[entityId]) {
+                                var quantumURI = quantumMap[entityId]["Quantum_URI"]
+                                // quantumURI=quantumURI.trim()
+                                strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#exactMatch> <" + quantumURI + "> .\n"
+                                strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#definition> \"" + formatString(quantumMap[entityId].Definition) + "\"@en .\n"
+                            }
+
 
                         })
                     }
@@ -213,76 +226,52 @@ var ontologyCTG = {
                     for (var key in litteralEntities) {
                         var entityValue = item[key]
                         if (entityValue && entityValue != "") {
-                            str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#"+key+">" + "<" + entityValue + ">.\n"
+                            str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#" + key + ">" + "<" + entityValue + ">.\n"
                         }
                     }
 
+/*
 
-                    /*   for (var key in entitiesMap) {
+@base <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rel: <http://www.perceive.net/schemas/relationship/> .
 
-                           var entityIdNames = item[key]
+<#green-goblin>
+    rel:enemyOf <#spiderman> ;
+    a foaf:Person ;    # in the context of the Marvel universe
+    foaf:name "Green Goblin" .
 
-                           entityIdNames.split(";").forEach(function (entityName, entityIndex) {
-                               var entityNames = item[key].split(";")
-                               if (entityId && entityId != "") {
-                                   if (uniqueEntities.indexOf(entityId) < 0) {
-                                       uniqueEntities.push(entityId);
-                                       strEntities += "<" + entityId + ">  <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(entityNames[entityIndex]) + "\"@en .\n";
-                                       strEntities += "<" + entityId + "> <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.total.com/resource/ontology/ctg/EntityType/" + key + "> .\n"
-                                   }
+<#spiderman>
+    rel:enemyOf <#green-goblin> ;
+    a foaf:Person ;
+    foaf:name "Spiderman", "Человек-паук"@ru .
+ */
+                    var relationsStr0 = item["RDF_Triple"];
+                    if (relationsStr0 && relationsStr0 != "[]") {
+                        var relationTypeUri = "http://data.total.com/resource/ontology/ctg/relation#"
+                        var relationUri = "http://data.total.com/resource/ontology/ctg/Relation/" + (relationsCounter++);
 
-                                   str += paragraphUrl + " <http://purl.org/dc/terms/subject> " + "<" + entityId + ">.\n"
+                        relationsStr0 = relationsStr0.replace(/\),\s\(/g, ";")
+                        relationsStr0 = relationsStr0.replace(/[\['\]\(\)]/g, "")
+
+                        relationsStr0.split(";").forEach(function (relationStr) {
+                            var array = relationStr.split(",")
+                            if(array.length==3) {
+                                var subject = array[0];
+                                var predicate = array[1].trim();
+                                var object = array[2].trim();
+                                strRelations += "<" + subject + "> <" + relationTypeUri + predicate + "> <" + object + ">.\n"
+                             /*   strRelations += "<" + subject + "> <" + relationTypeUri + predicate + "> <" + object + "> <" + relationUri + ">.\n"
+                                str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#hasTriple>  " + relationUri + " .\n"*/
+                            }
+
+                        })
 
 
-                                   if (entitiesUriMap[entityId]) {
-                                       str += paragraphUrl + " <http://open.vocab.org/terms/hasOffset> \"" + entitiesUriMap[entityId] + "\" .\n";
-                                   }
+                    }
 
-                                   if (quantumMap[entityId]) {
-                                       var quantumURI = quantumMap[entityId]["Quantum_URI"]
-                                       // quantumURI=quantumURI.trim()
-                                       strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#exactMatch> <" + quantumURI + "> .\n"
-                                       strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#definition> \"" + formatString(quantumMap[entityId].Definition) + "\"@en .\n"
-                                   }
-
-                                   /*    var keySpan = key + "_Span"
-                                              var spans = item[keySpan];
-                                              if (spans && spans != "[]") {
-
-                                                  if(paragraphUrl=="<http://data.total.com/resource/ontology/ctg/Paragraph/7795>")
-                                                      var x=3;
-                                                  var spanArray = /\((\d+), (\d+)\)/.exec(spans)
-                                                  if (spanArray.length == 3)
-                                                      str += paragraphUrl + " <http://open.vocab.org/terms/hasOffset> \"" + key+"|"+entityId + "|" + spanArray[1] + "|" + spanArray[2] + "\" .\n";
-                                                  else
-                                                      var x = 4;
-                                              }
-
-                                              if (quantumMap[entityId]) {
-                                                  var quantumURI = quantumMap[entityId]["Quantum_URI"]
-                                                  // quantumURI=quantumURI.trim()
-                                                  strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#exactMatch> <" + quantumURI + "> .\n"
-                                                  strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#definition> \"" + formatString(quantumMap[entityId].Definition) + "\"@en .\n"
-                                              }
-                                          }
-
-                                      })
-
-                                  }
-                                  for (var key in litteralEntities) {
-                                      var entityId = item[key]
-                                      if (entityId && entityId != "") {
-                                         entityId = "<http://data.total.com/resource/ontology/ctg/entity/" + key + "/" + formatString(entityId) + ">"
-
-                                               if (uniqueEntities.indexOf(entityId < 0)) {
-                                                   uniqueEntities.push(entityId);
-                                                   strEntities += "<" + entityId + ">  <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(item[key]) + "\"@en .\n";
-                                                   strEntities += entityId + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.total.com/resource/ontology/ctg/EntityType/" + key + "> .\n"
-                                               }
-                                          str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#"+key+">" + "<" + entityId + ">.\n"
-                                      }
-                                  }
-                               }*/
 
                 })
 
@@ -291,6 +280,7 @@ var ontologyCTG = {
 
 
                 fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontology.rdf.nt", strAll)
+                fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontologyTriples.rdf.nt", strRelations)
             },
 
 
@@ -626,7 +616,11 @@ Vibration
         fs.writeFileSync("D:\\Total\\graphNLP\\ontology.rdf.nt", strAll)
 
 
-    }
+    },
+
+
+
+
 
 
 }
@@ -634,7 +628,7 @@ Vibration
 module.exports = ontologyCTG
 
 
-ontologyCTG.readXlsx("D:\\NLP\\rdfs\\Total\\OntoMEC_20200401.xlsx", function (err, result) {
+ontologyCTG.readXlsx("D:\\NLP\\rdfs\\Total\\OntoMEC_triplet_20200402.xlsx", function (err, result) {
 
 })
 

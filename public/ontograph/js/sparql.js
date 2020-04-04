@@ -31,8 +31,7 @@ var sparql = (function () {
             "" +
             "" +
             "?entity rdfsyn:type ?entityType ." +
-            "?entityType rdfs:label ?entityTypeLabel." +
-            "FILTER (lang(?entityTypeLabel)=\"en\")" +
+
             "" +
             "}" +
             "limit 100"
@@ -50,12 +49,23 @@ var sparql = (function () {
 
 
     self.queryEntitiesCooccurrences = function (entityIds, options, callback) {
+        if (!options)
+            options = {};
         var entityIdsStr = "";
+        var entityTypesStr = "";
         entityIds.forEach(function (id, index) {
             if (index > 0)
                 entityIdsStr += ","
             entityIdsStr += "<" + id + ">"
         })
+
+        if (options.filterEntityTypes) {
+            options.filterEntityTypes.forEach(function (type, index) {
+                if (index > 0)
+                    entityTypesStr += ","
+                entityTypesStr += "<http://data.total.com/resource/ontology/ctg/EntityType/" + type + ">"
+            })
+        }
 
         var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.source.graphIRI) + "&query=";// + query + queryOptions
 
@@ -72,21 +82,24 @@ var sparql = (function () {
             "?entity1 rdfs:label ?entity1Label ." +
             "FILTER (lang(?entity1Label)=\"en\")" +
             "?entity1 rdfsyn:type ?entity1Type ." +
-            "" +
-            "" +
+
+
             "?paragraph   terms:subject ?entity2 ." +
             "?entity2  rdfs:label ?entity2Label ." +
             "FILTER (lang(?entity2Label)=\"en\")" +
             "?entity2 rdfsyn:type ?entity2Type ." +
             "" +
-            " FILTER(?entity1  != ?entity2)" +
-            "}" +
+            " FILTER(?entity1  != ?entity2)"
+
+        if (options.filterEntityTypes) {
+            query += "FILTER (?entity2Type  in (" + entityTypesStr + ")) "
+        }
+
+        query += "}" +
             "GROUP BY ?entity1Type ?entity1 ?entity1Label ?entity2Type ?entity2 ?entity2Label " +
             " ORDER BY  ?entity1 ?entity2Type " +
             "limit 10000" +
             ""
-
-
 
 
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
@@ -124,8 +137,8 @@ var sparql = (function () {
         if (options.offsets)
             query += "?paragraph <http://open.vocab.org/terms/hasOffset> ?offset ."
         if (options.containers) {
-            query += "?paragraph <http://purl.org/dc/terms/isPartOf> ?container ."+
-            " OPTIONAL {?container <http://www.w3.org/2000/01/rdf-schema#label> ?documentLabel .}"
+            query += "?paragraph <http://purl.org/dc/terms/isPartOf> ?container ." +
+                " OPTIONAL {?container <http://www.w3.org/2000/01/rdf-schema#label> ?documentLabel .}"
         }
         query += "} limit 10000"
 
@@ -133,6 +146,7 @@ var sparql = (function () {
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
+                console.log(query)
                 return callback(err);
             }
             var bindings = [];
@@ -187,52 +201,52 @@ var sparql = (function () {
         })
     }
 
-    self.querySPARQL_GET_proxy = function (url, query, queryOptions, options, callback) {
-        if (!options)
-            options = {}
-        if (!options.doNotEncode) {
-            query = encodeURIComponent(query);
-            query = query.replace(/%2B/g, "+")
-        }
-        url = url + query + queryOptions;
-        console.log(url)
+    self.queryEntitiesInfos = function (entityIds, options, callback) {
+        var entityIdsStr = "";
 
-        $("#waitImg").css("display", "block");
+        entityIds.forEach(function (id, index) {
+            if (index > 0)
+                entityIdsStr += ","
+            entityIdsStr += "<" + id + ">"
+        })
 
-        var payload = {
-            httpProxy: 1,
-            url: url,
-            options: JSON.stringify(options)
-        }
-        $.ajax({
-            type: "POST",
-            url: "/elastic",
-            data: payload,
-            dataType: "json",
-            /* beforeSend: function(request) {
-                 request.setRequestHeader('Age', '10000');
-             },*/
+        var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.source.graphIRI) + "&query=";// + query + queryOptions
 
-            success: function (data, textStatus, jqXHR) {
-                var xx = data;
-                //  $("#messageDiv").html("found : " + data.results.bindings.length);
-                $("#waitImg").css("display", "none");
-                callback(null, data)
+        var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
+            "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
+            "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
+            "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>"+
 
+            "        select *" +
+            "        where{ "
+
+        var index = "";
+        query +=
+
+
+            "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
+            "    FILTER (?entity" + index + " in(" + entityIdsStr + "))" +
+            "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
+            "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
+
+            "  OPTIONAL  { ?entity" + index+ " skos:definition ?definition" + index + "Type .  }" +
+            "    "
+
+
+        query += "    } limit 1000"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                return callback(err);
             }
-            , error: function (err) {
-                $("#messageDiv").html(err.responseText);
-                $("#waitImg").css("display", "none");
-                console.log(JSON.stringify(err))
-                if (callback) {
-                    return callback(err)
-                }
-                return (err);
-            }
+            var bindings = [];
+            var ids = [];
+            return callback(null, result.results.bindings);
 
-        });
+
+        })
     }
-
 
     self.queryParagraphsEntities = function (paragraphIds, options, callback) {
         var paragraphIdsStr = "";
@@ -241,7 +255,6 @@ var sparql = (function () {
                 paragraphIdsStr += ","
             paragraphIdsStr += "<" + id + ">"
         })
-
         var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.source.graphIRI) + "&query=";// + query + queryOptions
 
         var query = "PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
@@ -249,7 +262,7 @@ var sparql = (function () {
             "select *        where{ " +
             "" +
             "  ?paragraph terms:subject ?entity0 . " +
-       //     "?paragraph mime:Text ?paragraphText ." +
+            //     "?paragraph mime:Text ?paragraphText ." +
             "    FILTER (?paragraph in(" + paragraphIdsStr + "))  " +
             "?entity0 rdfs:label ?entity0Label .   FILTER (lang(?entity0Label)=\"en\") " +
             "  ?entity0 rdfsyn:type ?entity0Type ." +
@@ -271,6 +284,98 @@ var sparql = (function () {
 
         })
     }
+
+
+    self.queryEntitiesRelations = function (startEntityIds, options, callback) {
+
+        var startEntityIdsStr = "";
+        startEntityIds.forEach(function (id, index) {
+            if (index > 0)
+                startEntityIdsStr += ","
+            startEntityIdsStr += "<" + id + ">"
+        })
+
+        var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent("http://data.total.com/resource/ontology/ctg/relations/") + "&query=";// + query + queryOptions
+
+        var query = "PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+            "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
+            "PREFIX rels:<http://data.total.com/resource/ontology/ctg/relation/> " +
+            "select *        where{ " +
+            "" +
+            "  ?startEntity ?relationType ?endEntity . " +
+            "    FILTER (?startEntity in(" + startEntityIdsStr + "))  " +
+
+            "" +
+            "}" +
+            "" +
+
+            "limit 10000" +
+            ""
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            var bindings = [];
+            var ids = [];
+            return callback(null, result.results.bindings);
+        })
+    }
+
+
+
+    self.listThesaurusConcepts=function(word,options,callback){
+        var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent("http://data.total.com/resource/thesaurus/ctg/") + "&query=";// + query + queryOptions
+
+        var query="PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+            "" +
+            "SELECT *" +
+            "WHERE {" +
+            "  ?concept skos:prefLabel ?prefLabel ." +
+            "filter contains(lcase(str(?prefLabel )),\""+word+"\")" +
+            "filter (lang(?prefLabel)=\"en\")" +
+            "" +
+            "OPTIONAL {" +
+            "?concept skos:broader ?broader1 ." +
+            "?broader1 skos:prefLabel ?broaderLabel1 ." +
+            "filter (lang(?broaderLabel1 )=\"en\")" +
+            "OPTIONAL {" +
+            "?broader1 skos:broader ?broader2 ." +
+            "?broader2 skos:prefLabel ?broaderLabel2 ." +
+            "filter (lang(?broaderLabel2)=\"en\")" +
+            "" +
+            "OPTIONAL {" +
+            "?broader2 skos:broader ?broader3 ." +
+            "?broader3 skos:prefLabel ?broaderLabel3 ." +
+            "filter (lang(?broaderLabel3)=\"en\")" +
+            "OPTIONAL {" +
+            "?broader3 skos:broader ?broader4 ." +
+            "?broader4 skos:prefLabel ?broaderLabel4 ." +
+            "filter (lang(?broaderLabel4)=\"en\")" +
+            "" +
+            "}" +
+            "" +
+            "}" +
+            "}" +
+            "}" +
+            "" +
+            "" +
+            "}" +
+            "LIMIT 2000"
+
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            var bindings = [];
+            var ids = [];
+            return callback(null, result.results.bindings);
+        })
+
+
+    }
+
 
     self.querySPARQL_GET_proxy = function (url, query, queryOptions, options, callback) {
         if (!options)

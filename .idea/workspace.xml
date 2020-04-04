@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/skosReader..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/skosReader..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/common.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparql.js" afterDir="false" />
     </list>
@@ -37,24 +39,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../souslesensGraph" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/ontograph" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
-      <recent name="D:\GitHub\nlp2\public\ontograph" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
-      <recent name="D:\GitHub\nlp2\config\elastic\thesauri" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
       <recent name="D:\GitHub\nlp2\public\js" />
       <recent name="D:\GitHub\nlp2\bin" />
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\ontograph" />
+      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
+      <recent name="D:\GitHub\nlp2\bin\others\ontologyCTG" />
       <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
+      <recent name="D:\GitHub\nlp2\config\elastic\thesauri" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -69,11 +71,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.ontologyCTG..js">
+  <component name="RunManager" selected="Node.js.bin\www">
     <configuration name="annotator_regex..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotator_regex..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
-    <configuration name="crawler_termSciences..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_termSciences..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
+    <configuration name="crawler_LOC..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_LOC..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
     <configuration name="linkedDataProcessor..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="linkedDataProcessor..js" working-dir="$PROJECT_DIR$/bin/others">
@@ -82,16 +84,19 @@
     <configuration name="ontologyCTG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyCTG..js" working-dir="$PROJECT_DIR$/bin/others/ontologyCTG">
       <method v="2" />
     </configuration>
-    <configuration name="termSciencesSkosproxy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="termSciencesSkosproxy..js" working-dir="$PROJECT_DIR$/bin/others">
+    <configuration name="ontologyCTG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" working-dir="$PROJECT_DIR$/bin/others/ontologyCTG">
+      <method v="2" />
+    </configuration>
+    <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.skosReader..js" />
+        <item itemvalue="Node.js.ontologyCTG..js" />
+        <item itemvalue="Node.js.crawler_LOC..js" />
         <item itemvalue="Node.js.ontologyCTG..js" />
         <item itemvalue="Node.js.linkedDataProcessor..js" />
-        <item itemvalue="Node.js.annotator_regex..js" />
-        <item itemvalue="Node.js.crawler_termSciences..js" />
-        <item itemvalue="Node.js.termSciencesSkosproxy..js" />
       </list>
     </recent_temporary>
   </component>
@@ -128,7 +133,8 @@
       <workItem from="1583914227603" duration="59182000" />
       <workItem from="1584173332084" duration="235274000" />
       <workItem from="1585067450331" duration="13499000" />
-      <workItem from="1585209102222" duration="138753000" />
+      <workItem from="1585209102222" duration="163695000" />
+      <workItem from="1585849015535" duration="24580000" />
     </task>
     <servers />
   </component>
@@ -237,11 +243,6 @@
           <option name="timeStamp" value="3144" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
-          <line>22</line>
-          <option name="timeStamp" value="3164" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js</url>
           <line>155</line>
           <option name="timeStamp" value="3165" />
@@ -250,11 +251,6 @@
           <url>file://$PROJECT_DIR$/routes/index.js</url>
           <line>251</line>
           <option name="timeStamp" value="3166" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/skosReader..js</url>
-          <line>1000</line>
-          <option name="timeStamp" value="3187" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js</url>
@@ -279,80 +275,68 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
           <line>1091</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3400" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
           <line>1066</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3401" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
           <line>1088</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3404" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
           <line>1090</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3405" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
           <line>1013</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3408" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/backoffice/annotator_regex..js</url>
           <line>233</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3409" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
           <line>1162</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3427" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
           <line>1160</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3428" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>613</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3467" />
+          <line>517</line>
+          <option name="timeStamp" value="3505" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>625</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3472" />
+          <url>file://$PROJECT_DIR$/public/ontograph/js/ontograph.js</url>
+          <line>272</line>
+          <option name="timeStamp" value="3515" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>540</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3473" />
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
+          <line>132</line>
+          <option name="timeStamp" value="3518" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>503</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3482" />
+          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
+          <line>40</line>
+          <option name="timeStamp" value="3519" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>299</line>
+          <url>file://$PROJECT_DIR$/public/ontograph/js/thesaurus.js</url>
+          <line>67</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3487" />
+          <option name="timeStamp" value="3525" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

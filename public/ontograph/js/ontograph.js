@@ -1,5 +1,8 @@
 var ontograph = (function () {
 
+    var maxEntitiesEdgeBeforeFiltering = 30
+
+
     var self = {};
 
     self.context = {}
@@ -7,20 +10,57 @@ var ontograph = (function () {
     self.context.currentParagraphs = {};
     var uniqueNodeIds = [];
     var uniqueEdgesIds = [];
+
+
     self.entityTypeColors = {
 
         "Equipment": "#F5B8F9",
         "Component": "#FFD000",
-        "Phenomenon ": "#91F7C1",
+        "Phenomenon": "#91F7C1",
         "Characterisation": "#91D3F7",
         "Method": "#BCD2FF",
+
+        "technology-equipment": "#F5B8F9",
+        "technology-component": "#FFD000",
+        "technology-phenomenon": "#91F7C1",
+        "technology-characterisation": "#91D3F7",
+        "technology-method": "#BCD2FF",
+        "technology-product": "#F99393",
+
+        "EQUIPMENT": "#F5B8F9",
+        "COMPONENT": "#FFD000",
+        "PHENOMENON": "#91F7C1",
+        "CHARACTERISATION": "#91D3F7",
+        "METHOD": "#BCD2FF",
+        "PRODUCT": "#F99393",
 
 
         "clusteredEntities": "#a51544",
         "paragraph": "#ddd",
     }
+    self.entityTypeDictionary = {
+        "technology-equipment": "EQUIPMENT",
+        "technology-component": "COMPONENT",
+        "technology-phenomenon": "PHENOMENON",
+        "technology-characterisation": "CHARACTERISATION",
+        "Characterisation": "CHARACTERISATION",
+        "technology-method": "METHOD",
+        "technology-product": "PRODUCT",
+    }
 
+    self.getTypeFromEntityUri = function (uri) {
+        var array = uri.split("/")
+        return array[array.length - 2]
 
+    }
+
+    self.showSearchDialog = function (searchPanel) {
+        $('#dialogDiv').dialog('open')
+        if (searchPanel) {
+            $("#filteredEntitiesPanel").css("display", "none");
+            $("#searchPanel").css("display", "flex");
+        }
+    }
     self.searchItem = function (word) {
         self.context.conceptsMap = {}
         sparql.listEntities(word, null, function (err, result) {
@@ -29,9 +69,10 @@ var ontograph = (function () {
             var entityTypesMap = {}
             result.forEach(function (item) {
                 self.context.conceptsMap[item.entity.value] = item;
-                if (!entityTypesMap[item.entityTypeLabel.value])
-                    entityTypesMap[item.entityTypeLabel.value] = {entityType: item.entityType.value, entities: []}
-                entityTypesMap[item.entityTypeLabel.value].entities.push(item);
+                var type = self.getTypeFromEntityUri(item.entity.value);
+                if (!entityTypesMap[type])
+                    entityTypesMap[type] = {entityType: type, entities: []}
+                entityTypesMap[type].entities.push(item);
 
             })
 
@@ -48,7 +89,7 @@ var ontograph = (function () {
                         {
                             text: entity.entityLabel.value,
                             id: entity.entity.value,
-                            parent: entity.entityType.value
+                            parent: key
                         })
                 })
             }
@@ -88,342 +129,65 @@ var ontograph = (function () {
         return selectedEntities;
     }
 
-    self.displayGraphParagraphs = function () {
-        $('#dialogDiv').dialog('close')
-        self.context.currentParagraphs = {};
-        self.context.currentGraphType = "displayGraphParagraphs"
-
-        var selectedEntities = self.getSelectedEntities();
-        var minManadatoryEntities = parseInt($("#minManadatoryEntities").val())
-        sparql.queryEntitiesCooccurrencesParagraphs(selectedEntities, {minManadatoryEntities: minManadatoryEntities}, function (err, result) {
-            if (err)
-                return $("#messageDiv").html(err);
-
-            var visjsData = {
-                nodes: [],
-                edges: []
-            }
-
-            uniqueNodeIds = [];
-            uniqueEdgesIds = [];
-            var visjNodes = [];
-
-            var width = $(window).width();
-            var height = $(window).height();
-            var allParagraphIds = []
-
-            result.forEach(function (item, indexLine) {
 
 
-                var paragraphId = item.paragraph.value
-
-                allParagraphIds.push(paragraphId)
-
-                var paragraphIdStr = paragraphId.substring(paragraphId.lastIndexOf("/") + 1)
-
-                if (uniqueNodeIds.indexOf(paragraphIdStr) < 0) {
-                    uniqueNodeIds.push(paragraphIdStr)
-
-                    var node = {
-                        label: paragraphIdStr,
-                        id: paragraphId,
-                        color: self.entityTypeColors["paragraph"],
-                        data: {type: "Paragraph"},
-                        shape: "ellipse",
-                        /*   x: x1,
-                           y: (y1 += y1Offset),
-                           fixed: {x: false, y: false}*/
-
-                    }
-                    visjsData.nodes.push(node)
-                }
-
-                {// a single noe for selected entities in main dialog
-                    var clusterId = "";
-                    var clusterLabel = "";
-                    selectedEntities.forEach(function (entity, index) {
-                        if (!item["entity" + index]) //optional
-                            return;
-                        var entityId = item["entity" + index].value
-                        uniqueNodeIds.push(entityId);
-                        if (index > 0) {
-
-                            clusterLabel += " + "
-                        }
-                        clusterId += "_"
-                        clusterId += entityId
-                        clusterLabel += item["entity" + index + "Label"].value
-
-                    })
-                    if (uniqueNodeIds.indexOf(clusterId) < 0) {
-                        uniqueNodeIds.push(clusterId)
-                        var node = {
-                            label: clusterLabel,
-                            id: clusterId,
-                            color: self.entityTypeColors["clusteredEntities"],
-                            shape: "box",
-                            font: {size: 18, color: "white"}
 
 
-                        }
-                        visjsData.nodes.push(node)
-                    }
 
 
-                    var edgeId = paragraphId + "_" + clusterId
-                    if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                        uniqueEdgesIds.push(edgeId)
-                        var edge = {
-                            from: paragraphId,
-                            to: clusterId,
-                            id: edgeId,
-
-                        }
-                        visjsData.edges.push(edge)
-                    }
 
 
-                }
-            })
 
-            var paragraphSlices = [];
-            var slice = [];
-            allParagraphIds.forEach(function (paragraph) {
-                if (paragraph.indexOf("20") > -1)
-                    var x = 3
-                slice.push(paragraph)
-                if (slice.length > 50) {
-                    paragraphSlices.push(slice);
-                    slice = [];
-                }
-            })
-            paragraphSlices.push(slice);
-
-
-            async.eachSeries(paragraphSlices, function (slice, callbackEach) {
-
-                sparql.queryParagraphsEntities(slice, null, function (err, result) {
-                    if (err)
-                        return callbackEach(err);
-                    result.forEach(function (item, indexLine) {
-                        var index = 0;
-                        var paragraphId = item.paragraph.value;
-
-
-                        var entityId = item["entity" + index].value
-                        var entityLabel = item["entity" + index + "Label"].value
-                        var type = item["entity" + index + "Type"].value
-                        type = type.substring(type.lastIndexOf("/") + 1)
-
-                        if (uniqueNodeIds.indexOf(entityId) < 0) {
-                            uniqueNodeIds.push(entityId)
-
-                            var node = {
-                                label: entityLabel,
-                                id: entityId,
-                                color: self.entityTypeColors[type],
-                                data: {type: "Entity"},
-                                shape: "box",
-                                /*   x: x1,
-                                   y: (y1 += y1Offset),
-                                   fixed: {x: false, y: false}*/
-
-                            }
-                            visjsData.nodes.push(node)
-                        }
-
-                        //  var previousEntityId = item["entity" + (index - 1)].value
-                        var edgeId = paragraphId + "_" + entityId
-                        if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                            uniqueEdgesIds.push(edgeId)
-                            var edge = {
-                                from: paragraphId,
-                                to: entityId,
-                                id: edgeId,
-
-                            }
-                            visjsData.edges.push(edge)
-                        }
-
-                    })
-                    self.getParagraphsDetails(slice, function (err, result) {
-                        if (err)
-                            return callbackEach(err);
-                        callbackEach();
-                    })
-
-
-                })
-
-            }, function (err, result) {
-                $("#graphDiv").width($(window).width() - 20)
-                visjsGraph.draw("graphDiv", visjsData, {
-                    onclickFn: ontograph.onNodeClick,
-                    onHoverNodeFn: ontograph.onNodeHover,
-                    afterDrawing: function () {
-                        $("#waitImg").css("display", "none")
-                    }
-                })
-            })
-        })
-
-    }
-
-
-    self.displayGraphEntitiesCooccurrences = function (entities, options) {
+    self.drawGraph = function (visjsData, options) {
         if (!options)
-            options = {}
-        self.context.currentGraphType = "displayGraphEntitiesCooccurrences"
-        $('#dialogDiv').dialog('close')
-        self.context.currentParagraphs = {};
-        var depth = 1
-        var depthArray = [];
-        uniqueNodeIds = [];
-        var uniqueEdgesIds = [];
-        var  totalTypeOccurences={}
-        var visjsData = {nodes: [], edges: []}
-        for (var i = 0; i < depth; i++) {
-            depthArray.push(i)
-        }
-        var selectedEntities = entities;
-        if (!selectedEntities)
-            selectedEntities = self.getSelectedEntities();
+            options = self.context.currentGraphOptions;
+        if (!options)
+            options = {};
+        if (options.addToGraph) {
+            var visjsDataAdd = {nodes: [], edges: []}
+            self.context.newNodes = [];
+            self.context.newEdges = [];
+            var existingNodes = visjsGraph.data.nodes.getIds();
+            var existingEdges = visjsGraph.data.edges.getIds();
 
-        async.eachSeries(depthArray, function (currentDepth, callbackEach) {
+            var color = parent.color;
+            visjsData.nodes.forEach(function (node) {
 
-
-                sparql.queryEntitiesCooccurrences(selectedEntities, {minManadatoryEntities: minManadatoryEntities}, function (err, result) {
-                    var startEntitiesMap = {}
-                    var endEntitiesMap = {}
-
-                    var allParagraphIds = [];
-                    selectedEntities = []
-
-                    result.forEach(function (item, indexLine) {
-
-                        var obj1 = {id: item.entity1.value, label: item.entity1Label.value, type: item.entity1Type.value}
-
-                        if (uniqueNodeIds.indexOf(obj1.id) < 0) {
-                            uniqueNodeIds.push(obj1.id)
-                            var type1 = obj1.type.substring(obj1.type.lastIndexOf("/") + 1)
-                            var vijsNode = {
-                                label: obj1.label,
-                                id: obj1.id,
-                                color: self.entityTypeColors[type1],
-                                data: {type: "Entity"},
-                                shape: "box",
-
-                            }
-                            visjsData.nodes.push(vijsNode)
-                        }
-                        var nOccurences = parseInt(item.nOccurrences.value)
-                        var obj2 = {id: item.entity2.value, label: item.entity2Label.value, type: item.entity2Type.value};
-                        selectedEntities.push(obj2.id)
-                        if (uniqueNodeIds.indexOf(obj2.id) < 0) {
-                            uniqueNodeIds.push(obj2.id)
-                            var type2 = obj2.type.substring(obj2.type.lastIndexOf("/") + 1)
-                            var vijsNode = {
-                                label: obj2.label,
-                                id: obj2.id,
-                                color: self.entityTypeColors[type2],
-                                data: {type: "Entity"},
-                                shape: "box",
-
-                            }
-                            visjsData.nodes.push(vijsNode)
-                        }
-                        if (uniqueNodeIds.indexOf(type2) < 0) {
-
-                            uniqueNodeIds.push(type2)
-                            var type2 = obj2.type.substring(obj2.type.lastIndexOf("/") + 1)
-                            var vijsNodeType = {
-                                label: type2,
-                                id: type2,
-                                color: self.entityTypeColors[type2],
-                                data: {type: "Entity"},
-                                shape: "ellipse",
-
-                            }
-                            visjsData.nodes.push(vijsNodeType)
-                        }
-                        var edgeId = obj1.id + "_" + type2
-                        if(!totalTypeOccurences[edgeId])
-                            totalTypeOccurences[edgeId]=0
-                        totalTypeOccurences[edgeId]+=nOccurences
-                        if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                            uniqueEdgesIds.push(edgeId)
-                            var edgeType = {
-                                from: obj1.id,
-                                to: type2,
-                                id: edgeId,
-                                smooth:true,
-
-                            }
-                            visjsData.edges.push(edgeType)
-                        }
-                        var edgeId = type2 + "_" + obj2.id
-                        if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                            uniqueEdgesIds.push(edgeId)
-                            var edge = {
-                                from: type2,
-                                to: obj2.id,
-                                id: edgeId,
-                                value:nOccurences,
-                                smooth:true,
-
-                            }
-                            visjsData.edges.push(edge)
-                        }
-
-                    })
-                    callbackEach()
-                })
-
-            }, function (err) {
-                if (options.addToGraph) {
-                    var visjsDataAdd = {nodes: [], edges: []}
-                    self.context.newNodes = [];
-                    self.context.newEdges = [];
-                    var existingNodes = visjsGraph.data.nodes.getIds();
-                    var existingEdges = visjsGraph.data.edges.getIds();
-
-                    var color = parent.color;
-                    visjsData.nodes.forEach(function (node) {
-
-                        if (existingNodes.indexOf(node.id) < 0) {
-                            visjsDataAdd.nodes.push(node)
-                        }
-                    })
-                    visjsData.edges.forEach(function (edge) {
-                        if (existingEdges.indexOf(edge.id) < 0) {
-                            visjsDataAdd.edges.push(edge)
-                        }
-                    })
-                    visjsGraph.data.nodes.add(visjsDataAdd.nodes)
-                    visjsGraph.data.edges.add(visjsDataAdd.edges)
-
-                    for( var edgeId in totalTypeOccurences){
-                        var edge={id:edgeId, value:totalTypeOccurences[edgeId]}
-                        visjsGraph.data.edges.update(edge)
-                    }
-
-                } else {
-                    $("#graphDiv").width($(window).width() - 20)
-                    visjsGraph.draw("graphDiv", visjsData, {
-                        onclickFn: ontograph.onNodeClick,
-                        onHoverNodeFn: ontograph.onNodeHover,
-                        afterDrawing: function () {
-                            $("#waitImg").css("display", "none")
-                            for( var edgeId in totalTypeOccurences){
-                                var edge={id:edgeId, value:totalTypeOccurences[edgeId]}
-                                visjsGraph.data.edges.update(edge)
-                            }
-                        }
-                    })
+                if (existingNodes.indexOf(node.id) < 0) {
+                    visjsDataAdd.nodes.push(node)
                 }
+            })
+            visjsData.edges.forEach(function (edge) {
+                if (existingEdges.indexOf(edge.id) < 0) {
+                    visjsDataAdd.edges.push(edge)
+                }
+            })
+            visjsGraph.data.nodes.add(visjsDataAdd.nodes)
+            visjsGraph.data.edges.add(visjsDataAdd.edges)
 
-            }
-        )
+            /*  for (var edgeId in totalTypeOccurences) {
+                  var edge = {id: edgeId, value: totalTypeOccurences[edgeId]}
+                  visjsGraph.data.edges.update(edge)
+              }*/
+
+        } else {
+            $("#graphDiv").width($(window).width() - 20)
+            visjsGraph.draw("graphDiv", visjsData, {
+                onclickFn: ontograph.onNodeClick,
+                onHoverNodeFn: ontograph.onNodeHover,
+                afterDrawing: function () {
+                    $("#waitImg").css("display", "none")
+                    /*  if (totalTypeOccurences) {
+                          for (var edgeId in totalTypeOccurences) {
+                              var edge = {id: edgeId, value: totalTypeOccurences[edgeId]}
+                              visjsGraph.data.edges.update(edge)
+                          }
+
+                      }*/
+                }
+            })
+        }
+
     }
 
 
@@ -488,15 +252,15 @@ var ontograph = (function () {
 
         })
         html += "<span class='text'>" + textRich + "</span>&nbsp;";
-        html += "<span style='font-weight:bold'>" + text + "</span>&nbsp;";
+        //    html += "<span style='font-weight:bold'>" + text + "</span>&nbsp;";
         if (text)
-            $("#messageDiv").html(html);
+            $("#paragraphTextDiv").html(html);
     }
 
     self.onNodeClick = function (obj, point) {
         if (obj.data.type && obj.data.type == "Entity") {
             if (self.context.currentGraphType == "displayGraphEntitiesCooccurrences") {
-                self.displayGraphEntitiesCooccurrences([obj.id], {addToGraph: true})
+                cooccurrences.displayGraphEntitiesCooccurrences([obj.id], {addToGraph: true})
 
             } else if (self.context.currentGraphType == "displayGraphParagraphs") {
                 sparql.queryEntitiesCooccurrencesParagraphs([obj.id], {minManadatoryEntities: 1}, function (err, paragraphs) {
@@ -504,7 +268,11 @@ var ontograph = (function () {
                         return console.log(err);
 
                     ontograph.addChildrenNodesToGraph(obj.id, paragraphs);
-                    ontograph.getParagraphsDetails(obj.id, paragraphs);
+                    var paragraphIds = []
+                    paragraphs.forEach(function (paragraph) {
+                        paragraphIds.push(paragraph.paragraph.value)
+                    })
+                    ontograph.getParagraphsDetails(paragraphIds);
                 })
             }
 
@@ -530,9 +298,11 @@ var ontograph = (function () {
         var obj = self.context.currentParagraphs[paragraphId]
         obj.offsets.forEach(function (offset) {
             var offsetArray = offset.split("|");
-            if (allUniqueOffsets.indexOf(offsetArray[1] + "_" + offsetArray[2]) < 0) {
-                allUniqueOffsets.push(offsetArray[1] + "_" + offsetArray[2])
-                allOffsets.push({type: offsetArray[0], start: parseInt(offsetArray[2]), end: parseInt(offsetArray[3])})
+            if (allUniqueOffsets.indexOf(offsetArray[2] + "_" + offsetArray[3]) < 0) {
+                allUniqueOffsets.push(offsetArray[2] + "_" + offsetArray[3])
+                var type = offsetArray[0];
+                //   type=type.substring(type.lastIndexOf("/")+1)
+                allOffsets.push({type: type, start: parseInt(offsetArray[3]), end: parseInt(offsetArray[4])})
             }
 
         })
@@ -582,7 +352,7 @@ var ontograph = (function () {
                 childLabel = item.entity0Label.value
                 shape = "box"
                 type = "Entity"
-                color = self.entityTypeColors[item.entity0Type.value]
+                color = self.entityTypeColors[self.getTypeFromEntityUri(item.entity0.value)]
 
             } else if (parentNodeId.indexOf("Document") > -1) {
                 childId = item;

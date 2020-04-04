@@ -20,6 +20,40 @@ var common=(function(){
 
     }
 
+    self.message=function(str){
+        $("#messageDiv").html(str);
+
+    }
+
+
+    self.loadJsTree=function(jstreeDiv,jstreeData,otpions,callback){
+
+        if ($('#'+jstreeDiv).jstree)
+            $('#'+jstreeDiv).jstree("destroy")
+        $('#'+jstreeDiv).jstree({
+
+            "checkbox": {
+                "keep_selected_style": false
+            },
+            "plugins": ["checkbox"],
+            "core": {
+                'check_callback': true,
+                'data': jstreeData
+            }
+
+
+        }).on('loaded.jstree', function () {
+            $('#'+jstreeDiv).jstree(true).open_all();
+            $(".jstree-themeicon").css("display","none")
+                $(".jstree-anchor").css("line-height","18px")
+            $(".jstree-anchor").css("height","18px")
+            $(".jstree-anchor").css("font-size","14px")
+
+
+        });
+        ;
+
+    }
 
 
 
