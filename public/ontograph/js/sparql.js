@@ -13,7 +13,7 @@ var sparql = (function () {
         words.split(" ").forEach(function (word, index) {
             if (index > 0)
                 wordFilter += " || "
-            wordFilter += "contains(lcase(str(?entityLabel )),\"" + word + "\")";
+            wordFilter += "contains(lcase(str(?entityLabel )),\"" + word.toLowerCase() + "\")";
         })
         wordFilter += ")";
 
@@ -332,7 +332,7 @@ var sparql = (function () {
             "SELECT *" +
             "WHERE {" +
             "  ?concept skos:prefLabel ?prefLabel ." +
-            "filter contains(lcase(str(?prefLabel )),\""+word+"\")" +
+            "filter contains(lcase(str(?prefLabel )),\""+word.toLowerCase()+"\")" +
             "filter (lang(?prefLabel)=\"en\")" +
             "" +
             "OPTIONAL {" +

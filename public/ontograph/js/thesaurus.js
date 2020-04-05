@@ -66,7 +66,7 @@ var thesaurus = (function () {
 
 
         //  console.log(JSON.stringify(jstreeData,null,2))
-            common.loadJsTree("jstreeConceptDiv",jstreeData)
+            common.loadJsTree("jstreeConceptDiv",jstreeData,{withCheckboxes:1})
 
 
         })

@@ -118,9 +118,11 @@ var ontograph = (function () {
 
     }
 
-    self.getSelectedEntities = function () {
+    self.getSelectedEntities = function (jstreeDiv) {
+        if(!jstreeDiv)
+            jstreeDiv="jstreeConceptDiv";
         var selectedEntities = []
-        var xx = $("#conceptsJstreeDiv").jstree(true).get_checked(null, true)
+        var xx = $("#"+jstreeDiv).jstree(true).get_checked(null, true)
         xx.forEach(function (nodeId) {
             if (self.context.conceptsMap[nodeId])
                 selectedEntities.push(nodeId);

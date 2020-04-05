@@ -123,6 +123,7 @@ var ontologyCTG = {
                 }
 
                 var uniqueEntities = [];
+                var uniqueResource = [];
                 var str = ""
                 var strEntities = "";
                 var strDocs = "";
@@ -166,9 +167,43 @@ var ontologyCTG = {
                             strDocs += docsMap[item.Document] + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/DocumentType/" + "GM_MEC" + "> .\n"
                             strDocs += docsMap[item.Document] + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(item.Document) + "\"@en .\n"
 
+
                             resourceStr += docsMap[item.Document]   + " <http://www.w3.org/2004/02/skos/core#prefLabel> \""+ formatString(item.Document)+"\" .\n"
                             resourceStr += docsMap[item.Document]   + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Document> .\n";
 
+                            var arrayDoc=item.Document.split("_");
+                            if(arrayDoc.length==6){
+                                var domain="<http://data.total.com/resource/ontology/ctg/Domain/"+arrayDoc[2]+">";
+                                var branch="<http://data.total.com/resource/ontology/ctg/Branch/"+arrayDoc[2]+"_"+arrayDoc[1]+">";
+                                var docType="<http://data.total.com/resource/ontology/ctg/Document-type/"+arrayDoc[2]+"_"+arrayDoc[1]+"_"+arrayDoc[0]+">";
+
+                                if(uniqueResource.indexOf(domain)<0) {
+                                    uniqueResource.push(domain);
+                                    resourceStr += domain + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[2] + "\" .\n";
+                                    resourceStr += domain  + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Domain> .\n";
+
+                                }
+                                if(uniqueResource.indexOf(branch)<0) {
+                                    uniqueResource.push(branch);
+                                    resourceStr += branch + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[1] + "\" .\n";
+                                    resourceStr += branch  + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Branch> .\n";
+
+                                }
+                                if(uniqueResource.indexOf(docType)<0) {
+                                    uniqueResource.push(docType);
+                                    resourceStr += docType + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[0] + "\" .\n";
+                                    resourceStr += docType  + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Document-type> .\n";
+
+                                }
+
+                                resourceStr += branch  + " <http://www.w3.org/2004/02/skos/core#broader> "+domain+" .\n";
+                                resourceStr += docType  + " <http://www.w3.org/2004/02/skos/core#broader> "+branch+" .\n";
+                                resourceStr += docsMap[item.Document]  + " <http://www.w3.org/2004/02/skos/core#broader> "+docType+" .\n";
+
+                            }
+                            else{
+                                var x=3;
+                            }
 
                         }
                         str += paragraphUrl + " <http://purl.org/dc/terms/isPartOf> " + docsMap[item.Document] + ".\n"
