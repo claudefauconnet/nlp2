@@ -5,7 +5,7 @@ var corpus = (function () {
         self.showJstreeResources(word, null,"Document", 1);
 
     }
-    self.showDomainsJstree = function (word) {
+    self.showDomainsJstree = function () {
         self.showJstreeResources(null, null,"Domain", 2);
     }
 
@@ -163,6 +163,11 @@ var corpus = (function () {
         if (node.id.indexOf("/Chapter/") > -1)
             childType = "Paragraph";
         self.showJstreeResources  (null,  node.id,null, 1, node.id)
+
+    }
+
+    self.resetSelection=function(){
+        self.showDomainsJstree();
 
     }
 

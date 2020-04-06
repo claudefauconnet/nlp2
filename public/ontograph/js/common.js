@@ -28,6 +28,9 @@ var common = (function () {
 
     self.loadJsTree = function (jstreeDiv, jstreeData, options, callback) {
         var plugins = [];
+        var cascade="xxx"
+        if(options.selectDescendants)
+            cascade="down"
         if (options.withCheckboxes)
             plugins.push("checkbox")
         if ($('#' + jstreeDiv).jstree)
@@ -43,13 +46,14 @@ var common = (function () {
                 'data': jstreeData
             }, 'checkbox': {
                 three_state: false,
-                cascade: 'xxx',
+                cascade: cascade,
                 // tie_selection : false,
                 whole_node: false
             },
 
 
         }).on('loaded.jstree', function () {
+            if(options.openAll)
             $('#' + jstreeDiv).jstree(true).open_all();
             $(".jstree-themeicon").css("display", "none")
             $(".jstree-anchor").css("line-height", "18px")

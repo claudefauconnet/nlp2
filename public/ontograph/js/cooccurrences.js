@@ -207,8 +207,8 @@ var cooccurrences = (function () {
                 countParagraphMin = 10;
                 queryCorpus += "?paragraph  skos:broader ?chapter ."
                 queryCorpus += "?chapter  skos:broader ?document ."
-                queryCorpus += "?document  skos:broader ?document-type ."
-                queryCorpus += "?document-type   skos:broader <" + idCorpus + ">."
+                queryCorpus += "?document  skos:broader ?documentType ."
+                queryCorpus += "?documentType   skos:broader <" + idCorpus + ">."
             }
             if (idCorpus.indexOf("/Document-type/") > -1) {
                 countParagraphMin = 5;
@@ -281,9 +281,13 @@ var cooccurrences = (function () {
 self.currentData=data;
         var dataSet = []
         data.forEach(function (item) {
+            var type1= item.entity1Type.value.substring(item.entity1Type.value.lastIndexOf("/") + 1)
+            var type2= item.entity2Type.value.substring(item.entity2Type.value.lastIndexOf("/") + 1)
+            var color1=ontograph.entityTypeColors[type1]
+            var color2=ontograph.entityTypeColors[type2]
             var line = [];
-            line.push(item.entity1Label.value)
-            line.push(item.entity2Label.value)
+            line.push("<span class='entity-cell' style='background-color:"+color1+"'>"+item.entity1Label.value+"</span>")
+            line.push("<span class='entity-cell' style='background-color:"+color2+"'>"+item.entity2Label.value+"</span>")
             line.push(item.nOccurrences.value)
             dataSet.push(line)
 
@@ -303,6 +307,7 @@ self.currentData=data;
 
 
             ],
+            "order": [[ 2, "desc" ]],
             "pageLength": 20,
 
         });

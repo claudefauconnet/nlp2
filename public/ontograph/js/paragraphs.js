@@ -1,6 +1,6 @@
-var paragraphs=(function(){
+var paragraphs = (function () {
 
-    var self={};
+    var self = {};
 
     self.displayGraphParagraphs = function () {
         $('#dialogDiv').dialog('close')
@@ -183,8 +183,8 @@ var paragraphs=(function(){
     }
 
     self.sparql_getEntitiesParagraphs = function (idCorpus, idConcepts, options, callback) {
-        if(!options)
-            options={minManadatoryEntities:2}
+        if (!options)
+            options = {minManadatoryEntities: 2}
         var queryCorpus = ""
         var queryConcept = ""
         var countParagraphMin = 20
@@ -256,10 +256,10 @@ var paragraphs=(function(){
                 query += "}"
 
         })
+        query += "?paragraph terms:subject ?entity22 .  ?entity22 rdfsyn:type ?entity22Type . ?entity22 rdfs:label ?entity22Label . filter (?entity22!=?entity1  && ?entity22!=?entity0)";
+
         query += queryCorpus
         query += "    } limit 1000"
-
-
 
 
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
@@ -276,7 +276,7 @@ var paragraphs=(function(){
 
     }
 
-    self.drawEntitiesParagraphsGraph=function(selectedEntities,data){
+    self.drawEntitiesParagraphsGraph = function (selectedEntities, data) {
         var visjsData = {
             nodes: [],
             edges: []
@@ -315,6 +315,34 @@ var paragraphs=(function(){
                 }
                 visjsData.nodes.push(node)
             }
+
+
+            // entities level 2 linked to paragraphs
+            if (uniqueNodeIds.indexOf(item.entity22.value) < 0) {
+                uniqueNodeIds.push(item.entity22.value)
+                var type = item.entity22Type.value.substring(item.entity22Type.value.lastIndexOf("/") + 1)
+                var node = {
+                    label: item.entity22Label.value,
+                    id: item.entity22.value,
+                    color: ontograph.entityTypeColors[type],
+                    data: {type: type},
+                    shape: "box",
+
+                }
+                visjsData.nodes.push(node)
+            }
+            var edgeId = paragraphId + "_" + item.entity22.value
+            if (uniqueEdgesIds.indexOf(edgeId) < 0) {
+                uniqueEdgesIds.push(edgeId)
+                var edge = {
+                    from: paragraphId,
+                    to: item.entity22.value,
+                    id: edgeId,
+
+                }
+                visjsData.edges.push(edge)
+            }
+
 
             {
                 var clusterId = "";
@@ -384,7 +412,7 @@ var paragraphs=(function(){
                 callbackEach();
             })
         })
-      //  $("#graphDiv").width($(window).width() - 20)
+        //  $("#graphDiv").width($(window).width() - 20)
         visjsGraph.draw("graphDiv", visjsData, {
             onclickFn: ontograph.onNodeClick,
             onHoverNodeFn: ontograph.onNodeHover,
@@ -396,12 +424,7 @@ var paragraphs=(function(){
     }
 
 
-
-
-
-
     return self;
-
 
 
 })();

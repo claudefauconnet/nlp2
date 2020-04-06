@@ -312,6 +312,7 @@ var ontograph = (function () {
         var previousOffset = 0
         var chunks = [];
 
+     //   obj.text=obj.text.replace(/\\n/g,"")
         allOffsets.forEach(function (offset, index) {
             chunks.push(obj.text.substring(previousOffset, offset.start))
 

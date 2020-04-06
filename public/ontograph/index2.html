@@ -30,7 +30,6 @@
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 
 
-
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"/>
 
 
@@ -62,10 +61,11 @@
             } else {
                 $("#leftDiv").height($(window).height() - 50)
                 $("#centralDiv").height($(window).height() - 50)
-                $("#graphDiv").height($(window).height() - 160)
+                $("#graphDiv").height($(window).height() - 330)
 
-
+                $("#accordion").accordion();
                 corpus.showDomainsJstree();
+                thesaurus.loadThesaurusTopConceptsTree()
             }
 
 
@@ -82,7 +82,7 @@
         }
 
         .title {
-          //  font-weight: bold;
+        / / font-weight: bold;
             font-size: 18px;
         }
 
@@ -122,8 +122,20 @@
             font-weight: bold;
             font-size: 12px;
         }
-        th { font-size: 12px; }
-        td { font-size: 11px; }
+
+        th {
+            font-size: 12px;
+        }
+
+        td {
+            font-size: 11px;
+        }
+
+
+        .entity-cell{
+            border-radius: 4px;
+            padding: 2px;
+        }
     </style>
 
 </head>
@@ -132,41 +144,58 @@
 
 
     <div id="leftDiv" style="width:30%;max-width:350px;border-style: solid;padding: 3px;margin: 3px">
+        <div>
+            &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/>
+            <span id="messageDiv"></span>
+        </div>
+
+        <div id="accordion">
+
+            <h3><span class="title">Corpus Scope</span></h3>
+            <div style="margin:5px">
+                <div><input size="15" id="searchCorpusInput" value="117">
+                    <button onclick="corpus.searchResources($('#searchCorpusInput').val())">Search</button>
+                    <button onclick="corpus.resetSelection()">Reset</button>
+                </div>
+                <div id="jstreeCorpusDiv" style="width:100%;height: 500px;overflow: auto"></div>
+
+            </div>
+
+
+            <h3><span class="title">Concepts</span></h3>
+            <div style="margin:5px">
+                <div><input size="15" id="searchConceptInput" value="flow">
+                    <button onclick="thesaurus.searchConcept($('#searchConceptInput').val())">Search</button>
+                    <button onclick="thesaurus.loadThesaurusTopConceptsTree()">Reset</button>
+                </div>
+                <div id="jstreeConceptDiv" style="width:100%;height: 500px;overflow: auto" ;></div>
+
+            </div>
+
+
+            <h3><span class="title">Quantum</span></h3>
+            <div style="margin:5px">
+                <div><input size="15" id="searchQuantumInput" value="flow">
+                    <button onclick="quantum.searchQuantum($('#searchQuantumInput').val())">Search</button>
+                </div>
+                <div id="jstreeQuantumDiv" style="width:100%;height: 500px;overflow: auto" ;></div>
+
+            </div>
+        </div>
         <div style="margin:5px">
             <span class="title">Display</span>
-            <div>
-                <button onclick="cooccurrences.displayGraphEntitiesCooccurrences()">Cooccurrences</button>&nbsp;<button>Content</button>&nbsp;<button>Relations</button>
+            <div>  <button onclick="cooccurrences.displayGraphEntitiesCooccurrences()">Cooccurrences</button>
+                &nbsp;&nbsp;<button  onclick="relations.displayGraphEntitiesRelations()">Relations</button>
             </div>
 
         </div>
-        <div style="margin:5px">
-            <span class="title">Concepts</span>
-            <div><input size="15" id="searchConceptInput" value="flow">
-                <button onclick="thesaurus.searchConcept($('#searchConceptInput').val())">Search</button>
-            </div>
-            <div id="jstreeConceptDiv" style="width:100%;height: 200px;overflow: auto" ;></div>
-        </div>
-        <div style="margin:5px">
-            <span class="title">Corpus Scope</span>
-            <div><input size="15" id="searchCorpusInput" value="117">
-                <button onclick="corpus.searchResources($('#searchCorpusInput').val())">Search</button>
-            </div>
-            <div id="jstreeCorpusDiv" style="width:100%;height: 400px;overflow: auto"></div>
-        </div>
-
 
     </div>
     <div id="tableDiv" style="width:30%; max-width:350px; border-style: solid;padding: 3px;margin: 3px"></div>
-    <div id="centralDiv" style="width:40%;border-style: solid;padding: 3px;margin: 3px">
 
-        <div>
-            <div>
-                &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/>
-                <span id="messageDiv"></span>
-            </div>
-            <div id="paragraphTextDiv" style="height: 100px;overflow: auto"></div>
-        </div>
+    <div id="centralDiv" style="width:40%;border-style: solid;padding: 3px;margin: 3px">
         <div id="graphDiv" style="width:100%;"></div>
+        <div id="paragraphTextDiv" style="height:300px;overflow: auto"></div>
     </div>
 
 
