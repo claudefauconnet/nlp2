@@ -175,8 +175,8 @@ var ontograph = (function () {
         } else {
             $("#graphDiv").width($(window).width() - 20)
             visjsGraph.draw("graphDiv", visjsData, {
-                onclickFn: ontograph.onNodeClick,
-                onHoverNodeFn: ontograph.onNodeHover,
+                onclickFn: options.onclickFn,
+                onHoverNodeFn: options.onHoverNodeFn,
                 afterDrawing: function () {
                     $("#waitImg").css("display", "none")
                     /*  if (totalTypeOccurences) {

@@ -43,7 +43,7 @@ var sparql_abstract = (function () {
 
         var userGroups = authentication.currentUser.groupes;
         if (all || userGroups.indexOf("admin") > -1 || userGroups.indexOf("CTG") > -1) {
-            self.rdfsMap['Total-CTG'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://thesaurus.ctg.total.com/', sparqlBuilder: "sparql_skos_generic"};
+            self.rdfsMap['Total-CTG'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://data.total.com/resource/thesaurus/ctg/', sparqlBuilder: "sparql_skos_generic"};
             self.rdfsMap['Oil&Gas-Upstream'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"};
         }
     }

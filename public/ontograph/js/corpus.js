@@ -10,6 +10,15 @@ var corpus = (function () {
     }
 
 
+    self.getSelectedResource=function(){
+        var idCorpus = null;
+        var selectedCorpusResources = $("#jstreeCorpusDiv").jstree(true).get_selected()
+        if (selectedCorpusResources.length > 0)
+            idCorpus = selectedCorpusResources[0]
+        return idCorpus
+    }
+
+
     self.showJstreeResources = function (word, id, type, depth, addToNode) {
 
         self.sparql_searchResource(word, id, type, depth, function (err, result) {
@@ -70,6 +79,7 @@ var corpus = (function () {
             } else {
                 common.loadJsTree("jstreeCorpusDiv", jstreeData,
                     {
+                        openAll:true,
                         selectNodeFn: function (evt, obj) {
 
                             corpus.onJstreeSelectNode(evt, obj)
@@ -154,6 +164,7 @@ var corpus = (function () {
     }
 
     self.resetSelection = function () {
+        $("#currentCorpusSpan").html("");
         self.showDomainsJstree();
 
     }

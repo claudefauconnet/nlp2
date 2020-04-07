@@ -74,7 +74,7 @@ var common = (function () {
         jstreeData.forEach(function (node) {
             $("#" + jstreeDiv).jstree(true).create_node(parentNodeId, node, "last", function () {
 
-                $("#" + jstreeDiv).jstree(true).open_all();
+
 
                 $(".jstree-themeicon").css("display", "none")
                 $(".jstree-anchor").css("line-height", "18px")
@@ -84,6 +84,7 @@ var common = (function () {
 
 
             })
+            $("#" + jstreeDiv).jstree(true).open_node(parentNodeId);
             var offset=$(document.getElementById(parentNodeId)).offset();
             $("#" + jstreeDiv).scrollTop( offset.top)
         })

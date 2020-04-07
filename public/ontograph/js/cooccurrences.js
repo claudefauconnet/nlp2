@@ -97,39 +97,25 @@ var cooccurrences = (function () {
         $("#tableDiv").html("")
 
 
-        var idCorpus = null;
-        var selectedCorpusResources = $("#jstreeCorpusDiv").jstree(true).get_selected()
-        if (selectedCorpusResources.length > 0)
-            idCorpus = selectedCorpusResources[0]
 
 
-        var allConceptEntities = []
+
         var allResults = []
-        var slicedSelectedConcepts = [];
         var allDescendantConcepts = [];
+        var idCorpus=corpus.getSelectedResource();
         async.series([
 
 
                 //selection of concepts and sdescendants (can be large)
                 function (callbackSeries) {
-                    var selectedConcepts = null;
-                    var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_checked()
-                    if (selectedConcepts.length == 0)
-                        return callbackSeries();
-                    var slicedSelectedConcepts = common.sliceArray(selectedConcepts, 25);
-                    async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
+            thesaurus.getSelectedConceptDescendants(function(err,result){
+                if (err)
+                    return callbackSeries(err);
+                allDescendantConcepts=result;
+                callbackSeries();
+            })
 
-                        thesaurus.getConceptDescendants(concepts, function (err, result) {
-                            if (err)
-                                return callbackSeries(err);
-                            allDescendantConcepts = allDescendantConcepts.concat(result);
-                            callbackEach();
-                        })
-                    }, function (err) {
-                        ontograph.context.currentSelectedConcepts=allDescendantConcepts;
-                        callbackSeries(err);
 
-                    })
 
                 },
 
@@ -152,7 +138,13 @@ var cooccurrences = (function () {
             , function (err) {
                 if (err)
                     return common.message(err)
-                self.drawCooccurrences(allResults);
+                self.showCooccurrencesList(allResults);
+                paragraphs.sparql_getEntitiesParagraphs(idCorpus, selectedEntities, null, function (err, result) {
+                    if (err)
+                        common.message(err)
+                    paragraphs.drawEntitiesParagraphsGraph(selectedEntities, result)
+                })
+                self.drawCooccurrencesGraph(allResults);
             })
 
     }
@@ -235,7 +227,7 @@ var cooccurrences = (function () {
 
     }
 
-    self.drawCooccurrences = function (data) {
+    self.showCooccurrencesList = function (data) {
 
         data.sort(function (a, b) {
             if (a.nOccurrences > b.nOccurrences)
