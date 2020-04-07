@@ -136,6 +136,11 @@
             border-radius: 4px;
             padding: 2px;
         }
+
+        .currentConceptsSpan{
+          //  color:#372806;
+           font-size: larger;
+        }
     </style>
 
 </head>
@@ -151,7 +156,7 @@
 
         <div id="accordion">
 
-            <h3><span class="title">Corpus Scope</span></h3>
+            <h3><span class="title">Corpus </span><span  class='currentConceptsSpan' id="currentCorpusSpan"></span></h3>
             <div style="margin:5px">
                 <div><input size="15" id="searchCorpusInput" value="117">
                     <button onclick="corpus.searchResources($('#searchCorpusInput').val())">Search</button>
@@ -162,7 +167,7 @@
             </div>
 
 
-            <h3><span class="title">Concepts</span></h3>
+            <h3><span class="title">Concepts </span><span  class='currentConceptsSpan' id="currentConceptsSpan"></span></h3>
             <div style="margin:5px">
                 <div><input size="15" id="searchConceptInput" value="flow">
                     <button onclick="thesaurus.searchConcept($('#searchConceptInput').val())">Search</button>
@@ -173,7 +178,7 @@
             </div>
 
 
-            <h3><span class="title">Quantum</span></h3>
+            <h3><span class="title">Quantum </span><span  class='currentConceptsSpan' id="currentQuantumSpan"></span></h3>
             <div style="margin:5px">
                 <div><input size="15" id="searchQuantumInput" value="flow">
                     <button onclick="quantum.searchQuantum($('#searchQuantumInput').val())">Search</button>

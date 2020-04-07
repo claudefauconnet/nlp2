@@ -409,8 +409,8 @@ var sparql = (function () {
                 var xx = data;
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
-                if (data.results.bindings.length == 0)
-                    return callback("no result")
+              /*  if (data.results.bindings.length == 0)
+                    return callback({data.results.bindings:},[])*/
                 callback(null, data)
 
             }

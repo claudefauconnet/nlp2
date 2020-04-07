@@ -2,17 +2,17 @@ var corpus = (function () {
     var self = {};
 
     self.searchResources = function (word) {
-        self.showJstreeResources(word, null,"Document", 1);
+        self.showJstreeResources(word, null, "Document", 1);
 
     }
     self.showDomainsJstree = function () {
-        self.showJstreeResources(null, null,"Domain", 2);
+        self.showJstreeResources(null, null, "Domain", 2);
     }
 
 
-    self.showJstreeResources = function (word,id, type, depth, addToNode) {
+    self.showJstreeResources = function (word, id, type, depth, addToNode) {
 
-        self.sparql_searchResource(word,id, type, depth, function (err, result) {
+        self.sparql_searchResource(word, id, type, depth, function (err, result) {
             if (err)
                 return common.message(err)
 
@@ -24,7 +24,7 @@ var corpus = (function () {
             var uniqueIds = [];
             result.forEach(function (item) {
                 if (addToNode) {
-                    var previousParent =  item.resource.value
+                    var previousParent = item.resource.value
                     for (var i = 1; i < 6; i++) {
                         var child = item["child" + i]
                         if (typeof child !== "undefined") {
@@ -62,22 +62,10 @@ var corpus = (function () {
                     }
                 }
             })
-            //  console.log(JSON.stringify(jstreeData, null, 2))
+
             if (addToNode) {
-                jstreeData.forEach(function (node) {
-                    $("#jstreeCorpusDiv").jstree(true).create_node(addToNode,node,"last",function(){
-                      //  $("#jstreeCorpusDiv").jstree(true).open_node(node.id,null,false);
-                        $("#jstreeCorpusDiv").jstree(true).open_all();
-                     //   $("#jstreeCorpusDiv").jstree(true).uncheck_all ();
-
-                        $(".jstree-themeicon").css("display","none")
-                        $(".jstree-anchor").css("line-height","18px")
-                        $(".jstree-anchor").css("height","18px")
-                        $(".jstree-anchor").css("font-size","14px")
-
-                    })
-
-                })
+                if(jstreeData.length>0)
+                common.addNodesToJstree("jstreeCorpusDiv", addToNode, jstreeData);
 
             } else {
                 common.loadJsTree("jstreeCorpusDiv", jstreeData,
@@ -92,7 +80,7 @@ var corpus = (function () {
     }
 
 
-    self.sparql_searchResource = function (word,id, type, depth, callback) {
+    self.sparql_searchResource = function (word, id, type, depth, callback) {
         var typeUri = "<http://data.total.com/resource/ontology/ctg/" + type + ">"
 
 
@@ -107,19 +95,18 @@ var corpus = (function () {
             query += " FILTER contains(lcase(str(?resourceLabel )),\"" + word.toLowerCase() + "\") "
         }
         if (id) {
-            query += " FILTER (?resource=<"+id+">) "
+            query += " FILTER (?resource=<" + id + ">) "
         }
-        if(depth>0) {
+        if (depth > 0) {
 
 
             for (var i = 0; i < depth; i++) {
-                if(i==0){
+                if (i == 0) {
                     query += "OPTIONAL {" +
                         "?child1 skos:broader ?resource ." +
                         "?child1 skos:prefLabel ?childLabel1 ."
 
-                }
-                else {
+                } else {
                     query += "optional {" +
                         "?child" + (i + 1) + " skos:broader ?child" + (i) + " ." +
                         "?child" + (i + 1) + " skos:prefLabel ?childLabel" + (i + 1) + " ."
@@ -147,9 +134,9 @@ var corpus = (function () {
     }
 
     self.onJstreeSelectNode = function (evt, obj) {
-
+        $("#currentCorpusSpan").html(" : "+obj.node.text);
         var node = obj.node
-        if(node.children.length>0)
+        if (node.children.length > 0)
             return;
         var childType = "";
         if (node.id.indexOf("/Domain/") > -1)
@@ -162,11 +149,11 @@ var corpus = (function () {
             childType = "Chapter";
         if (node.id.indexOf("/Chapter/") > -1)
             childType = "Paragraph";
-        self.showJstreeResources  (null,  node.id,null, 1, node.id)
+        self.showJstreeResources(null, node.id, null, 1, node.id)
 
     }
 
-    self.resetSelection=function(){
+    self.resetSelection = function () {
         self.showDomainsJstree();
 
     }

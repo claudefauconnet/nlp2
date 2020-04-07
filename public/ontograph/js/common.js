@@ -70,6 +70,42 @@ var common = (function () {
 
     }
 
+    self.addNodesToJstree=function(jstreeDiv,parentNodeId,jstreeData,options) {
+        jstreeData.forEach(function (node) {
+            $("#" + jstreeDiv).jstree(true).create_node(parentNodeId, node, "last", function () {
+
+                $("#" + jstreeDiv).jstree(true).open_all();
+
+                $(".jstree-themeicon").css("display", "none")
+                $(".jstree-anchor").css("line-height", "18px")
+                $(".jstree-anchor").css("height", "18px")
+                $(".jstree-anchor").css("font-size", "14px")
+
+
+
+            })
+            var offset=$(document.getElementById(parentNodeId)).offset();
+            $("#" + jstreeDiv).scrollTop( offset.top)
+        })
+    }
+
+
+    self.sliceArray=function(array,sliceSize){
+        var slices=[];
+        var slice=[]
+        array.forEach(function(item){
+            if(slice.length>=sliceSize){
+                slices.push(slice);
+                slice=[];
+            }
+            slice.push(item)
+        })
+        slices.push(slice);
+        return slices;
+
+
+    }
+
 
     return self;
 

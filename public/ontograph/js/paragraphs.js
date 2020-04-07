@@ -182,7 +182,14 @@ var paragraphs = (function () {
 
     }
 
-    self.sparql_getEntitiesParagraphs = function (idCorpus, idConcepts, options, callback) {
+    self.sparql_getEntitiesParagraphs = function (idCorpus, conceptsIds, options, callback) {
+
+
+        var slicedConceptsIds=common.sliceArray(conceptsIds,25);
+        var  allResults=[];
+        async.eachSeries(slicedConceptsIds,function(concepts,callbackEach){
+
+
         if (!options)
             options = {minManadatoryEntities: 2}
         var queryCorpus = ""
@@ -220,9 +227,9 @@ var paragraphs = (function () {
                 queryCorpus += "?paragraph  skos:broader <" + idCorpus + ">."
             }
 
-            if (idConcepts) {
+            if (concepts) {
                 var entityIdsStr = ""
-                idConcepts.forEach(function (id, index) {
+                concepts.forEach(function (id, index) {
                     if (index > 0)
                         entityIdsStr += ","
                     entityIdsStr += "<" + id + ">"
@@ -241,23 +248,26 @@ var paragraphs = (function () {
             "        select *" +
             "        where{ "
 
-        idConcepts.forEach(function (id, index) {
-            if (index >= options.minManadatoryEntities)
-                query += "OPTIONAL {"
-            query +=
-                "  ?paragraph terms:subject ?entity" + index + " . " +
-                "    FILTER (?entity" + index + " in(<" + id + ">))" +
-                "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
-                "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
-                "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
-                "    "
 
-            if (index >= options.minManadatoryEntities)
-                query += "}"
 
-        })
-        query += "?paragraph terms:subject ?entity22 .  ?entity22 rdfsyn:type ?entity22Type . ?entity22 rdfs:label ?entity22Label . filter (?entity22!=?entity1  && ?entity22!=?entity0)";
+            concepts.forEach(function (id, index) {
+                if (index >= options.minManadatoryEntities)
+                    query += "OPTIONAL {"
+                query +=
+                    "  ?paragraph terms:subject ?entity" + index + " . " +
+                    "    FILTER (?entity" + index + " in(<" + id + ">))" +
+                    "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
+                    "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
+                    "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
+                    "    "
 
+                if (index >= options.minManadatoryEntities)
+                    query += "}"
+
+            })
+        if(options.getParagraphEntities) {
+            query += "?paragraph terms:subject ?entity22 .  ?entity22 rdfsyn:type ?entity22Type . ?entity22 rdfs:label ?entity22Label . filter (?entity22!=?entity1  && ?entity22!=?entity0)";
+        }
         query += queryCorpus
         query += "    } limit 1000"
 
@@ -267,16 +277,24 @@ var paragraphs = (function () {
             if (err) {
                 return callback(err);
             }
-            var bindings = [];
-            var ids = [];
-            return callback(null, result.results.bindings);
+
+            allResults=allResults.concat(result.results.bindings);
+            return callbackEach();
 
 
         })
 
+        },function(err){
+            if(err)
+                return callback(err);
+            return callback(null,allResults)
+        })
+
     }
 
-    self.drawEntitiesParagraphsGraph = function (selectedEntities, data) {
+    self.drawEntitiesParagraphsGraph = function (selectedEntities, data,options) {
+        if(!options)
+            options={}
         var visjsData = {
             nodes: [],
             edges: []
@@ -318,30 +336,32 @@ var paragraphs = (function () {
 
 
             // entities level 2 linked to paragraphs
-            if (uniqueNodeIds.indexOf(item.entity22.value) < 0) {
-                uniqueNodeIds.push(item.entity22.value)
-                var type = item.entity22Type.value.substring(item.entity22Type.value.lastIndexOf("/") + 1)
-                var node = {
-                    label: item.entity22Label.value,
-                    id: item.entity22.value,
-                    color: ontograph.entityTypeColors[type],
-                    data: {type: type},
-                    shape: "box",
+           if(options.getParagraphEntities) {
+               if (uniqueNodeIds.indexOf(item.entity22.value) < 0) {
+                   uniqueNodeIds.push(item.entity22.value)
+                   var type = item.entity22Type.value.substring(item.entity22Type.value.lastIndexOf("/") + 1)
+                   var node = {
+                       label: item.entity22Label.value,
+                       id: item.entity22.value,
+                       color: ontograph.entityTypeColors[type],
+                       data: {type: type},
+                       shape: "box",
 
-                }
-                visjsData.nodes.push(node)
-            }
-            var edgeId = paragraphId + "_" + item.entity22.value
-            if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                uniqueEdgesIds.push(edgeId)
-                var edge = {
-                    from: paragraphId,
-                    to: item.entity22.value,
-                    id: edgeId,
+                   }
+                   visjsData.nodes.push(node)
+               }
+               var edgeId = paragraphId + "_" + item.entity22.value
+               if (uniqueEdgesIds.indexOf(edgeId) < 0) {
+                   uniqueEdgesIds.push(edgeId)
+                   var edge = {
+                       from: paragraphId,
+                       to: item.entity22.value,
+                       id: edgeId,
 
-                }
-                visjsData.edges.push(edge)
-            }
+                   }
+                   visjsData.edges.push(edge)
+               }
+           }
 
 
             {

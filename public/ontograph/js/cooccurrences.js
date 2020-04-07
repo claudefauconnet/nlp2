@@ -2,74 +2,11 @@ var cooccurrences = (function () {
 
     var self = {};
 
-    self.displayGraphEntitiesCooccurrencesXX = function (entities, options) {
-        if (!options)
-            options = {}
-        ontograph.context.currentGraphType = "displayGraphEntitiesCooccurrences"
-        ontograph.context.currentGraphOptions = options
-        $('#dialogDiv').dialog('close')
-        ontograph.context.currentParagraphs = {};
-        var depth = 1
-        var depthArray = [];
-        uniqueNodeIds = [];
-        var uniqueEdgesIds = [];
-        var totalTypeOccurences = {}
-        var visjsData = {nodes: [], edges: []}
-        for (var i = 0; i < depth; i++) {
-            depthArray.push(i)
-        }
-        var selectedEntities = entities;
-        if (!selectedEntities)
-            selectedEntities = ontograph.getSelectedEntities();
-        var startEntityTypes = [];
-        ontograph.context.selectedEntities = selectedEntities;
 
 
-        sparql.queryEntitiesCooccurrences(selectedEntities, {minManadatoryEntities: minManadatoryEntities}, function (err, result) {
-            if (err)
-                return $("#messageDiv").html(err);
-            var endEntityTypes = {}
 
 
-            result.forEach(function (item, indexLine) {
 
-                var obj2 = {id: item.entity2.value, label: item.entity2Label.value, type: ontograph.getTypeFromEntityUri(item.entity2.value)}
-                var type2 = obj2.type.substring(obj2.type.lastIndexOf("/") + 1)
-                if (!endEntityTypes[type2])
-                    endEntityTypes[type2] = 0
-                endEntityTypes[type2] += parseInt(item.nOccurrences.value)
-            })
-            self.showEntitiesFilteringPanel(endEntityTypes)
-
-
-        })
-
-
-    }
-
-    self.showEntitiesFilteringPanel = function (endEntityTypes) {
-        var typesMap = []
-        var html = "<ul>";
-        for (var entityType in endEntityTypes) {
-            var checkedStr = "";
-
-            html += "<li  style='background-color: " + ontograph.entityTypeColors[entityType] + "'><input type='checkbox' class='filteredGraphEntityCBX' value='" + ontograph.entityTypeDictionary[entityType] + checkedStr + "'>" + entityType + " (" + endEntityTypes[entityType] + ")</li>"
-
-        }
-        html += "</ul>";
-        html += "<div>"
-        html += "<button onclick='ontograph.showSearchDialog(true)'>Search</button>"
-        html += "<button onclick='cooccurrences.showFilteredEntityCooccurrencesGraph()'>show graph</button>";
-        html += "</html"
-
-
-        $('#dialogDiv').dialog('open')
-        $("#filteredEntitiesPanel").html(html);
-        $("#filteredEntitiesPanel").css("display", "flex");
-        $("#searchPanel").css("display", "none");
-
-
-    }
     self.showFilteredEntityCooccurrencesGraph = function () {
         $("#dialogDiv").dialog("close");
         uniqueNodeIds = [];
@@ -156,36 +93,67 @@ var cooccurrences = (function () {
         ontograph.context.currentGraphType = "displayGraphEntitiesCooccurrences"
         ontograph.context.currentParagraphs = {};
 
+        $("#graphDiv").html("")
+        $("#tableDiv").html("")
 
-        var conceptEntities = null;
-        if (false && $("#jstreeConceptDiv").jstree) {
-            var conceptEntities = $("#jstreeCorpusDiv").jstree(true).get_checked(null, true)
-            if (conceptEntities.length == 0)
-                conceptEntities = null;
-        }
 
         var idCorpus = null;
         var selectedCorpusResources = $("#jstreeCorpusDiv").jstree(true).get_selected()
         if (selectedCorpusResources.length > 0)
             idCorpus = selectedCorpusResources[0]
 
-        self.sparql_getCooccurrences(idCorpus, conceptEntities, options, function (err, result) {
-            if (err)
-                return common.message(err)
-            /*   var endEntityTypes = {}
-               result.forEach(function (item, indexLine) {
 
-                   var obj2 = {id: item.entity2.value, label: item.entity2Label.value, type: ontograph.getTypeFromEntityUri(item.entity2.value)}
-                   var type2 = obj2.type.substring(obj2.type.lastIndexOf("/") + 1)
-                   if (!endEntityTypes[type2])
-                       endEntityTypes[type2] = 0
-                   endEntityTypes[type2] += parseInt(item.nOccurrences.value)
-               })*/
+        var allConceptEntities = []
+        var allResults = []
+        var slicedSelectedConcepts = [];
+        var allDescendantConcepts = [];
+        async.series([
 
-            self.drawCooccurrences(result)
-            // self.showEntitiesFilteringPanel(endEntityTypes)
-        })
 
+                //selection of concepts and sdescendants (can be large)
+                function (callbackSeries) {
+                    var selectedConcepts = null;
+                    var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_checked()
+                    if (selectedConcepts.length == 0)
+                        return callbackSeries();
+                    var slicedSelectedConcepts = common.sliceArray(selectedConcepts, 25);
+                    async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
+
+                        thesaurus.getConceptDescendants(concepts, function (err, result) {
+                            if (err)
+                                return callbackSeries(err);
+                            allDescendantConcepts = allDescendantConcepts.concat(result);
+                            callbackEach();
+                        })
+                    }, function (err) {
+                        ontograph.context.currentSelectedConcepts=allDescendantConcepts;
+                        callbackSeries(err);
+
+                    })
+
+                },
+
+                // getCooccurences
+                function (callbackSeries) {
+                    var slicedDescendantConcepts = common.sliceArray(allDescendantConcepts, 25);
+
+                    async.eachSeries(slicedDescendantConcepts, function (concepts, callbackEach) {
+                        self.sparql_getCooccurrences(idCorpus, concepts, options, function (err, result) {
+                            if (err)
+                                return callbackEach(err)
+                            allResults = allResults.concat(result);
+                            callbackEach();
+                        })
+                    }, function (err) {
+                        callbackSeries(err);
+                    })
+                }
+            ]
+            , function (err) {
+                if (err)
+                    return common.message(err)
+                self.drawCooccurrences(allResults);
+            })
 
     }
 
@@ -193,10 +161,10 @@ var cooccurrences = (function () {
     self.sparql_getCooccurrences = function (idCorpus, idConcepts, options, callback) {
         var queryCorpus = ""
         var queryConcept = ""
-        var countParagraphMin = 20
+        var countParagraphMin = 0
         if (idCorpus) {
             if (idCorpus.indexOf("/Domain/") > -1) {
-                countParagraphMin = 20;
+                countParagraphMin = 10;
                 queryCorpus += "?paragraph  skos:broader ?chapter ."
                 queryCorpus += "?chapter  skos:broader ?document ."
                 queryCorpus += "?document  skos:broader ?document_type ."
@@ -204,20 +172,20 @@ var cooccurrences = (function () {
                 queryCorpus += "?branch   skos:broader <" + idCorpus + ">."
             }
             if (idCorpus.indexOf("/Branch/") > -1) {
-                countParagraphMin = 10;
+                countParagraphMin = 5;
                 queryCorpus += "?paragraph  skos:broader ?chapter ."
                 queryCorpus += "?chapter  skos:broader ?document ."
                 queryCorpus += "?document  skos:broader ?documentType ."
                 queryCorpus += "?documentType   skos:broader <" + idCorpus + ">."
             }
             if (idCorpus.indexOf("/Document-type/") > -1) {
-                countParagraphMin = 5;
+                countParagraphMin = 2;
                 queryCorpus += "?paragraph  skos:broader ?chapter ."
                 queryCorpus += "?chapter  skos:broader ?document ."
                 queryCorpus += "?document   skos:broader <" + idCorpus + ">."
             }
             if (idCorpus.indexOf("/Document/") > -1) {
-                countParagraphMin = 2;
+                countParagraphMin = 1;
                 queryCorpus += "?paragraph  skos:broader ?chapter ."
                 queryCorpus += "?chapter   skos:broader <" + idCorpus + ">."
             }
@@ -226,17 +194,17 @@ var cooccurrences = (function () {
                 queryCorpus += "?paragraph  skos:broader <" + idCorpus + ">."
             }
 
-            if (idConcepts) {
-                var entityIdsStr = ""
-                idConcepts.forEach(function (id, index) {
-                    if (index > 0)
-                        entityIdsStr += ","
-                    entityIdsStr += "<" + id + ">"
-                })
-                queryConcept += " filter (?entity1 in(\" + entityIdsStr + \"))"
-            }
 
+        }
 
+        if (idConcepts && idConcepts.length>0) {
+            var entityIdsStr = ""
+            idConcepts.forEach(function (id, index) {
+                if (index > 0)
+                    entityIdsStr += ","
+                entityIdsStr += "<" + id + ">"
+            })
+            queryConcept += " filter (?entity1 in(" + entityIdsStr + "))"
         }
         var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
         var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
@@ -278,16 +246,18 @@ var cooccurrences = (function () {
 
 
         })
-self.currentData=data;
+        self.currentData = data;
         var dataSet = []
         data.forEach(function (item) {
-            var type1= item.entity1Type.value.substring(item.entity1Type.value.lastIndexOf("/") + 1)
-            var type2= item.entity2Type.value.substring(item.entity2Type.value.lastIndexOf("/") + 1)
-            var color1=ontograph.entityTypeColors[type1]
-            var color2=ontograph.entityTypeColors[type2]
+            var type1 = item.entity1Type.value.substring(item.entity1Type.value.lastIndexOf("/") + 1)
+            var type2 = item.entity2Type.value.substring(item.entity2Type.value.lastIndexOf("/") + 1)
+            var color1 = ontograph.entityTypeColors[type1]
+            var color2 = ontograph.entityTypeColors[type2]
             var line = [];
-            line.push("<span class='entity-cell' style='background-color:"+color1+"'>"+item.entity1Label.value+"</span>")
-            line.push("<span class='entity-cell' style='background-color:"+color2+"'>"+item.entity2Label.value+"</span>")
+            //   line.push("<span class='entity-cell' style='background-color:"+color1+"'>"+type1+":"+item.entity1Label.value+"</span>")
+            //   line.push("<span class='entity-cell' style='background-color:"+color2+"'>"+type2+":"+item.entity2Label.value+"</span>")
+            line.push("<span class='entity-cell' style='background-color:" + color1 + "'>" + item.entity1Label.value + "</span>")
+            line.push("<span class='entity-cell' style='background-color:" + color2 + "'>" + item.entity2Label.value + "</span>")
             line.push(item.nOccurrences.value)
             dataSet.push(line)
 
@@ -301,13 +271,13 @@ self.currentData=data;
             data: dataSet,
             select: true,
             columns: [
-                {title: "entity 1"},
-                {title: "entity 2"},
-                {title: "nPar.",type:"num",width:"20px"},
+                {title: "entity 1", width: "50px"},
+                {title: "entity 2", width: "50px"},
+                {title: "nPar.", type: "num", width: "20px"},
 
 
             ],
-            "order": [[ 2, "desc" ]],
+            "order": [[2, "desc"]],
             "pageLength": 20,
 
         });
@@ -323,29 +293,59 @@ self.currentData=data;
             var x = this
 
             //    this.selectedRow = listController.table.row(this);
-              var dataTable = $("#example").DataTable();
+            var dataTable = $("#example").DataTable();
 
 
             var rowIndex = dataTable.cell(this).index().row;
             var colIndex = dataTable.cell(this).index().column;
             var line = dataTable.row(rowIndex).data();
-            var data=self.currentData;
+            var data = self.currentData;
 
-            var selectedEntities=[];
+            var selectedEntities = [];
             selectedEntities.push(data[rowIndex].entity1.value);
             selectedEntities.push(data[rowIndex].entity2.value);
             var idCorpus = null;
             var selectedCorpusResources = $("#jstreeCorpusDiv").jstree(true).get_selected()
             if (selectedCorpusResources.length > 0)
                 idCorpus = selectedCorpusResources[0]
-            paragraphs.sparql_getEntitiesParagraphs(idCorpus,selectedEntities,null, function(err, result){
-                if(err)
+            paragraphs.sparql_getEntitiesParagraphs(idCorpus, selectedEntities, null, function (err, result) {
+                if (err)
                     common.message(err)
-                paragraphs.drawEntitiesParagraphsGraph(selectedEntities,result)
+                paragraphs.drawEntitiesParagraphsGraph(selectedEntities, result)
             })
 
 
         })
+    }
+
+
+
+
+
+
+
+    self.showEntitiesFilteringPanel = function (endEntityTypes) {
+        var typesMap = []
+        var html = "<ul>";
+        for (var entityType in endEntityTypes) {
+            var checkedStr = "";
+
+            html += "<li  style='background-color: " + ontograph.entityTypeColors[entityType] + "'><input type='checkbox' class='filteredGraphEntityCBX' value='" + ontograph.entityTypeDictionary[entityType] + checkedStr + "'>" + entityType + " (" + endEntityTypes[entityType] + ")</li>"
+
+        }
+        html += "</ul>";
+        html += "<div>"
+        html += "<button onclick='ontograph.showSearchDialog(true)'>Search</button>"
+        html += "<button onclick='cooccurrences.showFilteredEntityCooccurrencesGraph()'>show graph</button>";
+        html += "</html"
+
+
+        $('#dialogDiv').dialog('open')
+        $("#filteredEntitiesPanel").html(html);
+        $("#filteredEntitiesPanel").css("display", "flex");
+        $("#searchPanel").css("display", "none");
+
+
     }
 
 
