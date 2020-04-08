@@ -94,28 +94,10 @@ var projection = (function () {
                     })
 
                 },
-                //getParagraphsInfos
-                function (callbackSeries) {
 
-            return callbackSeries();
-                    var allParagraphsIds = [];
-                    allParagraphs.forEach(function (item, indexLine) {
-                        allParagraphsIds.push(item.paragraph.value);
-                    })
-                    paragraphs.getParagraphsInfos(allParagraphsIds, {}, function (err, result) {
-                        if (err)
-                            return callbackSeries(err);
-                        result.forEach(function (item) {
-                            paragraphsInfos[item.paragraph.value] = item
-                        })
-                        self.currentParagraphsInfos = paragraphsInfos;
-
-                        callbackSeries();
-                    })
-
-                },
                 //getParagraphs
                 function (callbackSeries) {
+                    common.message("Drawing graph paragraphs:" + allParagraphs.length)
                     paragraphs.drawParagraphsEntitiesGraph(allParagraphs, paragraphsInfos, {
                             conceptAggrLevel: conceptAggrLevel,
                             resourceAggrLevel: resourceAggrLevel,

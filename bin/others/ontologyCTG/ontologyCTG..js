@@ -22,7 +22,7 @@ var ontologyCTG = {
             },
             function (callbackSeries) {
 
-                var worksheet = sheets["Sheet1"]
+                var worksheet = sheets["Feuil1"]
                 var header = [];
                 var data = [];
                 var ref = worksheet["!ref"];
@@ -125,6 +125,8 @@ var ontologyCTG = {
                 var uniqueEntities = [];
                 var uniqueResource = [];
                 var str = ""
+
+                var strChapter = ""
                 var strEntities = "";
                 var strDocs = "";
 
@@ -159,164 +161,191 @@ var ontologyCTG = {
                     //    str += paragraphUrl + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg//" + "simple" + "> .\n"
 
 
-                    //   console.log(JSON.stringify(item,null,2))
-                    if (item.Document && item.Document != "") {
-                        if (!docsMap[item.Document]) {
-                            docId = 1000 + Object.keys(docsMap).length
-                            docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + docId + ">"
-                            strDocs += docsMap[item.Document] + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/DocumentType/" + "GM_MEC" + "> .\n"
-                            strDocs += docsMap[item.Document] + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(item.Document) + "\"@en .\n"
+    //   console.log(JSON.stringify(item,null,2))
+    if (item.Document && item.Document != "") {
+        if (!docsMap[item.Document]) {
+            docId = 1000 + Object.keys(docsMap).length
+            docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + docId + ">"
+            if(true) {
+            strDocs += docsMap[item.Document] + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/DocumentType/" + "GM_MEC" + "> .\n"
+            strDocs += docsMap[item.Document] + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(item.Document) + "\"@en .\n"
 
 
-                            resourceStr += docsMap[item.Document]   + " <http://www.w3.org/2004/02/skos/core#prefLabel> \""+ formatString(item.Document)+"\" .\n"
-                            resourceStr += docsMap[item.Document]   + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Document> .\n";
+            resourceStr += docsMap[item.Document] + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + formatString(item.Document) + "\" .\n"
+            resourceStr += docsMap[item.Document] + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Document> .\n";
 
-                            var arrayDoc=item.Document.split("_");
-                            if(arrayDoc.length==6){
-                                var domain="<http://data.total.com/resource/ontology/ctg/Domain/"+arrayDoc[2]+">";
-                                var branch="<http://data.total.com/resource/ontology/ctg/Branch/"+arrayDoc[2]+"_"+arrayDoc[1]+">";
-                                var docType="<http://data.total.com/resource/ontology/ctg/Document-type/"+arrayDoc[2]+"_"+arrayDoc[1]+"_"+arrayDoc[0]+">";
+            var arrayDoc = item.Document.split("_");
+            if (arrayDoc.length == 6) {
+                var domain = "<http://data.total.com/resource/ontology/ctg/Domain/" + arrayDoc[2] + ">";
+                var branch = "<http://data.total.com/resource/ontology/ctg/Branch/" + arrayDoc[2] + "_" + arrayDoc[1] + ">";
+                var docType = "<http://data.total.com/resource/ontology/ctg/Document-type/" + arrayDoc[2] + "_" + arrayDoc[1] + "_" + arrayDoc[0] + ">";
 
-                                if(uniqueResource.indexOf(domain)<0) {
-                                    uniqueResource.push(domain);
-                                    resourceStr += domain + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[2] + "\" .\n";
-                                    resourceStr += domain  + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Domain> .\n";
+                if (uniqueResource.indexOf(domain) < 0) {
+                    uniqueResource.push(domain);
+                    resourceStr += domain + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[2] + "\" .\n";
+                    resourceStr += domain + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Domain> .\n";
 
-                                }
-                                if(uniqueResource.indexOf(branch)<0) {
-                                    uniqueResource.push(branch);
-                                    resourceStr += branch + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[1] + "\" .\n";
-                                    resourceStr += branch  + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Branch> .\n";
+                }
+                if (uniqueResource.indexOf(branch) < 0) {
+                    uniqueResource.push(branch);
+                    resourceStr += branch + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[1] + "\" .\n";
+                    resourceStr += branch + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Branch> .\n";
 
-                                }
-                                if(uniqueResource.indexOf(docType)<0) {
-                                    uniqueResource.push(docType);
-                                    resourceStr += docType + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[0] + "\" .\n";
-                                    resourceStr += docType  + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Document-type> .\n";
+                }
+                if (uniqueResource.indexOf(docType) < 0) {
+                    uniqueResource.push(docType);
+                    resourceStr += docType + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + arrayDoc[0] + "\" .\n";
+                    resourceStr += docType + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Document-type> .\n";
 
-                                }
+                }
 
-                                resourceStr += branch  + " <http://www.w3.org/2004/02/skos/core#broader> "+domain+" .\n";
-                                resourceStr += docType  + " <http://www.w3.org/2004/02/skos/core#broader> "+branch+" .\n";
-                                resourceStr += docsMap[item.Document]  + " <http://www.w3.org/2004/02/skos/core#broader> "+docType+" .\n";
+                resourceStr += branch + " <http://www.w3.org/2004/02/skos/core#broader> " + domain + " .\n";
+                resourceStr += docType + " <http://www.w3.org/2004/02/skos/core#broader> " + branch + " .\n";
+                resourceStr += docsMap[item.Document] + " <http://www.w3.org/2004/02/skos/core#broader> " + docType + " .\n";
 
-                            }
-                            else{
-                                var x=3;
-                            }
+            } else {
+                var x = 3;
+            }
+
+        }
+        str += paragraphUrl + " <http://purl.org/dc/terms/isPartOf> " + docsMap[item.Document] + ".\n"
+
+
+    }
+}
+
+                    if(item.ChapterId){
+
+                        var key=docsMap[item.Document] + "_" + item.ChapterId
+                        if (!chaptersMap[key]) {
+                            var chapterId = 1000 + Object.keys(chaptersMap).length
+                            var topChapterUrl = "<http://data.total.com/resource/ontology/ctg/Chapter/" + chapterId + ">"
+                            chaptersMap[key]=topChapterUrl;
 
                         }
-                        str += paragraphUrl + " <http://purl.org/dc/terms/isPartOf> " + docsMap[item.Document] + ".\n"
+
+                     //   str += paragraphUrl + " <http://purl.org/dc/terms/isPartOf> \"" + i + "_" + formatString(item.ChapterLabel.trim()) + "\"@en .\n"
+
+                        resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + item.ID + "\" .\n"
+                        resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Paragraph> .\n";
+                        resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#broader> " + chaptersMap[key]+ " .\n"
 
 
-                    }
-
-                    for (var i = 1; i < 4; i++) {
-                        var chapterName = item["ChapterTitle" + i]
-                        if (chapterName && chapterName.trim() != "") {
-                            var chapterUri = "<http://data.total.com/resource/ontology/ctg/Chapter/" + item.ID + "_" + i + ">"
-                            //   strDocs += chapterUri + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/ChapterType/" + "Chapter1" + "> .\n"
-
-                            //    strDocs += chapterUri + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(chapterName.trim()) + "\"@en .\n"
-                            if (i == 1) {
-                               var  topChapterLabel = chapterName.trim();
-                                if (!chaptersMap[docId + "_" + topChapterLabel]) {
-                                    var chapterId = 1000 + Object.keys(chaptersMap).length
-                                    var topChapterUrl = "<http://data.total.com/resource/ontology/ctg/Chapter/" + chapterId + ">"
-                                    chaptersMap[docsMap[item.Document] + "_" + topChapterLabel] =topChapterUrl;
-
-                                }
-                                topChapterUrl=chaptersMap[ docsMap[item.Document] + "_" + topChapterLabel];
-                                str += paragraphUrl + " <http://purl.org/dc/terms/isPartOf> \"" + i + "_" + formatString(chapterName.trim()) + "\"@en .\n"
-
-                                resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + item.ID + "\" .\n"
-                                resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Paragraph> .\n";
-                                resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#broader> " + topChapterUrl + " .\n"
-
-
-                                resourceStr += topChapterUrl + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + chapterName.trim() + "\" .\n"
-                                resourceStr += topChapterUrl + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Chapter> .\n";
-                                resourceStr += topChapterUrl + " <http://www.w3.org/2004/02/skos/core#broader> " +   docsMap[item.Document] + " .\n"
-                            }
-                        }
-                    }
-
-                    var text = item.ParagraphText;
-                    if (text && text.length > 5) {
-                        text = text.replace(/"/gm, "")
-                        text = text.replace(/[;]/gm, "")
-                        str += paragraphUrl + " <http://purl.org/dc/dcmitype/Text> \"" + formatString(text) + "\"@en .\n"
-                    }
-
-
-
-
-                    var entitiesUriMap = {}
-                    var entitiesUriStr = item["Entity_URI"];
-                    if (entitiesUriStr && entitiesUriStr.split) {
-
-                        entitiesUriStr.split(";").forEach(function (itemEntity, indexX) {
-                            var splitArray = itemEntity.split("|")
-                            var entityId = splitArray[2]
-                            var type = splitArray[0]
-                            var label = splitArray[1]
-                            if (!label)
-                                return console.log("ERROR " + paragraphUrl + " :  " + splitArray.toString());
-
-                            if (uniqueEntities.indexOf(entityId) < 0) {
-                                uniqueEntities.push(entityId);
-                                strEntities += "<" + entityId + ">  <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(label) + "\"@en .\n";
-                                strEntities += "<" + entityId + "> <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.total.com/resource/ontology/ctg/EntityType/" + type + "> .\n"
-                            }
-
-                            str += paragraphUrl + " <http://purl.org/dc/terms/subject> " + "<" + entityId + ">.\n"
-                            str += paragraphUrl + " <http://open.vocab.org/terms/hasOffset> \"" + itemEntity + "\" .\n";
-
-                            if (quantumMap[entityId]) {
-                                var quantumURI = quantumMap[entityId]["Quantum_URI"]
-                                // quantumURI=quantumURI.trim()
-                                strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#exactMatch> <" + quantumURI + "> .\n"
-                                strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#definition> \"" + formatString(quantumMap[entityId].Definition) + "\"@en .\n"
-                            }
-
-
-                        })
-                    }
-
-                    for (var key in litteralEntities) {
-                        var entityValue = item[key]
-                        if (entityValue && entityValue != "") {
-                            str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#" + key + ">" + "<" + entityValue + ">.\n"
-                        }
-                    }
-
-
-                    var relationsStr0 = item["RDF_Triple"];
-                    if (relationsStr0 && relationsStr0 != "[]") {
-                        var relationTypeUri = "http://data.total.com/resource/ontology/ctg/relation#"
-                        var relationUri = "http://data.total.com/resource/ontology/ctg/Relation/" + (relationsCounter++);
-
-                        relationsStr0 = relationsStr0.replace(/\),\s\(/g, ";")
-                        relationsStr0 = relationsStr0.replace(/[\['\]\(\)]/g, "")
-
-                        relationsStr0.split(";").forEach(function (relationStr) {
-                            var array = relationStr.split(",")
-                            if (array.length == 3) {
-                                var subject = array[0];
-                                var predicate = array[1].trim();
-                                var object = array[2].trim();
-                                strRelations += "<" + subject + "> <" + relationTypeUri + predicate + "> <" + object + ">.\n"
-                                /*   strRelations += "<" + subject + "> <" + relationTypeUri + predicate + "> <" + object + "> <" + relationUri + ">.\n"
-                                   str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#hasTriple>  " + relationUri + " .\n"*/
-                            }
-
-                        })
-
+                        resourceStr += chaptersMap[key] + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" +  formatString(item.ChapterLabel.trim()) + "\" .\n"
+                        resourceStr += chaptersMap[key] + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Chapter> .\n";
+                        resourceStr += chaptersMap[key] + " <http://www.w3.org/2004/02/skos/core#broader> " +   docsMap[item.Document] + " .\n"
 
                     }
+
+
+if(false) {
+
+    for (var i = 1; i < 4; i++) {
+        var chapterName = item["ChapterTitle" + i]
+        if (chapterName && chapterName.trim() != "") {
+            var chapterUri = "<http://data.total.com/resource/ontology/ctg/Chapter/" + item.ID + "_" + i + ">"
+            //   strDocs += chapterUri + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/ChapterType/" + "Chapter1" + "> .\n"
+
+            //    strDocs += chapterUri + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(chapterName.trim()) + "\"@en .\n"
+            if (i == 1) {
+                var topChapterLabel = chapterName.trim();
+                if (!chaptersMap[docId + "_" + topChapterLabel]) {
+                    var chapterId = 1000 + Object.keys(chaptersMap).length
+                    var topChapterUrl = "<http://data.total.com/resource/ontology/ctg/Chapter/" + chapterId + ">"
+                    chaptersMap[docsMap[item.Document] + "_" + topChapterLabel] = topChapterUrl;
+
+                }
+                topChapterUrl = chaptersMap[docsMap[item.Document] + "_" + topChapterLabel];
+                str += paragraphUrl + " <http://purl.org/dc/terms/isPartOf> \"" + i + "_" + formatString(chapterName.trim()) + "\"@en .\n"
+
+                resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + item.ID + "\" .\n"
+                resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Paragraph> .\n";
+                resourceStr += paragraphUrl + " <http://www.w3.org/2004/02/skos/core#broader> " + topChapterUrl + " .\n"
+
+
+                resourceStr += topChapterUrl + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + chapterName.trim() + "\" .\n"
+                resourceStr += topChapterUrl + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Chapter> .\n";
+                resourceStr += topChapterUrl + " <http://www.w3.org/2004/02/skos/core#broader> " + docsMap[item.Document] + " .\n"
+            }
+        }
+    }
+}
+
+    var text = item.ParagraphText;
+    if (text && text.length > 5) {
+        text = text.replace(/"/gm, "")
+        text = text.replace(/[;]/gm, "")
+        str += paragraphUrl + " <http://purl.org/dc/dcmitype/Text> \"" + formatString(text) + "\"@en .\n"
+    }
+
+
+    var entitiesUriMap = {}
+    var entitiesUriStr = item["Entity_URI"];
+    if (entitiesUriStr && entitiesUriStr.split) {
+
+        entitiesUriStr.split(";").forEach(function (itemEntity, indexX) {
+            var splitArray = itemEntity.split("|")
+            var entityId = splitArray[2]
+            var type = splitArray[0]
+            var label = splitArray[1]
+            if (!label)
+                return console.log("ERROR " + paragraphUrl + " :  " + splitArray.toString());
+
+            if (uniqueEntities.indexOf(entityId) < 0) {
+                uniqueEntities.push(entityId);
+                strEntities += "<" + entityId + ">  <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(label) + "\"@en .\n";
+                strEntities += "<" + entityId + "> <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.total.com/resource/ontology/ctg/EntityType/" + type + "> .\n"
+            }
+
+            str += paragraphUrl + " <http://purl.org/dc/terms/subject> " + "<" + entityId + ">.\n"
+            str += paragraphUrl + " <http://open.vocab.org/terms/hasOffset> \"" + itemEntity + "\" .\n";
+
+            if (quantumMap[entityId]) {
+                var quantumURI = quantumMap[entityId]["Quantum_URI"]
+                // quantumURI=quantumURI.trim()
+                strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#exactMatch> <" + quantumURI + "> .\n"
+                strEntities += "<" + entityId + ">  <http://www.w3.org/2004/02/skos/core#definition> \"" + formatString(quantumMap[entityId].Definition) + "\"@en .\n"
+            }
+
+
+        })
+    }
+
+    for (var key in litteralEntities) {
+        var entityValue = item[key]
+        if (entityValue && entityValue != "") {
+            str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#" + key + ">" + "<" + entityValue + ">.\n"
+        }
+    }
+
+
+    var relationsStr0 = item["RDF_Triple"];
+    if (relationsStr0 && relationsStr0 != "[]") {
+        var relationTypeUri = "http://data.total.com/resource/ontology/ctg/relation#"
+        var relationUri = "http://data.total.com/resource/ontology/ctg/Relation/" + (relationsCounter++);
+
+        relationsStr0 = relationsStr0.replace(/\),\s\(/g, ";")
+        relationsStr0 = relationsStr0.replace(/[\['\]\(\)]/g, "")
+
+        relationsStr0.split(";").forEach(function (relationStr) {
+            var array = relationStr.split(",")
+            if (array.length == 3) {
+                var subject = array[0];
+                var predicate = array[1].trim();
+                var object = array[2].trim();
+                strRelations += "<" + subject + "> <" + relationTypeUri + predicate + "> <" + object + ">.\n"
+                /*   strRelations += "<" + subject + "> <" + relationTypeUri + predicate + "> <" + object + "> <" + relationUri + ">.\n"
+                   str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#hasTriple>  " + relationUri + " .\n"*/
+            }
+
+        })
+
+
+    }
 
 
                 })
+
 
 
                 var strAll = strDocs + strEntities + str ;
@@ -406,8 +435,10 @@ var ontologyCTG = {
 
 module.exports = ontologyCTG
 
-
-ontologyCTG.readXlsx("D:\\NLP\\rdfs\\Total\\OntoMEC_triplet_20200402.xlsx", function (err, result) {
+var xlsx="OntoCOR.xlsx"
+//xlsx="OntoMEC_triplet_20200402.xlsx"
+xlsx="ontologyCOR_MEC.xlsx"
+ontologyCTG.readXlsx("D:\\NLP\\rdfs\\Total\\"+xlsx, function (err, result) {
 
 })
 

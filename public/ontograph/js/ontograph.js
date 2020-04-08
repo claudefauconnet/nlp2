@@ -173,7 +173,7 @@ var ontograph = (function () {
               }*/
 
         } else {
-            $("#graphDiv").width($(window).width() - 20)
+          //  $("#graphDiv").width($(window).width() - 20)
             visjsGraph.draw("graphDiv", visjsData, {
                 onclickFn: options.onclickFn,
                 onHoverNodeFn: options.onHoverNodeFn,

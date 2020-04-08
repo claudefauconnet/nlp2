@@ -144,6 +144,10 @@ var corpus = (function () {
     }
 
     self.onJstreeSelectNode = function (evt, obj) {
+
+        if(obj.event.ctrlKey){
+            return  $("#accordion").accordion({ active: 1});
+        }
         $("#currentCorpusSpan").html(" : "+obj.node.text);
         var node = obj.node
         if (node.children.length > 0)
@@ -160,6 +164,7 @@ var corpus = (function () {
         if (node.id.indexOf("/Chapter/") > -1)
             childType = "Paragraph";
         self.showJstreeResources(null, node.id, null, 1, node.id)
+
 
     }
 

@@ -72,47 +72,95 @@ var thesaurus = (function () {
     }
     self.loadThesaurusTopConceptsTree = function () {
         $("#currentConceptsSpan").html("");
-        var url = sparql.source.sparql_url + "?default-graph-uri=http://data.total.com/resource/thesaurus/ctg/&query=";// + query + queryOptions
-        var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+        var jstreeData = [];
+        var uniqueIds = []
+        async.series([
+            function (callbackSeries) {
+                var url = sparql.source.sparql_url + "?default-graph-uri=http://data.total.com/resource/thesaurus/ctg/&query=";// + query + queryOptions
+                var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
-            "select distinct * " +
-            "where{" +
+                    "select distinct * " +
+                    "where{" +
 
-            "?concept skos:topConceptOf ?scheme." +
-            "?concept skos:prefLabel ?concepLabel." +
-            "} limit 100"
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
-        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
-            if (err) {
-                return common.message(err)
+                    "?concept skos:topConceptOf ?scheme." +
+                    "?concept skos:prefLabel ?concepLabel." +
+                    "} limit 100"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                    if (err) {
+                        return common.message(err)
+                    }
+
+
+                    jstreeData.push({text: "thesaurusCTG", id: "CTG", parent: "#"})
+                    result.results.bindings.forEach(function (item) {
+
+                        if (uniqueIds.indexOf(item.scheme.value) < 0) {
+                            uniqueIds.push(item.scheme.value);
+                            var schemeLabel = item.scheme.value
+                            schemeLabel = schemeLabel.substring(0, schemeLabel.length - 1)
+                            schemeLabel = schemeLabel.substring(schemeLabel.lastIndexOf("/") + 1)
+                            jstreeData.push({text: schemeLabel, id: item.scheme.value, parent: "CTG"})
+                        }
+                        if (uniqueIds.indexOf(item.concept.value) < 0) {
+                            uniqueIds.push(item.concept.value);
+                            jstreeData.push({text: item.concepLabel.value, id: item.concept.value, parent: item.scheme.value})
+                        }
+                    })
+                    return callbackSeries();
+
+
+                });
+            },
+            function (callbackSeries) {
+
+
+                var url = sparql.source.sparql_url + "?default-graph-uri=http://data.total.com/resource/ontology/quantum/&query=";// + query + queryOptions
+                var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>   PREFIX skos:<http://www.w3.org/2004/02/skos/core#> SELECT DISTINCT *WHERE " +
+                    "" +
+                    "{" +
+                    "" +
+                    "?concept skos:broader  ?broader. " +
+                    "?concept skos:prefLabel  ?conceptLabel. " +
+                    "" +
+                    " FILTER NOT EXISTS{?broader skos:broader  ?broader2. }" +
+                    "" +
+                    "} limit 200"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                    if (err) {
+                        return common.message(err)
+                    }
+
+
+                    jstreeData.push({text: "Quantum", id: "QUANTUM", parent: "#"})
+                    result.results.bindings.forEach(function (item) {
+                        if (uniqueIds.indexOf(item.concept.value) < 0) {
+                            uniqueIds.push(item.concept.value);
+                            jstreeData.push({text: item.conceptLabel.value, id: item.concept.value, parent: "QUANTUM"})
+                        }
+                    })
+                    return callbackSeries();
+                });
+
+            },
+            function (callbackSeries) {
+
+                common.loadJsTree("jstreeConceptDiv", jstreeData, {
+                    withCheckboxes: 1, selectDescendants: 1, selectNodeFn: function (evt, obj) {
+                        thesaurus.onNodeSelect(evt, obj);
+                    }
+                })
+                return callbackSeries();
             }
 
-            var jstreeData = [];
-            var uniqueIds = []
-            result.results.bindings.forEach(function (item) {
 
-                if (uniqueIds.indexOf(item.scheme.value) < 0) {
-                    uniqueIds.push(item.scheme.value);
-                    var schemeLabel = item.scheme.value
-                    schemeLabel = schemeLabel.substring(0, schemeLabel.length - 1)
-                    schemeLabel = schemeLabel.substring(schemeLabel.lastIndexOf("/") + 1)
-                    jstreeData.push({text: schemeLabel, id: item.scheme.value, parent: "#"})
-                }
-                if (uniqueIds.indexOf(item.concept.value) < 0) {
-                    uniqueIds.push(item.concept.value);
-                    jstreeData.push({text: item.concepLabel.value, id: item.concept.value, parent: item.scheme.value})
-                }
-            })
-            common.loadJsTree("jstreeConceptDiv", jstreeData, {
-                withCheckboxes: 1, selectDescendants: 1, selectNodeFn: function (evt, obj) {
-                    thesaurus.onNodeSelect(evt, obj);
-                }
-            })
-
-        });
+        ])
 
 
     }
+
+
     self.getSelectedConceptDescendants = function (callback) {
         var selectedConcepts = null;
         var allDescendantConcepts = [];
@@ -186,8 +234,11 @@ var thesaurus = (function () {
     }
 
     self.loadChildrenInConceptJstree = function (conceptId, depth) {
-
-        var url = sparql.source.sparql_url + "?default-graph-uri=http://data.total.com/resource/thesaurus/ctg/&query=";// + query + queryOptions
+        var graphIri = "http://data.total.com/resource/thesaurus/ctg";
+        if (conceptId.indexOf("/quantum/") > -1)
+            graphIri = "http://data.total.com/resource/ontology/quantum/"
+        
+        var url = sparql.source.sparql_url + "?default-graph-uri=" + graphIri + "&query=";// + query + queryOptions
         var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
             "select distinct *" +
@@ -321,8 +372,79 @@ var thesaurus = (function () {
         })
     }
 
+    self.getConceptInfos = function (conceptId, options, callback) {
+
+        var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+
+        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+            "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
+            "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "SELECT DISTINCT *" +
+            "WHERE {" +
+            "<" + conceptId + "> skos:prefLabel ?conceptLabel ."
+
+
+        query += "OPTIONAL {<" + conceptId + "> skos:exactMatch ?exactMatch .}" +
+            "OPTIONAL {<" + conceptId + "> skos:definition ?definition .}"
+
+        query += "OPTIONAL {" +
+            "   <" + conceptId + "> skos:broader ?broaderId1 ." +
+            "  ?broaderId1 skos:prefLabel ?broader1 ." +
+            "     OPTIONAL {" +
+            "    ?broaderId1 skos:broader ?broaderId2 ." +
+            "    ?broaderId2 skos:prefLabel ?broader2 ." +
+            "     OPTIONAL {" +
+
+            "       ?broaderId2 skos:broader ?broaderId3 ." +
+            "    ?broaderId3 skos:prefLabel ?broader3 ." +
+            "       OPTIONAL {" +
+            "       ?broaderId3 skos:broader ?broaderId4 ." +
+            "    ?broaderId4 skos:prefLabel ?broader4 ." +
+            "           OPTIONAL {" +
+            "       ?broaderId4 skos:broader ?broaderId5 ." +
+            "    ?broaderId5 skos:prefLabel ?broader5 ." +
+            "         OPTIONAL {   " +
+            "       ?broaderId5 skos:broader ?broaderId6 ." +
+            "    ?broaderId6 skos:prefLabel ?broader6 ." +
+            "               OPTIONAL {   " +
+            "       ?broaderId6 skos:broader ?broaderId7 ." +
+            "    ?broaderId7 skos:prefLabel ?broader7 ." +
+            "                 OPTIONAL {   " +
+            "       ?broaderId7 skos:broader ?broaderId8 ." +
+            "    ?broaderId8 skos:prefLabel ?broader8 ." +
+            "              }" +
+            "            }" +
+            "        }" +
+            "        }" +
+            "      }" +
+            "    }" +
+            "    }" +
+            " " +
+            "  }" +
+            "  }" +
+            "ORDER BY ASC(?broaderId1)" +
+            "LIMIT 1000"
+        console.log(query)
+
+
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+
+        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            callback(null, result.results.bindings)
+
+        })
+
+
+    }
+
 
     self.onNodeSelect = function (evt, obj) {
+        if (obj.event.ctrlKey) {
+            return $("#accordion").accordion({active: 2});
+        }
         var node = obj.node
         $("#currentConceptsSpan").html(" : " + obj.node.text);
         if (node.children.length > 0)
@@ -335,4 +457,5 @@ var thesaurus = (function () {
 
     return self;
 
-})()
+})
+()

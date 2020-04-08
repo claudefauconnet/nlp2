@@ -1,10 +1,10 @@
 var paragraphs = (function () {
 
     var self = {};
-    self.currentParagraphsInfos = {}
+    self.currentGraphInfos = {}
 
     self.drawParagraphsEntitiesGraph = function (data, paragraphsInfos, options) {
-        self.currentParagraphsInfos = {}
+        self.currentGraphInfos = {}
         var allParagraphIds = [];
         var uniqueNodeIds = []
         var uniqueEdgeIds = []
@@ -26,7 +26,7 @@ var paragraphs = (function () {
                     label: paragraphIdStr,
                     id: paragraphId,
                     color: ontograph.entityTypeColors["paragraph"],
-                    data: {type: "Paragraph"},
+                    data: item,
                     shape: "ellipse",
 
 
@@ -42,6 +42,7 @@ var paragraphs = (function () {
                     label: item.entityLabel.value,
                     id: item.entity.value,
                     color: ontograph.entityTypeColors[type],
+
                     shape: "box",
                     //  font: {size: 18, color: "white"}
 
@@ -106,6 +107,7 @@ var paragraphs = (function () {
             onclickFn: paragraphs.onNodeClick,
             onHoverNodeFn: paragraphs.onNodeHover,
             afterDrawing: function () {
+                common.message("")
                 $("#waitImg").css("display", "none")
             }
         })
@@ -116,49 +118,99 @@ var paragraphs = (function () {
 
     }
     self.onNodeHover = function (obj, point) {
-        async.series([
-            function (callbackSeries) {
-                if (!self.currentParagraphsInfos[obj.id]) {
-                    self.getParagraphsInfos([obj.id], null, function (err, result) {
-                        if (err)
-                            return common.message(err)
-                        result.forEach(function (item) {
 
+        if(obj.id.indexOf("/Paragraph/")>-1) {
+
+            async.series([
+                function (callbackSeries) {
+                    if (!self.currentGraphInfos[obj.id]) {
+                        self.getParagraphsInfos([obj.id], null, function (err, result) {
+                            if (err)
+                                return common.message(err)
+                            result.forEach(function (item) {
+                                if (!self.currentGraphInfos[obj.id])
+                                    self.currentGraphInfos[obj.id] = {paragraph: item.paragraph, paragraphText: item.paragraphText, offsets: []};
+                                self.currentGraphInfos[obj.id].offsets.push(item.offset)
+                            })
+                            callbackSeries();
                         })
+
+
+                    } else
                         callbackSeries();
-                    })
+
+                },
+                function (callbackSeries) {
+                    $("#messageDiv").html("");
+
+                    var html = ""
+
+                    var infos = self.currentGraphInfos[obj.id];
+                    var nodeData = obj.data;
+                    var text = infos.paragraphText.value
+                    var textRich = self.getEntichedParagraphText(infos);
+                    html += "<span class='paragraph-docTitle'>" + nodeData.documentLabel.value + "</span>&nbsp;";
+                    html += "<span class='paragraph-chapter'>" + nodeData.chapterLabel.value + "</span>&nbsp;";
 
 
-                } else
+                    html += "<span class='text'>" + textRich + "</span>&nbsp;";
+                    //    html += "<span style='font-weight:bold'>" + text + "</span>&nbsp;";
+                    if (text)
+                        $("#paragraphTextDiv").html(html);
                     callbackSeries();
 
-            },
-            function (callbackSeries) {
-                $("#messageDiv").html("");
-
-                var html = ""
-                var text = self.context.currentParagraphs[obj.id].text
-                var textRich = self.getEntichedParagraphText(obj.id);
-                html += "<span class='paragraph-docTitle'>" + self.context.currentParagraphs[obj.id].documentLabel + "</span>&nbsp;";
-                self.context.currentParagraphs[obj.id].containers.forEach(function (container) {
-                    var p = container.indexOf("_")
-
-                    if (p == 1)
-                        html += "<span class='paragraph-chapter'>" + container.substring(p + 1) + "</span>&nbsp;";
-
-                })
-                html += "<span class='text'>" + textRich + "</span>&nbsp;";
-                //    html += "<span style='font-weight:bold'>" + text + "</span>&nbsp;";
-                if (text)
-                    $("#paragraphTextDiv").html(html);
-                callbackSeries();
-
-            }
+                }
 
 
-        ])
+            ])
+
+        }
+        else if(obj.id.indexOf("/resource/vocabulary/")>-1){
+            async.series([
+                function (callbackSeries) {
+                    if (!self.currentGraphInfos[obj.id]) {
+                        thesaurus.getConceptInfos([obj.id], null, function (err, result) {
+                                    self.currentGraphInfos[obj.id] =result[0];
+                            callbackSeries();
+                        })
+                    } else
+                        callbackSeries();
+                },
+                function (callbackSeries) {
+                    $("#messageDiv").html("");
+
+                    var html = ""
+
+                    var infos = self.currentGraphInfos[obj.id];
+
+                    html += "<span class='paragraph-docTitle'>" + infos.conceptLabel.value + "</span>&nbsp;";
+                    for(var i=1;i<8;i++){
+                       var broader=infos["broader"+i]
+                        if(typeof broader !=="undefined"){
+                            html += "<span class='paragraph-chapter'>" +"/"+ broader.value + "</span>&nbsp;";
+                        }
+                    }
+                    var definition=infos["definition"]
+                    if(typeof definition !=="undefined"){
+                        html += "<span class='paragraph-chapter'>definition:</span>&nbsp;"+definition;
+                    }
+                    var exactMatch=infos["exactMatch"]
+                    if(typeof exactMatch !=="undefined"){
+                        html += "<span class='paragraph-chapter'>Quantum exact match:</span>&nbsp;"+exactMatch;
+                    }
 
 
+                        $("#paragraphTextDiv").html(html);
+                    callbackSeries();
+
+                }
+
+
+            ])
+            
+            
+            
+        }
     }
 
 
@@ -194,7 +246,7 @@ var paragraphs = (function () {
                 "?paragraph mime:Text ?paragraphText ." +
                 " filter (?paragraph in(" + pargagraphsIdsStr + "))"
 
-               query += "?paragraph <http://open.vocab.org/terms/hasOffset> ?offset ."
+            query += "?paragraph <http://open.vocab.org/terms/hasOffset> ?offset ."
 
 
             query += "} limit 10000"
@@ -219,197 +271,53 @@ var paragraphs = (function () {
 
     }
 
-
-    self.displayGraphParagraphs = function () {
-        $('#dialogDiv').dialog('close')
-        ontograph.context.currentParagraphs = {};
-        ontograph.context.currentGraphType = "displayGraphParagraphs"
-
-        var selectedEntities = ontograph.getSelectedEntities();
-        var minManadatoryEntities = parseInt($("#minManadatoryEntities").val())
-        sparql.queryEntitiesCooccurrencesParagraphs(selectedEntities, {minManadatoryEntities: minManadatoryEntities}, function (err, result) {
-            if (err)
-                return $("#messageDiv").html(err);
-
-            var visjsData = {
-                nodes: [],
-                edges: []
+    self.getEntichedParagraphText = function (paragraphInfos) {
+        var allOffsets = []
+        var allUniqueOffsets = []
+        paragraphInfos.offsets.forEach(function (offset) {
+            var offsetArray = offset.value.split("|");
+            if (allUniqueOffsets.indexOf(offsetArray[2] + "_" + offsetArray[3]) < 0) {
+                allUniqueOffsets.push(offsetArray[2] + "_" + offsetArray[3])
+                var type = offsetArray[0];
+                //   type=type.substring(type.lastIndexOf("/")+1)
+                allOffsets.push({type: type, start: parseInt(offsetArray[3]), end: parseInt(offsetArray[4])})
             }
 
-            uniqueNodeIds = [];
-            uniqueEdgesIds = [];
-            var visjNodes = [];
-
-            var width = $(window).width();
-            var height = $(window).height();
-            var allParagraphIds = []
-
-            result.forEach(function (item, indexLine) {
-
-
-                var paragraphId = item.paragraph.value
-
-                allParagraphIds.push(paragraphId)
-
-                var paragraphIdStr = paragraphId.substring(paragraphId.lastIndexOf("/") + 1)
-
-                if (uniqueNodeIds.indexOf(paragraphIdStr) < 0) {
-                    uniqueNodeIds.push(paragraphIdStr)
-
-                    var node = {
-                        label: paragraphIdStr,
-                        id: paragraphId,
-                        color: ontograph.entityTypeColors["paragraph"],
-                        data: {type: "Paragraph"},
-                        shape: "ellipse",
-                        /*   x: x1,
-                           y: (y1 += y1Offset),
-                           fixed: {x: false, y: false}*/
-
-                    }
-                    visjsData.nodes.push(node)
-                }
-
-                {
-                    var clusterId = "";
-                    var clusterLabel = "";
-                    selectedEntities.forEach(function (entity, index) {
-                        if (!item["entity" + index]) //optional
-                            return;
-                        var entityId = item["entity" + index].value
-                        uniqueNodeIds.push(entityId);
-                        if (index > 0) {
-
-                            clusterLabel += " + "
-                        }
-                        clusterId += "_"
-                        clusterId += entityId
-                        clusterLabel += item["entity" + index + "Label"].value
-
-                    })
-                    if (uniqueNodeIds.indexOf(clusterId) < 0) {
-                        uniqueNodeIds.push(clusterId)
-                        var node = {
-                            label: clusterLabel,
-                            id: clusterId,
-                            color: ontograph.entityTypeColors["clusteredEntities"],
-                            shape: "box",
-                            font: {size: 18, color: "white"}
-
-
-                        }
-                        visjsData.nodes.push(node)
-                    }
-
-
-                    var edgeId = paragraphId + "_" + clusterId
-                    if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                        uniqueEdgesIds.push(edgeId)
-                        var edge = {
-                            from: paragraphId,
-                            to: clusterId,
-                            id: edgeId,
-
-                        }
-                        visjsData.edges.push(edge)
-                    }
-
-
-                }
-            })
-
-            var paragraphSlices = [];
-            var slice = [];
-            allParagraphIds.forEach(function (paragraph) {
-                if (paragraph.indexOf("20") > -1)
-                    var x = 3
-                slice.push(paragraph)
-                if (slice.length > 50) {
-                    paragraphSlices.push(slice);
-                    slice = [];
-                }
-            })
-            paragraphSlices.push(slice);
-
-
-            async.eachSeries(paragraphSlices, function (slice, callbackEach) {
-
-                sparql.queryParagraphsEntities(slice, null, function (err, result) {
-                    if (err)
-                        return callbackEach(err);
-                    result.forEach(function (item, indexLine) {
-                        var index = 0;
-                        var paragraphId = item.paragraph.value;
-
-
-                        var entityId = item["entity" + index].value
-                        var entityLabel = item["entity" + index + "Label"].value
-                        var type = ontograph.getTypeFromEntityUri(item["entity" + index].value)
-
-                        if (uniqueNodeIds.indexOf(entityId) < 0) {
-                            uniqueNodeIds.push(entityId)
-
-                            var node = {
-                                label: entityLabel,
-                                id: entityId,
-                                color: ontograph.entityTypeColors[type],
-                                data: {type: "Entity"},
-                                shape: "box",
-                                /*   x: x1,
-                                   y: (y1 += y1Offset),
-                                   fixed: {x: false, y: false}*/
-
-                            }
-                            visjsData.nodes.push(node)
-                        }
-
-                        //  var previousEntityId = item["entity" + (index - 1)].value
-                        var edgeId = paragraphId + "_" + entityId
-                        if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                            uniqueEdgesIds.push(edgeId)
-                            var edge = {
-                                from: paragraphId,
-                                to: entityId,
-                                id: edgeId,
-
-                            }
-                            visjsData.edges.push(edge)
-                        }
-
-                    })
-                    ontograph.getParagraphsDetails(slice, function (err, result) {
-                        if (err)
-                            return callbackEach(err);
-                        callbackEach();
-                    })
-
-
-                })
-
-            }, function (err, result) {
-                $("#graphDiv").width($(window).width() - 20)
-                visjsGraph.draw("graphDiv", visjsData, {
-                    onclickFn: ontograph.onNodeClick,
-                    onHoverNodeFn: ontograph.onNodeHover,
-                    afterDrawing: function () {
-                        $("#waitImg").css("display", "none")
-                    }
-                })
-            })
         })
 
+        var previousOffset = 0
+        var chunks = [];
+
+        //   obj.text=obj.text.replace(/\\n/g,"")
+        allOffsets.forEach(function (offset, index) {
+            chunks.push(paragraphInfos.paragraphText.value.substring(previousOffset, offset.start))
+
+            var color = ontograph.entityTypeColors[offset.type]
+            var newText = "<span style='background-color:" + color + "'>" + paragraphInfos.paragraphText.value.substring(offset.start, offset.end) + "</span>"
+            chunks.push(newText)
+            previousOffset = offset.end
+
+        })
+        //  chunks.push(obj.text.substring(previousOffset))
+        var htmlText = ""
+        chunks.forEach(function (chunk, index) {
+
+            htmlText += chunk
+        })
+        return htmlText;
     }
+
 
     self.sparql_getEntitiesParagraphs = function (idCorpus, conceptsIds, options, callback) {
 
-
+        var totalConcepts = 0;
         var slicedConceptsIds = common.sliceArray(conceptsIds, 25);
         if (slicedConceptsIds.length == 0)
             slicedConceptsIds = [[]]
         var allResults = [];
         async.eachSeries(slicedConceptsIds, function (concepts, callbackEach) {
-
-
+            totalConcepts += concepts.length
+            common.message("selecting concepts :" + totalConcepts)
             if (!options)
                 options = {minManadatoryEntities: 2}
             var queryCorpus = ""
@@ -464,6 +372,7 @@ var paragraphs = (function () {
                 "  FILTER (lang(?entityLabel)=\"en\") " +
                 "  ?entity rdfsyn:type ?entityType .  " +
                 "?paragraph  skos:broader ?chapter." +
+                "?chapter  skos:prefLabel ?chapterLabel." +
                 "?chapter  skos:broader ?document." +
                 "?document  skos:prefLabel ?documentLabel." +
                 "?document  skos:broader ?documentType." +
