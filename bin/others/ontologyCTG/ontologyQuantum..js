@@ -143,12 +143,15 @@ var ontologyQuantum = {
                             return;
                         item.ID = item.ID.substring(6)
                         if (!conceptsMap[item.ID]) {
-                            conceptsMap[item.ID] = "<http://data.total.com/resource/ontology/quantum/PhyscicalClass/" + item.ID + ">";
+                         //   conceptsMap[item.ID] = "<http://data.total.com/resource/ontology/quantum/PhyscicalClass/" + item.ID + ">";
+                            conceptsMap[item.ID] = "<http://data.total.com/resource/ontology/quantum/" + item.ID + ">";
                             strEntities +=conceptsMap[item.ID]+ " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + formatString(item.Name) + "\" .\n"
                             strEntities +=conceptsMap[item.ID]+ " <http://www.w3.org/2004/02/skos/core#definition> \"" + formatString(item.Definition) + "\" .\n"
                             if (item.ParentPhysicalClassID && item.ParentPhysicalClassID.substring) {
                                 var parent = item.ParentPhysicalClassID.substring(6)
-                                strEntities += conceptsMap[item.ID] + " <http://www.w3.org/2004/02/skos/core#broader> " + "<http://data.total.com/resource/ontology/quantum/PhyscicalClass/" + parent + "> .\n"
+                                strEntities += conceptsMap[item.ID] + " <http://www.w3.org/2004/02/skos/core#broader> " + "<http://data.total.com/resource/ontology/quantum/" + parent + "> .\n"
+
+                              //  strEntities += conceptsMap[item.ID] + " <http://www.w3.org/2004/02/skos/core#broader> " + "<http://data.total.com/resource/ontology/quantum/PhyscicalClass/" + parent + "> .\n"
                             }
 
                         }
@@ -203,7 +206,10 @@ var ontologyQuantum = {
                     return;
                 item.AttributeID = item.AttributeID.substring(6)
                 item.PhysicalClassID = item.PhysicalClassID.substring(6)
-                    strEntities += "<http://data.total.com/resource/ontology/quantum/Attribute/" + item.AttributeID + "> <http://www.w3.org/2004/02/skos/core#broader> <http://data.total.com/resource/ontology/quantum/PhyscicalClass/" +item.PhysicalClassID+ "> .\n"
+                    strEntities += "<http://data.total.com/resource/ontology/quantum/Attribute/" + item.AttributeID + "> <http://www.w3.org/2004/02/skos/core#broader> <http://data.total.com/resource/ontology/quantum/" +item.PhysicalClassID+ "> .\n"
+               // strEntities += "<http://data.total.com/resource/ontology/quantum/Attribute/" + item.AttributeID + "> <http://www.w3.org/2004/02/skos/core#broader> <http://data.total.com/resource/ontology/quantum/PhyscicalClass/" +item.PhysicalClassID+ "> .\n"
+
+
             })
 
             var strAll = strEntities;
@@ -290,7 +296,7 @@ var ontologyQuantum = {
 module.exports = ontologyQuantum
 
 
-ontologyQuantum.readXlsx("D:\\NLP\\rdfs\\Total\\quantumPhysicalClasses.xlsx", "Feuil1", function (err, result) {
+ontologyQuantum.readXlsx("D:\\NLP\\rdfs\\Total\\quantumPhysicalClasses.xlsx", "Feuil2", function (err, result) {
 
 })
 

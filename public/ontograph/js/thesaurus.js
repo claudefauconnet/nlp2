@@ -124,7 +124,7 @@ var thesaurus = (function () {
                     "?concept skos:prefLabel  ?conceptLabel. " +
                     "" +
                     " FILTER NOT EXISTS{?broader skos:broader  ?broader2. }" +
-                    "" +
+                    "FILTER contains(str(?concept),\"quantum/P\")" +
                     "} limit 200"
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -234,10 +234,10 @@ var thesaurus = (function () {
     }
 
     self.loadChildrenInConceptJstree = function (conceptId, depth) {
-        var graphIri = "http://data.total.com/resource/thesaurus/ctg";
+        var graphIri = "http://data.total.com/resource/thesaurus/ctg/";
         if (conceptId.indexOf("/quantum/") > -1)
             graphIri = "http://data.total.com/resource/ontology/quantum/"
-        
+
         var url = sparql.source.sparql_url + "?default-graph-uri=" + graphIri + "&query=";// + query + queryOptions
         var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
@@ -452,6 +452,22 @@ var thesaurus = (function () {
 
         self.loadChildrenInConceptJstree(obj.node.id, 1)
 
+    }
+
+    self.getAncestorsFromJstree = function (conceptId) {
+        var node = $("#jstreeConceptDiv").jstree(true).get_node(conceptId)
+        var ancestors = []
+        var parents = node.parents
+        if(parents) {
+            parents.splice(0, 0, conceptId);
+
+            parents.forEach(function (parent) {
+                var parentNode = $("#jstreeConceptDiv").jstree(true).get_node(parent)
+                ancestors.push({id: parent, label: parentNode.text});
+            })
+        }
+
+        return ancestors;
     }
 
 

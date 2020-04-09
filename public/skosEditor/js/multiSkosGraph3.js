@@ -251,7 +251,7 @@ var multiSkosGraph2 = (function () {
         visjsData.nodes.push(self.rootNode);
         visjsGraph.draw("graphDiv", visjsData, {
             onclickFn: multiSkosGraph2.onNodeClick,
-            onHoverNodeFn: multiSkosGraph2.onNodeClick,
+          //  onHoverNodeFn: multiSkosGraph2.onNodeClick,
             afterDrawing: function () {
                 $("#waitImg").css("display", "none")
             }

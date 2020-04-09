@@ -80,7 +80,7 @@
                 });
                 corpus.showDomainsJstree();
                 thesaurus.loadThesaurusTopConceptsTree()
-                thesaurus.loadQuantumTopConceptsTree()
+
             }
 
 
@@ -203,19 +203,10 @@
                 &nbsp;&nbsp;<button onclick="relations.displayGraphEntitiesRelations()">Relations</button>
                 <hr>
 
-                aggregate concepts
-                <div id="conceptAggrLevelSlider"></div>
-                aggregate resources <select onChange="projection.onAggregateResourcesSelectChange($(this))" id="resourcesAggrLevelSelect">
-                <option></option>
-                <option>chapter</option>
-                <option>document</option>
-                <option>document-type</option>
-                <option>branch</option>
-                <option>domain</option>
 
-            </select>
 
-                Show  ParentResource<select onChange="projection.onShowResoucesParentsResourcesSelectChange($(this))"  id="resourcesShowParentResourcesSelect">
+
+                Show  ParentResource<select   id="resourcesShowParentResourcesSelect">
                 <option></option>
                 <option>chapter</option>
                 <option selected="selected">document</option>
@@ -224,6 +215,18 @@
                 <option>domain</option>
 
             </select>
+
+                aggregate concepts
+                <div id="conceptAggrLevelSlider"></div>
+                aggregate resources <select onChange="projection.onAggregateResourcesSelectChange($(this).val())" id="resourcesAggrLevelSelect">
+                <option></option>
+                <option>chapter</option>
+                <option>document</option>
+                <option>documentType</option>
+                <option>branch</option>
+                <option>domain</option>
+            </select>
+
 
                 <br>
                 select

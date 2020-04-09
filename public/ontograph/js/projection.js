@@ -3,16 +3,132 @@ var projection = (function () {
     var self = {};
 
     self.onConceptAggrLevelSliderChange = function (evt) {
-        var value = $(evt.target).slider("value");
+        var newLevel = $(this).slider("value") + 1;
+
+        var nodes = visjsGraph.data.nodes.get();
+        var edges = visjsGraph.data.edges.get();
+        var newVisjData = {nodes: [], edges: []};
+        var broaderConcepts;
+        var uniqueNodeIds = []
+        var edgesToRemove = []
+        nodes.forEach(function (node) {
+
+            if (node.id.indexOf("/vocabulary/") > -1) {
+                var currentLevel = node.data.ancestors.indexOf(node.id)
+                newLevel = newLevel + currentLevel;
+                if (node.data.ancestors.length == 0 || newLevel > node.data.ancestors.length - 1 || newLevel <= 0)
+                    return newVisjData.nodes.push(node);
+
+                var newNodeId = node.data.ancestors[newLevel].id;
+                if (uniqueNodeIds.indexOf(newNodeId) < 0) {
+                    uniqueNodeIds.push(newNodeId);
+                    var newLabel = node.data.ancestors[newLevel].id;
+                    var newNode = {
+
+                        label: newLabel,
+                        id: newNodeId,
+                        color: node.color,
+                        data: {ancestors: node.data.ancestors},
+                        shape: node.shape,
+                        //  font: {size: 18, color: "white"}
+                    }
+                    newVisjData.nodes.push(newNode)
+
+                    edges.forEach(function (edge, index) {
+                        if (edge.to == node.id) {
+                            edgesToRemove.push(edge.id)
+                            var newEdgeId = edge.from + "_" + newNodeId
+                            newVisjData.edges.push({
+                                id: newEdgeId,
+                                from: edge.from,
+                                to: newNodeId
+
+                            })
+                        }
+                        if (edge.from == node.id) {
+                            edgesToRemove.push(edge.id)
+                            var newEdgeId = newNodeId + "_" + edge.to;
+                            newVisjData.edges.push({
+                                id: newEdgeId,
+                                from: newNodeId,
+                                to: edge.to,
+
+                            })
+                        }
+                    })
 
 
+                }
+            }
+
+
+        })
+
+        edges.forEach(function (edge) {
+            if (edgesToRemove.indexOf(edge.id) < 0) {
+                newVisjData.edges.push(edge)
+            }
+
+
+        })
+        ontograph.drawGraph(newVisjData, {addToGraph: true})
     }
 
 
-    self.onAggregateResourcesSelectChange = function (value) {
+    self.onAggregateResourcesSelectChange = function (type) {
+if( self.currentCorpusClusters){
+    self.currentCorpusClusters.forEach(function(cid){
+        try {
+            visjsGraph.network.openCluster(cid)
+        }catch(e){
+            var x=3
+        }
+    })
+}
+        self.currentCorpusClusters=[];
+        var nodes = visjsGraph.data.nodes.get();
+        var distinctCid={}
+        var newNodes=[];
+        nodes.forEach(function (node) {
 
+            if (node.id.indexOf("/Paragraph/") > -1) {
+                node.data.cid = null;
+                if (node.data && node.data[type]) {
+                    var cid = node.data[type].value
+                    if (!distinctCid[cid])
+                        distinctCid[cid]= node.data[type+"Label"].value;
+                    node.data.cid = cid;
+                    self.currentCorpusClusters.push(cid);
+                    newNodes.push(node)
+
+                }
+            }
+
+        })
+        visjsGraph.data.nodes.update(newNodes)
+
+       for( var cid in distinctCid){
+           var cidLabel=distinctCid[cid]
+           var options= {
+                joinCondition:function(childOptions) {
+                    try {
+                        var test = (childOptions.data && childOptions.data.cid == cid);
+                    }
+                    catch(e){
+                        console.log(e)
+                    }
+                   return test
+                },
+                clusterNodeProperties: {id:cid, label:cidLabel, shape:'square',size:20}
+            };
+           visjsGraph.network.cluster(options);
+
+
+
+        }
 
     }
+
 
     self.onShowResoucesParentsResourcesSelectChange = function (value) {
 
@@ -85,8 +201,8 @@ var projection = (function () {
                         if (err)
                             return callbackSeries(err);
 
-                        if(result.length==0)
-                          return  callbackSeries("No results")
+                        if (result.length == 0)
+                            return callbackSeries("No results")
 
                         allParagraphs = result;
 

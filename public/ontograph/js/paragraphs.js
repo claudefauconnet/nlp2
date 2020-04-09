@@ -36,13 +36,15 @@ var paragraphs = (function () {
 
 
             if (uniqueNodeIds.indexOf(item.entity.value) < 0) {
+                var ancestors = thesaurus.getAncestorsFromJstree(item.entity.value)
+
                 uniqueNodeIds.push(item.entity.value)
                 var type = item.entityType.value.substring(item.entityType.value.lastIndexOf("/") + 1)
                 var node = {
                     label: item.entityLabel.value,
                     id: item.entity.value,
                     color: ontograph.entityTypeColors[type],
-
+                    data: {ancestors: ancestors},
                     shape: "box",
                     //  font: {size: 18, color: "white"}
 
@@ -119,7 +121,7 @@ var paragraphs = (function () {
     }
     self.onNodeHover = function (obj, point) {
 
-        if(obj.id.indexOf("/Paragraph/")>-1) {
+        if (obj.id.indexOf("/Paragraph/") > -1) {
 
             async.series([
                 function (callbackSeries) {
@@ -164,13 +166,12 @@ var paragraphs = (function () {
 
             ])
 
-        }
-        else if(obj.id.indexOf("/resource/vocabulary/")>-1){
+        } else if (obj.id.indexOf("/resource/vocabulary/") > -1) {
             async.series([
                 function (callbackSeries) {
                     if (!self.currentGraphInfos[obj.id]) {
                         thesaurus.getConceptInfos([obj.id], null, function (err, result) {
-                                    self.currentGraphInfos[obj.id] =result[0];
+                            self.currentGraphInfos[obj.id] = result[0];
                             callbackSeries();
                         })
                     } else
@@ -184,32 +185,31 @@ var paragraphs = (function () {
                     var infos = self.currentGraphInfos[obj.id];
 
                     html += "<span class='paragraph-docTitle'>" + infos.conceptLabel.value + "</span>&nbsp;";
-                    for(var i=1;i<8;i++){
-                       var broader=infos["broader"+i]
-                        if(typeof broader !=="undefined"){
-                            html += "<span class='paragraph-chapter'>" +"/"+ broader.value + "</span>&nbsp;";
+                    for (var i = 1; i < 8; i++) {
+                        var broader = infos["broader" + i]
+                        if (typeof broader !== "undefined") {
+                            html += "<span class='paragraph-chapter'>" + "/" + broader.value + "</span>&nbsp;";
                         }
                     }
-                    var definition=infos["definition"]
-                    if(typeof definition !=="undefined"){
-                        html += "<span class='paragraph-chapter'>definition:</span>&nbsp;"+definition;
+                    var definition = infos["definition"]
+                    if (typeof definition !== "undefined") {
+                        html += "<span class='paragraph-chapter'>definition:</span>&nbsp;" + definition;
                     }
-                    var exactMatch=infos["exactMatch"]
-                    if(typeof exactMatch !=="undefined"){
-                        html += "<span class='paragraph-chapter'>Quantum exact match:</span>&nbsp;"+exactMatch;
+                    var exactMatch = infos["exactMatch"]
+                    if (typeof exactMatch !== "undefined") {
+                        html += "<span class='paragraph-chapter'>Quantum exact match:</span>&nbsp;" + exactMatch;
                     }
 
 
-                        $("#paragraphTextDiv").html(html);
+                    $("#paragraphTextDiv").html(html);
                     callbackSeries();
 
                 }
 
 
             ])
-            
-            
-            
+
+
         }
     }
 
@@ -322,10 +322,15 @@ var paragraphs = (function () {
                 options = {minManadatoryEntities: 2}
             var queryCorpus = ""
             var queryConcept = ""
-            var countParagraphMin = 20
+            var countParagraphMin = 20;
+
+            var isQuantumConceptsQuery = false;
+            if (concepts && concepts.length > 0 && concepts[0].indexOf("/quantum/") > 1)
+                isQuantumConceptsQuery = true;
+
+
             if (idCorpus) {
                 if (idCorpus.indexOf("/Domain/") > -1) {
-                    countParagraphMin = 20;
                     queryCorpus += "?paragraph  skos:broader ?chapter ."
                     queryCorpus += "?chapter  skos:broader ?document ."
                     queryCorpus += "?document  skos:broader ?document_type ."
@@ -333,25 +338,21 @@ var paragraphs = (function () {
                     queryCorpus += "?branch   skos:broader <" + idCorpus + ">."
                 }
                 if (idCorpus.indexOf("/Branch/") > -1) {
-                    countParagraphMin = 10;
                     queryCorpus += "?paragraph  skos:broader ?chapter ."
                     queryCorpus += "?chapter  skos:broader ?document ."
-                    queryCorpus += "?document  skos:broader ?document-type ."
-                    queryCorpus += "?document-type   skos:broader <" + idCorpus + ">."
+                    queryCorpus += "?document  skos:broader ?document_type ."
+                    queryCorpus += "?document_type   skos:broader <" + idCorpus + ">."
                 }
                 if (idCorpus.indexOf("/Document-type/") > -1) {
-                    countParagraphMin = 5;
                     queryCorpus += "?paragraph  skos:broader ?chapter ."
                     queryCorpus += "?chapter  skos:broader ?document ."
                     queryCorpus += "?document   skos:broader <" + idCorpus + ">."
                 }
                 if (idCorpus.indexOf("/Document/") > -1) {
-                    countParagraphMin = 2;
                     queryCorpus += "?paragraph  skos:broader ?chapter ."
                     queryCorpus += "?chapter   skos:broader <" + idCorpus + ">."
                 }
                 if (idCorpus.indexOf("/Chapter/") > -1) {
-                    countParagraphMin = 1;
                     queryCorpus += "?paragraph  skos:broader <" + idCorpus + ">."
                 }
             }
@@ -391,16 +392,23 @@ var paragraphs = (function () {
                             entityIdsStr += ","
                         entityIdsStr += "<" + id + ">"
                     })
-                    query += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
+                    if (isQuantumConceptsQuery)
+                        query += "  ?paragraph terms:subject ?entity . " + "?entity skos:exactMatch ?quantumConcept" + " filter (?quantumConcept in(" + entityIdsStr + "))"
+                    else
+                        query += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
 
                 } else if (options.concepts_AND) {
                     concepts.forEach(function (id, index) {
                         if (index >= options.minManadatoryEntities)
                             query += "OPTIONAL {"
                         query +=
-                            "  ?paragraph terms:subject ?entity" + index + " . " +
-                            "    FILTER (?entity" + index + " in(<" + id + ">))" +
-                            "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
+                            "  ?paragraph terms:subject ?entity" + index + " . "
+                        if (isQuantumConceptsQuery)
+                            query += "?entity" + index + " skos:exactMatch ?quantumConcept" + index + " FILTER (?quantumConcept" + index + " in(<" + id + ">))"
+                        else
+                            query += "    FILTER (?entity" + index + " in(<" + id + ">))"
+
+                        query += "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
                             "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
                             "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
                             "    "
@@ -411,6 +419,8 @@ var paragraphs = (function () {
                     })
                 }
             }
+
+
             if (options.getParagraphEntities) {
                 query += "?paragraph terms:subject ?entity22 .  ?entity22 rdfsyn:type ?entity22Type . ?entity22 rdfs:label ?entity22Label . filter (?entity22!=?entity1  && ?entity22!=?entity0)";
             }
