@@ -108,7 +108,7 @@ var cooccurrences = (function () {
 
                 //selection of concepts and sdescendants (can be large)
                 function (callbackSeries) {
-            thesaurus.getSelectedConceptDescendants(function(err,result){
+            conceptsClass.getSelectedConceptDescendants(function(err, result){
                 if (err)
                     return callbackSeries(err);
                 allDescendantConcepts=result;

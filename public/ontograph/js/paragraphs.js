@@ -36,7 +36,7 @@ var paragraphs = (function () {
 
 
             if (uniqueNodeIds.indexOf(item.entity.value) < 0) {
-                var ancestors = thesaurus.getAncestorsFromJstree(item.entity.value)
+                var ancestors = Concepts.getAncestorsFromJstree(item.entity.value)
 
                 uniqueNodeIds.push(item.entity.value)
                 var type = item.entityType.value.substring(item.entityType.value.lastIndexOf("/") + 1)
@@ -170,7 +170,7 @@ var paragraphs = (function () {
             async.series([
                 function (callbackSeries) {
                     if (!self.currentGraphInfos[obj.id]) {
-                        thesaurus.getConceptInfos([obj.id], null, function (err, result) {
+                        Concepts.getConceptInfos([obj.id], null, function (err, result) {
                             self.currentGraphInfos[obj.id] = result[0];
                             callbackSeries();
                         })

@@ -2,93 +2,164 @@ var projection = (function () {
 
     var self = {};
 
+    var uniqueNodes=[];
+
+    self.clusterNodes=function(nodes,clusters, options){
+        var edgesToRemove=[];
+        var edgesToCreate=[];
+        var nodesToRemove=[];
+        var nodesToCreate=[];
+        var existingNodeIds=visjsGraph.data.nodes.getIds()
+        for (var cid in clusters) {
+            if (uniqueNodes.indexOf(cid) < 0 && existingNodeIds.indexOf(cid) < 0) {
+                uniqueNodes.push(cid)
+                nodesToCreate.push({id: cid, label: clusters[cid], shape: 'square', size: 20})
+            }
+            nodes.forEach(function (node) {
+                var test = options.joinCondition(node, cid);
+                if (test === true) {
+                    nodesToRemove.push(node);
+                    var nodeIncomingEdges = visjsGraph.network.getConnectedEdges(node.id);
+                    edgesToRemove = edgesToRemove.concat(nodeIncomingEdges);
+                }
+            })
+
+            var uniqueNewEdges = [];
+            var oldEdges = visjsGraph.data.edges.get(edgesToRemove);
+            nodes.forEach(function (node) {
+                oldEdges.forEach(function (edge) {
+
+                    if (edge.from == node.id) {
+                        var newEdgeId = cid + "_" + edge.to
+                        if (uniqueNewEdges.indexOf(newEdgeId) < 0) {
+                            uniqueNewEdges.push(newEdgeId);
+                            edgesToCreate.push({id: newEdgeId, from: cid, to: edge.to})
+                        }
+
+                    }
+                    if (edge.to == node.id) {
+                        var newEdgeId = edge.from + "_" + cid
+                        if (uniqueNewEdges.indexOf(newEdgeId) < 0) {
+                            uniqueNewEdges.push(newEdgeId);
+                            edgesToCreate.push({id: newEdgeId, from: edge.from, to: cid})
+                        }
+                    }
+                })
+            })
+
+        }
+        visjsGraph.data.nodes.remove(nodesToRemove)
+        visjsGraph.data.edges.remove(edgesToRemove)
+
+        visjsGraph.data.nodes.add(nodesToCreate)
+        visjsGraph.data.edges.add(edgesToCreate)
+
+    }
     self.onConceptAggrLevelSliderChange = function (evt) {
         var newLevel = $(this).slider("value") + 1;
 
+
+        if (self.currentConceptsClusters) {
+            self.currentConceptsClusters.forEach(function (cid) {
+                try {
+                    visjsGraph.network.openCluster(cid)
+                } catch (e) {
+                    var x = 3
+                }
+            })
+        }
+        self.currentConceptsClusters = [];
         var nodes = visjsGraph.data.nodes.get();
-        var edges = visjsGraph.data.edges.get();
-        var newVisjData = {nodes: [], edges: []};
-        var broaderConcepts;
-        var uniqueNodeIds = []
-        var edgesToRemove = []
+        var distinctCid = {}
+        var newNodes = [];
+
+
         nodes.forEach(function (node) {
 
             if (node.id.indexOf("/vocabulary/") > -1) {
                 var currentLevel = node.data.ancestors.indexOf(node.id)
                 newLevel = newLevel + currentLevel;
-                if (node.data.ancestors.length == 0 || newLevel > node.data.ancestors.length - 1 || newLevel <= 0)
-                    return newVisjData.nodes.push(node);
+                if (newLevel < 0)
+                    return;
 
-                var newNodeId = node.data.ancestors[newLevel].id;
-                if (uniqueNodeIds.indexOf(newNodeId) < 0) {
-                    uniqueNodeIds.push(newNodeId);
-                    var newLabel = node.data.ancestors[newLevel].id;
-                    var newNode = {
 
-                        label: newLabel,
-                        id: newNodeId,
-                        color: node.color,
-                        data: {ancestors: node.data.ancestors},
-                        shape: node.shape,
-                        //  font: {size: 18, color: "white"}
-                    }
-                    newVisjData.nodes.push(newNode)
-
-                    edges.forEach(function (edge, index) {
-                        if (edge.to == node.id) {
-                            edgesToRemove.push(edge.id)
-                            var newEdgeId = edge.from + "_" + newNodeId
-                            newVisjData.edges.push({
-                                id: newEdgeId,
-                                from: edge.from,
-                                to: newNodeId
-
-                            })
-                        }
-                        if (edge.from == node.id) {
-                            edgesToRemove.push(edge.id)
-                            var newEdgeId = newNodeId + "_" + edge.to;
-                            newVisjData.edges.push({
-                                id: newEdgeId,
-                                from: newNodeId,
-                                to: edge.to,
-
-                            })
-                        }
-                    })
+                node.data.cid = null;
+                if (node.data.ancestors && newLevel < node.data.ancestors.length - 1) {
+                    var cid = node.data.ancestors[newLevel].id
+                    if (!distinctCid[cid])
+                        distinctCid[cid] = node.data.ancestors[newLevel].label;
+                    node.data.cidConcept = cid;
+                    self.currentConceptsClusters.push(cid);
+                    newNodes.push(node)
 
 
                 }
             }
 
-
         })
+        visjsGraph.data.nodes.update(newNodes);
 
-        edges.forEach(function (edge) {
-            if (edgesToRemove.indexOf(edge.id) < 0) {
-                newVisjData.edges.push(edge)
-            }
+        var options = {
+            joinCondition: function (childOptions,cid) {
+                try {
+                    var test = false;
+                    if (childOptions.id.indexOf("/vocabulary/") && childOptions.data) {
+
+                        test = childOptions.data.cidConcept && childOptions.data.cidConcept == cid
+                        //  console.log("---"+childOptions.data.cidConcept)
+                        // console.log(test)
+                    }
+                } catch (e) {
+                    console.log(e)
+                }
+                return test
+            },
+          //  clusterNodeProperties: {id: cid, label: cidLabel, shape: 'square', size: 20}
+        };
+        self.clusterNodes(nodes, distinctCid, options)
 
 
-        })
-        ontograph.drawGraph(newVisjData, {addToGraph: true})
+
+      /*  for (var cid in distinctCid) {
+            var cidLabel = distinctCid[cid]
+            var options = {
+                joinCondition: function (childOptions) {
+                    try {
+var test=false;
+                      if(childOptions.id.indexOf("/vocabulary/")  && childOptions.data  ) {
+
+                          test = childOptions.data.cidConcept && childOptions.data.cidConcept == cid
+                          //  console.log("---"+childOptions.data.cidConcept)
+                          // console.log(test)
+                      }
+                    } catch (e) {
+                        console.log(e)
+                    }
+                    return test
+                },
+                clusterNodeProperties: {id: cid, label: cidLabel, shape: 'square', size: 20}
+            };
+            visjsGraph.network.cluster(options);
+
+
+        }*/
     }
 
 
     self.onAggregateResourcesSelectChange = function (type) {
-if( self.currentCorpusClusters){
-    self.currentCorpusClusters.forEach(function(cid){
-        try {
-            visjsGraph.network.openCluster(cid)
-        }catch(e){
-            var x=3
+        if (self.currentCorpusClusters) {
+            self.currentCorpusClusters.forEach(function (cid) {
+                try {
+                    visjsGraph.network.openCluster(cid)
+                } catch (e) {
+                    var x = 3
+                }
+            })
         }
-    })
-}
-        self.currentCorpusClusters=[];
+        self.currentCorpusClusters = [];
         var nodes = visjsGraph.data.nodes.get();
-        var distinctCid={}
-        var newNodes=[];
+        var distinctCid = {}
+        var newNodes = [];
         nodes.forEach(function (node) {
 
             if (node.id.indexOf("/Paragraph/") > -1) {
@@ -96,8 +167,8 @@ if( self.currentCorpusClusters){
                 if (node.data && node.data[type]) {
                     var cid = node.data[type].value
                     if (!distinctCid[cid])
-                        distinctCid[cid]= node.data[type+"Label"].value;
-                    node.data.cid = cid;
+                        distinctCid[cid] = node.data[type + "Label"].value;
+                    node.data.cidCorpus = cid;
                     self.currentCorpusClusters.push(cid);
                     newNodes.push(node)
 
@@ -105,27 +176,41 @@ if( self.currentCorpusClusters){
             }
 
         })
-        visjsGraph.data.nodes.update(newNodes)
 
-       for( var cid in distinctCid){
-           var cidLabel=distinctCid[cid]
-           var options= {
-                joinCondition:function(childOptions) {
+        visjsGraph.data.nodes.update(newNodes);
+
+        var options = {
+            joinCondition: function (childOptions,cid) {
+                try {
+                    var test = (childOptions.data && childOptions.data.cidCorpus == cid);
+
+                } catch (e) {
+                    console.log(e)
+                }
+                return test
+            },
+           // clusterNodeProperties: {id: cid, label: cidLabel, shape: 'square', size: 20}
+        };
+        self.clusterNodes(nodes, distinctCid, options)
+
+   /*    for (var cid in distinctCid) {
+            var cidLabel = distinctCid[cid]
+            var options = {
+                joinCondition: function (childOptions) {
                     try {
-                        var test = (childOptions.data && childOptions.data.cid == cid);
-                    }
-                    catch(e){
+                        var test = (childOptions.data && childOptions.data.cidCorpus == cid);
+
+                    } catch (e) {
                         console.log(e)
                     }
-                   return test
+                    return test
                 },
-                clusterNodeProperties: {id:cid, label:cidLabel, shape:'square',size:20}
+                clusterNodeProperties: {id: cid, label: cidLabel, shape: 'square', size: 20}
             };
-           visjsGraph.network.cluster(options);
+            visjsGraph.network.cluster(options);
 
 
-
-        }
+        }*/
 
     }
 
@@ -142,7 +227,7 @@ if( self.currentCorpusClusters){
         var resourcesShowParentResources = $("#resourcesShowParentResourcesSelect").val();
         var conceptAncestorsMap = {}
         var corpusAncestorsMap = {}
-        var allConcepts = {}
+        var allConceptsMap = {}
         var allParagraphs = [];
         var paragraphsInfos = {};
         var idCorpus = null;
@@ -151,7 +236,7 @@ if( self.currentCorpusClusters){
 
                 // get Concepts Ancestors
                 function (callbackSeries) {
-                    var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_checked(true);
+                    var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_selected(true);
                     selectedConcepts.forEach(function (concept, index) {
                         conceptAncestorsMap[concept.id] = [];
                         concept.parents.forEach(function (parent, index) {
@@ -182,10 +267,10 @@ if( self.currentCorpusClusters){
 
                 //getDescendants
                 function (callbackSeries) {
-                    thesaurus.getSelectedConceptDescendants(function (err, concepts) {
+                    Concepts.getSelectedConceptDescendants(function (err, concepts) {
                         if (err)
                             return callbackSeries(err);
-                        allConcepts = concepts
+                        allConceptsMap = concepts
                         callbackSeries();
                     })
 
@@ -197,7 +282,7 @@ if( self.currentCorpusClusters){
                 },
                 //getParagraphs
                 function (callbackSeries) {
-                    paragraphs.sparql_getEntitiesParagraphs(idCorpus, allConcepts, {concepts_OR: 1}, function (err, result) {
+                    paragraphs.sparql_getEntitiesParagraphs(idCorpus, allConceptsMap, {concepts_OR: 1}, function (err, result) {
                         if (err)
                             return callbackSeries(err);
 
@@ -234,6 +319,8 @@ if( self.currentCorpusClusters){
 
 
     }
+
+
 
 
     return self;

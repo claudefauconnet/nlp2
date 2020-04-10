@@ -1,4 +1,4 @@
-var thesaurus = (function () {
+var Concepts = (function () {
     var self = {}
 
 
@@ -83,8 +83,9 @@ var thesaurus = (function () {
                     "where{" +
 
                     "?concept skos:topConceptOf ?scheme." +
-                    "?concept skos:prefLabel ?concepLabel." +
-                    "} limit 100"
+                    "?concept skos:prefLabel ?conceptLabel."
+                query+="  }ORDER BY ?conceptLabel " ;
+                query += "limit 500 "
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err) {
@@ -104,7 +105,7 @@ var thesaurus = (function () {
                         }
                         if (uniqueIds.indexOf(item.concept.value) < 0) {
                             uniqueIds.push(item.concept.value);
-                            jstreeData.push({text: item.concepLabel.value, id: item.concept.value, parent: item.scheme.value})
+                            jstreeData.push({text: item.conceptLabel.value, id: item.concept.value, parent: item.scheme.value})
                         }
                     })
                     return callbackSeries();
@@ -116,16 +117,14 @@ var thesaurus = (function () {
 
 
                 var url = sparql.source.sparql_url + "?default-graph-uri=http://data.total.com/resource/ontology/quantum/&query=";// + query + queryOptions
-                var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>   PREFIX skos:<http://www.w3.org/2004/02/skos/core#> SELECT DISTINCT *WHERE " +
-                    "" +
-                    "{" +
-                    "" +
-                    "?concept skos:broader  ?broader. " +
-                    "?concept skos:prefLabel  ?conceptLabel. " +
-                    "" +
-                    " FILTER NOT EXISTS{?broader skos:broader  ?broader2. }" +
-                    "FILTER contains(str(?concept),\"quantum/P\")" +
-                    "} limit 200"
+                var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>   PREFIX skos:<http://www.w3.org/2004/02/skos/core#> SELECT DISTINCT *WHERE {{?concept skos:broader  ?broader. ?concept skos:prefLabel  ?conceptLabel.  FILTER NOT EXISTS{?broader skos:broader  ?broader2. }FILTER contains(str(?concept),\"quantum/P\")}" +
+                    "UNION{" +
+                    " ?concept skos:prefLabel ?conceptLabel ." +
+                    " FILTER (?concept=<http://data.total.com/resource/ontology/quantum/Attributes>)" +
+                    " " +
+                    "}"
+                query+="  }ORDER BY ?conceptLabel " ;
+                query += "limit 500 "
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err) {
@@ -147,8 +146,8 @@ var thesaurus = (function () {
             function (callbackSeries) {
 
                 common.loadJsTree("jstreeConceptDiv", jstreeData, {
-                    withCheckboxes: 1, selectDescendants: 1, selectNodeFn: function (evt, obj) {
-                        thesaurus.onNodeSelect(evt, obj);
+                    withCheckboxes: 0, selectDescendants: 1, selectNodeFn: function (evt, obj) {
+                       Concepts.onNodeSelect(evt, obj);
                     }
                 })
                 return callbackSeries();
@@ -164,28 +163,30 @@ var thesaurus = (function () {
     self.getSelectedConceptDescendants = function (callback) {
         var selectedConcepts = null;
         var allDescendantConcepts = [];
-        var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_checked()
+        var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_selected()
         if (selectedConcepts.length == 0)
             return callback(null, []);
         var slicedSelectedConcepts = common.sliceArray(selectedConcepts, 25);
         async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
 
-            thesaurus.sparql_geConceptDescendants(concepts, function (err, result) {
+            Concepts.sparql_geConceptDescendants(concepts, function (err, result) {
                 if (err)
                     return callbackEach(err);
                 allDescendantConcepts = allDescendantConcepts.concat(result);
                 callbackEach();
             })
         }, function (err) {
-            thesaurus.currentSelectedConcepts = allDescendantConcepts;
+            Concepts.currentSelectedConcepts = allDescendantConcepts;
             callback(err, allDescendantConcepts);
 
         })
     }
 
     self.sparql_geConceptDescendants = function (conceptIds, callback) {
-        var depth = 7
-        var url = sparql.source.sparql_url + "?default-graph-uri=http://data.total.com/resource/thesaurus/ctg/&query=";// + query + queryOptions
+        var depth = 7;
+   var defaultIri="http://data.total.com/resource/thesaurus/ctg/"
+        defaultIri=""
+        var url = sparql.source.sparql_url + "?default-graph-uri="+defaultIri+"&query=";// + query + queryOptions
 
         var conceptIdsStr = ""
         conceptIds.forEach(function (id, index) {
@@ -209,7 +210,8 @@ var thesaurus = (function () {
         for (var i = 1; i < depth; i++) {
             query += "}"
         }
-        query += "}limit 1000"
+        query+="  }" ;
+        query += "limit 1000 "
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
@@ -256,7 +258,9 @@ var thesaurus = (function () {
         for (var i = 1; i < depth; i++) {
             query += "}"
         }
-        query += "}limit 1000"
+        query+="  }ORDER BY ?childLabel1 " ;
+        query += "limit 1000 "
+
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
@@ -289,7 +293,7 @@ var thesaurus = (function () {
         var slicedConceptIds = common.sliceArray(conceptIds, 25);
         async.eachSeries(slicedConceptIds, function (concepts, callbackEach) {
 
-            thesaurus.sparql_getAncestors(concepts, function (err, result) {
+           Concepts.sparql_getAncestors(concepts, function (err, result) {
                 if (err)
                     return callbackEach(err);
                 allAncestors = allAncestors.concat(result);
@@ -442,11 +446,19 @@ var thesaurus = (function () {
 
 
     self.onNodeSelect = function (evt, obj) {
+
+        var node = obj.node
+        var text=obj.node.text+"<br><span style='font-size: 12px'>"
+        node.parents.forEach(function(parent,index){
+            var parentLabel= $("#jstreeConceptDiv").jstree(true).get_node(parent)
+            if(index<node.parents.length-1)
+            text+="/"+parentLabel.text
+        })
+        text+="</span>"
+        $("#currentConceptsSpan").html(" : " + text);
         if (obj.event.ctrlKey) {
             return $("#accordion").accordion({active: 2});
         }
-        var node = obj.node
-        $("#currentConceptsSpan").html(" : " + obj.node.text);
         if (node.children.length > 0)
             return;
 
@@ -459,7 +471,7 @@ var thesaurus = (function () {
         var ancestors = []
         var parents = node.parents
         if(parents) {
-            parents.splice(0, 0, conceptId);
+       //     parents.splice(0, 0, conceptId);
 
             parents.forEach(function (parent) {
                 var parentNode = $("#jstreeConceptDiv").jstree(true).get_node(parent)

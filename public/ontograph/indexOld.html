@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Souslesens MultiSkosGraph</title>
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../js/others/async.js" charset="utf-8"></script>
+    <!--   <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
+       <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>-->
+
+    <script type="text/javascript" src="../js/visjs/vis-network.min.js"></script>
+    <link href="../js/visjs/vis-network.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../js/graph/visjsGraph2.js"></script>
+
+    <script src="js/common.js"></script>
+    <script src="js/ontograph.js"></script>
+    <script src="js/sparql.js"></script>
+    <script src="js/cooccurrences.js"></script>
+    <script src="js/paragraphs.js"></script>
+    <script src="js/relations.js"></script>
+
+
+    <script src="../js/others/async.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <!--  <script src="js/jstreeCF.js"></script>-->
+
+    <script>
+        $(function () {
+
+
+//multiSkosGraph.setTheaurusList()
+            /*    $("#searchWordInput").bind('keyup', function (e) {
+                    if (e.keyCode == 13) {
+                        multiSkosGraph2.drawConceptGraph($('#searchWordInput').val());
+                    }
+                });*/
+
+            $("#dialogDiv").dialog({
+                autoOpen: false,
+                height: 800,
+                width: 500,
+                modal: true,
+            })
+
+            $("#detailsDiv").dialog({
+                autoOpen: false,
+                height: 800,
+                width: 500,
+                modal: true,
+            })
+            if (false) {
+                config = {loginMode: "json", appName: "CTG"};
+                authentication.init()
+
+            } else {
+
+                $("#dialogDiv").dialog("open")
+            }
+
+
+        })
+
+
+    </script>
+
+    <style>
+
+        body {
+            font-family: Verdana;
+            font-size: 14px;
+        }
+
+        .title {
+            font-weight: bold;
+        }
+
+        .id {
+            font-size: 8px;
+        }
+
+        .popupMenuItem {
+            text-align: center;
+            margin: 5px;
+            padding: 3px;
+            font-weight: normal;
+        }
+
+        .tree_level_1 {
+        / / font-weight: bold;
+            padding: 2px;
+            border-radius: 3px;
+        }
+
+        .tree_level_2 {
+        / / font-weight: bold;
+            padding: 2px;
+            border-radius: 3px;
+            background-color: #ddd;
+        }
+
+
+        .paragraph-docTitle {
+            color: #003eff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .paragraph-chapter {
+            color: #007fff;
+            font-weight: bold;
+            font-size: 12px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="main" style="display: flex;flex-direction: row">
+
+
+
+    <div>
+        <div>
+            <button onclick=" ontograph.showSearchDialog()">...</button>
+            &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/> <select onchange="ontograph.graphActions.modifyGraph($(this).val())">
+            <option></option>
+            <option>showDocumentNodes</option>
+            <option>hideParagraphs</option>
+            <option>expand</option>
+        </select>
+        </div>
+        <div>
+            <span id="messageDiv"></span>
+            <div id="paragraphTextDiv" style="height: 100px;overflow: auto"></div>
+        </div>
+        <div id="graphDiv" style="width:1000px;height: 1000px"></div>
+    </div>
+    <!--
+        <div id="rigthDiv" style='width:300px'>
+            <div>
+
+                <input type="checkbox" id="queryBNFcbx" checked="checked"> BNF<br>
+                <input type="checkbox" id="queryWikidataCbx" checked="checked"> Wikidata<br>
+
+
+            </div>
+
+            <div id="rigthDivDetails" style='width: 270px;max-height: 600px;overflow: auto;font-size: 10px'></div>
+
+        </div>-->
+
+
+</div>
+
+
+<div id="loginDiv" style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
+    <div> login<input id="loginInput">
+        password<input type="password" id="passwordInput" onkeydown="if (event.keyCode == 13)
+                        document.getElementById('loginButton').click()">
+        <button id="loginButton" onclick="authentication.doLogin()">OK</button>
+        <!--   <button id="xxx" onclick="Tablette.updateCotesParTabletteZeros()">TEST boites</button>-->
+
+        <div id="loginMessage"></div>
+    </div>
+
+
+    <div id="dialogDiv" style="display: flex;flex-direction: column">
+        <div id="searchPanel" style="display: flex;flex-direction: column">
+            <input id="searchWordInput" value="flow">
+            <div>
+                <button onclick="ontograph.searchItem($('#searchWordInput').val())">Search</button>
+            </div>
+            <div id="conceptsJstreeDiv" style="width: 450px;height: 500px;overflow: auto"></div>
+
+            <div id="conceptOperationsDiv">
+
+                <!--  <button onclick="multiSkosGraph2.searchConceptsContainWord()">search more concepts</button>-->
+
+                <button onclick="paragraphs.displayGraphParagraphs()">display Graph Paragraphs</button>
+                min entities<input  type='hidden' id="minManadatoryEntities" value="2" size="3">
+                <button onclick="cooccurrences.displayGraphEntitiesCooccurrences()">display Cooccurences</button>
+                <button onclick="relations.displayGraphEntitiesRelations()">display Relations</button>
+            </div>
+        </div>
+        <div id="filteredEntitiesPanel" style="display: flex;flex-direction: column; width: 450px;height: 500px;display: none">
+
+        </div>
+    </div>
+
+    <div id="graphPopupDiv" onclick="ontograph.graphActions.hidePopup();"
+         style="position:absolute;flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+        <span class="popupMenuItem" onclick="ontograph.graphActions.drawChildren();"> draw children</span>
+        <span class="popupMenuItem" onclick="ontograph.graphActions.showDetails();"> show details</span>
+        <span class="popupMenuItem" onclick="ontograph.graphActions.setAsRootNode();"> set a rootNode</span>
+
+    </div>
+    <div id="detailsDiv" style="flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+
+
+    </div>
+
+</body>
+</html>

@@ -66,7 +66,12 @@ var common = (function () {
 
                 if (options.selectNodeFn)
                     options.selectNodeFn(evt, obj);
-            });
+            }).on('open_node.jstree', function(){
+            $(".jstree-themeicon").css("display", "none")
+            $(".jstree-anchor").css("line-height", "18px")
+            $(".jstree-anchor").css("height", "18px")
+            $(".jstree-anchor").css("font-size", "14px")
+        });
 
     }
 

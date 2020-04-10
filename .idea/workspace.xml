@@ -2,13 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/public/ontograph/indexOld.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/locskos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/locskos..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyQuantum..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyQuantum..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/index2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/index2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/cooccurrences.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/cooccurrences.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/corpus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/corpus.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/projection.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/projection.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/thesaurus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/thesaurus.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/thesaurus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/concepts.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +75,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
+  <component name="RunManager" selected="Node.js.ontologyQuantum..js">
     <configuration name="crawler_LOC..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="crawler_LOC..js" working-dir="$PROJECT_DIR$/bin/others/thesaurusCrawlers">
       <method v="2" />
     </configuration>
@@ -140,7 +144,7 @@
       <workItem from="1585209102222" duration="163695000" />
       <workItem from="1585849015535" duration="82535000" />
       <workItem from="1586186783964" duration="64873000" />
-      <workItem from="1586425216813" duration="11705000" />
+      <workItem from="1586425216813" duration="31345000" />
     </task>
     <servers />
   </component>
@@ -334,7 +338,7 @@
           <option name="timeStamp" value="3519" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/thesaurus.js</url>
+          <url>file://$PROJECT_DIR$/public/ontograph/js/concepts.js</url>
           <line>66</line>
           <option name="timeStamp" value="3525" />
         </line-breakpoint>

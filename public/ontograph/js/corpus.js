@@ -145,10 +145,20 @@ var corpus = (function () {
 
     self.onJstreeSelectNode = function (evt, obj) {
 
+
+        var node = obj.node
+        var text=obj.node.text+"<br><span style='font-size: 12px'>"
+        node.parents.forEach(function(parent,index){
+            var parentLabel= $("#jstreeCorpusDiv").jstree(true).get_node(parent)
+            if(index<node.parents.length-1)
+                text+="/"+parentLabel.text
+        })
+        text+="</span>"
+        $("#currentCorpusSpan").html(" : "+text);
+
         if(obj.event.ctrlKey){
             return  $("#accordion").accordion({ active: 1});
         }
-        $("#currentCorpusSpan").html(" : "+obj.node.text);
         var node = obj.node
         if (node.children.length > 0)
             return;

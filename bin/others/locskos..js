@@ -308,7 +308,7 @@ var locskos = {
                 var strOut = 'concept\tid\tparents\tchildren\n';
                 for (var key in distinctConcepts){
                   var concept=distinctConcepts[key];
-                    strOut += concept.concept + "\t" + concept.id + "\t" + concept.parents + "\t" + concepts.children+ "\n"
+                    strOut += concept.concept + "\t" + concept.id + "\t" + concept.parents + "\t" + conceptsClass.children+ "\n"
 
             }
 
