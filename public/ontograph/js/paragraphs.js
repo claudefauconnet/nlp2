@@ -2,6 +2,7 @@ var paragraphs = (function () {
 
     var self = {};
     self.currentGraphInfos = {}
+
     self.drawParagraphsEntitiesGraphAggr = function (data, conceptsInfosMap, options) {
         if (!options) {
             options = {
@@ -17,13 +18,18 @@ var paragraphs = (function () {
         var visjsData = {nodes: [], edges: []}
 
         data.forEach(function (item, indexLine) {
-
-
-            var corpusId = item[options.corpusLevelAggr].value
-            var corpusLabel = item[options.corpusLevelAggr+"Label"].value
+            var corpusId;
+            var corpusLabel;
+            if (options.corpusLevelAggr == "paragraph") {
+                corpusId = item.paragraph.value;
+                corpusLabel = corpusId.substring(corpusId.lastIndexOf("/"+1));
+            }
+            else {
+                corpusId = item[options.corpusLevelAggr].value
+                corpusLabel = item[options.corpusLevelAggr + "Label"].value
+            }
 
             allCorpusIds.push(corpusId)
-
 
 
             if (uniqueNodeIds.indexOf(corpusId) < 0) {
@@ -44,8 +50,11 @@ var paragraphs = (function () {
             //  var ancestors = Concepts.getAncestorsFromJstree(item.entity.value);
             var ancestors = conceptsInfosMap[item.entity.value].ancestors
             var concept
+
+            if (options.nodeIdFilter && item.id != options.nodeIdFilter)
+                concept = ancestors[0]
             if (options.conceptLevelAggr > ancestors.length - 1)//si pas d'ancetre de ce noveau on prend le noeud lui meme
-                concept = ancestors[ancestors.length-1]
+                concept = ancestors[ancestors.length - 1]
             else
                 concept = ancestors[options.conceptLevelAggr]
 
@@ -131,134 +140,46 @@ var paragraphs = (function () {
 
 
     }
-    self.drawParagraphsEntitiesGraph = function (data, paragraphsInfos, options) {
-        self.currentGraphInfos = {}
-        var allParagraphIds = [];
-        var uniqueNodeIds = []
-        var uniqueEdgeIds = []
-        var visjsData = {nodes: [], edges: []}
 
-        data.forEach(function (item, indexLine) {
-
-
-            var paragraphId = item.paragraph.value
-
-            allParagraphIds.push(paragraphId)
-
-            var paragraphIdStr = paragraphId.substring(paragraphId.lastIndexOf("/") + 1)
-
-            if (uniqueNodeIds.indexOf(paragraphIdStr) < 0) {
-                uniqueNodeIds.push(paragraphIdStr)
-
-                var node = {
-                    label: paragraphIdStr,
-                    id: paragraphId,
-                    color: ontograph.entityTypeColors["paragraph"],
-                    data: item,
-                    shape: "ellipse",
-
-
-                }
-                visjsData.nodes.push(node)
-            }
-
-
-            if (uniqueNodeIds.indexOf(item.entity.value) < 0) {
-                var ancestors = Concepts.getAncestorsFromJstree(item.entity.value)
-
-                uniqueNodeIds.push(item.entity.value)
-                var type = item.entityType.value.substring(item.entityType.value.lastIndexOf("/") + 1)
-                var node = {
-                    label: item.entityLabel.value,
-                    id: item.entity.value,
-                    color: ontograph.entityTypeColors[type],
-                    data: {ancestors: ancestors},
-                    shape: "box",
-                    //  font: {size: 18, color: "white"}
-
-
-                }
-                visjsData.nodes.push(node)
-            }
-
-
-            var edgeId = paragraphId + "_" + item.entity.value
-            if (uniqueEdgeIds.indexOf(edgeId) < 0) {
-                uniqueEdgeIds.push(edgeId)
-                var edge = {
-                    from: paragraphId,
-                    to: item.entity.value,
-                    id: edgeId,
-
-                }
-                visjsData.edges.push(edge)
-            }
-
-
-            if (options.resourcesShowParentResources) {
-
-                if (options.resourcesShowParentResources == "document") {
-
-
-                    if (uniqueNodeIds.indexOf(item.document.value) < 0) {
-                        uniqueNodeIds.push(item.document.value)
-                        var node = {
-                            id: item.document.value,
-                            label: item.documentLabel.value,
-                            color: ontograph.entityTypeColors["document"],
-                            shape: "dot",
-                            //  font: {size: 18, color: "white"}
-
-
-                        }
-                        visjsData.nodes.push(node)
-                    }
-
-                    var edgeId = paragraphId + "_" + item.document.value
-                    if (uniqueEdgeIds.indexOf(edgeId) < 0) {
-                        uniqueEdgeIds.push(edgeId)
-                        var edge = {
-                            from: paragraphId,
-                            to: item.document.value,
-                            id: edgeId,
-
-                        }
-                        visjsData.edges.push(edge)
-                    }
-                } else {
-                    var x = 3
-                }
-
-            }
-
-
-        })
-        ontograph.drawGraph(visjsData, {
-            onclickFn: paragraphs.onNodeClick,
-            onHoverNodeFn: paragraphs.onNodeHover,
-            afterDrawing: function () {
-                common.message("")
-                $("#waitImg").css("display", "none")
-            }
-        })
-
-
-    }
     self.onNodeClick = function (node, point) {
 
-    if (node.id.indexOf("/resource/vocabulary/") > -1) {
-       var ancestors=node.data.ancestors;
-       var visjsNewData={nodes:[],edges:[]}
-        ancestors.forEach(function(ancestor,index){
-                if(ancestor.id==(node.id) && index>0) {
-                  var child= ancestors[index-1];
-                        visjsNewData.nodes.push({id:child.id, label:child.label, shape:"box",color:node.color})
-                    visjsNewData.edges.push({id:child.id+"_"+node.id,from:child.id,to:node.id})
-                }
-            })
+
+        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
+        paragraphs.drawParagraphsEntitiesGraphAggr(projection.currentProjection.paragraphs, projection.currentProjection.conceptsInfos, {
+            conceptLevelAggr: conceptLevelAggr,
+            corpusLevelAggr: corpusLevelAggr,
+            nodeIdFilter: node.id
+        })
+
+        if (node.id.indexOf("/resource/vocabulary/") > -1) {
+            var ancestors = node.data.ancestors;
+            var ancestorsMap = projection.currentProjection.conceptsInfos
+            var uniqueNodes = visjsGraph.data.nodes.getIds();
+            var uniqueEdges = visjsGraph.data.edges.getIds();
+            var visjsNewData = {nodes: [], edges: []}
+            for (var key in ancestorsMap) {
+                var ancestors = ancestorsMap[key].ancestors
+                ancestors.forEach(function (ancestor, index) {
+                    if (ancestor.id == (node.id) && index > 0) {
+                        var child = ancestors[index - 1];
+                        if (uniqueNodes.indexOf(child.id) < 0) {
+                            uniqueNodes.push(child.id);
+                            visjsNewData.nodes.push({id: child.id, label: child.label, shape: "box", color: node.color, data: node.data})
+                        }
+                        var edgeId = child.id + "_" + node.id
+                        if (uniqueEdges.indexOf(edgeId) < 0) {
+                            uniqueEdges.push(edgeId);
+                            visjsNewData.edges.push({id: edgeId, from: child.id, to: node.id})
+                        }
+
+
+                    }
+                })
+            }
 
         }
-    ontograph.drawGraph(visjsNewData,{addToGraph:true})
+        ontograph.drawGraph(visjsNewData, {addToGraph: true})
 
 
     }
@@ -454,7 +375,7 @@ var paragraphs = (function () {
     self.sparql_getEntitiesParagraphs = function (idCorpus, conceptsIds, options, callback) {
 
         var totalConcepts = 0;
-        var slicedConceptsIds = common.sliceArray(conceptsIds, 25);
+        var slicedConceptsIds = common.sliceArray(conceptsIds, projection.sliceZize);
         if (slicedConceptsIds.length == 0)
             slicedConceptsIds = [[]]
         var allResults = [];
@@ -509,10 +430,9 @@ var paragraphs = (function () {
                 "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
                 "" +
                 "        select *" +
-                "        where{ "
+                "        where "
 
-
-            query += "?paragraph terms:subject ?entity. ?entity rdfs:label ?entityLabel . " +
+            var whereQuery = "{?paragraph terms:subject ?entity. ?entity rdfs:label ?entityLabel . " +
                 "  FILTER (lang(?entityLabel)=\"en\") " +
                 "  ?entity rdfsyn:type ?entityType .  " +
                 "?paragraph  skos:broader ?chapter." +
@@ -528,7 +448,7 @@ var paragraphs = (function () {
 
 
             if (concepts && concepts.length > 0) {
-                if (options.concepts_OR) {
+                if (true || options.concepts_OR) {
                     var entityIdsStr = ""
                     concepts.forEach(function (id, index) {
                         if (index > 0)
@@ -536,28 +456,28 @@ var paragraphs = (function () {
                         entityIdsStr += "<" + id + ">"
                     })
                     if (isQuantumConceptsQuery)
-                        query += "  ?paragraph terms:subject ?entity . " + "?entity skos:exactMatch ?quantumConcept" + " filter (?quantumConcept in(" + entityIdsStr + "))"
+                        whereQuery += "  ?paragraph terms:subject ?entity . " + "?entity skos:exactMatch ?quantumConcept" + " filter (?quantumConcept in(" + entityIdsStr + "))"
                     else
-                        query += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
+                        whereQuery += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
 
                 } else if (options.concepts_AND) {
                     concepts.forEach(function (id, index) {
                         if (index >= options.minManadatoryEntities)
-                            query += "OPTIONAL {"
-                        query +=
+                            whereQuery += "OPTIONAL {"
+                        whereQuery +=
                             "  ?paragraph terms:subject ?entity" + index + " . "
                         if (isQuantumConceptsQuery)
-                            query += "?entity" + index + " skos:exactMatch ?quantumConcept" + index + " FILTER (?quantumConcept" + index + " in(<" + id + ">))"
+                            whereQuery += "?entity" + index + " skos:exactMatch ?quantumConcept" + index + " FILTER (?quantumConcept" + index + " in(<" + id + ">))"
                         else
-                            query += "    FILTER (?entity" + index + " in(<" + id + ">))"
+                            whereQuery += "    FILTER (?entity" + index + " in(<" + id + ">))"
 
-                        query += "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
+                        whereQuery += "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
                             "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
                             "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
                             "    "
 
                         if (index >= options.minManadatoryEntities)
-                            query += "}"
+                            whereQuery += "}"
 
                     })
                 }
@@ -565,13 +485,22 @@ var paragraphs = (function () {
 
 
             if (options.getParagraphEntities) {
-                query += "?paragraph terms:subject ?entity22 .  ?entity22 rdfsyn:type ?entity22Type . ?entity22 rdfs:label ?entity22Label . filter (?entity22!=?entity1  && ?entity22!=?entity0)";
+                whereQuery += "?paragraph terms:subject ?entity22 .  ?entity22 rdfsyn:type ?entity22Type . ?entity22 rdfs:label ?entity22Label . filter (?entity22!=?entity1  && ?entity22!=?entity0)";
             }
-            query += queryCorpus
-            query += "    } limit 1000"
+            whereQuery += queryCorpus
+            whereQuery += "    }"
+            if (options.booleanQuery && self.previousSparqwhere) {
+                query += "{" + self.previousSparqwhere + " " + options.booleanQuery + " " + whereQuery + "}"
+            } else {
+                query += whereQuery
+            }
+            self.previousSparqwhere = whereQuery;
+
+            query += " limit 1000"
 
 
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err) {
                     return callback(err);

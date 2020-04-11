@@ -185,7 +185,7 @@
 
             <h3><span class="title">Corpus </span><span class='currentConceptsSpan' id="currentCorpusSpan"></span></h3>
             <div style="margin:5px">
-                <div><input size="15" id="searchCorpusInput" value="117">
+                <div><input size="15" id="searchCorpusInput" value="">
                     <button onclick="corpus.searchResources($('#searchCorpusInput').val())">Search</button>
                     <button onclick="corpus.resetSelection()">Reset</button>
                 </div>
@@ -196,9 +196,9 @@
 
             <h3><span class="title">Concepts </span><span class='currentConceptsSpan' id="currentConceptsSpan"></span></h3>
             <div style="margin:5px">
-                <div><input size="15" id="searchConceptInput" value="flow">
-                    <button onclick="conceptsClass.searchConcept($('#searchConceptInput').val())">Search</button>
-                    <button onclick="conceptsClass.loadThesaurusTopConceptsTree()">Reset</button>
+                <div><input size="15" id="searchConceptInput" value="">
+                    <button onclick="Concepts.searchConcept($('#searchConceptInput').val())">Search</button>
+                    <button onclick="Concepts.loadThesaurusTopConceptsTree()">Reset</button>
                 </div>
                 <div id="jstreeConceptDiv" style="width:100%;height: 500px;overflow: auto" ;></div>
 
@@ -219,12 +219,13 @@
 
                          </select>*/-->
                 <div class="projection-item">
-                    aggregate concepts
-                    <div id="conceptAggrLevelSlider"></div>
+                    Aggregate concepts<br>
+                    <div id="conceptAggrLevelSlider" style="margin:10px;width:90%"></div>
                 </div>
                 <div class="projection-item">
-                    aggregate resources <select onChange="projection.onAggregateResourcesSelectChange($(this).val())" id="corpusAggrLevelSelect">
+                    Aggregate resources <br><select  style="margin:10px;" onChange="projection.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
                     <option></option>
+                    <option>paragraph</option>
                     <option>chapter</option>
                     <option selected="selected">document</option>
                     <option>documentType</option>
@@ -232,8 +233,10 @@
                     <option>domain</option>
                 </select>
                 </div>
-                <div class="projection-item">
-                    <button onclick="projection.displayParagraphsGraph()"> Paragraphs</button>
+                <div class="projection-item" style="background-color: #d5d6da">
+                    Draw graph<br>
+                    <button onclick="projection.displayParagraphsGraph()"> Concepts</button>
+                    <button onclick="projection.displayParagraphsGraph({booleanQuery :'MINUS'})"> And concepts</button>
                     <button onclick="cooccurrences.displayGraphEntitiesCooccurrences()">Cooccurrences</button>
 
                     &nbsp;&nbsp;<button onclick="relations.displayGraphEntitiesRelations()">Relations</button>

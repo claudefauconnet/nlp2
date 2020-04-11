@@ -386,7 +386,7 @@ var sparql = (function () {
             query2 = query2.replace(/%2B/g, "+")
         }
         url = url + query2 + queryOptions;
-        console.log(url)
+
 
         $("#waitImg").css("display", "block");
 

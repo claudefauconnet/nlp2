@@ -65,7 +65,7 @@ var Concepts = (function () {
 
 
             //  console.log(JSON.stringify(jstreeData,null,2))
-            common.loadJsTree("jstreeConceptDiv", jstreeData, {withCheckboxes: 1, selectDescendants: 1})
+            common.loadJsTree("jstreeConceptDiv", jstreeData, {withCheckboxes: 1, selectDescendants: 1,openAll:true})
 
 
         })
@@ -166,7 +166,7 @@ var Concepts = (function () {
         var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_selected()
         if (selectedConcepts.length == 0)
             return callback(null, []);
-        var slicedSelectedConcepts = common.sliceArray(selectedConcepts, 25);
+        var slicedSelectedConcepts = common.sliceArray(selectedConcepts,  projection.sliceZize);
         async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
 
             Concepts.sparql_geConceptDescendants(concepts, function (err, result) {
@@ -290,7 +290,7 @@ var Concepts = (function () {
 
     self.getSelectedConceptAncestors = function (conceptIds, options, callback) {
 
-        var slicedConceptIds = common.sliceArray(conceptIds, 25);
+        var slicedConceptIds = common.sliceArray(conceptIds,  projection.sliceZize);
         async.eachSeries(slicedConceptIds, function (concepts, callbackEach) {
 
             Concepts.sparql_getAncestors(concepts, function (err, result) {
@@ -381,7 +381,7 @@ var Concepts = (function () {
             options = {}
         }
         var allInfos = [];
-        var slices = common.sliceArray(conceptIds, 25)
+        var slices = common.sliceArray(conceptIds,  projection.sliceZize)
         async.eachSeries(slices, function (slice, callbackEach) {
 
             var conceptIdsStr = "";
@@ -444,7 +444,7 @@ var Concepts = (function () {
                 "  }" +
                 "ORDER BY ASC(?broaderId1)" +
                 "LIMIT 1000"
-            console.log(query)
+
 
 
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
