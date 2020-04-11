@@ -64,9 +64,9 @@
                 $("#selectionDiv").height($(window).height() - 50)
                 $("#displayDiv").height($(window).height() - 50)
                 $("#projectionDiv").height($(window).height() - 50)
-                $("#graphDiv").height($(window).height() -250);
+                $("#graphDiv").height($(window).height() - 250);
 
-                $("#graphDiv").width( $("#displayDiv").width())
+                $("#graphDiv").width($("#displayDiv").width())
 
                 $("#accordion").accordion();
 
@@ -156,6 +156,18 @@
         / / color: #372806;
             font-size: larger;
         }
+
+        .projection-item {
+
+            border-style: solid;
+            border-color: #372806;
+            border-radius: 3px;
+            margin: 5px;
+            padding: 5px;
+            border-width: 1px;
+
+
+        }
     </style>
 
 </head>
@@ -193,54 +205,47 @@
             </div>
 
 
-
-
-            <h3><span class="title">Select </span><span class='currentConceptsSpan' id="currentQuantumSpan"></span></h3>
+            <h3><span class="title">Display </span><span class='currentConceptsSpan' id="currentQuantumSpan"></span></h3>
             <div>
-                <button onclick="projection.displayParagraphsGraph()"> Paragraphs</button>
-                <button onclick="cooccurrences.displayGraphEntitiesCooccurrences()">Cooccurrences</button>
-
-                &nbsp;&nbsp;<button onclick="relations.displayGraphEntitiesRelations()">Relations</button>
-                <hr>
 
 
+                <!--   Show  ParentResource<select   id="resourcesShowParentResourcesSelect">
+                             <option></option>
+                             <option>chapter</option>
+                             <option selected="selected">document</option>
+                             <option>document-type</option>
+                             <option>branch</option>
+                             <option>domain</option>
+
+                         </select>*/-->
+                <div class="projection-item">
+                    aggregate concepts
+                    <div id="conceptAggrLevelSlider"></div>
+                </div>
+                <div class="projection-item">
+                    aggregate resources <select onChange="projection.onAggregateResourcesSelectChange($(this).val())" id="corpusAggrLevelSelect">
+                    <option></option>
+                    <option>chapter</option>
+                    <option selected="selected">document</option>
+                    <option>documentType</option>
+                    <option>branch</option>
+                    <option>domain</option>
+                </select>
+                </div>
+                <div class="projection-item">
+                    <button onclick="projection.displayParagraphsGraph()"> Paragraphs</button>
+                    <button onclick="cooccurrences.displayGraphEntitiesCooccurrences()">Cooccurrences</button>
+
+                    &nbsp;&nbsp;<button onclick="relations.displayGraphEntitiesRelations()">Relations</button>
 
 
-                Show  ParentResource<select   id="resourcesShowParentResourcesSelect">
-                <option></option>
-                <option>chapter</option>
-                <option selected="selected">document</option>
-                <option>document-type</option>
-                <option>branch</option>
-                <option>domain</option>
-
-            </select>
-
-                aggregate concepts
-                <div id="conceptAggrLevelSlider"></div>
-                aggregate resources <select onChange="projection.onAggregateResourcesSelectChange($(this).val())" id="resourcesAggrLevelSelect">
-                <option></option>
-                <option>chapter</option>
-                <option>document</option>
-                <option>documentType</option>
-                <option>branch</option>
-                <option>domain</option>
-            </select>
-
-
-                <br>
-                select
-                <div id="tableDiv"></div>
-
+                </div>
             </div>
+
         </div>
+
+
     </div>
-   <!-- <div i="projectionDiv" style="width:30%; max-width:350px; border-style: solid;padding: 3px;margin: 10px">
-
-
-
-
-    </div>-->
 
 
     <div id="displayDiv" style="width:70%;border-style: solid;padding: 3px;margin: 3px">

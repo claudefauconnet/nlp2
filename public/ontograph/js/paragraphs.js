@@ -2,7 +2,135 @@ var paragraphs = (function () {
 
     var self = {};
     self.currentGraphInfos = {}
+    self.drawParagraphsEntitiesGraphAggr = function (data, conceptsInfosMap, options) {
+        if (!options) {
+            options = {
+                conceptLevelAggr: 0,
+                corpusLevelAggr: "paragraph",
+            }
 
+        }
+        self.currentGraphInfos = {}
+        var allCorpusIds = [];
+        var uniqueNodeIds = []
+        var uniqueEdgeIds = []
+        var visjsData = {nodes: [], edges: []}
+
+        data.forEach(function (item, indexLine) {
+
+
+            var corpusId = item[options.corpusLevelAggr].value
+            var corpusLabel = item[options.corpusLevelAggr+"Label"].value
+
+            allCorpusIds.push(corpusId)
+
+
+
+            if (uniqueNodeIds.indexOf(corpusId) < 0) {
+                uniqueNodeIds.push(corpusId)
+
+                var node = {
+                    label: corpusLabel,
+                    id: corpusId,
+                    color: ontograph.entityTypeColors["paragraph"],
+                    data: item,
+                    shape: "ellipse",
+
+
+                }
+                visjsData.nodes.push(node)
+            }
+
+            //  var ancestors = Concepts.getAncestorsFromJstree(item.entity.value);
+            var ancestors = conceptsInfosMap[item.entity.value].ancestors
+            var concept
+            if (options.conceptLevelAggr > ancestors.length - 1)//si pas d'ancetre de ce noveau on prend le noeud lui meme
+                concept = ancestors[ancestors.length-1]
+            else
+                concept = ancestors[options.conceptLevelAggr]
+
+
+            if (uniqueNodeIds.indexOf(concept.id) < 0) {
+
+
+                uniqueNodeIds.push(concept.id)
+                var type = item.entityType.value.substring(item.entityType.value.lastIndexOf("/") + 1)
+                var node = {
+                    label: concept.label,
+                    id: concept.id,
+                    color: ontograph.entityTypeColors[type],
+                    data: {ancestors: ancestors},
+                    shape: "box",
+                    //  font: {size: 18, color: "white"}
+
+
+                }
+                visjsData.nodes.push(node)
+            }
+
+
+            var edgeId = corpusId + "_" + concept.id
+            if (uniqueEdgeIds.indexOf(edgeId) < 0) {
+                uniqueEdgeIds.push(edgeId)
+                var edge = {
+                    from: corpusId,
+                    to: concept.id,
+                    id: edgeId,
+
+                }
+                visjsData.edges.push(edge)
+            }
+
+
+            if (options.resourcesShowParentResources) {
+
+                if (options.resourcesShowParentResources == "document") {
+
+
+                    if (uniqueNodeIds.indexOf(item.document.value) < 0) {
+                        uniqueNodeIds.push(item.document.value)
+                        var node = {
+                            id: item.document.value,
+                            label: item.documentLabel.value,
+                            color: ontograph.entityTypeColors["document"],
+                            shape: "dot",
+                            //  font: {size: 18, color: "white"}
+
+
+                        }
+                        visjsData.nodes.push(node)
+                    }
+
+                    var edgeId = paragraphId + "_" + item.document.value
+                    if (uniqueEdgeIds.indexOf(edgeId) < 0) {
+                        uniqueEdgeIds.push(edgeId)
+                        var edge = {
+                            from: paragraphId,
+                            to: item.document.value,
+                            id: edgeId,
+
+                        }
+                        visjsData.edges.push(edge)
+                    }
+                } else {
+                    var x = 3
+                }
+
+            }
+
+
+        })
+        ontograph.drawGraph(visjsData, {
+            onclickFn: paragraphs.onNodeClick,
+            onHoverNodeFn: paragraphs.onNodeHover,
+            afterDrawing: function () {
+                common.message("")
+                $("#waitImg").css("display", "none")
+            }
+        })
+
+
+    }
     self.drawParagraphsEntitiesGraph = function (data, paragraphsInfos, options) {
         self.currentGraphInfos = {}
         var allParagraphIds = [];
@@ -116,7 +244,22 @@ var paragraphs = (function () {
 
 
     }
-    self.onNodeClick = function (obj, point) {
+    self.onNodeClick = function (node, point) {
+
+    if (node.id.indexOf("/resource/vocabulary/") > -1) {
+       var ancestors=node.data.ancestors;
+       var visjsNewData={nodes:[],edges:[]}
+        ancestors.forEach(function(ancestor,index){
+                if(ancestor.id==(node.id) && index>0) {
+                  var child= ancestors[index-1];
+                        visjsNewData.nodes.push({id:child.id, label:child.label, shape:"box",color:node.color})
+                    visjsNewData.edges.push({id:child.id+"_"+node.id,from:child.id,to:node.id})
+                }
+            })
+
+        }
+    ontograph.drawGraph(visjsNewData,{addToGraph:true})
+
 
     }
     self.onNodeHover = function (obj, point) {
@@ -170,7 +313,7 @@ var paragraphs = (function () {
             async.series([
                 function (callbackSeries) {
                     if (!self.currentGraphInfos[obj.id]) {
-                        Concepts.getConceptInfos([obj.id], null, function (err, result) {
+                        Concepts.getConceptsInfos([obj.id], null, function (err, result) {
                             self.currentGraphInfos[obj.id] = result[0];
                             callbackSeries();
                         })

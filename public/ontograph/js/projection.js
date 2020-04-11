@@ -2,14 +2,14 @@ var projection = (function () {
 
     var self = {};
 
-    var uniqueNodes=[];
+    var uniqueNodes = [];
 
-    self.clusterNodes=function(nodes,clusters, options){
-        var edgesToRemove=[];
-        var edgesToCreate=[];
-        var nodesToRemove=[];
-        var nodesToCreate=[];
-        var existingNodeIds=visjsGraph.data.nodes.getIds()
+    self.clusterNodes = function (nodes, clusters, options) {
+        var edgesToRemove = [];
+        var edgesToCreate = [];
+        var nodesToRemove = [];
+        var nodesToCreate = [];
+        var existingNodeIds = visjsGraph.data.nodes.getIds()
         for (var cid in clusters) {
             if (uniqueNodes.indexOf(cid) < 0 && existingNodeIds.indexOf(cid) < 0) {
                 uniqueNodes.push(cid)
@@ -23,6 +23,7 @@ var projection = (function () {
                     edgesToRemove = edgesToRemove.concat(nodeIncomingEdges);
                 }
             })
+
 
             var uniqueNewEdges = [];
             var oldEdges = visjsGraph.data.edges.get(edgesToRemove);
@@ -56,161 +57,22 @@ var projection = (function () {
 
     }
     self.onConceptAggrLevelSliderChange = function (evt) {
-        var newLevel = $(this).slider("value") + 1;
-
-
-        if (self.currentConceptsClusters) {
-            self.currentConceptsClusters.forEach(function (cid) {
-                try {
-                    visjsGraph.network.openCluster(cid)
-                } catch (e) {
-                    var x = 3
-                }
-            })
-        }
-        self.currentConceptsClusters = [];
-        var nodes = visjsGraph.data.nodes.get();
-        var distinctCid = {}
-        var newNodes = [];
-
-
-        nodes.forEach(function (node) {
-
-            if (node.id.indexOf("/vocabulary/") > -1) {
-                var currentLevel = node.data.ancestors.indexOf(node.id)
-                newLevel = newLevel + currentLevel;
-                if (newLevel < 0)
-                    return;
-
-
-                node.data.cid = null;
-                if (node.data.ancestors && newLevel < node.data.ancestors.length - 1) {
-                    var cid = node.data.ancestors[newLevel].id
-                    if (!distinctCid[cid])
-                        distinctCid[cid] = node.data.ancestors[newLevel].label;
-                    node.data.cidConcept = cid;
-                    self.currentConceptsClusters.push(cid);
-                    newNodes.push(node)
-
-
-                }
-            }
-
+        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
+        paragraphs.drawParagraphsEntitiesGraphAggr(self.currentProjection.paragraphs, self.currentProjection.conceptsInfos, {
+            conceptLevelAggr: conceptLevelAggr,
+            corpusLevelAggr: corpusLevelAggr
         })
-        visjsGraph.data.nodes.update(newNodes);
-
-        var options = {
-            joinCondition: function (childOptions,cid) {
-                try {
-                    var test = false;
-                    if (childOptions.id.indexOf("/vocabulary/") && childOptions.data) {
-
-                        test = childOptions.data.cidConcept && childOptions.data.cidConcept == cid
-                        //  console.log("---"+childOptions.data.cidConcept)
-                        // console.log(test)
-                    }
-                } catch (e) {
-                    console.log(e)
-                }
-                return test
-            },
-          //  clusterNodeProperties: {id: cid, label: cidLabel, shape: 'square', size: 20}
-        };
-        self.clusterNodes(nodes, distinctCid, options)
-
-
-
-      /*  for (var cid in distinctCid) {
-            var cidLabel = distinctCid[cid]
-            var options = {
-                joinCondition: function (childOptions) {
-                    try {
-var test=false;
-                      if(childOptions.id.indexOf("/vocabulary/")  && childOptions.data  ) {
-
-                          test = childOptions.data.cidConcept && childOptions.data.cidConcept == cid
-                          //  console.log("---"+childOptions.data.cidConcept)
-                          // console.log(test)
-                      }
-                    } catch (e) {
-                        console.log(e)
-                    }
-                    return test
-                },
-                clusterNodeProperties: {id: cid, label: cidLabel, shape: 'square', size: 20}
-            };
-            visjsGraph.network.cluster(options);
-
-
-        }*/
     }
 
 
     self.onAggregateResourcesSelectChange = function (type) {
-        if (self.currentCorpusClusters) {
-            self.currentCorpusClusters.forEach(function (cid) {
-                try {
-                    visjsGraph.network.openCluster(cid)
-                } catch (e) {
-                    var x = 3
-                }
-            })
-        }
-        self.currentCorpusClusters = [];
-        var nodes = visjsGraph.data.nodes.get();
-        var distinctCid = {}
-        var newNodes = [];
-        nodes.forEach(function (node) {
-
-            if (node.id.indexOf("/Paragraph/") > -1) {
-                node.data.cid = null;
-                if (node.data && node.data[type]) {
-                    var cid = node.data[type].value
-                    if (!distinctCid[cid])
-                        distinctCid[cid] = node.data[type + "Label"].value;
-                    node.data.cidCorpus = cid;
-                    self.currentCorpusClusters.push(cid);
-                    newNodes.push(node)
-
-                }
-            }
-
+        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
+        paragraphs.drawParagraphsEntitiesGraphAggr(self.currentProjection.paragraphs, self.currentProjection.conceptsInfos, {
+            conceptLevelAggr: conceptLevelAggr,
+            corpusLevelAggr: corpusLevelAggr
         })
-
-        visjsGraph.data.nodes.update(newNodes);
-
-        var options = {
-            joinCondition: function (childOptions,cid) {
-                try {
-                    var test = (childOptions.data && childOptions.data.cidCorpus == cid);
-
-                } catch (e) {
-                    console.log(e)
-                }
-                return test
-            },
-           // clusterNodeProperties: {id: cid, label: cidLabel, shape: 'square', size: 20}
-        };
-        self.clusterNodes(nodes, distinctCid, options)
-
-   /*    for (var cid in distinctCid) {
-            var cidLabel = distinctCid[cid]
-            var options = {
-                joinCondition: function (childOptions) {
-                    try {
-                        var test = (childOptions.data && childOptions.data.cidCorpus == cid);
-
-                    } catch (e) {
-                        console.log(e)
-                    }
-                    return test
-                },
-                clusterNodeProperties: {id: cid, label: cidLabel, shape: 'square', size: 20}
-            };
-            visjsGraph.network.cluster(options);
-
-
-        }*/
 
     }
 
@@ -222,14 +84,15 @@ var test=false;
 
 
     self.displayParagraphsGraph = function () {
-        var conceptAggrLevel = $("#conceptAggrLevelSlider").val()
-        var resourceAggrLevel = $("#resourcesAggrLevelSelect").val();
-        var resourcesShowParentResources = $("#resourcesShowParentResourcesSelect").val();
+        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
+
+        //   var resourcesShowParentResources = $("#resourcesShowParentResourcesSelect").val();
         var conceptAncestorsMap = {}
         var corpusAncestorsMap = {}
         var allConceptsMap = {}
         var allParagraphs = [];
-        var paragraphsInfos = {};
+        var allConceptsInfosMap = {};
         var idCorpus = null;
         async.series([
 
@@ -296,15 +159,50 @@ var test=false;
 
                 },
 
+                //getAncestors
+                function (callbackSeries) {
+                    if (allParagraphs.length == 0)
+                        return callbackSeries();
+                    var conceptsIds = [];
+                    allParagraphs.forEach(function (item) {
+                        if (item.entity)
+                            conceptsIds.push(item.entity.value)
+                    })
+                    if (conceptsIds.length == 0)
+                        return callbackSeries();
+
+                    Concepts.getConceptsInfos(conceptsIds, {onlyAncestors: true}, function (err, result) {
+                        if (err)
+                            return callbackSeries(err);
+                        result.forEach(function (item) {
+                            var obj = {id: item.concept.value, ancestors: [{id:item.concept.value, label: item.conceptLabel.value}]}
+                            for (var i = 1; i < 9; i++) {
+                                var broader = item["broaderId" + i];
+                                if (typeof broader !== "undefined") {
+                                    obj.ancestors.push({id: broader.value, label: item["broader" + i].value})
+                                }
+                            }
+                            allConceptsInfosMap[obj.id] = obj;
+                        })
+
+                        return callbackSeries()
+
+                    })
+
+                },
                 //getParagraphs
                 function (callbackSeries) {
                     common.message("Drawing graph paragraphs:" + allParagraphs.length)
-                    paragraphs.drawParagraphsEntitiesGraph(allParagraphs, paragraphsInfos, {
-                            conceptAggrLevel: conceptAggrLevel,
-                            resourceAggrLevel: resourceAggrLevel,
-                            resourcesShowParentResources: resourcesShowParentResources
-                        }
-                    );
+                    //  paragraphs.drawParagraphsEntitiesGraph(allParagraphs, paragraphsInfos, {
+                    self.currentProjection = {
+                        paragraphs: allParagraphs,
+                       conceptsInfos: allConceptsInfosMap,
+                    }
+                    paragraphs.drawParagraphsEntitiesGraphAggr(allParagraphs, allConceptsInfosMap, {
+                        conceptLevelAggr: conceptLevelAggr,
+                        corpusLevelAggr: corpusLevelAggr
+                    })
+
                     callbackSeries();
                 }
 
@@ -319,8 +217,6 @@ var test=false;
 
 
     }
-
-
 
 
     return self;

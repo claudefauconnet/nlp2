@@ -34,6 +34,7 @@ var visjsGraph = (function () {
             edges: {
                 //  scaling:{min:1,max:8}
             },
+           layout: { improvedLayout: false }
 
         };
         if (_options.notSmoothEdges) {

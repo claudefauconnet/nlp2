@@ -84,7 +84,7 @@ var Concepts = (function () {
 
                     "?concept skos:topConceptOf ?scheme." +
                     "?concept skos:prefLabel ?conceptLabel."
-                query+="  }ORDER BY ?conceptLabel " ;
+                query += "  }ORDER BY ?conceptLabel ";
                 query += "limit 500 "
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -123,7 +123,7 @@ var Concepts = (function () {
                     " FILTER (?concept=<http://data.total.com/resource/ontology/quantum/Attributes>)" +
                     " " +
                     "}"
-                query+="  }ORDER BY ?conceptLabel " ;
+                query += "  }ORDER BY ?conceptLabel ";
                 query += "limit 500 "
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -147,7 +147,7 @@ var Concepts = (function () {
 
                 common.loadJsTree("jstreeConceptDiv", jstreeData, {
                     withCheckboxes: 0, selectDescendants: 1, selectNodeFn: function (evt, obj) {
-                       Concepts.onNodeSelect(evt, obj);
+                        Concepts.onNodeSelect(evt, obj);
                     }
                 })
                 return callbackSeries();
@@ -184,9 +184,9 @@ var Concepts = (function () {
 
     self.sparql_geConceptDescendants = function (conceptIds, callback) {
         var depth = 7;
-   var defaultIri="http://data.total.com/resource/thesaurus/ctg/"
-        defaultIri=""
-        var url = sparql.source.sparql_url + "?default-graph-uri="+defaultIri+"&query=";// + query + queryOptions
+        var defaultIri = "http://data.total.com/resource/thesaurus/ctg/"
+        defaultIri = ""
+        var url = sparql.source.sparql_url + "?default-graph-uri=" + defaultIri + "&query=";// + query + queryOptions
 
         var conceptIdsStr = ""
         conceptIds.forEach(function (id, index) {
@@ -210,7 +210,7 @@ var Concepts = (function () {
         for (var i = 1; i < depth; i++) {
             query += "}"
         }
-        query+="  }" ;
+        query += "  }";
         query += "limit 1000 "
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -258,7 +258,7 @@ var Concepts = (function () {
         for (var i = 1; i < depth; i++) {
             query += "}"
         }
-        query+="  }ORDER BY ?childLabel1 " ;
+        query += "  }ORDER BY ?childLabel1 ";
         query += "limit 1000 "
 
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
@@ -293,7 +293,7 @@ var Concepts = (function () {
         var slicedConceptIds = common.sliceArray(conceptIds, 25);
         async.eachSeries(slicedConceptIds, function (concepts, callbackEach) {
 
-           Concepts.sparql_getAncestors(concepts, function (err, result) {
+            Concepts.sparql_getAncestors(concepts, function (err, result) {
                 if (err)
                     return callbackEach(err);
                 allAncestors = allAncestors.concat(result);
@@ -376,69 +376,89 @@ var Concepts = (function () {
         })
     }
 
-    self.getConceptInfos = function (conceptId, options, callback) {
+    self.getConceptsInfos = function (conceptIds, options, callback) {
+        if (!options) {
+            options = {}
+        }
+        var allInfos = [];
+        var slices = common.sliceArray(conceptIds, 25)
+        async.eachSeries(slices, function (slice, callbackEach) {
 
-        var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
-
-        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-            "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-            "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-            "SELECT DISTINCT *" +
-            "WHERE {" +
-            "<" + conceptId + "> skos:prefLabel ?conceptLabel ."
-
-
-        query += "OPTIONAL {<" + conceptId + "> skos:exactMatch ?exactMatch .}" +
-            "OPTIONAL {<" + conceptId + "> skos:definition ?definition .}"
-
-        query += "OPTIONAL {" +
-            "   <" + conceptId + "> skos:broader ?broaderId1 ." +
-            "  ?broaderId1 skos:prefLabel ?broader1 ." +
-            "     OPTIONAL {" +
-            "    ?broaderId1 skos:broader ?broaderId2 ." +
-            "    ?broaderId2 skos:prefLabel ?broader2 ." +
-            "     OPTIONAL {" +
-
-            "       ?broaderId2 skos:broader ?broaderId3 ." +
-            "    ?broaderId3 skos:prefLabel ?broader3 ." +
-            "       OPTIONAL {" +
-            "       ?broaderId3 skos:broader ?broaderId4 ." +
-            "    ?broaderId4 skos:prefLabel ?broader4 ." +
-            "           OPTIONAL {" +
-            "       ?broaderId4 skos:broader ?broaderId5 ." +
-            "    ?broaderId5 skos:prefLabel ?broader5 ." +
-            "         OPTIONAL {   " +
-            "       ?broaderId5 skos:broader ?broaderId6 ." +
-            "    ?broaderId6 skos:prefLabel ?broader6 ." +
-            "               OPTIONAL {   " +
-            "       ?broaderId6 skos:broader ?broaderId7 ." +
-            "    ?broaderId7 skos:prefLabel ?broader7 ." +
-            "                 OPTIONAL {   " +
-            "       ?broaderId7 skos:broader ?broaderId8 ." +
-            "    ?broaderId8 skos:prefLabel ?broader8 ." +
-            "              }" +
-            "            }" +
-            "        }" +
-            "        }" +
-            "      }" +
-            "    }" +
-            "    }" +
-            " " +
-            "  }" +
-            "  }" +
-            "ORDER BY ASC(?broaderId1)" +
-            "LIMIT 1000"
-        console.log(query)
+            var conceptIdsStr = "";
+            slice.forEach(function (id, index) {
+                if (index > 0)
+                    conceptIdsStr += ","
+                conceptIdsStr += "<" + id + ">"
+            })
 
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+            var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
 
-        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
-            if (err) {
-                return callback(err);
+            var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
+                "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                "SELECT DISTINCT *" +
+                "WHERE {" +
+                "?concept skos:prefLabel ?conceptLabel ."+
+            " filter (?concept in(" + conceptIdsStr + "))"
+
+            if (!options.onlyAncestors) {
+                query += "OPTIONAL {?concept skos:exactMatch ?exactMatch .}" +
+                    "OPTIONAL {?concept skos:definition ?definition .}"
             }
-            callback(null, result.results.bindings)
 
+            query += "OPTIONAL {" +
+                "   ?concept skos:broader ?broaderId1 ." +
+                "  ?broaderId1 skos:prefLabel ?broader1 ." +
+                "     OPTIONAL {" +
+                "    ?broaderId1 skos:broader ?broaderId2 ." +
+                "    ?broaderId2 skos:prefLabel ?broader2 ." +
+                "     OPTIONAL {" +
+
+                "       ?broaderId2 skos:broader ?broaderId3 ." +
+                "    ?broaderId3 skos:prefLabel ?broader3 ." +
+                "       OPTIONAL {" +
+                "       ?broaderId3 skos:broader ?broaderId4 ." +
+                "    ?broaderId4 skos:prefLabel ?broader4 ." +
+                "           OPTIONAL {" +
+                "       ?broaderId4 skos:broader ?broaderId5 ." +
+                "    ?broaderId5 skos:prefLabel ?broader5 ." +
+                "         OPTIONAL {   " +
+                "       ?broaderId5 skos:broader ?broaderId6 ." +
+                "    ?broaderId6 skos:prefLabel ?broader6 ." +
+                "               OPTIONAL {   " +
+                "       ?broaderId6 skos:broader ?broaderId7 ." +
+                "    ?broaderId7 skos:prefLabel ?broader7 ." +
+                "                 OPTIONAL {   " +
+                "       ?broaderId7 skos:broader ?broaderId8 ." +
+                "    ?broaderId8 skos:prefLabel ?broader8 ." +
+                "              }" +
+                "            }" +
+                "        }" +
+                "        }" +
+                "      }" +
+                "    }" +
+                "    }" +
+                " " +
+                "  }" +
+                "  }" +
+                "ORDER BY ASC(?broaderId1)" +
+                "LIMIT 1000"
+            console.log(query)
+
+
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+
+            sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                if (err) {
+                    return callbackEach(err);
+                }
+                allInfos = allInfos.concat(result.results.bindings)
+                callbackEach()
+
+            })
+        }, function (err) {
+            return callback(null, allInfos)
         })
 
 
@@ -448,13 +468,13 @@ var Concepts = (function () {
     self.onNodeSelect = function (evt, obj) {
 
         var node = obj.node
-        var text=obj.node.text+"<br><span style='font-size: 12px'>"
-        node.parents.forEach(function(parent,index){
-            var parentLabel= $("#jstreeConceptDiv").jstree(true).get_node(parent)
-            if(index<node.parents.length-1)
-            text+="/"+parentLabel.text
+        var text = obj.node.text + "<br><span style='font-size: 12px'>"
+        node.parents.forEach(function (parent, index) {
+            var parentLabel = $("#jstreeConceptDiv").jstree(true).get_node(parent)
+            if (index < node.parents.length - 1)
+                text += "/" + parentLabel.text
         })
-        text+="</span>"
+        text += "</span>"
         $("#currentConceptsSpan").html(" : " + text);
         if (obj.event.ctrlKey) {
             return $("#accordion").accordion({active: 2});
@@ -470,12 +490,14 @@ var Concepts = (function () {
         var node = $("#jstreeConceptDiv").jstree(true).get_node(conceptId)
         var ancestors = []
         var parents = node.parents
-        if(parents) {
-       //     parents.splice(0, 0, conceptId);
+        if (parents) {
+            //     parents.splice(0, 0, conceptId);
 
             parents.forEach(function (parent) {
-                var parentNode = $("#jstreeConceptDiv").jstree(true).get_node(parent)
-                ancestors.push({id: parent, label: parentNode.text});
+                if (parent != "#") {
+                    var parentNode = $("#jstreeConceptDiv").jstree(true).get_node(parent)
+                    ancestors.push({id: parent, label: parentNode.text});
+                }
             })
         }
 
