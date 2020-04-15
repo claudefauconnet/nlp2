@@ -18,91 +18,61 @@ var paragraphs = (function () {
         var visjsData = {nodes: [], edges: []}
 
         data.forEach(function (item, indexLine) {
-            var corpusId;
-            var corpusLabel;
-            if (options.corpusLevelAggr == "paragraph") {
-                corpusId = item.paragraph.value;
-                corpusLabel = corpusId.substring(corpusId.lastIndexOf("/"+1));
-            }
-            else {
-                corpusId = item[options.corpusLevelAggr].value
-                corpusLabel = item[options.corpusLevelAggr + "Label"].value
-            }
-
-            allCorpusIds.push(corpusId)
-
-
-            if (uniqueNodeIds.indexOf(corpusId) < 0) {
-                uniqueNodeIds.push(corpusId)
-
-                var node = {
-                    label: corpusLabel,
-                    id: corpusId,
-                    color: ontograph.entityTypeColors["paragraph"],
-                    data: item,
-                    shape: "ellipse",
-
-
+                var corpusId;
+                var corpusLabel;
+                if (options.corpusLevelAggr == "paragraph") {
+                    corpusId = item.paragraph.value;
+                    corpusLabel = corpusId.substring(corpusId.lastIndexOf("/" + 1));
+                } else {
+                    if (!item[options.corpusLevelAggr])
+                        return;
+                    corpusId = item[options.corpusLevelAggr].value
+                    corpusLabel = item[options.corpusLevelAggr + "Label"].value
                 }
-                visjsData.nodes.push(node)
-            }
 
-            //  var ancestors = Concepts.getAncestorsFromJstree(item.entity.value);
-            var ancestors = conceptsInfosMap[item.entity.value].ancestors
-            var concept
-
-            if (options.nodeIdFilter && item.id != options.nodeIdFilter)
-                concept = ancestors[0]
-            if (options.conceptLevelAggr > ancestors.length - 1)//si pas d'ancetre de ce noveau on prend le noeud lui meme
-                concept = ancestors[ancestors.length - 1]
-            else
-                concept = ancestors[options.conceptLevelAggr]
+                allCorpusIds.push(corpusId)
 
 
-            if (uniqueNodeIds.indexOf(concept.id) < 0) {
+                if (uniqueNodeIds.indexOf(corpusId) < 0) {
+                    uniqueNodeIds.push(corpusId)
+
+                    var node = {
+                        label: corpusLabel,
+                        id: corpusId,
+                        color: ontograph.entityTypeColors["paragraph"],
+                        data: item,
+                        shape: "ellipse",
 
 
-                uniqueNodeIds.push(concept.id)
-                var type = item.entityType.value.substring(item.entityType.value.lastIndexOf("/") + 1)
-                var node = {
-                    label: concept.label,
-                    id: concept.id,
-                    color: ontograph.entityTypeColors[type],
-                    data: {ancestors: ancestors},
-                    shape: "box",
-                    //  font: {size: 18, color: "white"}
-
-
+                    }
+                    visjsData.nodes.push(node)
                 }
-                visjsData.nodes.push(node)
-            }
+
+                function setEntityNode(entityName) {
+                    //  var ancestors = Concepts.getAncestorsFromJstree(item.entity.value);
+                    var ancestors = conceptsInfosMap[item[entityName].value].ancestors
+                    var concept;
+                    if (options.nodeIdFilter && item.id != options.nodeIdFilter)
+                        concept = ancestors[0]
+                    if (options.conceptLevelAggr > ancestors.length - 1)//si pas d'ancetre de ce noveau on prend le noeud lui meme
+                        concept = ancestors[ancestors.length - 1]
+                    else
+                        concept = ancestors[options.conceptLevelAggr]
 
 
-            var edgeId = corpusId + "_" + concept.id
-            if (uniqueEdgeIds.indexOf(edgeId) < 0) {
-                uniqueEdgeIds.push(edgeId)
-                var edge = {
-                    from: corpusId,
-                    to: concept.id,
-                    id: edgeId,
-
-                }
-                visjsData.edges.push(edge)
-            }
+                    if (uniqueNodeIds.indexOf(concept.id) < 0) {
 
 
-            if (options.resourcesShowParentResources) {
-
-                if (options.resourcesShowParentResources == "document") {
-
-
-                    if (uniqueNodeIds.indexOf(item.document.value) < 0) {
-                        uniqueNodeIds.push(item.document.value)
+                        uniqueNodeIds.push(concept.id)
+                        var type = "anyEntity"
+                        if (item[entityName+"Type"])
+                            type = item[entityName+"Type"].value.substring(item.entityType.value.lastIndexOf("/") + 1)
                         var node = {
-                            id: item.document.value,
-                            label: item.documentLabel.value,
-                            color: ontograph.entityTypeColors["document"],
-                            shape: "dot",
+                            label: concept.label,
+                            id: concept.id,
+                            color: ontograph.entityTypeColors[type],
+                            data: {ancestors: ancestors},
+                            shape: "box",
                             //  font: {size: 18, color: "white"}
 
 
@@ -110,25 +80,65 @@ var paragraphs = (function () {
                         visjsData.nodes.push(node)
                     }
 
-                    var edgeId = paragraphId + "_" + item.document.value
+
+                    var edgeId = corpusId + "_" + concept.id
                     if (uniqueEdgeIds.indexOf(edgeId) < 0) {
                         uniqueEdgeIds.push(edgeId)
                         var edge = {
-                            from: paragraphId,
-                            to: item.document.value,
+                            from: corpusId,
+                            to: concept.id,
                             id: edgeId,
 
                         }
                         visjsData.edges.push(edge)
                     }
-                } else {
-                    var x = 3
                 }
 
+                setEntityNode("entity")
+                if (typeof item["entity2"] !== "undefined" && item["entity2"]) {
+                    if (conceptsInfosMap[item.entity2.value])
+                        setEntityNode("entity2")
+                }
+
+                if (options.resourcesShowParentResources) {
+
+                    if (options.resourcesShowParentResources == "document") {
+
+
+                        if (uniqueNodeIds.indexOf(item.document.value) < 0) {
+                            uniqueNodeIds.push(item.document.value)
+                            var node = {
+                                id: item.document.value,
+                                label: item.documentLabel.value,
+                                color: ontograph.entityTypeColors["document"],
+                                shape: "dot",
+                                //  font: {size: 18, color: "white"}
+
+
+                            }
+                            visjsData.nodes.push(node)
+                        }
+
+                        var edgeId = paragraphId + "_" + item.document.value
+                        if (uniqueEdgeIds.indexOf(edgeId) < 0) {
+                            uniqueEdgeIds.push(edgeId)
+                            var edge = {
+                                from: paragraphId,
+                                to: item.document.value,
+                                id: edgeId,
+
+                            }
+                            visjsData.edges.push(edge)
+                        }
+                    } else {
+                        var x = 3
+                    }
+
+                }
+
+
             }
-
-
-        })
+        )
         ontograph.drawGraph(visjsData, {
             onclickFn: paragraphs.onNodeClick,
             onHoverNodeFn: paragraphs.onNodeHover,
@@ -352,7 +362,7 @@ var paragraphs = (function () {
         var previousOffset = 0
         var chunks = [];
 
-        //   obj.text=obj.text.replace(/\\n/g,"")
+        //   obj.text=obj.text.replace(/\  /g,"")
         allOffsets.forEach(function (offset, index) {
             chunks.push(paragraphInfos.paragraphText.value.substring(previousOffset, offset.start))
 
@@ -372,7 +382,138 @@ var paragraphs = (function () {
     }
 
 
-    self.sparql_getEntitiesParagraphs = function (idCorpus, conceptsIds, options, callback) {
+    self.sparql_getEntitiesParagraphs = function (idCorpus, parentConcepts, depth, options, callback) {
+
+        var totalConcepts = 0;
+
+        var allResults = [];
+
+
+        if (!options)
+            options = {minManadatoryEntities: 2}
+        var queryCorpus = ""
+        var queryConcept = ""
+        var countParagraphMin = 20;
+
+        var isQuantumConceptsQuery = false;
+        if (parentConcepts && parentConcepts.length > 0 && parentConcepts[0].id.indexOf("/quantum/") > 1)
+            isQuantumConceptsQuery = true;
+
+
+        if (idCorpus) {
+            if (idCorpus.indexOf("/Domain/") > -1) {
+                queryCorpus += "?branch   skos:broader <" + idCorpus + ">."
+            }
+            if (idCorpus.indexOf("/Branch/") > -1) {
+                queryCorpus += "?document_type   skos:broader <" + idCorpus + ">."
+            }
+            if (idCorpus.indexOf("/Document-type/") > -1) {
+                queryCorpus += "?document   skos:broader <" + idCorpus + ">."
+            }
+            if (idCorpus.indexOf("/Document/") > -1) {
+                queryCorpus += "?chapter   skos:broader <" + idCorpus + ">."
+            }
+            if (idCorpus.indexOf("/Chapter/") > -1) {
+                queryCorpus += "?paragraph  skos:broader <" + idCorpus + ">."
+            }
+        }
+
+
+        var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+
+
+        var query = "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX mime:<http://purl.org/dc/dcmitype/> PREFIX terms:<http://purl.org/dc/terms/>   PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+            " select distinct * " +
+            "from <http://data.total.com/resource/thesaurus/ctg/>  " +
+            "from <http://data.total.com/resource/ontology/ctg/>  " +
+            "from <http://data.total.com/resource/ontology/quantum/>  " +
+            "from <http://data.total.com/resource/corpus-description/ctg/>" +
+            " where{  " +
+            "  "
+        if (parentConcepts) {
+            var parentConceptIdsStr = ""
+            parentConcepts.forEach(function (parentConcept, index) {
+                if (index > 0)
+                    parentConceptIdsStr += ","
+                parentConceptIdsStr += "<" + parentConcept.id + ">"
+            })
+
+            var childStr1 = "";
+            var childStr2 = "filter (?entity in (?concept";
+            var childStr3 = "";
+
+            for (var i = 1; i <= depth; i++) {
+                if (i == 1)
+                    childStr1 += "OPTIONAL {?child1 skos:broader ?concept. ";
+                if (i < depth)
+                    childStr1 += "OPTIONAL { ?child" + (i + 1) + " skos:broader ?child" + i + ". ";
+
+                childStr2 += ",?child" + i + "  ";
+                childStr3 += "Optional{?child" + i + " skos:prefLabel ?childLabel" + i + ".}  ";
+
+            }
+            for (var i = 1; i <= depth; i++) {
+                childStr1 += "} "
+            }
+            childStr2 += "))  "
+
+            query += " ?concept skos:prefLabel ?prefLabel. filter (?concept in(" + parentConceptIdsStr + "))"
+            query += childStr1;
+            query += childStr2;
+            query += childStr3;
+            query += "?paragraph terms:subject ?entity. "
+
+
+            /*   query += " ?concept skos:prefLabel ?prefLabel. filter (?concept in(" + parentConceptIdsStr + "))" +
+               "" +
+               "OPTIONAL {?child1 skos:broader ?concept.  OPTIONAL { ?child2 skos:broader ?child1.  OPTIONAL { ?child3 skos:broader ?child2.OPTIONAL { ?child4 skos:broader ?child3.OPTIONAL { ?child5 skos:broader ?child4.OPTIONAL { ?child6 skos:broader ?child5.}}}}}}  " +
+               "  " +
+               "  " +
+               "Optional{?child1 skos:prefLabel ?childLabel1.}  " +
+               "Optional{?child2 skos:prefLabel ?childLabel2.}  " +
+               "Optional{?child3 skos:prefLabel ?childLabel3.}  " +
+               "Optional{?child4 skos:prefLabel ?childLabel4.}  " +
+               "Optional{?child5 skos:prefLabel ?childLabel5.}  " +
+               "Optional{?child6 skos:prefLabel ?childLabel6.}  " +
+               "  " +
+               "  " +
+               "  " +
+               "  " +
+               "?paragraph terms:subject ?entity." +
+               " filter (?entity in (?concept,?child1,?child2,?child2,?child3,?child4,?child5,?child6))  "*/
+        }
+        query += "  " +
+            " ?paragraph  skos:broader ?chapter .?chapter  skos:broader ?document .?document  skos:broader ?document_type .?document_type  skos:broader ?branch. ?branch skos:broader ?domain.  " +
+            "  " +
+            "  ?chapter skos:prefLabel ?chapterLabel.  ?document skos:prefLabel ?documentLabel. ?document_type skos:prefLabel ?document_typeLabel.  ?branch skos:prefLabel ?branchLabel.  ?domain skos:prefLabel ?domainLabel."
+        // "  ?entity rdfsyn:type ?entityType .  " +
+        "  "
+        if (queryCorpus != "") {
+            query += "  ?entity rdfsyn:type ?entityType .  "//requete plante quand il ya pas de corpus ??? bizarre
+            query += queryCorpus
+        }
+
+        query += "  }limit 1000"
+
+
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+
+        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                console.log(query)
+                return callback(err);
+            }
+
+            allResults = allResults.concat(result.results.bindings);
+            return callback(null, allResults);
+
+
+        })
+
+
+    }
+
+    self.sparql_getEntitiesParagraphsX = function (idCorpus, conceptsIds, options, callback) {
 
         var totalConcepts = 0;
         var slicedConceptsIds = common.sliceArray(conceptsIds, projection.sliceZize);
@@ -380,143 +521,152 @@ var paragraphs = (function () {
             slicedConceptsIds = [[]]
         var allResults = [];
         async.eachSeries(slicedConceptsIds, function (concepts, callbackEach) {
-            totalConcepts += concepts.length
-            common.message("selecting concepts :" + totalConcepts)
-            if (!options)
-                options = {minManadatoryEntities: 2}
-            var queryCorpus = ""
-            var queryConcept = ""
-            var countParagraphMin = 20;
+                totalConcepts += concepts.length
+                common.message("selecting concepts :" + totalConcepts)
+                if (!options)
+                    options = {minManadatoryEntities: 2}
+                var queryCorpus = ""
+                var queryConcept = ""
+                var countParagraphMin = 20;
 
-            var isQuantumConceptsQuery = false;
-            if (concepts && concepts.length > 0 && concepts[0].indexOf("/quantum/") > 1)
-                isQuantumConceptsQuery = true;
+                var isQuantumConceptsQuery = false;
+                if (concepts && concepts.length > 0 && concepts[0].indexOf("/quantum/") > 1)
+                    isQuantumConceptsQuery = true;
 
 
-            if (idCorpus) {
-                if (idCorpus.indexOf("/Domain/") > -1) {
-                    queryCorpus += "?paragraph  skos:broader ?chapter ."
-                    queryCorpus += "?chapter  skos:broader ?document ."
-                    queryCorpus += "?document  skos:broader ?document_type ."
-                    queryCorpus += "?document_type  skos:broader ?branch."
-                    queryCorpus += "?branch   skos:broader <" + idCorpus + ">."
+                if (idCorpus) {
+                    var corpusIdsStr="";
+                    if(Array.isArray(idCorpus)){
+                        var corpusIdsStr = "";
+                        idCorpus.forEach(function (id, index) {
+                            if (index > 0)
+                                corpusIdsStr += ","
+                            corpusIdsStr += "<" + id + ">"
+                        })
+                    }
+
+
+                    if (idCorpus.indexOf("/Domain/") > -1) {
+                        queryCorpus += "?paragraph  skos:broader ?chapter ."
+                        queryCorpus += "?chapter  skos:broader ?document ."
+                        queryCorpus += "?document  skos:broader ?document_type ."
+                        queryCorpus += "?document_type  skos:broader ?branch."
+                        queryCorpus += "?branch   skos:broader <" + idCorpus + ">."
+                    }
+                    if (idCorpus.indexOf("/Branch/") > -1) {
+                        queryCorpus += "?paragraph  skos:broader ?chapter ."
+                        queryCorpus += "?chapter  skos:broader ?document ."
+                        queryCorpus += "?document  skos:broader ?document_type ."
+                        queryCorpus += "?document_type   skos:broader <" + idCorpus + ">."
+                    }
+                    if (idCorpus.indexOf("/Document-type/") > -1) {
+                        queryCorpus += "?paragraph  skos:broader ?chapter ."
+                        queryCorpus += "?chapter  skos:broader ?document ."
+                        queryCorpus += "?document   skos:broader <" + idCorpus + ">."
+                    }
+                    if (idCorpus.indexOf("/Document/") > -1) {
+                        queryCorpus += "?paragraph  skos:broader ?chapter ."
+                        queryCorpus += "?chapter   skos:broader <" + idCorpus + ">."
+                    }
+                    if (idCorpus.indexOf("/Chapter/") > -1) {
+                        queryCorpus += "?paragraph  skos:broader <" + idCorpus + ">."
+                    }
+                    if (idCorpus.indexOf("/Paragraph/") > -1 || idCorpus[0].indexOf("/Paragraph/") > -1) {
+                        queryCorpus += "?paragraph skos:broader ?xx. filter(?paragraph "
+                        if(Array.isArray(idCorpus))
+                            queryCorpus+=" in ("+corpusIdsStr+"))"
+                        else
+                            queryCorpus+=" =<" + idCorpus + ">) "
+                    }
                 }
-                if (idCorpus.indexOf("/Branch/") > -1) {
-                    queryCorpus += "?paragraph  skos:broader ?chapter ."
-                    queryCorpus += "?chapter  skos:broader ?document ."
-                    queryCorpus += "?document  skos:broader ?document_type ."
-                    queryCorpus += "?document_type   skos:broader <" + idCorpus + ">."
-                }
-                if (idCorpus.indexOf("/Document-type/") > -1) {
-                    queryCorpus += "?paragraph  skos:broader ?chapter ."
-                    queryCorpus += "?chapter  skos:broader ?document ."
-                    queryCorpus += "?document   skos:broader <" + idCorpus + ">."
-                }
-                if (idCorpus.indexOf("/Document/") > -1) {
-                    queryCorpus += "?paragraph  skos:broader ?chapter ."
-                    queryCorpus += "?chapter   skos:broader <" + idCorpus + ">."
-                }
-                if (idCorpus.indexOf("/Chapter/") > -1) {
-                    queryCorpus += "?paragraph  skos:broader <" + idCorpus + ">."
-                }
-            }
 
 
-            var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
-            var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
-                "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-                "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
-                "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
-                "" +
-                "        select *" +
-                "        where "
+                var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+                var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
+                    "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
+                    "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                    "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
+                    "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
+                    "" +
+                    "        select *" +
+                    "        where "
 
-            var whereQuery = "{?paragraph terms:subject ?entity. ?entity rdfs:label ?entityLabel . " +
-                "  FILTER (lang(?entityLabel)=\"en\") " +
-                "  ?entity rdfsyn:type ?entityType .  " +
-                "?paragraph  skos:broader ?chapter." +
-                "?chapter  skos:prefLabel ?chapterLabel." +
-                "?chapter  skos:broader ?document." +
-                "?document  skos:prefLabel ?documentLabel." +
-                "?document  skos:broader ?documentType." +
-                "?documentType  skos:prefLabel ?documentTypeLabel." +
-                "?documentType skos:broader ?branch." +
-                "?branch  skos:prefLabel ?branchLabel." +
-                "?branch skos:broader ?domain." +
-                "?domain  skos:prefLabel ?domainLabel."
+                var whereQuery = "{?paragraph terms:subject ?entity. ?entity rdfs:label ?entityLabel . " +
+                    "  FILTER (lang(?entityLabel)=\"en\") " +
+                    "  ?entity rdfsyn:type ?entityType .  " +
+                    "?paragraph  skos:broader ?chapter." +
+                    "?chapter  skos:prefLabel ?chapterLabel." +
+                    "?chapter  skos:broader ?document." +
+                    "?document  skos:prefLabel ?documentLabel." +
+                    "?document  skos:broader ?documentType." +
+                    "?documentType  skos:prefLabel ?documentTypeLabel." +
+                    "?documentType skos:broader ?branch." +
+                    "?branch  skos:prefLabel ?branchLabel." +
+                    "?branch skos:broader ?domain." +
+                    "?domain  skos:prefLabel ?domainLabel."
 
 
-            if (concepts && concepts.length > 0) {
-                if (true || options.concepts_OR) {
-                    var entityIdsStr = ""
+                var whereConceptQuery = ""
+                if (concepts && concepts.length > 0) {
+                    if (options.booleanQuery == "OR" && self.previousConceptsFilter) {
+                        concepts = concepts.concat(self.previousConceptsFilter)
+                    }
+                    self.previousConceptsFilter = concepts;
+                    var entityIdsStr = "";
                     concepts.forEach(function (id, index) {
                         if (index > 0)
                             entityIdsStr += ","
                         entityIdsStr += "<" + id + ">"
                     })
-                    if (isQuantumConceptsQuery)
-                        whereQuery += "  ?paragraph terms:subject ?entity . " + "?entity skos:exactMatch ?quantumConcept" + " filter (?quantumConcept in(" + entityIdsStr + "))"
-                    else
-                        whereQuery += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
 
-                } else if (options.concepts_AND) {
-                    concepts.forEach(function (id, index) {
-                        if (index >= options.minManadatoryEntities)
-                            whereQuery += "OPTIONAL {"
-                        whereQuery +=
-                            "  ?paragraph terms:subject ?entity" + index + " . "
+
+                    if (self.previousWhereConceptQuery && options.booleanQuery == "AND") {
+                        whereConceptQuery += self.previousWhereConceptQuery + "  "
                         if (isQuantumConceptsQuery)
-                            whereQuery += "?entity" + index + " skos:exactMatch ?quantumConcept" + index + " FILTER (?quantumConcept" + index + " in(<" + id + ">))"
+                            whereConceptQuery += "  ?paragraph terms:subject ?entity2 . ?entity2 rdfsyn:type  ?entity2Type . " + "?entity2 skos:exactMatch ?quantumConcept2" + " filter (?quantumConcept2 in(" + entityIdsStr + "))"
                         else
-                            whereQuery += "    FILTER (?entity" + index + " in(<" + id + ">))"
+                            whereConceptQuery += "  ?paragraph terms:subject ?entity2 . ?entity2 rdfsyn:type  ?entity2Type . " + " filter (?entity2 in(" + entityIdsStr + "))"
 
-                        whereQuery += "  ?entity" + index + " rdfs:label ?entity" + index + "Label . " +
-                            "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
-                            "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
-                            "    "
 
-                        if (index >= options.minManadatoryEntities)
-                            whereQuery += "}"
+                    } else {
+                        if (isQuantumConceptsQuery)
+                            whereConceptQuery += "  ?paragraph terms:subject ?entity . " + "?entity skos:exactMatch ?quantumConcept" + " filter (?quantumConcept in(" + entityIdsStr + "))"
+                        else
+                            whereConceptQuery += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
 
-                    })
+                    }
+
+
+                    self.previousWhereConceptQuery = whereConceptQuery
                 }
-            }
 
 
-            if (options.getParagraphEntities) {
-                whereQuery += "?paragraph terms:subject ?entity22 .  ?entity22 rdfsyn:type ?entity22Type . ?entity22 rdfs:label ?entity22Label . filter (?entity22!=?entity1  && ?entity22!=?entity0)";
-            }
-            whereQuery += queryCorpus
-            whereQuery += "    }"
-            if (options.booleanQuery && self.previousSparqwhere) {
-                query += "{" + self.previousSparqwhere + " " + options.booleanQuery + " " + whereQuery + "}"
-            } else {
-                query += whereQuery
-            }
-            self.previousSparqwhere = whereQuery;
-
-            query += " limit 1000"
+                query += whereQuery + whereConceptQuery
+                query += queryCorpus;
+                query += "    }"
+                query += " limit 1000"
 
 
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
 
-            sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
-                if (err) {
+                sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                    if (err) {
+                        console.log(query)
+                        return callback(err);
+                    }
+
+                    allResults = allResults.concat(result.results.bindings);
+                    return callbackEach();
+
+
+                })
+
+            }, function (err) {
+                if (err)
                     return callback(err);
-                }
-
-                allResults = allResults.concat(result.results.bindings);
-                return callbackEach();
-
-
-            })
-
-        }, function (err) {
-            if (err)
-                return callback(err);
-            return callback(null, allResults)
-        })
+                return callback(null, allResults)
+            }
+        )
 
     }
 
@@ -675,4 +825,5 @@ var paragraphs = (function () {
     return self;
 
 
-})();
+})
+();

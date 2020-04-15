@@ -54,10 +54,12 @@ var Concepts = (function () {
                 if (uniqueIds.indexOf(id) < 0) {
                     uniqueIds.push(id)
                     var node = {id: id, text: item.prefLabel.value}
-                    if (conceptBroadersMap[item.broader1.value]) {
-                        node.parent = item.broader1.value;
-                        jstreeData.push(node)
-                    }
+                   if( conceptBroadersMap[item.broader1]) {
+                       if (conceptBroadersMap[item.broader1.value]) {
+                           node.parent = item.broader1.value;
+                           jstreeData.push(node)
+                       }
+                   }
 
                 }
 

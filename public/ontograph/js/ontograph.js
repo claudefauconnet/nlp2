@@ -37,6 +37,7 @@ var ontograph = (function () {
 
         "clusteredEntities": "#a51544",
         "paragraph": "#ddd",
+        "anyEntity":"#FFD000"
     }
     self.entityTypeDictionary = {
         "technology-equipment": "EQUIPMENT",

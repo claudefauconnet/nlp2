@@ -28,6 +28,9 @@
     <script src="js/projection.js"></script>
 
 
+    <script src="js/questions.js"></script>
+
+
     <script src="../js/others/async.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 
@@ -168,6 +171,16 @@
 
 
         }
+
+        button{
+            margin: 5px;
+            padding: 5px;
+          //  font-weight: bold;
+            border-radius: 3px;
+            background-color: #b3b6c2;
+            color:white;
+        ;
+        }
     </style>
 
 </head>
@@ -182,6 +195,16 @@
         </div>
 
         <div id="accordion">
+
+            <h3><span class="title">Question </span></h3>
+            <div style="margin:5px">
+                <div><input size="30" id="searchQuestionInput" value="response time surge">
+                    <button onclick="Questions.respond($('#searchQuestionInput').val())">Search</button>
+
+                </div>
+
+
+            </div>
 
             <h3><span class="title">Corpus </span><span class='currentConceptsSpan' id="currentCorpusSpan"></span></h3>
             <div style="margin:5px">
@@ -228,7 +251,7 @@
                     <option>paragraph</option>
                     <option>chapter</option>
                     <option selected="selected">document</option>
-                    <option>documentType</option>
+                    <option>document_type</option>
                     <option>branch</option>
                     <option>domain</option>
                 </select>
@@ -236,7 +259,8 @@
                 <div class="projection-item" style="background-color: #d5d6da">
                     Draw graph<br>
                     <button onclick="projection.displayParagraphsGraph()"> Concepts</button>
-                    <button onclick="projection.displayParagraphsGraph({booleanQuery :'MINUS'})"> And concepts</button>
+                    <button onclick="projection.displayParagraphsGraph('AND')"> - </button>
+                    <button onclick="projection.displayParagraphsGraph('OR')"> + </button>
                     <button onclick="cooccurrences.displayGraphEntitiesCooccurrences()">Cooccurrences</button>
 
                     &nbsp;&nbsp;<button onclick="relations.displayGraphEntitiesRelations()">Relations</button>
@@ -244,6 +268,8 @@
 
                 </div>
             </div>
+
+
 
         </div>
 

@@ -3,7 +3,7 @@ var projection = (function () {
     var self = {};
 
     var uniqueNodes = [];
-    self.sliceZize=50;
+    self.sliceZize = 500;
 
     self.onConceptAggrLevelSliderChange = function (evt) {
         var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
@@ -32,58 +32,41 @@ var projection = (function () {
     }
 
 
-    self.displayParagraphsGraph = function (options) {
+    self.displayParagraphsGraph = function (booleanQuery, corpusIds, conceptIds) {
         var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
         var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
 
-        if(!options)
-            options={ }
-        options.conceptLevelAggr=conceptLevelAggr;
-        options.corpusLevelAggr= corpusLevelAggr;
+
+        options = {
+            conceptLevelAggr: conceptLevelAggr,
+            corpusLevelAggr: corpusLevelAggr
+        }
+        if (booleanQuery) {
+            options.booleanQuery = booleanQuery;
+        }
 
         //   var resourcesShowParentResources = $("#resourcesShowParentResourcesSelect").val();
-        var conceptAncestorsMap = {}
-        var corpusAncestorsMap = {}
+        var selectedConcepts = []
+        //  var conceptAncestorsMap = {}
+        //  var corpusAncestorsMap = {}
         var allConceptsMap = {}
         var allParagraphs = [];
         var allConceptsInfosMap = {};
         var idCorpus = null;
+        var ConceptsDepth = 0;
+        var maxConceptsTreeDepth = 6
         async.series([
 
 
-                // get Concepts Ancestors
-                function (callbackSeries) {
-                    var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_selected(true);
-                    selectedConcepts.forEach(function (concept, index) {
-                        conceptAncestorsMap[concept.id] = [];
-                        concept.parents.forEach(function (parent, index) {
-                            if (parent != "#") {
-                                var parentNode = $("#jstreeConceptDiv").jstree(true).get_node(parent);
-                                conceptAncestorsMap[concept.id].push({text: parentNode.text, id: parent})
-                            }
-                        })
 
-                    })
-                    callbackSeries();
-                },
-                // get resources Ancestors
-                function (callbackSeries) {
-                    var selectedConcepts = $("#jstreeCorpusDiv").jstree(true).get_selected(true);
-                    selectedConcepts.forEach(function (concept, index) {
-                        corpusAncestorsMap[concept.id] = [];
-                        concept.parents.forEach(function (parent, index) {
-                            if (parent != "#") {
-                                var parentNode = $("#jstreeCorpusDiv").jstree(true).get_node(parent);
-                                corpusAncestorsMap[concept.id].push({text: parentNode.text, id: parent})
-                            }
-                        })
-
-                    })
-                    callbackSeries();
-                },
 
                 //getDescendants
                 function (callbackSeries) {
+                    //    return callbackSeries();
+                    if (conceptIds) {
+                        allConceptsMap = conceptIds;
+                       return  callbackSeries();
+                    }
                     Concepts.getSelectedConceptDescendants(function (err, concepts) {
                         if (err)
                             return callbackSeries(err);
@@ -96,12 +79,16 @@ var projection = (function () {
                 },
                 //getselectedResource
                 function (callbackSeries) {
-                    idCorpus = corpus.getSelectedResource();
+                    if (corpusIds)
+                        idCorpus = corpusIds;
+                    else
+                        idCorpus = corpus.getSelectedResource();
                     callbackSeries();
                 },
                 //getParagraphs
                 function (callbackSeries) {
-                    paragraphs.sparql_getEntitiesParagraphs(idCorpus, allConceptsMap, options, function (err, result) {
+                    paragraphs.sparql_getEntitiesParagraphsX(idCorpus, allConceptsMap, options, function (err, result) {
+                        //  paragraphs.sparql_getEntitiesParagraphs(idCorpus, selectedConcepts,  ConceptsDepth, options, function (err, result) {
                         if (err)
                             return callbackSeries(err);
 
@@ -121,24 +108,30 @@ var projection = (function () {
                         return callbackSeries();
                     var conceptsIds = [];
                     allParagraphs.forEach(function (item) {
-                        if (item.entity)
+                        if (item.entity && conceptsIds.indexOf(item.entity.value) < 0)
                             conceptsIds.push(item.entity.value)
                     })
                     if (conceptsIds.length == 0)
                         return callbackSeries();
 
+                    if (paragraphs.previousConceptsFilter)
+                        conceptsIds = conceptsIds.concat(paragraphs.previousConceptsFilter)
+
                     Concepts.getConceptsInfos(conceptsIds, {}, function (err, result) {
                         if (err)
                             return callbackSeries(err);
+
                         result.forEach(function (item) {
-                            var obj = {id: item.concept.value, ancestors: [{id:item.concept.value, label: item.conceptLabel.value}]}
-                            for (var i = 1; i < 9; i++) {
+                            console.log(item.concept.value)
+                            var obj = {id: item.concept.value, ancestors: [{id: item.concept.value, label: item.conceptLabel.value}]}
+                            for (var i = 1; i < 7; i++) {
                                 var broader = item["broaderId" + i];
                                 if (typeof broader !== "undefined") {
                                     obj.ancestors.push({id: broader.value, label: item["broader" + i].value})
                                 }
                             }
                             allConceptsInfosMap[obj.id] = obj;
+
                         })
 
                         return callbackSeries()
@@ -148,11 +141,11 @@ var projection = (function () {
                 },
                 //getParagraphs
                 function (callbackSeries) {
-                    common.message("Drawing graph paragraphs:" + allParagraphs.length)
+                    common.message("Drawing graph : " + allParagraphs.length + "relations")
                     //  paragraphs.drawParagraphsEntitiesGraph(allParagraphs, paragraphsInfos, {
                     self.currentProjection = {
                         paragraphs: allParagraphs,
-                       conceptsInfos: allConceptsInfosMap,
+                        conceptsInfos: allConceptsInfosMap,
                     }
 
                     paragraphs.drawParagraphsEntitiesGraphAggr(allParagraphs, allConceptsInfosMap, options)
@@ -170,6 +163,42 @@ var projection = (function () {
         )
 
 
+    }
+
+    self.filterGraph = function () {
+        var allConcepts = [];
+        async.series([
+
+
+            //getDescendants
+            function (callbackSeries) {
+                Concepts.getSelectedConceptDescendants(function (err, concepts) {
+                    if (err)
+                        return callbackSeries(err);
+                    allConcepts = concepts;
+
+
+                    callbackSeries();
+                })
+
+            },
+
+            //hide selectedNodes in graph
+            function (callbackSeries) {
+                var existingNodeIds = visjsGraph.data.nodes.getIds();
+                var newNodes = []
+                allConcepts.forEach(function (itemId) {
+                    var p = existingNodeIds.indexOf(itemId)
+                    if (p > -1)
+                        newNodes.push({id: itemId, hidden: true})
+                })
+                visjsGraph.data.nodes.update(newNodes)
+                callbackSeries();
+
+            }], function (err) {
+            if (err)
+                common.message(err)
+        })
     }
     self.clusterNodes = function (nodes, clusters, options) {
         var edgesToRemove = [];

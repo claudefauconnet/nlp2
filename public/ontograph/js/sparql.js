@@ -216,7 +216,7 @@ var sparql = (function () {
             "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
             "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
-            "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>"+
+            "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
             "        select *" +
             "        where{ "
@@ -230,7 +230,7 @@ var sparql = (function () {
             "  FILTER (lang(?entity" + index + "Label)=\"en\") " +
             "  ?entity" + index + " rdfsyn:type ?entity" + index + "Type .  " +
 
-            "  OPTIONAL  { ?entity" + index+ " skos:definition ?definition" + index + "Type .  }" +
+            "  OPTIONAL  { ?entity" + index + " skos:definition ?definition" + index + "Type .  }" +
             "    "
 
 
@@ -323,16 +323,15 @@ var sparql = (function () {
     }
 
 
-
-    self.listThesaurusConcepts=function(word,options,callback){
+    self.listThesaurusConcepts = function (word, options, callback) {
         var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent("http://data.total.com/resource/thesaurus/ctg/") + "&query=";// + query + queryOptions
 
-        var query="PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+        var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
             "" +
             "SELECT *" +
             "WHERE {" +
             "  ?concept skos:prefLabel ?prefLabel ." +
-            "filter contains(lcase(str(?prefLabel )),\""+word.toLowerCase()+"\")" +
+            "filter contains(lcase(str(?prefLabel )),\"" + word.toLowerCase() + "\")" +
             "filter (lang(?prefLabel)=\"en\")" +
             "" +
             "OPTIONAL {" +
@@ -377,24 +376,33 @@ var sparql = (function () {
     }
 
 
-
     self.querySPARQL_GET_proxy = function (url, query, queryOptions, options, callback) {
         if (!options)
             options = {}
         if (!options.doNotEncode) {
             var query2 = encodeURIComponent(query);
-            query2 = query2.replace(/%2B/g, "+")
+            query2 = query2.replace(/%2B/g, "+").trim()
         }
-        url = url + query2 + queryOptions;
+
+        var body = {
+            params: {query: query },
+            headers: {
+                "Accept": "application/sparql-results+json",
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+        }
 
 
         $("#waitImg").css("display", "block");
 
+
+     //   url="http://vps475829.ovh.net:8890/sparql"
         var payload = {
             httpProxy: 1,
             url: url,
+            body: body,
             POST: true,
-            options: JSON.stringify(options)
+
         }
         $.ajax({
             type: "POST",
@@ -409,8 +417,8 @@ var sparql = (function () {
                 var xx = data;
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
-              /*  if (data.results.bindings.length == 0)
-                    return callback({data.results.bindings:},[])*/
+                /*  if (data.results.bindings.length == 0)
+                      return callback({data.results.bindings:},[])*/
                 callback(null, data)
 
             }

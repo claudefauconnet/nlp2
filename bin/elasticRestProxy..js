@@ -132,6 +132,32 @@ var elasticRestProxy = {
         })
     },
 
+    analyzeSentence:function(sentence, callback){
+        var json={
+            "analyzer" : "stop",
+            "text" : sentence
+        }
+        var options = {
+            method: 'POST',
+            encoding: null,
+            headers: {
+                'content-type': 'application/json'
+            },
+            json:json,
+            url: elasticUrl + "_analyze"
+        };
+
+        request(options, function (error, response, body) {
+            if (error) {
+                return callback(error)
+            }
+            return callback(null,body);
+        })
+
+
+
+    }
+
 
 }
 

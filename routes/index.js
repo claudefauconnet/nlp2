@@ -226,7 +226,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         }
         if (req.body.httpProxy) {
             if (req.body.POST) {
-                httpProxy.post(req.body.url, JSON.parse(req.body.options), function (err, result) {
+                httpProxy.post(req.body.url,req.body.body.headers,req.body.body.params, function (err, result) {
                     processResponse(response, err, result)
                 })
             }else{
@@ -235,6 +235,14 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                 })
             }
         }
+
+    if (req.body.analyzeSentence) {
+
+        elasticRestProxy.analyzeSentence(req.body.analyzeSentence, function (err, result) {
+            processResponse(response, err, result)
+        })
+    }
+
 
 
     },
