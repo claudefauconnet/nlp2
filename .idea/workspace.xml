@@ -3,15 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/elasticRestProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/elasticRestProxy..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/concepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/concepts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/projection.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/projection.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparql.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/questions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/questions.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -144,7 +139,7 @@
       <workItem from="1585849015535" duration="82535000" />
       <workItem from="1586186783964" duration="64873000" />
       <workItem from="1586425216813" duration="54244000" />
-      <workItem from="1586628452068" duration="57273000" />
+      <workItem from="1586628452068" duration="63983000" />
     </task>
     <servers />
   </component>
@@ -369,7 +364,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/ontograph/js/questions.js</url>
-          <line>143</line>
+          <line>132</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="3580" />
         </line-breakpoint>

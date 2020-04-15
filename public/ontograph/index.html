@@ -48,8 +48,8 @@
 
             $("#dialogDiv").dialog({
                 autoOpen: false,
-                height: 800,
-                width: 500,
+                height: 200,
+                width: 400,
                 modal: true,
             })
 
@@ -295,19 +295,19 @@
 
         <div id="loginMessage"></div>
     </div>
+</div>
 
 
     <div id="graphPopupDiv" onclick="ontograph.graphActions.hidePopup();"
          style="position:absolute;flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
-        <span class="popupMenuItem" onclick="ontograph.graphActions.drawChildren();"> draw children</span>
-        <span class="popupMenuItem" onclick="ontograph.graphActions.showDetails();"> show details</span>
-        <span class="popupMenuItem" onclick="ontograph.graphActions.setAsRootNode();"> set a rootNode</span>
+
 
     </div>
     <div id="detailsDiv" style="flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
 
 
     </div>
+    <div id="dialogDiv"></div>
 
 </body>
 </html>

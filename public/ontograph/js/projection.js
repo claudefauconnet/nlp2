@@ -200,6 +200,25 @@ var projection = (function () {
                 common.message(err)
         })
     }
+
+    self.graphActions = {
+
+
+        showPopup: function (point) {
+            $("#graphPopupDiv").css("left", point.x)
+            $("#graphPopupDiv").css("top", point.y)
+            $("#graphPopupDiv").css("display", "flex")
+        },
+        hidePopup: function () {
+            $("#graphPopupDiv").css("display", "none")
+        },
+    }
+
+
+
+
+
+
     self.clusterNodes = function (nodes, clusters, options) {
         var edgesToRemove = [];
         var edgesToCreate = [];

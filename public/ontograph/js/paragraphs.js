@@ -65,8 +65,8 @@ var paragraphs = (function () {
 
                         uniqueNodeIds.push(concept.id)
                         var type = "anyEntity"
-                        if (item[entityName+"Type"])
-                            type = item[entityName+"Type"].value.substring(item.entityType.value.lastIndexOf("/") + 1)
+                        if (item[entityName + "Type"])
+                            type = item[entityName + "Type"].value.substring(item.entityType.value.lastIndexOf("/") + 1)
                         var node = {
                             label: concept.label,
                             id: concept.id,
@@ -153,14 +153,27 @@ var paragraphs = (function () {
 
     self.onNodeClick = function (node, point) {
 
+        if (node.id.indexOf("/resource/vocabulary/") > -1) {
+            var html = " <span class='popupMenuItem' onclick='projection.graphActions.expandResourceConcepts();'> Expand concepts</span>" +
+                " <span class='popupMenuItem' onclick='projection.graphActions.collapseResourceConcepts();'> Collapse concepts</span>" +
+                " <span class='popupMenuItem' onclick='projection.graphActions.showLinked();'> show Relations</span>"
 
-        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
-        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
-        paragraphs.drawParagraphsEntitiesGraphAggr(projection.currentProjection.paragraphs, projection.currentProjection.conceptsInfos, {
-            conceptLevelAggr: conceptLevelAggr,
-            corpusLevelAggr: corpusLevelAggr,
-            nodeIdFilter: node.id
-        })
+            $("#graphPopupDiv").html(html)
+            point.x+=$("#selectionDiv").width();
+            projection.graphActions.showPopup(point)
+
+        }
+
+        return;
+
+
+        /*  var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+          var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
+          paragraphs.drawParagraphsEntitiesGraphAggr(projection.currentProjection.paragraphs, projection.currentProjection.conceptsInfos, {
+              conceptLevelAggr: conceptLevelAggr,
+              corpusLevelAggr: corpusLevelAggr,
+              nodeIdFilter: node.id
+          })*/
 
         if (node.id.indexOf("/resource/vocabulary/") > -1) {
             var ancestors = node.data.ancestors;
@@ -535,8 +548,8 @@ var paragraphs = (function () {
 
 
                 if (idCorpus) {
-                    var corpusIdsStr="";
-                    if(Array.isArray(idCorpus)){
+                    var corpusIdsStr = "";
+                    if (Array.isArray(idCorpus)) {
                         var corpusIdsStr = "";
                         idCorpus.forEach(function (id, index) {
                             if (index > 0)
@@ -573,10 +586,10 @@ var paragraphs = (function () {
                     }
                     if (idCorpus.indexOf("/Paragraph/") > -1 || idCorpus[0].indexOf("/Paragraph/") > -1) {
                         queryCorpus += "?paragraph skos:broader ?xx. filter(?paragraph "
-                        if(Array.isArray(idCorpus))
-                            queryCorpus+=" in ("+corpusIdsStr+"))"
+                        if (Array.isArray(idCorpus))
+                            queryCorpus += " in (" + corpusIdsStr + "))"
                         else
-                            queryCorpus+=" =<" + idCorpus + ">) "
+                            queryCorpus += " =<" + idCorpus + ">) "
                     }
                 }
 
