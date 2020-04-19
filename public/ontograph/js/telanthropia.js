@@ -36,7 +36,28 @@
 
 
 
+self.getNoticesCoocurrences=function(){
 
+
+         var query="select distinct * where {\n" +
+             "\n" +
+             "\n" +
+             "?sujet skos:prefLabel ?sujetLabel .\n" +
+             "filter (?sujet=<http://data.telanthropia.org/resource/ontology/SujetPLM/1182>)\n" +
+             "\n" +
+             "\n" +
+             "?notice ?subject ?sujet .\n" +
+             "\n" +
+             "optional{\n" +
+             "?notice foaf:Person ?personne.\n" +
+             "?personne skos:prefLabel ?personneLabel .\n" +
+             "}\n" +
+             "}\n" +
+             "\n" +
+             "ORDER BY ?sujetLabel\n" +
+             "\n" +
+             " LIMIT 1000"
+}
 
 
 

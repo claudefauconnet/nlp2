@@ -28,7 +28,8 @@ var common = (function () {
 
     self.loadJsTree = function (jstreeDiv, jstreeData, options, callback) {
         var plugins = [];
-        var cascade="xxx"
+     if(!options.cascade)
+         options.cascade ="xxx"
         if(options.selectDescendants)
             cascade="down"
         if (options.withCheckboxes)
@@ -37,19 +38,21 @@ var common = (function () {
             $('#' + jstreeDiv).jstree("destroy")
         $('#' + jstreeDiv).jstree({
 
-            "checkbox": {
+           /* "checkbox": {
                 "keep_selected_style": false
-            },
+            },*/
             "plugins":plugins,
             "core": {
                 'check_callback': true,
                 'data': jstreeData
-            }, 'checkbox': {
-                three_state: false,
-                cascade: cascade,
-                // tie_selection : false,
-                whole_node: false
-            },
+            },'checkbox': {
+                /*   three_state: options.three_state,
+                  cascade: options.cascade,
+                  // tie_selection : false,*/
+                whole_node: false,
+                tie_selection:false,
+                three_state:false,
+              },
 
 
         }).on('loaded.jstree', function () {
@@ -89,10 +92,12 @@ var common = (function () {
 
 
             })
-            $("#" + jstreeDiv).jstree(true).open_node(parentNodeId);
-            var offset=$(document.getElementById(parentNodeId)).offset();
-            $("#" + jstreeDiv).scrollTop( offset.top)
+
         })
+     $("#" + jstreeDiv).jstree(true).open_node(parentNodeId);
+        $("#" + jstreeDiv).jstree(true).select_node(parentNodeId);
+        var offset=$(document.getElementById(parentNodeId)).offset();
+    //    $("#" + jstreeDiv).scrollTop( offset.top)
     }
 
 

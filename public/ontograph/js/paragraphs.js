@@ -621,33 +621,63 @@ var paragraphs = (function () {
 
                 var whereConceptQuery = ""
                 if (concepts && concepts.length > 0) {
-                    if (options.booleanQuery == "OR" && self.previousConceptsFilter) {
-                        concepts = concepts.concat(self.previousConceptsFilter)
-                    }
-                    self.previousConceptsFilter = concepts;
-                    var entityIdsStr = "";
-                    concepts.forEach(function (id, index) {
-                        if (index > 0)
-                            entityIdsStr += ","
-                        entityIdsStr += "<" + id + ">"
-                    })
+               if(false) {
+                   if (options.booleanQuery == "OR" && self.previousConceptsFilter) {
+                       concepts = concepts.concat(self.previousConceptsFilter)
+                   }
+                   self.previousConceptsFilter = concepts;
+                   var entityIdsStr = "";
+                   concepts.forEach(function (id, index) {
+                       if (index > 0)
+                           entityIdsStr += ","
+                       entityIdsStr += "<" + id + ">"
+                   })
+
+                   if (self.previousWhereConceptQuery && options.booleanQuery == "AND") {
+                       whereConceptQuery += self.previousWhereConceptQuery + "  "
+                       if (isQuantumConceptsQuery)
+                           whereConceptQuery += "  ?paragraph terms:subject ?entity2 . ?entity2 rdfsyn:type  ?entity2Type . " + "?entity2 skos:exactMatch ?quantumConcept2" + " filter (?quantumConcept2 in(" + entityIdsStr + "))"
+                       else
+                           whereConceptQuery += "  ?paragraph terms:subject ?entity2 . ?entity2 rdfsyn:type  ?entity2Type . " + " filter (?entity2 in(" + entityIdsStr + "))"
 
 
-                    if (self.previousWhereConceptQuery && options.booleanQuery == "AND") {
-                        whereConceptQuery += self.previousWhereConceptQuery + "  "
-                        if (isQuantumConceptsQuery)
-                            whereConceptQuery += "  ?paragraph terms:subject ?entity2 . ?entity2 rdfsyn:type  ?entity2Type . " + "?entity2 skos:exactMatch ?quantumConcept2" + " filter (?quantumConcept2 in(" + entityIdsStr + "))"
-                        else
-                            whereConceptQuery += "  ?paragraph terms:subject ?entity2 . ?entity2 rdfsyn:type  ?entity2Type . " + " filter (?entity2 in(" + entityIdsStr + "))"
+                   } else {
+                       if (isQuantumConceptsQuery)
+                           whereConceptQuery += "  ?paragraph terms:subject ?entity . " + "?entity skos:exactMatch ?quantumConcept" + " filter (?quantumConcept in(" + entityIdsStr + "))"
+                       else
+                           whereConceptQuery += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
+
+                   }
+               }
+
+               if(true) {
 
 
-                    } else {
-                        if (isQuantumConceptsQuery)
-                            whereConceptQuery += "  ?paragraph terms:subject ?entity . " + "?entity skos:exactMatch ?quantumConcept" + " filter (?quantumConcept in(" + entityIdsStr + "))"
-                        else
-                            whereConceptQuery += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
+                   if (options.conceptsSets) {
+                       concepts.forEach(function (conceptSet, indexSet) {
 
-                    }
+                           var entityIdsStr = "";
+                           conceptSet.forEach(function (id, index) {
+                               if (index > 0)
+                                   entityIdsStr += ","
+                               entityIdsStr += "<" + id + ">"
+                           })
+
+                           if (isQuantumConceptsQuery)
+                               whereConceptQuery += "  ?paragraph terms:subject ?entity"+indexSet+" . ?entity"+indexSet+" rdfsyn:type  ?entity"+indexSet+"Type . " + "?entity"+indexSet+" skos:exactMatch ?quantumConcept"+indexSet+"" + " filter (?quantumConcept"+indexSet+" in(" + entityIdsStr + "))"
+                           else
+                               whereConceptQuery += "  ?paragraph terms:subject ?entity"+indexSet+" . ?entity"+indexSet+" rdfsyn:type  ?entity"+indexSet+"Type . " + " filter (?entity"+indexSet+" in(" + entityIdsStr + "))"
+
+
+
+                       })
+
+
+                   }
+
+               }
+
+
 
 
                     self.previousWhereConceptQuery = whereConceptQuery

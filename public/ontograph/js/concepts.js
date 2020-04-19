@@ -67,7 +67,7 @@ var Concepts = (function () {
 
 
             //  console.log(JSON.stringify(jstreeData,null,2))
-            common.loadJsTree("jstreeConceptDiv", jstreeData, {withCheckboxes: 1, selectDescendants: 1,openAll:true})
+            common.loadJsTree("jstreeConceptDiv", jstreeData, {withCheckboxes: 1, selectDescendants: 1,cascade:"undetermined",three_state:false,openAll:true})
 
 
         })
@@ -148,7 +148,7 @@ var Concepts = (function () {
             function (callbackSeries) {
 
                 common.loadJsTree("jstreeConceptDiv", jstreeData, {
-                    withCheckboxes: 0, selectDescendants: 1, selectNodeFn: function (evt, obj) {
+                    withCheckboxes: 1, selectDescendants: 1, selectNodeFn: function (evt, obj) {
                         Concepts.onNodeSelect(evt, obj);
                     }
                 })
@@ -165,26 +165,33 @@ var Concepts = (function () {
     self.getSelectedConceptDescendants = function (callback) {
         var selectedConcepts = null;
         var allDescendantConcepts = [];
-        var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_selected()
+        var conceptsSets = [];
+        var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_checked()
         if (selectedConcepts.length == 0)
             return callback(null, []);
-        var slicedSelectedConcepts = common.sliceArray(selectedConcepts,  projection.sliceZize);
-        async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
+      //  var slicedSelectedConcepts = common.sliceArray(selectedConcepts,  projection.sliceZize);
+     //   async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
+        async.eachSeries(selectedConcepts, function (concepts, callbackEach) {
 
             Concepts.sparql_geConceptDescendants(concepts, function (err, result) {
                 if (err)
                     return callbackEach(err);
-                allDescendantConcepts = allDescendantConcepts.concat(result);
+             //   allDescendantConcepts = allDescendantConcepts.concat(result);
+                conceptsSets.push(result)
                 callbackEach();
             })
         }, function (err) {
-            Concepts.currentSelectedConcepts = allDescendantConcepts;
-            callback(err, allDescendantConcepts);
+            callback(err, conceptsSets);
+           // Concepts.currentSelectedConcepts = allDescendantConcepts;
+        //    callback(err, allDescendantConcepts);
 
         })
     }
 
     self.sparql_geConceptDescendants = function (conceptIds, callback) {
+
+        if(!Array.isArray(conceptIds))
+            conceptIds=[conceptIds]
         var depth = 7;
         var defaultIri = "http://data.total.com/resource/thesaurus/ctg/"
         defaultIri = ""
@@ -478,7 +485,7 @@ var Concepts = (function () {
         })
         text += "</span>"
         $("#currentConceptsSpan").html(" : " + text);
-        if (obj.event.ctrlKey) {
+        if (obj.event.altKey) {
             return $("#accordion").accordion({active: 2});
         }
         if (node.children.length > 0)

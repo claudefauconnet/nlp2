@@ -58,14 +58,12 @@ var projection = (function () {
         async.series([
 
 
-
-
                 //getDescendants
                 function (callbackSeries) {
                     //    return callbackSeries();
                     if (conceptIds) {
                         allConceptsMap = conceptIds;
-                       return  callbackSeries();
+                        return callbackSeries();
                     }
                     Concepts.getSelectedConceptDescendants(function (err, concepts) {
                         if (err)
@@ -87,6 +85,7 @@ var projection = (function () {
                 },
                 //getParagraphs
                 function (callbackSeries) {
+                    options.conceptsSets = true;
                     paragraphs.sparql_getEntitiesParagraphsX(idCorpus, allConceptsMap, options, function (err, result) {
                         //  paragraphs.sparql_getEntitiesParagraphs(idCorpus, selectedConcepts,  ConceptsDepth, options, function (err, result) {
                         if (err)
@@ -213,10 +212,6 @@ var projection = (function () {
             $("#graphPopupDiv").css("display", "none")
         },
     }
-
-
-
-
 
 
     self.clusterNodes = function (nodes, clusters, options) {

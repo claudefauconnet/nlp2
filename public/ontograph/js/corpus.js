@@ -79,7 +79,10 @@ var corpus = (function () {
             } else {
                 common.loadJsTree("jstreeCorpusDiv", jstreeData,
                     {
+                        withCheckboxes: 1,
                         openAll:true,
+                        three_state:false,
+                        cascade:"undetermined",
                         selectNodeFn: function (evt, obj) {
 
                             corpus.onJstreeSelectNode(evt, obj)
