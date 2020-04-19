@@ -98,12 +98,17 @@ var Questions = (function () {
 
 
                 var selectStr = "?paragraph "
+                var selectStr = "*"
                 var whereConceptStr = "";
 
                 matchingTokens.forEach(function (token, index) {
-                    selectStr += " ?concept" + index
+                    //selectStr += " ?concept" + index
+
                     whereConceptStr += "?paragraph  terms:subject ?concept" + index + "." +
-                        "?concept" + index + "   skos:prefLabel ?conceptLabel" + index + ". filter( (contains(lcase(?conceptLabel" + index + "),\"" + token.token + "\"))) "
+                        "?concept" + index + "   skos:prefLabel ?conceptLabel" + index + " ." +
+                   //     "  ?concept" + index + "   rdfsyn:type ?conceptType" + index + "."+
+                        " filter( (contains(lcase(?conceptLabel" + index + "),\"" + token.token + "\"))) "
+
 
                 })
 
@@ -140,13 +145,15 @@ var Questions = (function () {
                 var paragraphIds = []
                 if (matchingParagraphs.length == 0)
                     return callbackSeries("no result")
-
+                var html = "<ul>";
                 matchingParagraphs.forEach(function (item) {
                     paragraphIds.push(item.paragraph.value)
                     for (var i = 0; i < matchingTokens.length; i++) {
                         var conceptId = item["concept" + i].value
+                        var conceptLabel = item["conceptLabel" + i].value
                         if (matchingConceptIds.indexOf(conceptId)) {
                             matchingConceptIds.push(conceptId)
+                            html += "<li>" + conceptLabel + "</li>"
                         }
 
 
@@ -154,9 +161,10 @@ var Questions = (function () {
 
 
                 })
-
+                $("#question_matchingTokensDiv").html(html)
+                self.previousConceptsFilter=null;
                 projection.displayParagraphsGraph(null, paragraphIds, matchingConceptIds)
-
+            $("#corpusAggrLevelSelect").val("paragraph")
 
                 return callbackSeries();
 
@@ -165,7 +173,8 @@ var Questions = (function () {
 
             if (err)
                 if (err == "NO_RESULT") {
-                    var html = "No result remove tokens and retry <ul>"
+                    var html = "No result remove tokens and retry" +
+                        "<div style='width: 200px'></div> <ul>"
                     matchingTokens.forEach(function (token, index) {
                         html += "<li></li><input type='checkbox' class='question_tokenSelect' value='T_" + token.token + "'>" + token.token + "</li>"
                     })

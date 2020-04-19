@@ -26,6 +26,7 @@
     <script src="js/relations.js"></script>
 
     <script src="js/projection.js"></script>
+    <script src="js/telanthropia.js"></script>
 
 
     <script src="js/questions.js"></script>
@@ -73,17 +74,7 @@
 
                 $("#accordion").accordion();
 
-                $("#conceptAggrLevelSlider").slider({
-                    range: "min",
-                    max: 5,
-                    min: 0,
-                    //   slide: projection.onConceptAggrLevelSliderChange,
-                    change: projection.onConceptAggrLevelSliderChange
-
-                });
-                corpus.showDomainsJstree();
-                Concepts.loadThesaurusTopConceptsTree()
-
+              Telanthropia.loadSubjects()
             }
 
 
@@ -195,6 +186,14 @@
         </div>
 
         <div id="accordion">
+
+            <h3><span class="title">Sujets </span></h3>
+            <div style="margin:5px">
+              <select id="sujetsSelect" >
+
+
+            </div>
+
 
             <h3><span class="title">Question </span></h3>
             <div style="margin:5px">
