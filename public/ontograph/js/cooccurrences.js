@@ -142,7 +142,7 @@ var cooccurrences = (function () {
                 paragraphs.sparql_getEntitiesParagraphs(idCorpus, selectedEntities, null, function (err, result) {
                     if (err)
                         common.message(err)
-                    paragraphs.drawEntitiesParagraphsGraph(selectedEntities, result)
+                    self.drawEntitiesParagraphsGraph(selectedEntities, result)
                 })
                 self.drawCooccurrencesGraph(allResults);
             })
@@ -303,7 +303,7 @@ var cooccurrences = (function () {
             paragraphs.sparql_getEntitiesParagraphs(idCorpus, selectedEntities, null, function (err, result) {
                 if (err)
                     common.message(err)
-                paragraphs.drawEntitiesParagraphsGraph(selectedEntities, result)
+                self.drawEntitiesParagraphsGraph(selectedEntities, result)
             })
 
 
@@ -337,6 +337,157 @@ var cooccurrences = (function () {
         $("#filteredEntitiesPanel").css("display", "flex");
         $("#searchPanel").css("display", "none");
 
+
+    }
+
+    self.drawEntitiesParagraphsGraph = function (selectedEntities, data, options) {
+        if (!options)
+            options = {}
+        var visjsData = {
+            nodes: [],
+            edges: []
+        }
+
+        uniqueNodeIds = [];
+        uniqueEdgesIds = [];
+        var visjNodes = [];
+
+        var width = $(window).width();
+        var height = $(window).height();
+        var allParagraphIds = []
+
+        data.forEach(function (item, indexLine) {
+
+
+            var paragraphId = item.paragraph.value
+
+            allParagraphIds.push(paragraphId)
+
+            var paragraphIdStr = paragraphId.substring(paragraphId.lastIndexOf("/") + 1)
+
+            if (uniqueNodeIds.indexOf(paragraphIdStr) < 0) {
+                uniqueNodeIds.push(paragraphIdStr)
+
+                var node = {
+                    label: paragraphIdStr,
+                    id: paragraphId,
+                    color: ontograph.entityTypeColors["paragraph"],
+                    data: {type: "Paragraph"},
+                    shape: "ellipse",
+                    /*   x: x1,
+                       y: (y1 += y1Offset),
+                       fixed: {x: false, y: false}*/
+
+                }
+                visjsData.nodes.push(node)
+            }
+
+
+            // entities level 2 linked to paragraphs
+            if (options.getParagraphEntities) {
+                if (uniqueNodeIds.indexOf(item.entity22.value) < 0) {
+                    uniqueNodeIds.push(item.entity22.value)
+                    var type = item.entity22Type.value.substring(item.entity22Type.value.lastIndexOf("/") + 1)
+                    var node = {
+                        label: item.entity22Label.value,
+                        id: item.entity22.value,
+                        color: ontograph.entityTypeColors[type],
+                        data: {type: type},
+                        shape: "box",
+
+                    }
+                    visjsData.nodes.push(node)
+                }
+                var edgeId = paragraphId + "_" + item.entity22.value
+                if (uniqueEdgesIds.indexOf(edgeId) < 0) {
+                    uniqueEdgesIds.push(edgeId)
+                    var edge = {
+                        from: paragraphId,
+                        to: item.entity22.value,
+                        id: edgeId,
+
+                    }
+                    visjsData.edges.push(edge)
+                }
+            }
+
+
+            {
+                var clusterId = "";
+                var clusterLabel = "";
+                selectedEntities.forEach(function (entity, index) {
+                    if (!item["entity" + index]) //optional
+                        return;
+                    var entityId = item["entity" + index].value
+                    uniqueNodeIds.push(entityId);
+                    if (index > 0) {
+
+                        clusterLabel += " + "
+                    }
+                    clusterId += "_"
+                    clusterId += entityId
+                    clusterLabel += item["entity" + index + "Label"].value
+
+                })
+                if (uniqueNodeIds.indexOf(clusterId) < 0) {
+                    uniqueNodeIds.push(clusterId)
+                    var node = {
+                        label: clusterLabel,
+                        id: clusterId,
+                        color: ontograph.entityTypeColors["clusteredEntities"],
+                        shape: "box",
+                        font: {size: 18, color: "white"}
+
+
+                    }
+                    visjsData.nodes.push(node)
+                }
+
+
+                var edgeId = paragraphId + "_" + clusterId
+                if (uniqueEdgesIds.indexOf(edgeId) < 0) {
+                    uniqueEdgesIds.push(edgeId)
+                    var edge = {
+                        from: paragraphId,
+                        to: clusterId,
+                        id: edgeId,
+
+                    }
+                    visjsData.edges.push(edge)
+                }
+
+
+            }
+        })
+        var paragraphSlices = [];
+        var slice = [];
+        allParagraphIds.forEach(function (paragraph) {
+            if (paragraph.indexOf("20") > -1)
+                var x = 3
+            slice.push(paragraph)
+            if (slice.length > 50) {
+                paragraphSlices.push(slice);
+                slice = [];
+            }
+        })
+        paragraphSlices.push(slice);
+
+
+        async.eachSeries(paragraphSlices, function (slice, callbackEach) {
+            ontograph.getParagraphsDetails(slice, function (err, result) {
+                if (err)
+                    return callbackEach(err);
+                callbackEach();
+            })
+        })
+        //  $("#graphDiv").width($(window).width() - 20)
+        visjsGraph.draw("graphDiv", visjsData, {
+            onclickFn: ontograph.onNodeClick,
+            onHoverNodeFn: ontograph.onNodeHover,
+            afterDrawing: function () {
+                $("#waitImg").css("display", "none")
+            }
+        })
 
     }
 

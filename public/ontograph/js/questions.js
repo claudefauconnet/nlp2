@@ -147,7 +147,7 @@ var Questions = (function () {
                     return callbackSeries("no result")
                 var html = "<ul>";
                 matchingParagraphs.forEach(function (item) {
-                    paragraphIds.push(item.paragraph.value)
+                    paragraphIds.push([item.paragraph.value])
                     for (var i = 0; i < matchingTokens.length; i++) {
                         var conceptId = item["concept" + i].value
                         var conceptLabel = item["conceptLabel" + i].value

@@ -1380,7 +1380,7 @@ if (false) {
 }
 
 if(false){
-    var sourcePath = "D:\\NLP\\rdfs\\Total\\Method.rdf";
+    var sourcePath = "D:\\NLP\\rdfs\\Total\\Characterisation.rdf";
 
   /*  var str=""+fs.readFileSync(sourcePath);
 

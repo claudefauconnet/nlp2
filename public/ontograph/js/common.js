@@ -74,6 +74,17 @@ var common = (function () {
             $(".jstree-anchor").css("line-height", "18px")
             $(".jstree-anchor").css("height", "18px")
             $(".jstree-anchor").css("font-size", "14px")
+        }).on("check_node.jstree", function(evt, obj) {
+
+            if(evt.type== "check_node" && options.onCheckNodeFn){
+                options.onCheckNodeFn(evt, obj);
+            }
+
+            if(evt.type== "uncheck_node" && options.onUncheckNodeFn){
+                options.onUncheckNodeFn(evt, obj);
+            }
+
+
         });
 
     }
@@ -84,18 +95,19 @@ var common = (function () {
 
 
 
-                $(".jstree-themeicon").css("display", "none")
-                $(".jstree-anchor").css("line-height", "18px")
-                $(".jstree-anchor").css("height", "18px")
-                $(".jstree-anchor").css("font-size", "14px")
+
 
 
 
             })
 
         })
+        $(".jstree-themeicon").css("display", "none")
+        $(".jstree-anchor").css("line-height", "18px")
+        $(".jstree-anchor").css("height", "18px")
+        $(".jstree-anchor").css("font-size", "14px")
      $("#" + jstreeDiv).jstree(true).open_node(parentNodeId);
-        $("#" + jstreeDiv).jstree(true).select_node(parentNodeId);
+      //  $("#" + jstreeDiv).jstree(true).select_node(parentNodeId);
         var offset=$(document.getElementById(parentNodeId)).offset();
     //    $("#" + jstreeDiv).scrollTop( offset.top)
     }

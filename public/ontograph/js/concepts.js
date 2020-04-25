@@ -17,7 +17,7 @@ var Concepts = (function () {
 
             result.forEach(function (item) {
                 var id = item.concept.value;
-                for (var i = 1; i < 5; i++) {
+                for (var i = 1; i < 6; i++) {
                     var broader = item["broader" + i];
                     if (broader) {
                         broader = broader.value
@@ -54,12 +54,17 @@ var Concepts = (function () {
                 if (uniqueIds.indexOf(id) < 0) {
                     uniqueIds.push(id)
                     var node = {id: id, text: item.prefLabel.value}
-                   if( conceptBroadersMap[item.broader1]) {
-                       if (conceptBroadersMap[item.broader1.value]) {
-                           node.parent = item.broader1.value;
-                           jstreeData.push(node)
-                       }
-                   }
+                    for (var i = 0; i < 6; i++) {
+                        if (typeof (item["broader " + i]) != "undefined") {
+
+                            if (conceptBroadersMap[item["broader " + i]]) {
+                                if (conceptBroadersMap[item["broader " + i].value]) {
+                                    node.parent = item[item["broader " + i]].value;
+                                    jstreeData.push(node)
+                                }
+                            }
+                        }
+                    }
 
                 }
 
@@ -67,7 +72,21 @@ var Concepts = (function () {
 
 
             //  console.log(JSON.stringify(jstreeData,null,2))
-            common.loadJsTree("jstreeConceptDiv", jstreeData, {withCheckboxes: 1, selectDescendants: 1,cascade:"undetermined",three_state:false,openAll:true})
+            common.loadJsTree("jstreeConceptDiv", jstreeData, {
+                withCheckboxes: 1,
+                openAll: true,
+
+                selectNodeFn: function (evt, obj) {
+                    Concepts.onNodeSelect(evt, obj);
+                },
+                onCheckNodeFn: function (evt, obj) {
+                    Concepts.onNodeChecked(evt, obj);
+                },
+                onUncheckNodeFn: function (evt, obj) {
+                    Concepts.onNodeUnchecked(evt, obj);
+
+                }
+            })
 
 
         })
@@ -148,8 +167,17 @@ var Concepts = (function () {
             function (callbackSeries) {
 
                 common.loadJsTree("jstreeConceptDiv", jstreeData, {
-                    withCheckboxes: 1, selectDescendants: 1, selectNodeFn: function (evt, obj) {
+                    withCheckboxes: 1,
+                    // openAll:true,
+                    selectNodeFn: function (evt, obj) {
                         Concepts.onNodeSelect(evt, obj);
+                    },
+                    onCheckNodeFn: function (evt, obj) {
+                        Concepts.onNodeChecked(evt, obj);
+                    },
+                    onUncheckNodeFn: function (evt, obj) {
+                        Concepts.onNodeUnchecked(evt, obj);
+
                     }
                 })
                 return callbackSeries();
@@ -163,35 +191,38 @@ var Concepts = (function () {
 
 
     self.getSelectedConceptDescendants = function (callback) {
+        if (!Concepts.currentConceptsSelection)
+            return callback(null, [[]])
         var selectedConcepts = null;
         var allDescendantConcepts = [];
         var conceptsSets = [];
-        var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_checked()
+        //  var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_checked()
+        var selectedConcepts = Concepts.currentConceptsSelection
         if (selectedConcepts.length == 0)
             return callback(null, []);
-      //  var slicedSelectedConcepts = common.sliceArray(selectedConcepts,  projection.sliceZize);
-     //   async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
+        //  var slicedSelectedConcepts = common.sliceArray(selectedConcepts,  projection.sliceZize);
+        //   async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
         async.eachSeries(selectedConcepts, function (concepts, callbackEach) {
 
             Concepts.sparql_geConceptDescendants(concepts, function (err, result) {
                 if (err)
                     return callbackEach(err);
-             //   allDescendantConcepts = allDescendantConcepts.concat(result);
+                //   allDescendantConcepts = allDescendantConcepts.concat(result);
                 conceptsSets.push(result)
                 callbackEach();
             })
         }, function (err) {
             callback(err, conceptsSets);
-           // Concepts.currentSelectedConcepts = allDescendantConcepts;
-        //    callback(err, allDescendantConcepts);
+            // Concepts.currentSelectedConcepts = allDescendantConcepts;
+            //    callback(err, allDescendantConcepts);
 
         })
     }
 
     self.sparql_geConceptDescendants = function (conceptIds, callback) {
 
-        if(!Array.isArray(conceptIds))
-            conceptIds=[conceptIds]
+        if (!Array.isArray(conceptIds))
+            conceptIds = [conceptIds]
         var depth = 7;
         var defaultIri = "http://data.total.com/resource/thesaurus/ctg/"
         defaultIri = ""
@@ -299,7 +330,7 @@ var Concepts = (function () {
 
     self.getSelectedConceptAncestors = function (conceptIds, options, callback) {
 
-        var slicedConceptIds = common.sliceArray(conceptIds,  projection.sliceZize);
+        var slicedConceptIds = common.sliceArray(conceptIds, projection.sliceZize);
         async.eachSeries(slicedConceptIds, function (concepts, callbackEach) {
 
             Concepts.sparql_getAncestors(concepts, function (err, result) {
@@ -390,7 +421,7 @@ var Concepts = (function () {
             options = {}
         }
         var allInfos = [];
-        var slices = common.sliceArray(conceptIds,  projection.sliceZize)
+        var slices = common.sliceArray(conceptIds, projection.sliceZize)
         async.eachSeries(slices, function (slice, callbackEach) {
 
             var conceptIdsStr = "";
@@ -408,8 +439,8 @@ var Concepts = (function () {
                 "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
                 "SELECT DISTINCT *" +
                 "WHERE {" +
-                "?concept skos:prefLabel ?conceptLabel ."+
-            " filter (?concept in(" + conceptIdsStr + "))"
+                "?concept skos:prefLabel ?conceptLabel ." +
+                " filter (?concept in(" + conceptIdsStr + "))"
 
             if (!options.onlyAncestors) {
                 query += "OPTIONAL {?concept skos:exactMatch ?exactMatch .}" +
@@ -455,7 +486,6 @@ var Concepts = (function () {
                 "LIMIT 1000"
 
 
-
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
 
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -477,23 +507,63 @@ var Concepts = (function () {
     self.onNodeSelect = function (evt, obj) {
 
         var node = obj.node
-        var text = obj.node.text + "<br><span style='font-size: 12px'>"
-        node.parents.forEach(function (parent, index) {
-            var parentLabel = $("#jstreeConceptDiv").jstree(true).get_node(parent)
-            if (index < node.parents.length - 1)
-                text += "/" + parentLabel.text
-        })
-        text += "</span>"
-        $("#currentConceptsSpan").html(" : " + text);
-        if (obj.event.altKey) {
-            return $("#accordion").accordion({active: 2});
-        }
+
         if (node.children.length > 0)
             return;
 
         self.loadChildrenInConceptJstree(obj.node.id, 1)
 
     }
+
+
+    self.onNodeChecked = function (evt, obj) {
+
+
+        if (obj.event.ctrlKey && self.currentConceptsSelection) {
+            projection.setConceptSelectedCBX(obj, "AND")
+            self.currentConceptsSelection.push([obj.node.id]);
+
+        } else {
+            if (!self.currentConceptsSelection)
+                self.currentConceptsSelection = [[]];
+            var xx = self.currentConceptsSelection[self.currentConceptsSelection.length - 1]
+            self.currentConceptsSelection[self.currentConceptsSelection.length - 1].push(obj.node.id);
+            projection.setConceptSelectedCBX(obj, "OR")
+        }
+
+
+    }
+
+    self.onNodeUnchecked = function (evt, obj) {
+        self.currentConceptsSelection = null;
+
+    }
+
+
+    self.getSelectedConcepts = function () {
+        var selection = [];
+        $(".selectedConceptCBX").each(function () {
+            if ($(this).prop("checked")) {
+                selection.push($(this).val())
+            }
+        })
+        return selection;
+
+
+    }
+
+    self.resetConceptsJstree = function (reload) {
+        $("#currentConceptsSpan").html("");
+        $("#graphDiv").html("");
+        $("#searchSelectedConceptsButton").css("display", "none")
+        $("#resetSelectedConceptsButton").css("display", "none")
+        $(".projection-item").css("display", "none")
+        self.currentConceptsSelection = null;
+        $("#jstreeConceptDiv").jstree(true).uncheck_all();
+        if (reload)
+            self.loadThesaurusTopConceptsTree()
+    }
+
 
     self.getAncestorsFromJstree = function (conceptId) {
         var node = $("#jstreeConceptDiv").jstree(true).get_node(conceptId)
@@ -512,6 +582,7 @@ var Concepts = (function () {
 
         return ancestors;
     }
+
 
 
     return self;

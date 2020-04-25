@@ -351,6 +351,17 @@ var sparql = (function () {
             "?broader3 skos:broader ?broader4 ." +
             "?broader4 skos:prefLabel ?broaderLabel4 ." +
             "filter (lang(?broaderLabel4)=\"en\")" +
+            "OPTIONAL {" +
+            "?broader4 skos:broader ?broader5 ." +
+            "?broader5 skos:prefLabel ?broaderLabel5 ." +
+            "filter (lang(?broaderLabel5)=\"en\")" +
+            "OPTIONAL {" +
+            "?broader5 skos:broader ?broader6 ." +
+            "?broader6 skos:prefLabel ?broaderLabel6 ." +
+            "filter (lang(?broaderLabel6)=\"en\")" +
+            "" +
+            "}" +
+            "}" +
             "" +
             "}" +
             "" +

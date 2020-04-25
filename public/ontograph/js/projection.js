@@ -23,6 +23,8 @@ var projection = (function () {
             corpusLevelAggr: corpusLevelAggr
         })
 
+        filterGraph.resetUI();
+
     }
 
 
@@ -86,7 +88,8 @@ var projection = (function () {
                 //getParagraphs
                 function (callbackSeries) {
                     options.conceptsSets = true;
-                    paragraphs.sparql_getEntitiesParagraphsX(idCorpus, allConceptsMap, options, function (err, result) {
+                    common.message("Searching resources ... ")
+                    paragraphs.sparql_getEntitiesParagraphs(idCorpus, allConceptsMap, options, function (err, result) {
                         //  paragraphs.sparql_getEntitiesParagraphs(idCorpus, selectedConcepts,  ConceptsDepth, options, function (err, result) {
                         if (err)
                             return callbackSeries(err);
@@ -94,8 +97,14 @@ var projection = (function () {
                         if (result.length == 0)
                             return callbackSeries("No results")
 
-                        allParagraphs = result;
 
+                        allParagraphs = result;
+                        if (result.length >= paragraphs.sparql_limit) {
+                            if (confirm("result length > Maximum limit for queries (" + paragraphs.sparql_limit + "). Show partialGraph ?"))
+                                return callbackSeries();
+                            else
+                                return callbackSeries("STOP");
+                        }
                         callbackSeries();
                     })
 
@@ -107,8 +116,8 @@ var projection = (function () {
                         return callbackSeries();
                     var conceptsIds = [];
                     allParagraphs.forEach(function (item) {
-                        if (item.entity && conceptsIds.indexOf(item.entity.value) < 0)
-                            conceptsIds.push(item.entity.value)
+                        if (item.entity0 && conceptsIds.indexOf(item.entity0.value) < 0)
+                            conceptsIds.push(item.entity0.value)
                     })
                     if (conceptsIds.length == 0)
                         return callbackSeries();
@@ -119,14 +128,18 @@ var projection = (function () {
                     Concepts.getConceptsInfos(conceptsIds, {}, function (err, result) {
                         if (err)
                             return callbackSeries(err);
-
+                     /*   var topSelectedConcepts = [];
+                        Concepts.currentConceptsSelection.forEach(function (item) {
+                            topSelectedConcepts.push(item[0])
+                        })*/
                         result.forEach(function (item) {
-                            console.log(item.concept.value)
+                            //  console.log(item.concept.value)
                             var obj = {id: item.concept.value, ancestors: [{id: item.concept.value, label: item.conceptLabel.value}]}
                             for (var i = 1; i < 7; i++) {
                                 var broader = item["broaderId" + i];
                                 if (typeof broader !== "undefined") {
-                                    obj.ancestors.push({id: broader.value, label: item["broader" + i].value})
+                                 //   if (topSelectedConcepts.indexOf(broader.value) < 0)
+                                        obj.ancestors.push({id: broader.value, label: item["broader" + i].value})
                                 }
                             }
                             allConceptsInfosMap[obj.id] = obj;
@@ -148,7 +161,7 @@ var projection = (function () {
                     }
 
                     paragraphs.drawParagraphsEntitiesGraphAggr(allParagraphs, allConceptsInfosMap, options)
-
+                    $(".projection-item").css("display", "block")
                     callbackSeries();
                 }
 
@@ -164,7 +177,7 @@ var projection = (function () {
 
     }
 
-    self.filterGraph = function () {
+ /*   self.filterGraph = function () {
         var allConcepts = [];
         async.series([
 
@@ -198,7 +211,7 @@ var projection = (function () {
             if (err)
                 common.message(err)
         })
-    }
+    }*/
 
     self.graphActions = {
 
@@ -211,6 +224,15 @@ var projection = (function () {
         hidePopup: function () {
             $("#graphPopupDiv").css("display", "none")
         },
+        showResourceConcepts: function (resourceId,withOtherResourcesEdges) {
+           // if (resourceId.indexOf("Paragraph") > -1) {
+                paragraphs.alterGraph.addConceptsToGraph(resourceId,withOtherResourcesEdges)
+
+          //  }
+        },
+        showResourceConceptsOfType:function(){
+
+        }
     }
 
 
@@ -265,6 +287,33 @@ var projection = (function () {
         visjsGraph.data.nodes.add(nodesToCreate)
         visjsGraph.data.edges.add(edgesToCreate)
 
+    }
+    self.setConceptSelectedCBX = function (obj, bool) {
+
+        var text = $("#currentConceptsSpan").html();
+
+        if (text != "")
+            text += "<br><span style='font-size: 12px;font-weight: bold;' title='" + tooltip + "'> &nbsp;" + bool + "&nbsp;</span> "
+        var tooltip = ""
+        obj.node.parents.forEach(function (parent, index) {
+            var jstree;
+            if (parent.indexOf("/vocabulary/") > -1)
+                jstree = "#jstreeConceptDiv"
+            else
+                jstree = "#jstreeCorpusDiv"
+
+            var parentLabel = $(jstree).jstree(true).get_node(parent)
+            if (index < obj.node.parents.length - 1)
+                tooltip += "/" + parentLabel.text
+        })
+        text += "<span style='font-size: 12px' title='" + tooltip + "'>" + obj.node.text + "</span>"
+
+        $("#currentConceptsSpan").html(text);
+
+
+        $("#searchSelectedConceptsButton").css("display", "block")
+        $("#resetSelectedConceptsButton").css("display", "block")
+        //   $(".projection-item").css("display","block")
     }
 
 

@@ -26,8 +26,6 @@
     <script src="js/relations.js"></script>
 
     <script src="js/projection.js"></script>
-    <script src="js/filterGraph.js"></script>
-
 
 
     <script src="js/questions.js"></script>
@@ -84,18 +82,7 @@
 
                 });
                 corpus.showDomainsJstree();
-                Concepts.loadThesaurusTopConceptsTree();
-
-
-                $("#searchConceptInput").bind("keydown",function(e){
-                    if(e.keyCode==13)
-                        Concepts.searchConcept($('#searchConceptInput').val())
-                })
-
-                $("#searchCorpusInput").bind("keydown",function(e){
-                    if(e.keyCode==13)
-                        corpus.searchResources($('#searchConceptInput').val())
-                })
+                Concepts.loadThesaurusTopConceptsTree()
 
             }
 
@@ -201,7 +188,7 @@
 <div id="main" style="display: flex;flex-direction: row">
 
 
-    <div id="selectionDiv" style="width:25%;max-width:350px;border-style: solid;padding: 3px;margin: 3px">
+    <div id="selectionDiv" style="width:30%;max-width:350px;border-style: solid;padding: 3px;margin: 3px">
         <div>
             &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/>
             <span id="messageDiv"></span>
@@ -213,7 +200,21 @@
                 <button id='resetSelectedConceptsButton' style='display: none;' onclick='Concepts.resetConceptsJstree()'>X</button>
             </div>
         </div>
-
+        <div class="projection-item" style='display: none;'>
+            Aggregate concepts<br>
+            <div id="conceptAggrLevelSlider" style="margin:10px;width:90%"></div>
+        </div>
+        <div class="projection-item" style='display: none;'>
+            Aggregate resources <br><select style="margin:10px;" onChange="projection.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
+            <option></option>
+            <option>paragraph</option>
+            <option>chapter</option>
+            <option selected="selected">document</option>
+            <option>documentType</option>
+            <option>branch</option>
+            <option>domain</option>
+        </select>
+        </div>
 
         <div id="accordion">
 
@@ -250,7 +251,39 @@
 
             </div>
 
+<!--
+            <h3><span class="title">Display </span><span class='currentConceptsSpan' id="currentQuantumSpan"></span></h3>
+            <div>
 
+
+
+                <div class="projection-item">
+                    Aggregate concepts<br>
+                    <div id="conceptAggrLevelSlider" style="margin:10px;width:90%"></div>
+                </div>
+                <div class="projection-item">
+                    Aggregate resources <br><select style="margin:10px;" onChange="projection.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
+                    <option></option>
+                    <option>paragraph</option>
+                    <option>chapter</option>
+                    <option selected="selected">document</option>
+                    <option>documentType</option>
+                    <option>branch</option>
+                    <option>domain</option>
+                </select>
+                </div>
+                <div class="projection-item" style="background-color: #d5d6da">
+                    Draw graph<br>
+                    <button onclick="projection.displayParagraphsGraph()"> Concepts</button>
+                    <button onclick="projection.displayParagraphsGraph('AND')"> -</button>
+                    <button onclick="projection.displayParagraphsGraph('OR')"> +</button>
+                    <button onclick="cooccurrences.displayGraphEntitiesCooccurrences()">Cooccurrences</button>
+
+                    &nbsp;&nbsp;<button onclick="relations.displayGraphEntitiesRelations()">Relations</button>
+
+
+                </div>
+            </div>-->
 
 
         </div>
@@ -259,69 +292,9 @@
     </div>
 
 
-    <div id="displayDiv" style="width:50%;border-style: solid;padding: 3px;margin: 3px">
+    <div id="displayDiv" style="width:70%;border-style: solid;padding: 3px;margin: 3px">
         <div id="graphDiv" style="width:100%;"></div>
         <div id="paragraphTextDiv" style="height:200px;overflow: auto"></div>
-    </div>
-
-
-    <div id="projectionDiv" style="width:25%;border-style: solid;padding: 3px;margin: 3px">
-
-        <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
-            Aggregate
-            <div class="projection-item" style='display: none;'>
-                Concepts<br>
-                <div id="conceptAggrLevelSlider" style="margin:10px;width:90%"></div>
-            </div>
-            <div class="projection-item" style='display: none;'>
-                Resources <br><select style="margin:10px;" onChange="projection.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
-                <option></option>
-                <option>paragraph</option>
-                <option>chapter</option>
-                <option selected="selected">document</option>
-                <option>documentType</option>
-                <option>branch</option>
-                <option>domain</option>
-            </select>
-            </div>
-        </div>
-        <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
-            Show / Hide
-            <hr/>Scope
-            <select id="filterGraphScopeSelect">
-                <option></option>
-                <option>SelectedNode</option>
-                <option selected="selected">AllNodes</option>
-            </select>
-            <hr/>
-            Resources
-            <select id="filterGraphResourceSelect" onchange="filterGraph.onShowResources($(this).val())">
-                <option></option>
-                <option>ShowParents</option>
-                <option>ShowAllAssociatedConcepts</option>
-                <option>ShowSomeAssociatedConcepts</option>
-
-            </select>
-            <hr/>
-            Concepts
-            <select id="filterGraphConceptSelect" onchange="filterGraph.onShowConcept($(this).val())">
-                <option></option>
-               <option>ShowParents</option>
-           <!--     <option>ShowAllAssociatedParagraphs</option>
-                <option>ShowSomeAssociatedParagraphs</option>-->
-            </select>
-            <hr/>
-        </div>
-
-        <div>
-            <div id="jstreeFilterConceptsDiv" style="height: 300px;overflow: auto"></div>
-
-        </div>
-        <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
-           Export
-
-        </div>
-
     </div>
 
 

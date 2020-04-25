@@ -2,7 +2,7 @@ var paragraphs = (function () {
 
     var self = {};
     self.currentGraphInfos = {}
-
+    self.sparql_limit = 10000
     self.drawParagraphsEntitiesGraphAggr = function (data, conceptsInfosMap, options) {
         if (!options) {
             options = {
@@ -22,13 +22,22 @@ var paragraphs = (function () {
                 var corpusLabel;
                 if (options.corpusLevelAggr == "paragraph") {
                     corpusId = item.paragraph.value;
-                    corpusLabel = corpusId.substring(corpusId.lastIndexOf("/" + 1));
+                    corpusLabel = corpusId.substring(corpusId.lastIndexOf("/") + 1);
                 } else {
                     if (!item[options.corpusLevelAggr])
                         return;
-                    corpusId = item[options.corpusLevelAggr].value
-                    corpusLabel = item[options.corpusLevelAggr + "Label"].value
+                    corpusId = item[options.corpusLevelAggr].value;
+                    if (options.corpusLevelAggr == "documentType")
+                        corpusLabel = item.domainLabel.value + "_" + item.branchLabel.value + "_" + item[options.corpusLevelAggr + "Label"].value
+                    else if (options.corpusLevelAggr == "branch")
+                        corpusLabel = item.domainLabel.value + "_" + item[options.corpusLevelAggr + "Label"].value
+                    else
+                        corpusLabel = item[options.corpusLevelAggr + "Label"].value
                 }
+
+
+                if (corpusLabel.length > 12)
+                    corpusLabel = corpusLabel.substring(0, 12) + "..."
 
                 allCorpusIds.push(corpusId)
 
@@ -54,7 +63,7 @@ var paragraphs = (function () {
                     var concept;
                     if (options.nodeIdFilter && item.id != options.nodeIdFilter)
                         concept = ancestors[0]
-                    if (options.conceptLevelAggr > ancestors.length - 1)//si pas d'ancetre de ce noveau on prend le noeud lui meme
+                    if (options.conceptLevelAggr > ancestors.length - 1)//si pas d'ancetre de ce niveau on prend le noeud lui meme
                         concept = ancestors[ancestors.length - 1]
                     else
                         concept = ancestors[options.conceptLevelAggr]
@@ -66,7 +75,7 @@ var paragraphs = (function () {
                         uniqueNodeIds.push(concept.id)
                         var type = "anyEntity"
                         if (item[entityName + "Type"])
-                            type = item[entityName + "Type"].value.substring(item.entityType.value.lastIndexOf("/") + 1)
+                            type = item[entityName + "Type"].value.substring(item[entityName + "Type"].value.lastIndexOf("/") + 1)
                         var node = {
                             label: concept.label,
                             id: concept.id,
@@ -78,8 +87,8 @@ var paragraphs = (function () {
 
                         }
                         visjsData.nodes.push(node)
-                    }
 
+                    }
 
                     var edgeId = corpusId + "_" + concept.id
                     if (uniqueEdgeIds.indexOf(edgeId) < 0) {
@@ -88,17 +97,24 @@ var paragraphs = (function () {
                             from: corpusId,
                             to: concept.id,
                             id: edgeId,
+                            arrows: "from",
 
                         }
                         visjsData.edges.push(edge)
                     }
+
                 }
 
-                setEntityNode("entity")
-                if (typeof item["entity2"] !== "undefined" && item["entity2"]) {
-                    if (conceptsInfosMap[item.entity2.value])
-                        setEntityNode("entity2")
+                for (var i = 0; i < 10; i++) {
+                    if (typeof item["entity" + i] !== "undefined" && item["entity" + i]) {
+                        setEntityNode("entity" + i)
+                    }
                 }
+                /*   setEntityNode("entity")
+                 if (typeof item["entity2"] !== "undefined" && item["entity2"]) {
+                      if (conceptsInfosMap[item.entity2.value])
+                          setEntityNode("entity2")
+                  }*/
 
                 if (options.resourcesShowParentResources) {
 
@@ -152,57 +168,30 @@ var paragraphs = (function () {
     }
 
     self.onNodeClick = function (node, point) {
-
+        filterGraph.selectedGraphNode = node
         if (node.id.indexOf("/resource/vocabulary/") > -1) {
-            var html = " <span class='popupMenuItem' onclick='projection.graphActions.expandResourceConcepts();'> Expand concepts</span>" +
-                " <span class='popupMenuItem' onclick='projection.graphActions.collapseResourceConcepts();'> Collapse concepts</span>" +
-                " <span class='popupMenuItem' onclick='projection.graphActions.showLinked();'> show Relations</span>"
+            /*  var html = " <span class='popupMenuItem' onclick='projection.graphActions.expandResourceConcepts();'> Expand concepts</span>" +
+                  " <span class='popupMenuItem' onclick='projection.graphActions.collapseResourceConcepts();'> Collapse concepts</span>" +
+                  " <span class='popupMenuItem' onclick='projection.graphActions.showLinked();'> show Relations</span>"
+
+              $("#graphPopupDiv").html(html)*/
+            point.x += $("#selectionDiv").width();
+            projection.graphActions.showPopup(point)
+
+        } else {
+            var html = ""
+            html += "<span class='popupMenuItem' onclick='projection.graphActions.showResourceConcepts(\"" + node.id + "\");'> node concepts</span><br>"
+            html += "<span class='popupMenuItem' onclick='projection.graphActions.showResourceConceptsOfType(\"" + node.id + "\");'> node concepts ...</span><br>"
+            html += "<span class='popupMenuItem' onclick='projection.graphActions.showResourceConcepts(\"" + node.id + "\",true);'> node concepts and relations</span><br>"
 
             $("#graphPopupDiv").html(html)
-            point.x+=$("#selectionDiv").width();
+            point.x += $("#selectionDiv").width();
             projection.graphActions.showPopup(point)
 
         }
 
+
         return;
-
-
-        /*  var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
-          var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
-          paragraphs.drawParagraphsEntitiesGraphAggr(projection.currentProjection.paragraphs, projection.currentProjection.conceptsInfos, {
-              conceptLevelAggr: conceptLevelAggr,
-              corpusLevelAggr: corpusLevelAggr,
-              nodeIdFilter: node.id
-          })*/
-
-        if (node.id.indexOf("/resource/vocabulary/") > -1) {
-            var ancestors = node.data.ancestors;
-            var ancestorsMap = projection.currentProjection.conceptsInfos
-            var uniqueNodes = visjsGraph.data.nodes.getIds();
-            var uniqueEdges = visjsGraph.data.edges.getIds();
-            var visjsNewData = {nodes: [], edges: []}
-            for (var key in ancestorsMap) {
-                var ancestors = ancestorsMap[key].ancestors
-                ancestors.forEach(function (ancestor, index) {
-                    if (ancestor.id == (node.id) && index > 0) {
-                        var child = ancestors[index - 1];
-                        if (uniqueNodes.indexOf(child.id) < 0) {
-                            uniqueNodes.push(child.id);
-                            visjsNewData.nodes.push({id: child.id, label: child.label, shape: "box", color: node.color, data: node.data})
-                        }
-                        var edgeId = child.id + "_" + node.id
-                        if (uniqueEdges.indexOf(edgeId) < 0) {
-                            uniqueEdges.push(edgeId);
-                            visjsNewData.edges.push({id: edgeId, from: child.id, to: node.id})
-                        }
-
-
-                    }
-                })
-            }
-
-        }
-        ontograph.drawGraph(visjsNewData, {addToGraph: true})
 
 
     }
@@ -235,8 +224,13 @@ var paragraphs = (function () {
                     var html = ""
 
                     var infos = self.currentGraphInfos[obj.id];
+
                     var nodeData = obj.data;
-                    var text = infos.paragraphText.value
+                    var text
+                    if (infos && infos.paragraphText)
+                        text = infos.paragraphText.value;
+                    else
+                        text = "??"
                     var textRich = self.getEntichedParagraphText(infos);
                     html += "<span class='paragraph-docTitle'>" + nodeData.documentLabel.value + "</span>&nbsp;";
                     html += "<span class='paragraph-chapter'>" + nodeData.chapterLabel.value + "</span>&nbsp;";
@@ -280,11 +274,12 @@ var paragraphs = (function () {
                     }
                     var definition = infos["definition"]
                     if (typeof definition !== "undefined") {
-                        html += "<span class='paragraph-chapter'>definition:</span>&nbsp;" + definition;
+                        html += "<span class='paragraph-chapter'>definition:</span>&nbsp;" + definition.value;
                     }
                     var exactMatch = infos["exactMatch"]
                     if (typeof exactMatch !== "undefined") {
-                        html += "<span class='paragraph-chapter'>Quantum exact match:</span>&nbsp;" + exactMatch;
+                        html += "<br>"
+                        html += "<span class='paragraph-chapter'>Quantum exact match:</span>&nbsp;" + exactMatch.value;
                     }
 
 
@@ -336,7 +331,7 @@ var paragraphs = (function () {
             query += "?paragraph <http://open.vocab.org/terms/hasOffset> ?offset ."
 
 
-            query += "} limit 10000"
+            query += "} limit " + self.sparql_limit
 
 
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
@@ -395,138 +390,7 @@ var paragraphs = (function () {
     }
 
 
-    self.sparql_getEntitiesParagraphs = function (idCorpus, parentConcepts, depth, options, callback) {
-
-        var totalConcepts = 0;
-
-        var allResults = [];
-
-
-        if (!options)
-            options = {minManadatoryEntities: 2}
-        var queryCorpus = ""
-        var queryConcept = ""
-        var countParagraphMin = 20;
-
-        var isQuantumConceptsQuery = false;
-        if (parentConcepts && parentConcepts.length > 0 && parentConcepts[0].id.indexOf("/quantum/") > 1)
-            isQuantumConceptsQuery = true;
-
-
-        if (idCorpus) {
-            if (idCorpus.indexOf("/Domain/") > -1) {
-                queryCorpus += "?branch   skos:broader <" + idCorpus + ">."
-            }
-            if (idCorpus.indexOf("/Branch/") > -1) {
-                queryCorpus += "?document_type   skos:broader <" + idCorpus + ">."
-            }
-            if (idCorpus.indexOf("/Document-type/") > -1) {
-                queryCorpus += "?document   skos:broader <" + idCorpus + ">."
-            }
-            if (idCorpus.indexOf("/Document/") > -1) {
-                queryCorpus += "?chapter   skos:broader <" + idCorpus + ">."
-            }
-            if (idCorpus.indexOf("/Chapter/") > -1) {
-                queryCorpus += "?paragraph  skos:broader <" + idCorpus + ">."
-            }
-        }
-
-
-        var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
-
-
-        var query = "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX mime:<http://purl.org/dc/dcmitype/> PREFIX terms:<http://purl.org/dc/terms/>   PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
-            " select distinct * " +
-            "from <http://data.total.com/resource/thesaurus/ctg/>  " +
-            "from <http://data.total.com/resource/ontology/ctg/>  " +
-            "from <http://data.total.com/resource/ontology/quantum/>  " +
-            "from <http://data.total.com/resource/corpus-description/ctg/>" +
-            " where{  " +
-            "  "
-        if (parentConcepts) {
-            var parentConceptIdsStr = ""
-            parentConcepts.forEach(function (parentConcept, index) {
-                if (index > 0)
-                    parentConceptIdsStr += ","
-                parentConceptIdsStr += "<" + parentConcept.id + ">"
-            })
-
-            var childStr1 = "";
-            var childStr2 = "filter (?entity in (?concept";
-            var childStr3 = "";
-
-            for (var i = 1; i <= depth; i++) {
-                if (i == 1)
-                    childStr1 += "OPTIONAL {?child1 skos:broader ?concept. ";
-                if (i < depth)
-                    childStr1 += "OPTIONAL { ?child" + (i + 1) + " skos:broader ?child" + i + ". ";
-
-                childStr2 += ",?child" + i + "  ";
-                childStr3 += "Optional{?child" + i + " skos:prefLabel ?childLabel" + i + ".}  ";
-
-            }
-            for (var i = 1; i <= depth; i++) {
-                childStr1 += "} "
-            }
-            childStr2 += "))  "
-
-            query += " ?concept skos:prefLabel ?prefLabel. filter (?concept in(" + parentConceptIdsStr + "))"
-            query += childStr1;
-            query += childStr2;
-            query += childStr3;
-            query += "?paragraph terms:subject ?entity. "
-
-
-            /*   query += " ?concept skos:prefLabel ?prefLabel. filter (?concept in(" + parentConceptIdsStr + "))" +
-               "" +
-               "OPTIONAL {?child1 skos:broader ?concept.  OPTIONAL { ?child2 skos:broader ?child1.  OPTIONAL { ?child3 skos:broader ?child2.OPTIONAL { ?child4 skos:broader ?child3.OPTIONAL { ?child5 skos:broader ?child4.OPTIONAL { ?child6 skos:broader ?child5.}}}}}}  " +
-               "  " +
-               "  " +
-               "Optional{?child1 skos:prefLabel ?childLabel1.}  " +
-               "Optional{?child2 skos:prefLabel ?childLabel2.}  " +
-               "Optional{?child3 skos:prefLabel ?childLabel3.}  " +
-               "Optional{?child4 skos:prefLabel ?childLabel4.}  " +
-               "Optional{?child5 skos:prefLabel ?childLabel5.}  " +
-               "Optional{?child6 skos:prefLabel ?childLabel6.}  " +
-               "  " +
-               "  " +
-               "  " +
-               "  " +
-               "?paragraph terms:subject ?entity." +
-               " filter (?entity in (?concept,?child1,?child2,?child2,?child3,?child4,?child5,?child6))  "*/
-        }
-        query += "  " +
-            " ?paragraph  skos:broader ?chapter .?chapter  skos:broader ?document .?document  skos:broader ?document_type .?document_type  skos:broader ?branch. ?branch skos:broader ?domain.  " +
-            "  " +
-            "  ?chapter skos:prefLabel ?chapterLabel.  ?document skos:prefLabel ?documentLabel. ?document_type skos:prefLabel ?document_typeLabel.  ?branch skos:prefLabel ?branchLabel.  ?domain skos:prefLabel ?domainLabel."
-        // "  ?entity rdfsyn:type ?entityType .  " +
-        "  "
-        if (queryCorpus != "") {
-            query += "  ?entity rdfsyn:type ?entityType .  "//requete plante quand il ya pas de corpus ??? bizarre
-            query += queryCorpus
-        }
-
-        query += "  }limit 1000"
-
-
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
-
-        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
-            if (err) {
-                console.log(query)
-                return callback(err);
-            }
-
-            allResults = allResults.concat(result.results.bindings);
-            return callback(null, allResults);
-
-
-        })
-
-
-    }
-
-    self.sparql_getEntitiesParagraphsX = function (idCorpus, conceptsIds, options, callback) {
+    self.sparql_getEntitiesParagraphs = function (idCorpus, conceptsIds, options, callback) {
 
         var totalConcepts = 0;
         var slicedConceptsIds = common.sliceArray(conceptsIds, projection.sliceZize);
@@ -535,7 +399,7 @@ var paragraphs = (function () {
         var allResults = [];
         async.eachSeries(slicedConceptsIds, function (concepts, callbackEach) {
                 totalConcepts += concepts.length
-                common.message("selecting concepts :" + totalConcepts)
+
                 if (!options)
                     options = {minManadatoryEntities: 2}
                 var queryCorpus = ""
@@ -600,14 +464,13 @@ var paragraphs = (function () {
                     "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
                     "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
                     "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
-                    "" +
-                    "        select *" +
+                    "        select distinct *" +
                     "        where "
 
-                var whereQuery = "{?paragraph terms:subject ?entity. ?entity rdfs:label ?entityLabel . " +
-                    "  FILTER (lang(?entityLabel)=\"en\") " +
-                    "  ?entity rdfsyn:type ?entityType .  " +
-                    "?paragraph  skos:broader ?chapter." +
+                /*  var whereQuery = "{?paragraph terms:subject ?entity. ?entity rdfs:label ?entityLabel . " +
+                      "  FILTER (lang(?entityLabel)=\"en\") " +
+                      "  ?entity rdfsyn:type ?entityType .  " +*/
+                var whereQuery = "{?paragraph  skos:broader ?chapter." +
                     "?chapter  skos:prefLabel ?chapterLabel." +
                     "?chapter  skos:broader ?document." +
                     "?document  skos:prefLabel ?documentLabel." +
@@ -621,63 +484,33 @@ var paragraphs = (function () {
 
                 var whereConceptQuery = ""
                 if (concepts && concepts.length > 0) {
-               if(false) {
-                   if (options.booleanQuery == "OR" && self.previousConceptsFilter) {
-                       concepts = concepts.concat(self.previousConceptsFilter)
-                   }
-                   self.previousConceptsFilter = concepts;
-                   var entityIdsStr = "";
-                   concepts.forEach(function (id, index) {
-                       if (index > 0)
-                           entityIdsStr += ","
-                       entityIdsStr += "<" + id + ">"
-                   })
+                    if (options.conceptsSets) {
+                        concepts.forEach(function (conceptSet, indexSet) {
 
-                   if (self.previousWhereConceptQuery && options.booleanQuery == "AND") {
-                       whereConceptQuery += self.previousWhereConceptQuery + "  "
-                       if (isQuantumConceptsQuery)
-                           whereConceptQuery += "  ?paragraph terms:subject ?entity2 . ?entity2 rdfsyn:type  ?entity2Type . " + "?entity2 skos:exactMatch ?quantumConcept2" + " filter (?quantumConcept2 in(" + entityIdsStr + "))"
-                       else
-                           whereConceptQuery += "  ?paragraph terms:subject ?entity2 . ?entity2 rdfsyn:type  ?entity2Type . " + " filter (?entity2 in(" + entityIdsStr + "))"
+                            var entityIdsStr = "";
+                            if (!Array.isArray(conceptSet))
+                                conceptSet = [conceptSet]
+                            conceptSet.forEach(function (id, index) {
+                                if (index > 0)
+                                    entityIdsStr += ","
+                                entityIdsStr += "<" + id + ">"
+                            })
 
-
-                   } else {
-                       if (isQuantumConceptsQuery)
-                           whereConceptQuery += "  ?paragraph terms:subject ?entity . " + "?entity skos:exactMatch ?quantumConcept" + " filter (?quantumConcept in(" + entityIdsStr + "))"
-                       else
-                           whereConceptQuery += "  ?paragraph terms:subject ?entity . " + " filter (?entity in(" + entityIdsStr + "))"
-
-                   }
-               }
-
-               if(true) {
+                            if (isQuantumConceptsQuery) {
+                                whereConceptQuery += "  ?paragraph terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type . " + "?entity" + indexSet + " skos:exactMatch ?quantumConcept" + indexSet + ""
+                                if (entityIdsStr.length > 0)
+                                    whereConceptQuery += " filter (?quantumConcept" + indexSet + " in(" + entityIdsStr + "))"
+                            } else {
+                                whereConceptQuery += "  ?paragraph terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type ."
+                                if (entityIdsStr.length > 0)
+                                    whereConceptQuery += " filter (?entity" + indexSet + " in(" + entityIdsStr + "))"
+                            }
 
 
-                   if (options.conceptsSets) {
-                       concepts.forEach(function (conceptSet, indexSet) {
-
-                           var entityIdsStr = "";
-                           conceptSet.forEach(function (id, index) {
-                               if (index > 0)
-                                   entityIdsStr += ","
-                               entityIdsStr += "<" + id + ">"
-                           })
-
-                           if (isQuantumConceptsQuery)
-                               whereConceptQuery += "  ?paragraph terms:subject ?entity"+indexSet+" . ?entity"+indexSet+" rdfsyn:type  ?entity"+indexSet+"Type . " + "?entity"+indexSet+" skos:exactMatch ?quantumConcept"+indexSet+"" + " filter (?quantumConcept"+indexSet+" in(" + entityIdsStr + "))"
-                           else
-                               whereConceptQuery += "  ?paragraph terms:subject ?entity"+indexSet+" . ?entity"+indexSet+" rdfsyn:type  ?entity"+indexSet+"Type . " + " filter (?entity"+indexSet+" in(" + entityIdsStr + "))"
+                        })
 
 
-
-                       })
-
-
-                   }
-
-               }
-
-
+                    }
 
 
                     self.previousWhereConceptQuery = whereConceptQuery
@@ -687,11 +520,11 @@ var paragraphs = (function () {
                 query += whereQuery + whereConceptQuery
                 query += queryCorpus;
                 query += "    }"
-                query += " limit 1000"
+                query += " limit " + self.sparql_limit
 
 
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
-
+                console.log(query)
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err) {
                         console.log(query)
@@ -713,156 +546,8 @@ var paragraphs = (function () {
 
     }
 
-    self.drawEntitiesParagraphsGraph = function (selectedEntities, data, options) {
-        if (!options)
-            options = {}
-        var visjsData = {
-            nodes: [],
-            edges: []
-        }
-
-        uniqueNodeIds = [];
-        uniqueEdgesIds = [];
-        var visjNodes = [];
-
-        var width = $(window).width();
-        var height = $(window).height();
-        var allParagraphIds = []
-
-        data.forEach(function (item, indexLine) {
 
 
-            var paragraphId = item.paragraph.value
-
-            allParagraphIds.push(paragraphId)
-
-            var paragraphIdStr = paragraphId.substring(paragraphId.lastIndexOf("/") + 1)
-
-            if (uniqueNodeIds.indexOf(paragraphIdStr) < 0) {
-                uniqueNodeIds.push(paragraphIdStr)
-
-                var node = {
-                    label: paragraphIdStr,
-                    id: paragraphId,
-                    color: ontograph.entityTypeColors["paragraph"],
-                    data: {type: "Paragraph"},
-                    shape: "ellipse",
-                    /*   x: x1,
-                       y: (y1 += y1Offset),
-                       fixed: {x: false, y: false}*/
-
-                }
-                visjsData.nodes.push(node)
-            }
-
-
-            // entities level 2 linked to paragraphs
-            if (options.getParagraphEntities) {
-                if (uniqueNodeIds.indexOf(item.entity22.value) < 0) {
-                    uniqueNodeIds.push(item.entity22.value)
-                    var type = item.entity22Type.value.substring(item.entity22Type.value.lastIndexOf("/") + 1)
-                    var node = {
-                        label: item.entity22Label.value,
-                        id: item.entity22.value,
-                        color: ontograph.entityTypeColors[type],
-                        data: {type: type},
-                        shape: "box",
-
-                    }
-                    visjsData.nodes.push(node)
-                }
-                var edgeId = paragraphId + "_" + item.entity22.value
-                if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                    uniqueEdgesIds.push(edgeId)
-                    var edge = {
-                        from: paragraphId,
-                        to: item.entity22.value,
-                        id: edgeId,
-
-                    }
-                    visjsData.edges.push(edge)
-                }
-            }
-
-
-            {
-                var clusterId = "";
-                var clusterLabel = "";
-                selectedEntities.forEach(function (entity, index) {
-                    if (!item["entity" + index]) //optional
-                        return;
-                    var entityId = item["entity" + index].value
-                    uniqueNodeIds.push(entityId);
-                    if (index > 0) {
-
-                        clusterLabel += " + "
-                    }
-                    clusterId += "_"
-                    clusterId += entityId
-                    clusterLabel += item["entity" + index + "Label"].value
-
-                })
-                if (uniqueNodeIds.indexOf(clusterId) < 0) {
-                    uniqueNodeIds.push(clusterId)
-                    var node = {
-                        label: clusterLabel,
-                        id: clusterId,
-                        color: ontograph.entityTypeColors["clusteredEntities"],
-                        shape: "box",
-                        font: {size: 18, color: "white"}
-
-
-                    }
-                    visjsData.nodes.push(node)
-                }
-
-
-                var edgeId = paragraphId + "_" + clusterId
-                if (uniqueEdgesIds.indexOf(edgeId) < 0) {
-                    uniqueEdgesIds.push(edgeId)
-                    var edge = {
-                        from: paragraphId,
-                        to: clusterId,
-                        id: edgeId,
-
-                    }
-                    visjsData.edges.push(edge)
-                }
-
-
-            }
-        })
-        var paragraphSlices = [];
-        var slice = [];
-        allParagraphIds.forEach(function (paragraph) {
-            if (paragraph.indexOf("20") > -1)
-                var x = 3
-            slice.push(paragraph)
-            if (slice.length > 50) {
-                paragraphSlices.push(slice);
-                slice = [];
-            }
-        })
-        paragraphSlices.push(slice);
-
-
-        async.eachSeries(paragraphSlices, function (slice, callbackEach) {
-            ontograph.getParagraphsDetails(slice, function (err, result) {
-                if (err)
-                    return callbackEach(err);
-                callbackEach();
-            })
-        })
-        //  $("#graphDiv").width($(window).width() - 20)
-        visjsGraph.draw("graphDiv", visjsData, {
-            onclickFn: ontograph.onNodeClick,
-            onHoverNodeFn: ontograph.onNodeHover,
-            afterDrawing: function () {
-                $("#waitImg").css("display", "none")
-            }
-        })
-
-    }
 
 
     return self;
