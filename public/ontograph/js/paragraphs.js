@@ -11,6 +11,12 @@ var paragraphs = (function () {
             }
 
         }
+
+
+
+
+
+
         self.currentGraphInfos = {}
         var allCorpusIds = [];
         var uniqueNodeIds = []

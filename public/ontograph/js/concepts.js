@@ -192,7 +192,7 @@ var Concepts = (function () {
 
     self.getSelectedConceptDescendants = function (callback) {
         if (!Concepts.currentConceptsSelection)
-            return callback(null, [[]])
+            return callback(null, [])
         var selectedConcepts = null;
         var allDescendantConcepts = [];
         var conceptsSets = [];

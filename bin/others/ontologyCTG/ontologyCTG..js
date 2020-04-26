@@ -164,6 +164,10 @@ var ontologyCTG = {
                     return str;
                 }
 
+                function getNewId(){
+                    return Date.now();
+                }
+
                 for (var key in entitiesMap) {
                     strEntities += "<http://data.total.com/resource/ontology/ctg/EntityType/" + key + "> <http://www.w3.org/2000/01/rdf-schema#label> \"" + key + "\"@en .\n"
                 }
@@ -180,9 +184,10 @@ var ontologyCTG = {
                     //   console.log(JSON.stringify(item,null,2))
                     if (item.Document && item.Document != "") {
                         if (!docsMap[item.Document]) {
-                         //   docId = 1000 + Object.keys(docsMap).length pb si plusieurs imports
+
                             docId = item.Document
-                            docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + docId + ">"
+                           // docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + docId + ">"
+                            docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + getNewId() + ">"
                             if (true) {
                                 strDocs += docsMap[item.Document] + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/DocumentType/" + "GM_MEC" + "> .\n"
                                 strDocs += docsMap[item.Document] + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(item.Document) + "\"@en .\n"
@@ -191,14 +196,15 @@ var ontologyCTG = {
                                 resourceStr += docsMap[item.Document] + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + formatString(item.Document) + "\" .\n"
                                 resourceStr += docsMap[item.Document] + " <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/Document> .\n";
 
-                             /*   var arrayDoc = item.Document.split("_");
-                                if (arrayDoc.length == 6) {
-                                    var domain = "<http://data.total.com/resource/ontology/ctg/Domain/" + arrayDoc[2] + ">";
-                                    var branch = "<http://data.total.com/resource/ontology/ctg/Branch/" + arrayDoc[2] + "_" + arrayDoc[1] + ">";
-                                    var docType = "<http://data.total.com/resource/ontology/ctg/Document-type/" + arrayDoc[2] + "_" + arrayDoc[1] + "_" + arrayDoc[0] + ">";*/
-                                var domain = "<http://data.total.com/resource/ontology/ctg/Domain/" +item.Domain + ">";
+
+                               var domain = "<http://data.total.com/resource/ontology/ctg/Domain/" +item.Domain + ">";
                                 var branch = "<http://data.total.com/resource/ontology/ctg/Branch/" +item.Domain +"_"+item.Branch  + ">";
                                 var docType = "<http://data.total.com/resource/ontology/ctg/Document-type/" +item.Domain +"_"+item.Branch+"_"+ item.DocType + ">";
+
+                              /*  var domain = "<http://data.total.com/resource/ontology/ctg/Domain/" +getNewId() + ">";
+                                var branch = "<http://data.total.com/resource/ontology/ctg/Branch/" +getNewId()  + ">";
+                                var docType = "<http://data.total.com/resource/ontology/ctg/Document-type/" +getNewId() + ">";*/
+
                                 if (uniqueResource.indexOf(domain) < 0) {
                                         uniqueResource.push(domain);
                                         resourceStr += domain + " <http://www.w3.org/2004/02/skos/core#prefLabel> \"" + item.Domain + "\" .\n";
@@ -239,7 +245,7 @@ var ontologyCTG = {
                         if (!chaptersMap[key]) {
                           //  var chapterId = 1000 + Object.keys(chaptersMap).length
                             var chapterId = item.ChapterId
-                            var topChapterUrl = "<http://data.total.com/resource/ontology/ctg/Chapter/" + chapterId + ">"
+                            var topChapterUrl = "<http://data.total.com/resource/ontology/ctg/Chapter/" + getNewId() + ">"
                             chaptersMap[key] = topChapterUrl;
 
                         }
@@ -262,12 +268,6 @@ var ontologyCTG = {
                     if (text && text.length > 5) {
                         text = text.replace(/"/gm, "")
                         text = text.replace(/[;]/gm, "")
-
-
-                        if(paragraphUrl.indexOf("MEC-40493")>-1)
-                            var x=3
-                        if(text.indexOf("xa0")>-1)
-                            strText+= paragraphUrl + " <http://purl.org/dc/dcmitype/Text> \"" + formatString(text) + "\"@en .\n"
 
                         str += paragraphUrl + " <http://purl.org/dc/dcmitype/Text> \"" + formatString(text) + "\"@en .\n"
 
@@ -325,12 +325,6 @@ var ontologyCTG = {
 
 
 
-                    /*  for (var key in litteralEntities) {
-                          var entityValue = item[key]
-                          if (entityValue && entityValue != "") {
-                              str += paragraphUrl + " <http://data.total.com/resource/ontology/ctg/properties#" + key + ">" + "<" + entityValue + ">.\n"
-                          }
-                      }*/
 
 
                     var relationsStr0 = item["RDF_Triple"];
@@ -363,10 +357,10 @@ var ontologyCTG = {
 
                 var strAll = strDocs + strEntities + str;
 
-                fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontologyT.rdf.nt", strText)
-       /*         fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontology.rdf.nt", strAll)
+            //    fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontologyT.rdf.nt", strText)
+               fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontology.rdf.nt", strAll)
                 fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontologyTriples.rdf.nt", strRelations)
-                fs.writeFileSync("D:\\NLP\\rdfs\\Total\\resources.rdf.nt", resourceStr)*/
+                fs.writeFileSync("D:\\NLP\\rdfs\\Total\\resources.rdf.nt", resourceStr)
             },
 
 
@@ -449,7 +443,7 @@ module.exports = ontologyCTG
 
 var xlsx = "OntoCOR.xlsx"
 //xlsx="OntoMEC_triplet_20200402.xlsx"
-xlsx = "OntoAllDomain.xlsx"
+xlsx = "OntoAllDomain2.xlsx"
 ontologyCTG.readXlsx("D:\\NLP\\rdfs\\Total\\" + xlsx, function (err, result) {
 
 })

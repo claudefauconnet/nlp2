@@ -5,33 +5,9 @@ var projection = (function () {
     var uniqueNodes = [];
     self.sliceZize = 500;
 
-    self.onConceptAggrLevelSliderChange = function (evt) {
-        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
-        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
-        paragraphs.drawParagraphsEntitiesGraphAggr(self.currentProjection.paragraphs, self.currentProjection.conceptsInfos, {
-            conceptLevelAggr: conceptLevelAggr,
-            corpusLevelAggr: corpusLevelAggr
-        })
-    }
 
 
-    self.onAggregateCorpusSelectChange = function (type) {
-        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
-        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
-        paragraphs.drawParagraphsEntitiesGraphAggr(self.currentProjection.paragraphs, self.currentProjection.conceptsInfos, {
-            conceptLevelAggr: conceptLevelAggr,
-            corpusLevelAggr: corpusLevelAggr
-        })
 
-        filterGraph.resetUI();
-
-    }
-
-
-    self.onShowResoucesParentsResourcesSelectChange = function (value) {
-
-
-    }
 
 
     self.displayParagraphsGraph = function (booleanQuery, corpusIds, conceptIds) {
@@ -292,23 +268,39 @@ var projection = (function () {
 
         var text = $("#currentConceptsSpan").html();
 
+      //  var selectHtml="<select id=
+
+
+
         if (text != "")
             text += "<br><span style='font-size: 12px;font-weight: bold;' title='" + tooltip + "'> &nbsp;" + bool + "&nbsp;</span> "
         var tooltip = ""
+        var nodeLabel= obj.node.text;
         obj.node.parents.forEach(function (parent, index) {
             var jstree;
             if (parent.indexOf("/vocabulary/") > -1)
                 jstree = "#jstreeConceptDiv"
-            else
+            else {
                 jstree = "#jstreeCorpusDiv"
+
+            }
 
             var parentLabel = $(jstree).jstree(true).get_node(parent)
             if (index < obj.node.parents.length - 1)
                 tooltip += "/" + parentLabel.text
         })
-        text += "<span style='font-size: 12px' title='" + tooltip + "'>" + obj.node.text + "</span>"
 
-        $("#currentConceptsSpan").html(text);
+
+
+        if (obj.node.id.indexOf("/vocabulary/") <0) {
+            text += "<span style='font-size: 12px' title='" + tooltip + "'>" +tooltip+"/"+nodeLabel + "</span>"
+            $("#currentConceptsSpan").html(text);
+
+        }else {
+            text += "<span style='font-size: 12px' title='" + tooltip + "'>" +nodeLabel + "</span>"
+            $("#currentResourcesSpan").html(text);
+        }
+
 
 
         $("#searchSelectedConceptsButton").css("display", "block")

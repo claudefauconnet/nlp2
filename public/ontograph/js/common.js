@@ -76,11 +76,18 @@ var common = (function () {
             $(".jstree-anchor").css("font-size", "14px")
         }).on("check_node.jstree", function(evt, obj) {
 
-            if(evt.type== "check_node" && options.onCheckNodeFn){
+            if(options.onCheckNodeFn){
                 options.onCheckNodeFn(evt, obj);
             }
 
-            if(evt.type== "uncheck_node" && options.onUncheckNodeFn){
+
+
+
+        }).on("uncheck_node.jstree", function(evt, obj) {
+
+
+
+            if( options.onUncheckNodeFn){
                 options.onUncheckNodeFn(evt, obj);
             }
 

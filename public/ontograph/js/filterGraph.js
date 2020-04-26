@@ -23,24 +23,11 @@ var filterGraph = (function () {
 
         if (value == "ShowParents") {
             if (scope == "SelectedNode") {
-                corpus.addResourcesParentsToGraph([self.selectedGraphNode])
+                filterGraph.alterGraph.addResourcesParentsToGraph([self.selectedGraphNode])
 
             } else if (scope == "AllNodes") {
-                corpus.addResourcesParentsToGraph(null)
+                filterGraph.alterGraph.addResourcesParentsToGraph(null)
 
-            }
-
-        } else if (value == "ShowSomeAssociatedConcepts") {
-            if (scope == "SelectedNode") {
-                filterGraph.alterGraph.addConceptsToGraph([self.selectedGraphNode], true, true)
-            } else if (scope == "AllNodes") {
-                filterGraph.alterGraph.addConceptsToGraph(null, true, true)
-            }
-        } else if (value == "ShowAllAssociatedConcepts") {
-            if (scope == "SelectedNode") {
-                filterGraph.alterGraph.addConceptsToGraph([self.selectedGraphNode], true, false)
-            } else if (scope == "AllNodes") {
-                filterGraph.alterGraph.addConceptsToGraph(null, true, false)
             }
 
         }
@@ -59,17 +46,30 @@ var filterGraph = (function () {
         $("#filterGraphConceptSelect").val("")
         if (value == "ShowParents") {
             if (scope == "SelectedNode") {
-                filterGraph.addConceptsParentsToGraph([self.selectedGraphNode])
+                filterGraph.alterGraph.addConceptsParentsToGraph([self.selectedGraphNode])
 
             } else if (scope == "AllNodes") {
-                filterGraph.addConceptsParentsToGraph(null)
+                filterGraph.alterGraph.addConceptsParentsToGraph(null)
 
             }
 
+        } else if (value == "ListAssociatedConcepts") {
+            if (scope == "SelectedNode") {
+                filterGraph.alterGraph.addConceptsToGraph([self.selectedGraphNode], true, true)
+            } else if (scope == "AllNodes") {
+                filterGraph.alterGraph.addConceptsToGraph(null, true, true)
+            }
         } else if (value == "ShowAllAssociatedConcepts") {
+            if (scope == "SelectedNode") {
+                filterGraph.alterGraph.addConceptsToGraph([self.selectedGraphNode], true, false)
+            } else if (scope == "AllNodes") {
+                filterGraph.alterGraph.addConceptsToGraph(null, true, false)
+            }
 
-        } else if (value == "ShowSomeAssociatedConcepts") {
+        }
+     else if (value == "ShowCooccurrences") {
 
+            filterGraph.alterGraph.ShowCooccurrences()
         }
 
     }
@@ -85,11 +85,38 @@ var filterGraph = (function () {
         }
     }
 
+
+    self.onConceptAggrLevelSliderChange = function (evt) {
+        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
+        self.resetUI();
+        paragraphs.drawParagraphsEntitiesGraphAggr(projection.currentProjection.paragraphs, projection.currentProjection.conceptsInfos, {
+            conceptLevelAggr: conceptLevelAggr,
+            corpusLevelAggr: corpusLevelAggr
+        })
+    }
+
+
+    self.onAggregateCorpusSelectChange = function (type) {
+        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
+        self.resetUI();
+        paragraphs.drawParagraphsEntitiesGraphAggr(projection.currentProjection.paragraphs, projection.currentProjection.conceptsInfos, {
+            conceptLevelAggr: conceptLevelAggr,
+            corpusLevelAggr: corpusLevelAggr
+        })
+
+        filterGraph.resetUI();
+
+    }
+
+
     self.resetUI = function () {
 
         $("#filterGraphScopeSelect").val("AllNodes");
         $("#filterGraphResourceSelect").val("");
         $("#filterGraphConceptSelect").val("");
+        $("#jstreeFilterConceptsDiv").html("");
 
     }
 
@@ -171,19 +198,23 @@ var filterGraph = (function () {
                 result.results.bindings.forEach(function (item) {
                     var conceptId = item.entity.value;
                     if (existingNodes.indexOf(conceptId) < 0 && uniqueNodes.indexOf(conceptId) < 0) {
+                        if (item.entityLabel.value == "Carbonate")
+                            var x = 3;
                         newConceptsIds.push(conceptId)
                         uniqueNodes.push(conceptId)
                         var type = item.entityType.value.substring(item.entityType.value.lastIndexOf("/") + 1);
-                        var hidden=false;
-                        if(showJstree)
-                            hidden=true;
+                        var hidden = false;
+                        if (false && showJstree)
+                            hidden = true;
+
+
                         visjsData.nodes.push({
                             id: conceptId,
                             label: item.entityLabel.value,
                             shape: "box",
                             color: ontograph.entityTypeColors[type],
                             data: {ancestors: []},
-                            hidden:hidden
+                            hidden: hidden
 
                         })
 
@@ -233,6 +264,7 @@ var filterGraph = (function () {
                         return common.message(err);
                     var allConceptsInfosMap = {};
                     result.forEach(function (item) {
+
                         var obj = {id: item.concept.value, ancestors: [{id: item.concept.value, label: item.conceptLabel.value}]}
                         for (var i = 1; i < 7; i++) {
                             var broader = item["broaderId" + i];
@@ -246,7 +278,7 @@ var filterGraph = (function () {
                     })
                     visjsData.nodes.forEach(function (node) {
                         node.data.ancestors = allConceptsInfosMap[node.id].ancestors;
-                        if(!node.data.ancestors)
+                        if (!node.data.ancestors)
                             return;
                         if (showJstree) {
                             node.data.ancestors.forEach(function (ancestor, index) {
@@ -257,7 +289,8 @@ var filterGraph = (function () {
                                     jstreeMap[ancestor.id] = {
                                         id: ancestor.id,
                                         text: ancestor.label,
-                                        parent: parent
+                                        parent: parent,
+                                        data: node.data
                                     }
 
                                 }
@@ -279,6 +312,9 @@ var filterGraph = (function () {
                             onCheckNodeFn: function (evt, obj) {
                                 filterGraph.alterGraph.onFilterConceptsChecked(evt, obj);
                             },
+                            onUncheckNodeFn: function (evt, obj) {
+                                filterGraph.alterGraph.onFilterConceptsChecked(evt, obj);
+                            },
                             /*   selectNodeFn: function (evt, obj) {
                               Concepts.onNodeSelect(evt, obj);
                           },
@@ -287,12 +323,17 @@ var filterGraph = (function () {
 
                           }*/
                         })
+                        self.addedConceptsVisjData=visjsData;
 
+                    }
+                    else{
+
+
+                       /* visjsGraph.data.nodes.add(visjsData.nodes)
+                        visjsGraph.data.edges.add(visjsData.edges)*/
 
                     }
 
-                        visjsGraph.data.nodes.add(visjsData.nodes)
-                        visjsGraph.data.edges.add(visjsData.edges)
 
 
 
@@ -302,24 +343,53 @@ var filterGraph = (function () {
 
         onFilterConceptsChecked: function (event, obj) {
 
+
+
+
             var jstreeNode = obj.node;
-            var nodesToShow=[]
-            var nodeIdsToShow=[]
-            var existingNodes = visjsGraph.data.nodes.get();
-            existingNodes.forEach(function (node) {
-                if (node.id.indexOf("/vocabulary/") < 0)
-                    return;
-                if(!node.data || !node.data.ancestors)
-                    return;
-               node.data.ancestors.forEach(function(ancestor){
-                   if(ancestor.id==jstreeNode.id && nodeIdsToShow.indexOf(jstreeNode.id)<0){
-                       nodeIdsToShow.push(jstreeNode.id)
-                       nodesToShow.push({id:jstreeNode.id,hidden:false})
+
+            var jstreeSelectedNodes = [obj.node.id].concat(obj.node.children);// node and children
+            var visjsNodeIds = visjsGraph.data.nodes.getIds();
+            var nodesToShow = []
+            var edgesToShow = []
+            var nodeIdsToShow = [];
+
+            self.addedConceptsVisjData.nodes.forEach(function(visjsNode){
+                if(jstreeSelectedNodes.indexOf(visjsNode.id)>-1){
+                    visjsNode.hidden==false;
+                    nodesToShow.push(visjsNode)
+
+                }
+            })
+            self.addedConceptsVisjData.edges.forEach(function(visjsEdge){
+                jstreeSelectedNodes.forEach(function(jstreeNodeId){
+                    if(visjsEdge.id.indexOf(jstreeNodeId)>-1) {
+                        edgesToShow.push(visjsEdge)
+                    }
+                })
+            })
+            if(event.type=="uncheck_node"){
+                visjsGraph.data.nodes.remove(nodesToShow)
+                visjsGraph.data.edges.remove(edgesToShow)
+            }else{
+                visjsGraph.data.nodes.add(nodesToShow)
+                visjsGraph.data.edges.add(edgesToShow)
+            }
+
+
+
+
+
+            /*   jstreeSelectedNodes.forEach(function (jstreeNodeId) {
+                   if (visjsNodeIds.indexOf(jstreeNodeId) > -1 && nodeIdsToShow.indexOf(jstreeNode.id) < 0) {
+                       nodeIdsToShow.push(jstreeNodeId)
+                       nodesToShow.push({id: jstreeNodeId, hidden: hidden})
                    }
 
                })
-            })
-            visjsGraph.data.nodes.update(nodesToShow)
+
+               visjsGraph.data.nodes.update(nodesToShow)*/
+
 
         },
 
@@ -389,8 +459,98 @@ var filterGraph = (function () {
             ontograph.drawGraph(visjsData, {addToGraph: 1})
 
 
-        }
+        },
 
+
+        addResourcesParentsToGraph: function (selectedResourceId) {
+            var existingNodes = visjsGraph.data.nodes.get();
+            var existingNodeIds = visjsGraph.data.nodes.getIds();
+            var existingEdgeIds = visjsGraph.data.edges.getIds();
+
+
+            var visjsData = {nodes: [], edges: []}
+            var uniqueNodes = []
+            var uniqueEdgeIds = []
+
+            existingNodes.forEach(function (node) {
+
+                if (!selectedResourceId || (selectedResourceId = node.id)) {
+                    var size = 15
+                    var shape = "triangle"
+                    var newNodeName = null;
+                    if (node.id.indexOf("/Paragraph/") > -1) {
+                        newNodeName = "chapter"
+                        size = 8
+                        color = "#ccd2dd"
+                        shape = "ellipse"
+                    } else if (node.id.indexOf("/Chapter/") > -1) {
+                        newNodeName = "document"
+                        size = 10
+                        color = "#8c94dd"
+                        shape = "triangle"
+                    } else if (node.id.indexOf("/Document/") > -1) {
+                        size = 15
+                        color = "#4977dd"
+                        newNodeName = "documentType"
+                        shape = "square"
+                    } else if (node.id.indexOf("/Document-type/") > -1) {
+                        size = 20
+                        color = "#4345dd"
+                        newNodeName = "branch"
+                        shape = "hexagon"
+                    } else if (node.id.indexOf("/Branch/") > -1) {
+                        size = 25
+                        color = "#0f2edd"
+                        shape = "star"
+                        newNodeName = "domain";
+                    }
+
+
+                    if (newNodeName && node.data[newNodeName]) {
+                        var newNodeId = node.data[newNodeName].value;
+
+                        //  var newNodeId =  node.data[newNodeName + "Label"].value;
+                        if (existingNodeIds.indexOf(newNodeId) < 0 && uniqueNodes.indexOf(newNodeId) < 0) {
+                            uniqueNodes.push(newNodeId);
+                            var label = node.data[newNodeName + "Label"].value;
+                            if (label.length > 12)
+                                label = label.substring(0, 12) + "..."
+                            visjsData.nodes.push({
+                                id: newNodeId,
+                                label: label,
+                                color: color,
+                                size: size,
+                                font: {strokeWidth: color, size: 18},
+                                shape: shape,
+                                data: node.data
+
+                            })
+
+
+                        }
+                        var edgeId = node.id + "_" + newNodeId
+                        if (existingEdgeIds.indexOf(edgeId) < 0 && uniqueEdgeIds.indexOf(edgeId) < 0) {
+                            uniqueEdgeIds.push(edgeId)
+                            var edge = {
+                                from: node.id,
+                                to: newNodeId,
+                                id: edgeId,
+                                arrows: "to",
+
+                            }
+                            visjsData.edges.push(edge)
+                        }
+
+
+                    }
+
+
+                }
+            })
+
+            ontograph.drawGraph(visjsData, {addToGraph: 1})
+
+        }
     }
 
     return self;
