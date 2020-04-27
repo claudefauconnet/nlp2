@@ -3,14 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/indexOld2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/indexOld2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/indexOld3.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/indexOld3.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/concepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/concepts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/cooccurrences.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/cooccurrences.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/corpus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/corpus.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/filterGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/filterGraph.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/projection.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/projection.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/projection.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/selection.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/questions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/questions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/telanthropia.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/telanthropia.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -146,7 +149,7 @@
       <workItem from="1586628452068" duration="70914000" />
       <workItem from="1587111876191" duration="49022000" />
       <workItem from="1587483580374" duration="20037000" />
-      <workItem from="1587706736815" duration="36907000" />
+      <workItem from="1587706736815" duration="45548000" />
     </task>
     <servers />
   </component>

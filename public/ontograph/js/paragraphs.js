@@ -176,23 +176,23 @@ var paragraphs = (function () {
     self.onNodeClick = function (node, point) {
         filterGraph.selectedGraphNode = node
         if (node.id.indexOf("/resource/vocabulary/") > -1) {
-            /*  var html = " <span class='popupMenuItem' onclick='projection.graphActions.expandResourceConcepts();'> Expand concepts</span>" +
-                  " <span class='popupMenuItem' onclick='projection.graphActions.collapseResourceConcepts();'> Collapse concepts</span>" +
-                  " <span class='popupMenuItem' onclick='projection.graphActions.showLinked();'> show Relations</span>"
+            /*  var html = " <span class='popupMenuItem' onclick='Selection.graphActions.expandResourceConcepts();'> Expand concepts</span>" +
+                  " <span class='popupMenuItem' onclick='Selection.graphActions.collapseResourceConcepts();'> Collapse concepts</span>" +
+                  " <span class='popupMenuItem' onclick='Selection.graphActions.showLinked();'> show Relations</span>"
 
               $("#graphPopupDiv").html(html)*/
             point.x += $("#selectionDiv").width();
-            projection.graphActions.showPopup(point)
+            Selection.graphActions.showPopup(point)
 
         } else {
             var html = ""
-            html += "<span class='popupMenuItem' onclick='projection.graphActions.showResourceConcepts(\"" + node.id + "\");'> node concepts</span><br>"
-            html += "<span class='popupMenuItem' onclick='projection.graphActions.showResourceConceptsOfType(\"" + node.id + "\");'> node concepts ...</span><br>"
-            html += "<span class='popupMenuItem' onclick='projection.graphActions.showResourceConcepts(\"" + node.id + "\",true);'> node concepts and relations</span><br>"
+            html += "<span class='popupMenuItem' onclick='Selection.graphActions.showResourceConcepts(\"" + node.id + "\");'> node concepts</span><br>"
+            html += "<span class='popupMenuItem' onclick='Selection.graphActions.showResourceConceptsOfType(\"" + node.id + "\");'> node concepts ...</span><br>"
+            html += "<span class='popupMenuItem' onclick='Selection.graphActions.showResourceConcepts(\"" + node.id + "\",true);'> node concepts and relations</span><br>"
 
             $("#graphPopupDiv").html(html)
             point.x += $("#selectionDiv").width();
-            projection.graphActions.showPopup(point)
+            Selection.graphActions.showPopup(point)
 
         }
 
@@ -399,7 +399,7 @@ var paragraphs = (function () {
     self.sparql_getEntitiesParagraphs = function (idCorpus, conceptsIds, options, callback) {
 
         var totalConcepts = 0;
-        var slicedConceptsIds = common.sliceArray(conceptsIds, projection.sliceZize);
+        var slicedConceptsIds = common.sliceArray(conceptsIds, Selection.sliceZize);
         if (slicedConceptsIds.length == 0)
             slicedConceptsIds = [[]]
         var allResults = [];

@@ -91,7 +91,7 @@ var Concepts = (function () {
 
         })
     }
-    self.loadThesaurusTopConceptsTree = function () {
+    self.loadConceptsJsTree = function () {
         $("#currentConceptsSpan").html("");
         var jstreeData = [];
         var uniqueIds = []
@@ -200,7 +200,7 @@ var Concepts = (function () {
         var selectedConcepts = Concepts.currentConceptsSelection
         if (selectedConcepts.length == 0)
             return callback(null, []);
-        //  var slicedSelectedConcepts = common.sliceArray(selectedConcepts,  projection.sliceZize);
+        //  var slicedSelectedConcepts = common.sliceArray(selectedConcepts,  Selection.sliceZize);
         //   async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
         async.eachSeries(selectedConcepts, function (concepts, callbackEach) {
 
@@ -330,7 +330,7 @@ var Concepts = (function () {
 
     self.getSelectedConceptAncestors = function (conceptIds, options, callback) {
 
-        var slicedConceptIds = common.sliceArray(conceptIds, projection.sliceZize);
+        var slicedConceptIds = common.sliceArray(conceptIds, Selection.sliceZize);
         async.eachSeries(slicedConceptIds, function (concepts, callbackEach) {
 
             Concepts.sparql_getAncestors(concepts, function (err, result) {
@@ -421,7 +421,7 @@ var Concepts = (function () {
             options = {}
         }
         var allInfos = [];
-        var slices = common.sliceArray(conceptIds, projection.sliceZize)
+        var slices = common.sliceArray(conceptIds, Selection.sliceZize)
         async.eachSeries(slices, function (slice, callbackEach) {
 
             var conceptIdsStr = "";
@@ -520,7 +520,7 @@ var Concepts = (function () {
 
 
         if (obj.event.ctrlKey && self.currentConceptsSelection) {
-            projection.setConceptSelectedCBX(obj, "AND")
+            Selection.setConceptSelectedCBX(obj, "AND")
             self.currentConceptsSelection.push([obj.node.id]);
 
         } else {
@@ -528,7 +528,7 @@ var Concepts = (function () {
                 self.currentConceptsSelection = [[]];
             var xx = self.currentConceptsSelection[self.currentConceptsSelection.length - 1]
             self.currentConceptsSelection[self.currentConceptsSelection.length - 1].push(obj.node.id);
-            projection.setConceptSelectedCBX(obj, "OR")
+            Selection.setConceptSelectedCBX(obj, "OR")
         }
 
 
@@ -552,17 +552,7 @@ var Concepts = (function () {
 
     }
 
-    self.resetConceptsJstree = function (reload) {
-        $("#currentConceptsSpan").html("");
-        $("#graphDiv").html("");
-        $("#searchSelectedConceptsButton").css("display", "none")
-        $("#resetSelectedConceptsButton").css("display", "none")
-        $(".projection-item").css("display", "none")
-        self.currentConceptsSelection = null;
-        $("#jstreeConceptDiv").jstree(true).uncheck_all();
-        if (reload)
-            self.loadThesaurusTopConceptsTree()
-    }
+
 
 
     self.getAncestorsFromJstree = function (conceptId) {

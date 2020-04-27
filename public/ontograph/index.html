@@ -22,10 +22,10 @@
     <script src="js/cooccurrences.js"></script>
     <script src="js/paragraphs.js"></script>
     <script src="js/concepts.js"></script>
-    <script src="js/corpus.js"></script>
+    <script src="js/Corpus.js"></script>
     <script src="js/relations.js"></script>
 
-    <script src="js/projection.js"></script>
+    <script src="js/selection.js"></script>
     <script src="js/filterGraph.js"></script>
 
 
@@ -78,12 +78,12 @@
                     range: "min",
                     max: 5,
                     min: 0,
-                    //   slide: projection.onConceptAggrLevelSliderChange,
+                    //   slide: Selection.onConceptAggrLevelSliderChange,
                     change: filterGraph.onConceptAggrLevelSliderChange
 
                 });
-                corpus.showDomainsJstree();
-                Concepts.loadThesaurusTopConceptsTree();
+                Corpus.loadCorpusJsTree();
+                Concepts.loadConceptsJsTree();
 
 
                 $("#searchConceptInput").bind("keydown", function (e) {
@@ -93,7 +93,7 @@
 
                 $("#searchCorpusInput").bind("keydown", function (e) {
                     if (e.keyCode == 13)
-                        corpus.searchResources($('#searchConceptInput').val())
+                        Corpus.searchResources($('#searchConceptInput').val())
                 })
 
             }
@@ -207,13 +207,13 @@
             <span id="messageDiv"></span>
         </div>
         <div>
-            Selected Resources : <span class='currentConceptsSpan' id="currentConceptsSpan"></span>
+            Selected Resources : <span class='currentConceptsSpan' id="currentResourcesSpan"></span>
             <hr>
-          Selected Concepts: <span class='currentConceptsSpan' id="currentResourcesSpan"></span>
+          Selected Concepts: <span class='currentConceptsSpan' id="currentConceptsSpan"></span>
 
             <div style="display: flex">
-                <button id='searchSelectedConceptsButton' style='display: none;' onclick='projection.displayParagraphsGraph()'>Graph</button>
-                <button id='resetSelectedConceptsButton' style='display: none;' onclick='Concepts.resetConceptsJstree()'>X</button>
+                <button id='searchSelectedConceptsButton' style='display: none;' onclick='Selection.displayParagraphsGraph()'>Graph</button>
+                <button id='resetSelectedConceptsButton' style='display: none;' onclick='Selection.resetSelection()'>X</button>
             </div>
         </div>
 
@@ -233,8 +233,8 @@
             <h3><span class="title">Corpus </span><span class='currentConceptsSpan' id="currentCorpusSpan"></span></h3>
             <div style="margin:5px">
                 <div><input size="15" id="searchCorpusInput" value="">
-                    <button onclick="corpus.searchResources($('#searchCorpusInput').val())">Search</button>
-                    <button onclick="corpus.resetSelection()">Reset</button>
+                    <button onclick="Corpus.searchResources($('#searchCorpusInput').val())">Search</button>
+                    <button onclick="Corpus.resetSelection()">Reset</button>
                 </div>
                 <div id="jstreeCorpusDiv" style="width:100%;height: 400px;overflow: auto"></div>
 
@@ -307,11 +307,11 @@
                 <option>ShowCooccurrences</option>
 
             </select>
-            <select id="filterGraphScopeSelect">
+         <!--   <select id="filterGraphScopeSelect">
                 <option></option>
                 <option>SelectedNode</option>
                 <option selected="selected">AllNodes</option>
-            </select>
+            </select>-->
 
 
             <div>

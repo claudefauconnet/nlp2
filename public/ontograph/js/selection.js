@@ -1,4 +1,4 @@
-var projection = (function () {
+var Selection = (function () {
 
     var self = {};
 
@@ -58,7 +58,7 @@ var projection = (function () {
                     if (corpusIds)
                         idCorpus = corpusIds;
                     else
-                        idCorpus = corpus.getSelectedResource();
+                        idCorpus = Corpus.getSelectedResource();
                     callbackSeries();
                 },
                 //getParagraphs
@@ -131,7 +131,7 @@ var projection = (function () {
                 function (callbackSeries) {
                     common.message("Drawing graph : " + allParagraphs.length + "relations")
                     //  paragraphs.drawParagraphsEntitiesGraph(allParagraphs, paragraphsInfos, {
-                    self.currentProjection = {
+                    self.currentSelection = {
                         paragraphs: allParagraphs,
                         conceptsInfos: allConceptsInfosMap,
                     }
@@ -153,41 +153,7 @@ var projection = (function () {
 
     }
 
- /*   self.filterGraph = function () {
-        var allConcepts = [];
-        async.series([
 
-
-            //getDescendants
-            function (callbackSeries) {
-                Concepts.getSelectedConceptDescendants(function (err, concepts) {
-                    if (err)
-                        return callbackSeries(err);
-                    allConcepts = concepts;
-
-
-                    callbackSeries();
-                })
-
-            },
-
-            //hide selectedNodes in graph
-            function (callbackSeries) {
-                var existingNodeIds = visjsGraph.data.nodes.getIds();
-                var newNodes = []
-                allConcepts.forEach(function (itemId) {
-                    var p = existingNodeIds.indexOf(itemId)
-                    if (p > -1)
-                        newNodes.push({id: itemId, hidden: true})
-                })
-                visjsGraph.data.nodes.update(newNodes)
-                callbackSeries();
-
-            }], function (err) {
-            if (err)
-                common.message(err)
-        })
-    }*/
 
     self.graphActions = {
 
@@ -209,6 +175,24 @@ var projection = (function () {
         showResourceConceptsOfType:function(){
 
         }
+    }
+
+    self.resetSelection = function (reload) {
+        $("#messageDiv").html("");
+        $("#currentConceptsSpan").html("");
+        $("#currentResourcesSpan").html("");
+        $("#graphDiv").html("");
+        $("#searchSelectedConceptsButton").css("display", "none")
+        $("#resetSelectedConceptsButton").css("display", "none")
+        $(".projection-item").css("display", "none")
+        self.currentConceptsSelection = null;
+        $("#jstreeConceptDiv").jstree(true).uncheck_all();
+        $("#jstreeCorpusDiv").jstree(true).uncheck_all();
+        if (reload) {
+            Concepts.loadConceptsJsTree();
+            Corpus.loadCorpusJsTree();
+        }
+
     }
 
 
@@ -266,14 +250,6 @@ var projection = (function () {
     }
     self.setConceptSelectedCBX = function (obj, bool) {
 
-        var text = $("#currentConceptsSpan").html();
-
-      //  var selectHtml="<select id=
-
-
-
-        if (text != "")
-            text += "<br><span style='font-size: 12px;font-weight: bold;' title='" + tooltip + "'> &nbsp;" + bool + "&nbsp;</span> "
         var tooltip = ""
         var nodeLabel= obj.node.text;
         obj.node.parents.forEach(function (parent, index) {
@@ -293,12 +269,19 @@ var projection = (function () {
 
 
         if (obj.node.id.indexOf("/vocabulary/") <0) {
+            var text = $("#currentResourcesSpan").html();
+            if (text != "")
+                text += "<br><span style='font-size: 12px;font-weight: bold;' title='" + tooltip + "'> &nbsp;" + bool + "&nbsp;</span> "
             text += "<span style='font-size: 12px' title='" + tooltip + "'>" +tooltip+"/"+nodeLabel + "</span>"
-            $("#currentConceptsSpan").html(text);
+            $("#currentResourcesSpan").html(text);
 
         }else {
+            var text = $("#currentConceptsSpan").html();
+            if (text != "")
+                text += "<br><span style='font-size: 12px;font-weight: bold;' title='" + tooltip + "'> &nbsp;" + bool + "&nbsp;</span> "
             text += "<span style='font-size: 12px' title='" + tooltip + "'>" +nodeLabel + "</span>"
-            $("#currentResourcesSpan").html(text);
+
+            $("#currentConceptsSpan").html(text);
         }
 
 

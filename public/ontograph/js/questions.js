@@ -163,7 +163,7 @@ var Questions = (function () {
                 })
                 $("#question_matchingTokensDiv").html(html)
                 self.previousConceptsFilter=null;
-                projection.displayParagraphsGraph(null, paragraphIds, matchingConceptIds)
+                Selection.displayParagraphsGraph(null, paragraphIds, matchingConceptIds)
             $("#corpusAggrLevelSelect").val("paragraph")
 
                 return callbackSeries();

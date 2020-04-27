@@ -102,7 +102,7 @@ var cooccurrences = (function () {
 
         var allResults = []
         var allDescendantConcepts = [];
-        var idCorpus=corpus.getSelectedResource();
+        var idCorpus=Corpus.getSelectedResource();
         async.series([
 
 

@@ -1,11 +1,11 @@
-var corpus = (function () {
+var Corpus = (function () {
         var self = {};
 
         self.searchResources = function (word) {
             self.showJstreeResources(word, null, null, 6);
 
         }
-        self.showDomainsJstree = function () {
+        self.loadCorpusJsTree = function () {
             self.showJstreeResources(null, null, "Domain", 2);
         }
 
@@ -84,9 +84,9 @@ var corpus = (function () {
                             three_state: false,
                             cascade: "undetermined",
                             selectNodeFn: function (evt, obj) {
-                                corpus.onJstreeSelectNode(evt, obj);
+                                Corpus.onJstreeSelectNode(evt, obj);
                             }, onCheckNodeFn: function (evt, obj) {
-                                corpus.onNodeChecked(evt, obj);
+                                Corpus.onNodeChecked(evt, obj);
                             },
 
                         })
@@ -172,13 +172,13 @@ var corpus = (function () {
 
         self.resetSelection = function () {
             $("#currentCorpusSpan").html("");
-            self.showDomainsJstree();
+            self.loadCorpusJsTree();
 
         }
 
         self.onNodeChecked = function (evt, obj) {
             if (obj.event.ctrlKey && self.currentConceptsSelection) {
-                projection.setConceptSelectedCBX(obj, "AND")
+                Selection.setConceptSelectedCBX(obj, "AND")
                 self.currentConceptsSelection.push([obj.node.id]);
 
             } else {
@@ -186,7 +186,7 @@ var corpus = (function () {
                     self.currentConceptsSelection = [[]];
                 var xx = self.currentConceptsSelection[self.currentConceptsSelection.length - 1]
                 self.currentConceptsSelection[self.currentConceptsSelection.length - 1].push(obj.node.id);
-                projection.setConceptSelectedCBX(obj, "OR")
+                Selection.setConceptSelectedCBX(obj, "OR")
             }
         }
 
