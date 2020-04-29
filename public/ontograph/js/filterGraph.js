@@ -89,6 +89,7 @@ var filterGraph = (function () {
         var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
         var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
         self.resetUI();
+        return;
         paragraphs.drawParagraphsEntitiesGraphAggr(Selection.currentSelection.paragraphs, Selection.currentSelection.conceptsInfos, {
             conceptLevelAggr: conceptLevelAggr,
             corpusLevelAggr: corpusLevelAggr
@@ -143,32 +144,34 @@ var filterGraph = (function () {
             var corpusAggrLevel = $("#corpusAggrLevelSelect").val()
             var resourceIdStr = ""
             var paragraphs = Selection.currentSelection.paragraphs;
+
+            paragraphs.slice(0,15)
             paragraphs.forEach(function (paragraph, index) {
                 // resourceIds.forEach(function (node, index) {
                 if (index > 0)
                     resourceIdStr += ","
-                resourceIdStr += "<" + paragraph.paragraph.value + ">";
+                resourceIdStr += "<" + paragraph[corpusAggrLevel].value + ">";
 
             })
 
-            query += "filter (?paragraph in (" + resourceIdStr + ")) "
+        //    query + "filter (?resource in (" + resourceIdStr + ")) "
             if (corpusAggrLevel == "paragraph") {
-                query += " ?paragraph skos:broader ?chapter . ?chapter skos:broader ?resource ."
+                query += " ?paragraph skos:broader ?chapter . ?chapter skos:broader ?resource ."+ "filter (?resource in (" + resourceIdStr + ")) "
                 linkedResourceQuery += " OPTIONAL {?linkedResource   terms:subject ?entity. "
             } else if (corpusAggrLevel == "chapter") {
-                query += " ?paragraph skos:broader ?resource .";
+                query += " ?paragraph skos:broader ?resource ."+ "filter (?resource in (" + resourceIdStr + ")) "
                 linkedResourceQuery += " OPTIONAL {?otherResource   terms:subject ?entity. ?otherResource skos:broader ?linkedResource."
             } else if (corpusAggrLevel == "document") {
-                query += " ?paragraph skos:broader ?chapter . ?chapter skos:broader ?resource ."
+                query += " ?paragraph skos:broader ?chapter . ?chapter skos:broader ?resource ."+ "filter (?resource in (" + resourceIdStr + ")) "
                 linkedResourceQuery += " OPTIONAL {?otherResource   terms:subject ?entity. ?otherResource skos:broader ?chapter.  ?chapter skos:broader ?linkedResource."
             } else if (corpusAggrLevel == "documentType") {
-                query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document . ?document skos:broader ?resource ."
+                query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document . ?document skos:broader ?resource ."+ "filter (?resource in (" + resourceIdStr + ")) "
                 linkedResourceQuery += " OPTIONAL {?otherResource   terms:subject ?entity. ?otherResource skos:broader ?chapter.  ?chapter skos:broader ?document. ?document skos:broader ?linkedResource."
             } else if (corpusAggrLevel == "branch") {
-                query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document .?document skos:broader ?documentType . ?documentType skos:broader ?resource ."
+                query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document .?document skos:broader ?documentType . ?documentType skos:broader ?resource ."+ "filter (?resource in (" + resourceIdStr + ")) "
                 linkedResourceQuery += " OPTIONAL {?otherResource   terms:subject ?entity. ?otherResource skos:broader ?chapter.  ?chapter skos:broader ?document. ?document skos:broader ?documentType. ?documentType skos:broader ?linkedResource."
             } else if (corpusAggrLevel == "domain") {
-                query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document .?document skos:broader ?documentType . ?documentType skos:broader ?branch . ?branch skos:broader ?resource ."
+                query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document .?document skos:broader ?documentType . ?documentType skos:broader ?branch . ?branch skos:broader ?resource ."+ "filter (?resource in (" + resourceIdStr + ")) "
                 linkedResourceQuery += " OPTIONAL {?otherResource   terms:subject ?entity. ?otherResource skos:broader ?chapter.  ?chapter skos:broader ?document. ?document skos:broader ?documentType. ?documentType skos:broader ?branch. ?branch skos:broader ?linkedResource."
             } else
                 return;
@@ -189,11 +192,11 @@ var filterGraph = (function () {
                 linkedResourceQuery += "filter (?linkedResource in(" + otherResources + ")) }"
                 query += "     " + linkedResourceQuery
             }
-            query += "} limit 5000 "
+            query += "} limit 20000 "
 
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
 
-            console.log(query)
+       //     console.log(query)
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err) {
                     console.log(query)
@@ -286,6 +289,7 @@ var filterGraph = (function () {
                         if (!node.data.ancestors)
                             return;
                         if (showJstree) {
+
                             node.data.ancestors.forEach(function (ancestor, index) {
                                 if (!jstreeMap[ancestor.id]) {
                                     var parent = "#"
@@ -305,12 +309,21 @@ var filterGraph = (function () {
 
                     })
 
+
                     if (showJstree) {
 
                         var jstreeData = [];
                         for (var key in jstreeMap) {
                             jstreeData.push(jstreeMap[key])
                         }
+                        jstreeData.sort(function(a,b){
+                            if(a.text>b.text)
+                                return 1;
+                            if(a.text<b.text)
+                                return -1;
+                            return 0;
+                        })
+
                         common.loadJsTree("jstreeFilterConceptsDiv", jstreeData, {
                             withCheckboxes: 1,
                             openAll: true,
@@ -370,12 +383,12 @@ var filterGraph = (function () {
 
             self.addedConceptsVisjData.nodes.forEach(function (visjsNode) {
                 if (jstreeSelectedNodes.indexOf(visjsNode.id) > -1) {
-                    if(nodeIdsToShow.indexOf(visjsNode.id) < 0){
-                    if (event.type == "uncheck_node" || visjsExistingNodeIds.indexOf(visjsNode.id) < 0 ) {
-                        nodeIdsToShow.push(visjsNode.id)
-                        visjsNode.hidden == false;
-                        nodesToShow.push(visjsNode)
-                    }
+                    if (nodeIdsToShow.indexOf(visjsNode.id) < 0) {
+                        if (event.type == "uncheck_node" || visjsExistingNodeIds.indexOf(visjsNode.id) < 0) {
+                            nodeIdsToShow.push(visjsNode.id)
+                            visjsNode.hidden == false;
+                            nodesToShow.push(visjsNode)
+                        }
                     }
 
                 }
@@ -383,7 +396,7 @@ var filterGraph = (function () {
             self.addedConceptsVisjData.edges.forEach(function (visjsEdge) {
                 jstreeSelectedNodes.forEach(function (jstreeNodeId) {
                     if (visjsEdge.id.indexOf(visjsEdge.id) > -1) {
-                        if(edgeIdsToShow.indexOf(visjsEdge.id) < 0) {
+                        if (edgeIdsToShow.indexOf(visjsEdge.id) < 0) {
                             if (event.type == "uncheck_node" || visjsExistingEdgeIds.indexOf(visjsEdge.id) < 0) {
 
                                 edgeIdsToShow.push(visjsEdge.id)
@@ -562,8 +575,82 @@ var filterGraph = (function () {
 
             ontograph.drawGraph(visjsData, {addToGraph: 1})
 
+        },
+
+
+        ShowCooccurrences: function () {
+            var existingNodes = visjsGraph.data.nodes.get();
+            var existingEdges = visjsGraph.data.edges.get();
+            var existingNodeIds = visjsGraph.data.nodes.getIds();
+            var existingEdgeIds = visjsGraph.data.edges.getIds();
+
+          var  existingNodesMap={}
+            existingNodes.forEach(function(node){
+                existingNodesMap[node.id]=node
+            })
+
+            var newNodes = [];
+            var newNodeIds = [];
+            var newNodesMap = {};
+            var newEdges = [];
+            var newEdgeIds = [];
+            existingEdges.forEach(function (edge) {
+                var paragraph;
+                var concept;
+                if (edge.from.indexOf("vocabulary") && edge.to.indexOf("vocabulary") < 0) {
+                    paragraph = edge.to;
+                    concept = edge.from;
+                } else if (edge.to.indexOf("vocabulary") && edge.from.indexOf("vocabulary") < 0) {
+                    paragraph = edge.to;
+                    concept = edge.from;
+                } else
+                    return;
+
+                if (!newNodesMap[paragraph]) {
+                    newNodesMap[paragraph] = { concepts: {}}
+                }
+                if (!newNodesMap[paragraph].concepts[concept])
+                    newNodesMap[paragraph].concepts[concept] = 0;
+                newNodesMap[paragraph].concepts[concept] += 1;
+
+
+            })
+
+            for(var key in   newNodesMap){
+                var concepts=newNodesMap[key].concepts;
+                for(var concept1 in concepts) {
+                    if(newNodeIds.indexOf(concept1)<0){
+                        newNodeIds.push(concept1)
+                        newNodes.push(existingNodesMap[concept1])
+
+                    }
+                    for(var concept2 in concepts) {
+                        if (concept2 != concept1) {
+                            var edgeId = concept1 + "_" + concept2;
+
+                            if (newEdgeIds.indexOf(edgeId) < 0) {
+                                if (newEdgeIds.indexOf(concept2 + "_" + concept1) < 0)
+                                    newNodeIds.push(edgeId)
+                                newEdges.push({
+                                    id: edgeId,
+                                    from: concept1,
+                                    to: concept2,
+                                    value: 3
+
+
+                                })
+                            }
+                        }
+                    }
+                }
+            }
+           var  visjsData={nodes:newNodes,edges:newEdges};
+
+            ontograph.drawGraph(visjsData)
+
         }
     }
+
 
     return self;
 

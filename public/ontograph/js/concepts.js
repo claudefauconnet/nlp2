@@ -190,79 +190,81 @@ var Concepts = (function () {
     }
 
 
-    self.getSelectedConceptDescendants = function (callback) {
-        if (!Concepts.currentConceptsSelection)
+    self.getSelectedConceptDescendants = function (options,callback) {
+        var conceptsSelected = Concepts.currentConceptsSelection
+        if (!conceptsSelected || conceptsSelected.length==0)
             return callback(null, [])
-        var selectedConcepts = null;
-        var allDescendantConcepts = [];
-        var conceptsSets = [];
-        //  var selectedConcepts = $("#jstreeConceptDiv").jstree(true).get_checked()
-        var selectedConcepts = Concepts.currentConceptsSelection
-        if (selectedConcepts.length == 0)
-            return callback(null, []);
-        //  var slicedSelectedConcepts = common.sliceArray(selectedConcepts,  Selection.sliceZize);
-        //   async.eachSeries(slicedSelectedConcepts, function (concepts, callbackEach) {
-        async.eachSeries(selectedConcepts, function (concepts, callbackEach) {
 
-            Concepts.sparql_geConceptDescendants(concepts, function (err, result) {
+        var conceptsSets = [];
+
+
+
+        async.eachSeries(conceptsSelected, function (conceptSet, callbackEach) {//
+
+            Concepts.sparql_geConceptDescendants(conceptSet, options,function (err, result) {
                 if (err)
                     return callbackEach(err);
-                //   allDescendantConcepts = allDescendantConcepts.concat(result);
                 conceptsSets.push(result)
                 callbackEach();
             })
         }, function (err) {
             callback(err, conceptsSets);
-            // Concepts.currentSelectedConcepts = allDescendantConcepts;
-            //    callback(err, allDescendantConcepts);
+
 
         })
     }
 
-    self.sparql_geConceptDescendants = function (conceptIds, callback) {
+    self.sparql_geConceptDescendants = function (conceptSet, options,callback) {
 
-        if (!Array.isArray(conceptIds))
-            conceptIds = [conceptIds]
-        var depth = 7;
-        var defaultIri = "http://data.total.com/resource/thesaurus/ctg/"
-        defaultIri = ""
-        var url = sparql.source.sparql_url + "?default-graph-uri=" + defaultIri + "&query=";// + query + queryOptions
+        if (!Array.isArray(conceptSet))
+            conceptSet = [conceptSet]
 
+
+// in concept set concat id in filter concept
         var conceptIdsStr = ""
-        conceptIds.forEach(function (id, index) {
+        var thesaurusLevel=0;
+        conceptSet.forEach(function (concept, index) {
+            thesaurusLevel=Math.max(thesaurusLevel,concept.level)
             if (index > 0)
                 conceptIdsStr += ","
-            conceptIdsStr += "<" + id + ">"
+            conceptIdsStr += "<" + concept.id + ">"
         })
 
 
+
         var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
-            "select distinct * " +
-            "where{ ?child1 skos:broader ?concept."
-            + "filter (?concept in(" + conceptIdsStr + "))"
+            "select distinct *" + //+"?concept" + thesaurusLevel+
+            " where{ ?concept"+ thesaurusLevel+" skos:prefLabel ?conceptLabel."
+            + "filter (?concept"+thesaurusLevel+" in(" + conceptIdsStr + "))"
 
 
-        for (var i = 1; i < depth; i++) {
 
-            query += "OPTIONAL { ?child" + (i + 1) + " skos:broader ?child" + i + "."
+
+
+        for (var i = thesaurusLevel; i < 7; i++) {
+
+            query += " OPTIONAL{ ?concept" + (i + 1) + " skos:broader ?concept"+i+". "
 
         }
-        for (var i = 1; i < depth; i++) {
+        for (var i = thesaurusLevel; i < 7; i++) {
             query += "}"
         }
         query += "  }";
         query += "limit 1000 "
+
+
+        var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
                 return common.message(err)
             }
 
-            var descendantsIds = conceptIds;
-            var uniqueIds = []
+            var descendantsIds = [];
+
             result.results.bindings.forEach(function (item) {
                 for (var i = 1; i < 7; i++) {
-                    var concept = item["child" + i]
+                    var concept = item["concept" + i]
                     if (typeof concept !== "undefined") {
                         if (descendantsIds.indexOf(concept.value) < 0) {
                             descendantsIds.push(concept.value);
@@ -271,7 +273,7 @@ var Concepts = (function () {
                 }
 
             })
-            callback(null, descendantsIds)
+            callback(null, {ids:descendantsIds,thesaurusLevel:thesaurusLevel})
         })
     }
 
@@ -289,13 +291,13 @@ var Concepts = (function () {
             + "?child1 skos:prefLabel ?childLabel1 ."
 
 
-        for (var i = 1; i < depth; i++) {
+        for (var i = 1; i < 7; i++) {
 
             query += "OPTIONAL { ?child" + (i + 1) + " skos:broader ?child" + i + "." +
                 "?child" + (i + 1) + " skos:prefLabel ?childLabel" + (i + 1) + "." +
                 "filter( lang(?childLabel" + (i + 1) + ")=\"en\")"
         }
-        for (var i = 1; i < depth; i++) {
+        for (var i = 1; i < 7; i++) {
             query += "}"
         }
         query += "  }ORDER BY ?childLabel1 ";
@@ -517,17 +519,17 @@ var Concepts = (function () {
 
 
     self.onNodeChecked = function (evt, obj) {
-
+var level=obj.node.parents.length-1;
 
         if (obj.event.ctrlKey && self.currentConceptsSelection) {
             Selection.setConceptSelectedCBX(obj, "AND")
-            self.currentConceptsSelection.push([obj.node.id]);
+            self.currentConceptsSelection.push([{id:obj.node.id,level:level}]);
 
         } else {
             if (!self.currentConceptsSelection)
                 self.currentConceptsSelection = [[]];
-            var xx = self.currentConceptsSelection[self.currentConceptsSelection.length - 1]
-            self.currentConceptsSelection[self.currentConceptsSelection.length - 1].push(obj.node.id);
+
+            self.currentConceptsSelection[self.currentConceptsSelection.length - 1].push({id:obj.node.id,level:level});
             Selection.setConceptSelectedCBX(obj, "OR")
         }
 

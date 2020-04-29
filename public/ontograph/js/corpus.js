@@ -177,15 +177,16 @@ var Corpus = (function () {
         }
 
         self.onNodeChecked = function (evt, obj) {
-            if (obj.event.ctrlKey && self.currentConceptsSelection) {
+
+            if (obj.event.ctrlKey && self.currentCorpusSelection) {
                 Selection.setConceptSelectedCBX(obj, "AND")
-                self.currentConceptsSelection.push([obj.node.id]);
+                self.currentCorpusSelection.push([obj.node.id]);
 
             } else {
-                if (!self.currentConceptsSelection)
-                    self.currentConceptsSelection = [[]];
-                var xx = self.currentConceptsSelection[self.currentConceptsSelection.length - 1]
-                self.currentConceptsSelection[self.currentConceptsSelection.length - 1].push(obj.node.id);
+                if (!self.currentCorpusSelection)
+                    self.currentCorpusSelection = [[]];
+                var xx = self.currentCorpusSelection[self.currentCorpusSelection.length - 1]
+                self.currentCorpusSelection[self.currentCorpusSelection.length - 1].push(obj.node.id);
                 Selection.setConceptSelectedCBX(obj, "OR")
             }
         }

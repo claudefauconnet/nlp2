@@ -22,7 +22,7 @@
     <script src="js/cooccurrences.js"></script>
     <script src="js/paragraphs.js"></script>
     <script src="js/concepts.js"></script>
-    <script src="js/Corpus.js"></script>
+    <script src="js/corpus.js"></script>
     <script src="js/relations.js"></script>
 
     <script src="js/selection.js"></script>
@@ -74,12 +74,19 @@
 
                 $("#accordion").accordion();
                 $("#accordion").accordion("option", {active: 1});
+                var handle = $( "#custom-handle" );
                 $("#conceptAggrLevelSlider").slider({
                     range: "min",
-                    max: 5,
-                    min: 0,
+                    max: 7,
+                    min: 1,
                     //   slide: Selection.onConceptAggrLevelSliderChange,
-                    change: filterGraph.onConceptAggrLevelSliderChange
+                  //  change: filterGraph.onConceptAggrLevelSliderChange,
+                    create: function() {
+                        handle.text( $( this ).slider( "value" ) );
+                    },
+                    slide: function( event, ui ) {
+                        handle.text( ui.value );
+                    }
 
                 });
                 Corpus.loadCorpusJsTree();
@@ -160,6 +167,14 @@
         td {
             font-size: 11px;
         }
+        #custom-handle {
+            width: 3em;
+            height: 1.6em;
+            top: 50%;
+            margin-top: -.8em;
+            text-align: center;
+            line-height: 1.6em;
+        }
 
 
         .entity-cell {
@@ -207,14 +222,29 @@
             <span id="messageDiv"></span>
         </div>
         <div>
-            Selected Resources : <span class='currentConceptsSpan' id="currentResourcesSpan"></span>
-            <hr>
-          Selected Concepts: <span class='currentConceptsSpan' id="currentConceptsSpan"></span>
-
-            <div style="display: flex">
-                <button id='searchSelectedConceptsButton' style='display: none;' onclick='Selection.displayParagraphsGraph()'>Graph</button>
-                <button id='resetSelectedConceptsButton' style='display: none;' onclick='Selection.resetSelection()'>X</button>
+            <div style="border: solid;border-width: 1px;border-radius: 3px;margin:3px">
+                Selected Resources : <span class='currentConceptsSpan' id="currentResourcesSpan"></span>
+                <br>
+                Level <select style="margin:10px;" onChange="filterGraph.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
+                <option></option>
+                <option>paragraph</option>
+                <option>chapter</option>
+                <option selected="selected">document</option>
+                <option>documentType</option>
+                <option>branch</option>
+                <option>domain</option>
+            </select>
             </div>
+            <div style="border: solid;border-width: 1px;border-radius: 3px;margin:3px">
+                Selected Concepts: <span class='currentConceptsSpan' id="currentConceptsSpan"></span>
+                <br>
+                Level
+                <div id="conceptAggrLevelSlider" style="margin:10px;width:200px"> <div id="custom-handle" class="ui-slider-handle"></div></div>
+            </div>
+        </div>
+        <div style="border: solid;border-width: 1px;border-radius: 3px;background-color:#bdbdbd;display: flex">
+            <button id='searchSelectedConceptsButton' style='display: none;' onclick='Selection.displayParagraphsGraph()'>Graph</button>
+            <button id='resetSelectedConceptsButton' style='display: none;' onclick='Selection.resetSelection()'>X</button>
         </div>
 
 
@@ -269,49 +299,36 @@
     <div id="projectionDiv" style="width:25%;border-style: solid;padding: 3px;margin: 3px">
 
 
-            <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
-              <div class="title"> Corpus</div>
+        <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
+            <div class="title"> Corpus</div>
 
 
-                Aggregate <select style="margin:10px;" onChange="filterGraph.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
+            Show
+            <select id="filterGraphResourceSelect" onchange="filterGraph.onShowResources($(this).val())">
                 <option></option>
-                <option>paragraph</option>
-                <option>chapter</option>
-                <option selected="selected">document</option>
-                <option>documentType</option>
-                <option>branch</option>
-                <option>domain</option>
+                <option>ShowParents</option>
             </select>
-                <hr/>
-                Show
-                <select id="filterGraphResourceSelect" onchange="filterGraph.onShowResources($(this).val())">
-                    <option></option>
-                    <option>ShowParents</option>
-                </select>
 
         </div>
         <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
             <div class="title"> Concepts</div>
 
-            <div>
-                Aggregate
-                <div id="conceptAggrLevelSlider" style="margin:10px;width:150px"></div>
-            </div>
+
             <hr/>
             Show
             <select id="filterGraphConceptSelect" onchange="filterGraph.onShowConcept($(this).val())">
                 <option></option>
                 <option>ShowParents</option>
-            <!--    <option>ShowAllAssociatedConcepts</option>-->
+                <!--    <option>ShowAllAssociatedConcepts</option>-->
                 <option>ListAssociatedConcepts</option>
                 <option>ShowCooccurrences</option>
 
             </select>
-         <!--   <select id="filterGraphScopeSelect">
-                <option></option>
-                <option>SelectedNode</option>
-                <option selected="selected">AllNodes</option>
-            </select>-->
+            <!--   <select id="filterGraphScopeSelect">
+                   <option></option>
+                   <option>SelectedNode</option>
+                   <option selected="selected">AllNodes</option>
+               </select>-->
 
 
             <div>

@@ -13,6 +13,8 @@ var Selection = (function () {
     self.displayParagraphsGraph = function (booleanQuery, corpusIds, conceptIds) {
         var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
         var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
+        if(conceptLevelAggr=="0")
+            conceptLevelAggr="1";
 
 
         options = {
@@ -27,7 +29,7 @@ var Selection = (function () {
         var selectedConcepts = []
         //  var conceptAncestorsMap = {}
         //  var corpusAncestorsMap = {}
-        var allConceptsMap = {}
+        var conceptsSets = {}
         var allParagraphs = [];
         var allConceptsInfosMap = {};
         var idCorpus = null;
@@ -40,13 +42,13 @@ var Selection = (function () {
                 function (callbackSeries) {
                     //    return callbackSeries();
                     if (conceptIds) {
-                        allConceptsMap = conceptIds;
+                        conceptsSets = conceptIds;
                         return callbackSeries();
                     }
-                    Concepts.getSelectedConceptDescendants(function (err, concepts) {
+                    Concepts.getSelectedConceptDescendants({depth:conceptLevelAggr}, function (err, concepts) {
                         if (err)
                             return callbackSeries(err);
-                        allConceptsMap = concepts;
+                        conceptsSets = concepts;
 
 
                         callbackSeries();
@@ -65,7 +67,7 @@ var Selection = (function () {
                 function (callbackSeries) {
                     options.conceptsSets = true;
                     common.message("Searching resources ... ")
-                    paragraphs.sparql_getEntitiesParagraphs(idCorpus, allConceptsMap, options, function (err, result) {
+                    paragraphs.sparql_getEntitiesParagraphs(idCorpus, conceptsSets, options, function (err, result) {
                         //  paragraphs.sparql_getEntitiesParagraphs(idCorpus, selectedConcepts,  ConceptsDepth, options, function (err, result) {
                         if (err)
                             return callbackSeries(err);
@@ -135,9 +137,14 @@ var Selection = (function () {
                         paragraphs: allParagraphs,
                         conceptsInfos: allConceptsInfosMap,
                     }
-
-                    paragraphs.drawParagraphsEntitiesGraphAggr(allParagraphs, allConceptsInfosMap, options)
+                    callbackSeries();
+                    paragraphs.drawParagraphsEntitiesGraphSimple(allParagraphs, allConceptsInfosMap, options)
+                    //paragraphs.drawParagraphsEntitiesGraphAggr(allParagraphs, allConceptsInfosMap, options)
                     $(".projection-item").css("display", "block")
+
+                }
+                ,function(callbackSeries){
+                    filterGraph.alterGraph.addConceptsToGraph(null, true, true);
                     callbackSeries();
                 }
 
