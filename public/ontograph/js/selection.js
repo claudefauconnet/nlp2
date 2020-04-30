@@ -137,10 +137,11 @@ var Selection = (function () {
                         paragraphs: allParagraphs,
                         conceptsInfos: allConceptsInfosMap,
                     }
-                    callbackSeries();
+
                     paragraphs.drawParagraphsEntitiesGraphSimple(allParagraphs, allConceptsInfosMap, options)
                     //paragraphs.drawParagraphsEntitiesGraphAggr(allParagraphs, allConceptsInfosMap, options)
                     $(".projection-item").css("display", "block")
+                    callbackSeries();
 
                 }
                 ,function(callbackSeries){

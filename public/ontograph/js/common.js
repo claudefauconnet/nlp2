@@ -20,7 +20,10 @@ var common = (function () {
 
     }
 
-    self.message = function (str) {
+    self.message = function (str,append) {
+        if(append){
+            str= $("#messageDiv").html()+str
+        }
         $("#messageDiv").html(str);
 
     }

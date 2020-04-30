@@ -613,7 +613,7 @@ var paragraphs = (function () {
 
             distinctSelectStr +=  "?domain ?domainLabel"+"?branch ?branchLabel"+ " ?documentType ?documentTypeLabel"+" ?document ?documentLabel"+" ?chapter ?chapterLabel"
         } else if (options.corpusLevelAggr == "paragraph") {//(idCorpus[0].indexOf("/Paragraph/") > -1 || idCorpus[0].indexOf("/Paragraph/") > -1) {
-            distinctSelectStr += + "?domain ?domainLabel"+" ?branch ?branchLabel"+ " ?documentType ?documentTypeLabel"+" ?document ?documentLabel"+" ?chapter ?chapterLabel"+"?paragraph "
+            distinctSelectStr += "?domain ?domainLabel"+" ?branch ?branchLabel"+ " ?documentType ?documentTypeLabel"+" ?document ?documentLabel"+" ?chapter ?chapterLabel"+" ?paragraph "
         }
         if (idCorpus) {
             var corpusIdsStr = "";
@@ -673,6 +673,9 @@ var paragraphs = (function () {
                     if (entityIdsStr.length > 0)
                         whereConceptQuery += " filter (?entity" + indexSet + " in(" + entityIdsStr + "))"
                 }
+
+
+                distinctSelectStr+= " ?entity"+indexSet+" ";
                 /*   var i;
                    for(var i=indexSet;i<=options.conceptLevelAggr;i++){
 
@@ -684,7 +687,9 @@ var paragraphs = (function () {
             })
 
 
-            distinctSelectStr = " * "
+          //  distinctSelectStr = " * "
+
+
 
             self.previousWhereConceptQuery = whereConceptQuery
         }
@@ -697,6 +702,7 @@ var paragraphs = (function () {
             "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
 
             "        select distinct " + distinctSelectStr + " where {" + whereCorpusQuery + whereConceptQuery + "}"
+        query+="GROUP BY "+distinctSelectStr;
 
         query += " limit " + self.sparql_limit
 

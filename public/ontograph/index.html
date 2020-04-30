@@ -67,25 +67,30 @@
             } else {
                 $("#selectionDiv").height($(window).height() - 50)
                 $("#displayDiv").height($(window).height() - 50)
+                $("#displayDiv").width($(window).width() - $("#selectionDiv").width());
                 $("#projectionDiv").height($(window).height() - 50)
                 $("#graphDiv").height($(window).height() - 250);
 
                 $("#graphDiv").width($("#displayDiv").width())
 
+
+                $("#lefTabs").tabs()
+
+
                 $("#accordion").accordion();
                 $("#accordion").accordion("option", {active: 1});
-                var handle = $( "#custom-handle" );
+                var handle = $("#custom-handle");
                 $("#conceptAggrLevelSlider").slider({
                     range: "min",
                     max: 7,
                     min: 1,
                     //   slide: Selection.onConceptAggrLevelSliderChange,
-                  //  change: filterGraph.onConceptAggrLevelSliderChange,
-                    create: function() {
-                        handle.text( $( this ).slider( "value" ) );
+                    //  change: filterGraph.onConceptAggrLevelSliderChange,
+                    create: function () {
+                        handle.text($(this).slider("value"));
                     },
-                    slide: function( event, ui ) {
-                        handle.text( ui.value );
+                    slide: function (event, ui) {
+                        handle.text(ui.value);
                     }
 
                 });
@@ -167,6 +172,7 @@
         td {
             font-size: 11px;
         }
+
         #custom-handle {
             width: 3em;
             height: 1.6em;
@@ -216,15 +222,120 @@
 <div id="main" style="display: flex;flex-direction: row">
 
 
-    <div id="selectionDiv" style="width:25%;max-width:350px;border-style: solid;padding: 3px;margin: 3px">
-        <div>
-            &nbsp; <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/>
-            <span id="messageDiv"></span>
+    <div>
+
+
+        <div id="lefTabs">
+            <ul>
+                <li><a href="#tabs-Selection">Selection</a></li>
+                <li><a href="#tabs-Projection">Projection</a></li>
+            </ul>
+            <div id="tabs-Selection">
+                <div id="selectionDiv" style="max-width:350px;border-style: solid;padding: 3px;margin: 3px">
+
+
+                    <div id="accordion">
+
+                        <h3><span class="title">Concepts </span></h3>
+                        <div style="margin:5px">
+                            <div><input size="15" id="searchConceptInput" value="">
+                                <button onclick="Concepts.searchConcept($('#searchConceptInput').val())">Search</button>
+                                <button onclick="Concepts.resetConceptsJstree(true)">Reset</button>
+                            </div>
+                            <div id="jstreeConceptDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
+
+                        </div>
+
+                        <h3><span class="title">Corpus </span><span class='currentConceptsSpan' id="currentCorpusSpan"></span></h3>
+                        <div style="margin:5px">
+                            <div><input size="15" id="searchCorpusInput" value="">
+                                <button onclick="Corpus.searchResources($('#searchCorpusInput').val())">Search</button>
+                                <button onclick="Corpus.resetSelection()">Reset</button>
+                            </div>
+                            <div id="jstreeCorpusDiv" style="width:100%;height: 400px;overflow: auto"></div>
+
+                        </div>
+                        <h3><span class="title">Question </span></h3>
+                        <div style="margin:5px">
+                            <div><input size="30" id="searchQuestionInput" value="response time surge">
+                                <button onclick="Questions.respond($('#searchQuestionInput').val())">Search</button>
+                                <hr>
+                                Matching concepts
+                                <div id="question_matchingTokensDiv" style="max-height: 400px;overflow: auto"></div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div id="tabs-Projection">
+                <div id="projectionDiv" style="border-style: solid;padding: 3px;margin: 3px">
+
+
+                    <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
+                        <div class="title"> Corpus</div>
+
+
+                        Show
+                        <select id="filterGraphResourceSelect" onchange="filterGraph.onShowResources($(this).val())">
+                            <option></option>
+                            <option>ShowParents</option>
+                        </select>
+
+                    </div>
+                    <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
+                        <div class="title"> Concepts</div>
+
+<!--
+                        <hr/>
+                        Show
+                        <select id="filterGraphConceptSelect" onchange="filterGraph.onShowConcept($(this).val())">
+                            <option></option>
+                            <option>ShowParents</option>
+
+                            <option>ListAssociatedConcepts</option>
+                            <option>ShowCooccurrences</option>
+
+                        </select>
+
+-->
+
+                        <div>
+                            <div id="jstreeFilterConceptsDiv" style="height: 450px;overflow: auto"></div>
+
+                        </div>
+                    </div>
+                    <!--   <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
+                          Export
+
+                       </div>-->
+
+                </div>
+
+
+            </div>
+
         </div>
-        <div>
+    </div>
+    <div id="displayDiv" style="width:50%;border-style: solid;padding: 3px;margin: 3px">
+        <div style="display:flex;flex-direction:row ">
+            &nbsp;<div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/></div>
+            <div style="border: solid;border-width: 1px;border-radius: 3px;background-color:#bdbdbd;display: flex">
+                <button id='searchSelectedConceptsButton' style='display: none;' onclick='Selection.displayParagraphsGraph()'>Graph</button>
+                <button id='resetSelectedConceptsButton' style='display: none;' onclick='Selection.resetSelection()'>X</button>
+            </div>
+
+
             <div style="border: solid;border-width: 1px;border-radius: 3px;margin:3px">
                 Selected Resources : <span class='currentConceptsSpan' id="currentResourcesSpan"></span>
-                <br>
                 Level <select style="margin:10px;" onChange="filterGraph.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
                 <option></option>
                 <option>paragraph</option>
@@ -237,111 +348,18 @@
             </div>
             <div style="border: solid;border-width: 1px;border-radius: 3px;margin:3px">
                 Selected Concepts: <span class='currentConceptsSpan' id="currentConceptsSpan"></span>
-                <br>
-                Level
-                <div id="conceptAggrLevelSlider" style="margin:10px;width:200px"> <div id="custom-handle" class="ui-slider-handle"></div></div>
+                <!--   <br>
+                   Level
+                   <div id="conceptAggrLevelSlider" style="margin:10px;width:200px">
+                       <div id="custom-handle" class="ui-slider-handle"></div>
+                   </div>-->
             </div>
+            <div id="messageDiv"></div>
         </div>
-        <div style="border: solid;border-width: 1px;border-radius: 3px;background-color:#bdbdbd;display: flex">
-            <button id='searchSelectedConceptsButton' style='display: none;' onclick='Selection.displayParagraphsGraph()'>Graph</button>
-            <button id='resetSelectedConceptsButton' style='display: none;' onclick='Selection.resetSelection()'>X</button>
-        </div>
-
-
-        <div id="accordion">
-
-            <h3><span class="title">Concepts </span></h3>
-            <div style="margin:5px">
-                <div><input size="15" id="searchConceptInput" value="">
-                    <button onclick="Concepts.searchConcept($('#searchConceptInput').val())">Search</button>
-                    <button onclick="Concepts.resetConceptsJstree(true)">Reset</button>
-                </div>
-                <div id="jstreeConceptDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
-
-            </div>
-
-            <h3><span class="title">Corpus </span><span class='currentConceptsSpan' id="currentCorpusSpan"></span></h3>
-            <div style="margin:5px">
-                <div><input size="15" id="searchCorpusInput" value="">
-                    <button onclick="Corpus.searchResources($('#searchCorpusInput').val())">Search</button>
-                    <button onclick="Corpus.resetSelection()">Reset</button>
-                </div>
-                <div id="jstreeCorpusDiv" style="width:100%;height: 400px;overflow: auto"></div>
-
-            </div>
-            <h3><span class="title">Question </span></h3>
-            <div style="margin:5px">
-                <div><input size="30" id="searchQuestionInput" value="response time surge">
-                    <button onclick="Questions.respond($('#searchQuestionInput').val())">Search</button>
-                    <hr>
-                    Matching concepts
-                    <div id="question_matchingTokensDiv" style="max-height: 400px;overflow: auto"></div>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-    <div id="displayDiv" style="width:50%;border-style: solid;padding: 3px;margin: 3px">
         <div id="graphDiv" style="width:100%;"></div>
         <div id="paragraphTextDiv" style="height:200px;overflow: auto"></div>
     </div>
 
-
-    <div id="projectionDiv" style="width:25%;border-style: solid;padding: 3px;margin: 3px">
-
-
-        <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
-            <div class="title"> Corpus</div>
-
-
-            Show
-            <select id="filterGraphResourceSelect" onchange="filterGraph.onShowResources($(this).val())">
-                <option></option>
-                <option>ShowParents</option>
-            </select>
-
-        </div>
-        <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
-            <div class="title"> Concepts</div>
-
-
-            <hr/>
-            Show
-            <select id="filterGraphConceptSelect" onchange="filterGraph.onShowConcept($(this).val())">
-                <option></option>
-                <option>ShowParents</option>
-                <!--    <option>ShowAllAssociatedConcepts</option>-->
-                <option>ListAssociatedConcepts</option>
-                <option>ShowCooccurrences</option>
-
-            </select>
-            <!--   <select id="filterGraphScopeSelect">
-                   <option></option>
-                   <option>SelectedNode</option>
-                   <option selected="selected">AllNodes</option>
-               </select>-->
-
-
-            <div>
-                <div id="jstreeFilterConceptsDiv" style="height: 450px;overflow: auto"></div>
-
-            </div>
-        </div>
-        <!--   <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
-              Export
-
-           </div>-->
-
-    </div>
 
 </div>
 
