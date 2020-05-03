@@ -6,15 +6,12 @@ var Selection = (function () {
     self.sliceZize = 500;
 
 
-
-
-
-
     self.displayParagraphsGraph = function (booleanQuery, corpusIds, conceptIds) {
-        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+        //  var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
+        var conceptLevelAggr = 0;
         var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
-        if(conceptLevelAggr=="0")
-            conceptLevelAggr="1";
+      /*  if (conceptLevelAggr == "0")
+            conceptLevelAggr = "1";*/
 
 
         options = {
@@ -30,7 +27,7 @@ var Selection = (function () {
         //  var conceptAncestorsMap = {}
         //  var corpusAncestorsMap = {}
         var conceptsSets = {}
-        var allParagraphs = [];
+        var allResource = [];
         var allConceptsInfosMap = {};
         var idCorpus = null;
         var ConceptsDepth = 0;
@@ -45,7 +42,7 @@ var Selection = (function () {
                         conceptsSets = conceptIds;
                         return callbackSeries();
                     }
-                    Concepts.getSelectedConceptDescendants({depth:conceptLevelAggr}, function (err, concepts) {
+                    Concepts.getSelectedConceptDescendants({depth: conceptLevelAggr}, function (err, concepts) {
                         if (err)
                             return callbackSeries(err);
                         conceptsSets = concepts;
@@ -76,7 +73,7 @@ var Selection = (function () {
                             return callbackSeries("No results")
 
 
-                        allParagraphs = result;
+                        allResource = result;
                         if (result.length >= paragraphs.sparql_limit) {
                             if (confirm("result length > Maximum limit for queries (" + paragraphs.sparql_limit + "). Show partialGraph ?"))
                                 return callbackSeries();
@@ -90,10 +87,10 @@ var Selection = (function () {
 
                 //getAncestors
                 function (callbackSeries) {
-                    if (allParagraphs.length == 0)
+                    if (allResource.length == 0)
                         return callbackSeries();
                     var conceptsIds = [];
-                    allParagraphs.forEach(function (item) {
+                    allResource.forEach(function (item) {
                         if (item.entity0 && conceptsIds.indexOf(item.entity0.value) < 0)
                             conceptsIds.push(item.entity0.value)
                     })
@@ -106,18 +103,18 @@ var Selection = (function () {
                     Concepts.getConceptsInfos(conceptsIds, {}, function (err, result) {
                         if (err)
                             return callbackSeries(err);
-                     /*   var topSelectedConcepts = [];
-                        Concepts.currentConceptsSelection.forEach(function (item) {
-                            topSelectedConcepts.push(item[0])
-                        })*/
+                        /*   var topSelectedConcepts = [];
+                           Concepts.currentConceptsSelection.forEach(function (item) {
+                               topSelectedConcepts.push(item[0])
+                           })*/
                         result.forEach(function (item) {
                             //  console.log(item.concept.value)
                             var obj = {id: item.concept.value, ancestors: [{id: item.concept.value, label: item.conceptLabel.value}]}
                             for (var i = 1; i < 7; i++) {
                                 var broader = item["broaderId" + i];
                                 if (typeof broader !== "undefined") {
-                                 //   if (topSelectedConcepts.indexOf(broader.value) < 0)
-                                        obj.ancestors.push({id: broader.value, label: item["broader" + i].value})
+                                    //   if (topSelectedConcepts.indexOf(broader.value) < 0)
+                                    obj.ancestors.push({id: broader.value, label: item["broader" + i].value})
                                 }
                             }
                             allConceptsInfosMap[obj.id] = obj;
@@ -131,20 +128,20 @@ var Selection = (function () {
                 },
                 //getParagraphs
                 function (callbackSeries) {
-                    common.message("Drawing graph : " + allParagraphs.length + "relations")
-                    //  paragraphs.drawParagraphsEntitiesGraph(allParagraphs, paragraphsInfos, {
+                    common.message("Drawing graph : " + allResource.length + "relations")
+                    //  paragraphs.drawParagraphsEntitiesGraph(allResource, paragraphsInfos, {
                     self.currentSelection = {
-                        paragraphs: allParagraphs,
+                        resources: allResource,
                         conceptsInfos: allConceptsInfosMap,
                     }
 
-                    paragraphs.drawParagraphsEntitiesGraphSimple(allParagraphs, allConceptsInfosMap, options)
-                    //paragraphs.drawParagraphsEntitiesGraphAggr(allParagraphs, allConceptsInfosMap, options)
+                    paragraphs.drawParagraphsEntitiesGraphSimple(allResource, allConceptsInfosMap, options)
+                    //paragraphs.drawParagraphsEntitiesGraphAggr(allResource, allConceptsInfosMap, options)
                     $(".projection-item").css("display", "block")
                     callbackSeries();
 
                 }
-                ,function(callbackSeries){
+                , function (callbackSeries) {
                     filterGraph.alterGraph.addConceptsToGraph(null, true, true);
                     callbackSeries();
                 }
@@ -162,7 +159,6 @@ var Selection = (function () {
     }
 
 
-
     self.graphActions = {
 
 
@@ -174,13 +170,13 @@ var Selection = (function () {
         hidePopup: function () {
             $("#graphPopupDiv").css("display", "none")
         },
-        showResourceConcepts: function (resourceId,withOtherResourcesEdges) {
-           // if (resourceId.indexOf("Paragraph") > -1) {
-                paragraphs.alterGraph.addConceptsToGraph(resourceId,withOtherResourcesEdges)
+        showResourceConcepts: function (resourceId, withOtherResourcesEdges) {
+            // if (resourceId.indexOf("Paragraph") > -1) {
+            paragraphs.alterGraph.addConceptsToGraph(resourceId, withOtherResourcesEdges)
 
-          //  }
+            //  }
         },
-        showResourceConceptsOfType:function(){
+        showResourceConceptsOfType: function () {
 
         }
     }
@@ -194,6 +190,8 @@ var Selection = (function () {
         $("#resetSelectedConceptsButton").css("display", "none")
         $(".projection-item").css("display", "none")
         self.currentConceptsSelection = null;
+        Concepts.currentConceptsSelection=[[]];
+        Corpus.currentCorpusSelection=[[]];
         $("#jstreeConceptDiv").jstree(true).uncheck_all();
         $("#jstreeCorpusDiv").jstree(true).uncheck_all();
         if (reload) {
@@ -258,8 +256,10 @@ var Selection = (function () {
     }
     self.setConceptSelectedCBX = function (obj, bool) {
 
+        var selectOptionHtml = "<option>OR</option>" + "<option>AND</option>" + "<option>NO</option>"
+
         var tooltip = ""
-        var nodeLabel= obj.node.text;
+        var nodeLabel = obj.node.text;
         obj.node.parents.forEach(function (parent, index) {
             var jstree;
             if (parent.indexOf("/vocabulary/") > -1)
@@ -275,28 +275,68 @@ var Selection = (function () {
         })
 
 
-
-        if (obj.node.id.indexOf("/vocabulary/") <0) {
+        if (obj.node.id.indexOf("/vocabulary/") < 0) {
             var text = $("#currentResourcesSpan").html();
+            var index = Corpus.currentCorpusSelection.length - 1;
+            var index2 = Corpus.currentCorpusSelection[index].length - 1;
+            var selectId = "R" + "_" + index + "_" + index2
+            var selectHtml = "<select onchange=Selection.updateSelection($(this).attr(\"id\")) id='" + selectId + "'>" + selectOptionHtml + "</select>";
             if (text != "")
-                text += "<br><span style='font-size: 12px;font-weight: bold;' title='" + tooltip + "'> &nbsp;" + bool + "&nbsp;</span> "
-            text += "<span style='font-size: 12px' title='" + tooltip + "'>" +tooltip+"/"+nodeLabel + "</span>"
+                text += "<br>";
+            text += selectHtml + "<span style='font-size: 12px' title='" + tooltip + "'>" + nodeLabel + "</span>"
             $("#currentResourcesSpan").html(text);
+            $("#" + selectId).val(bool)
 
-        }else {
+        } else {
+
             var text = $("#currentConceptsSpan").html();
+            var index = Concepts.currentConceptsSelection.length - 1;
+            var index2 = Concepts.currentConceptsSelection[index].length - 1
+            var selectId = "C" + "_" + index + "_" + index2
+            var selectHtml = "<select onchange=Selection.updateSelection($(this).attr(\"id\")) id='" + selectId + "'>" + selectOptionHtml + "</select>";
             if (text != "")
-                text += "<br><span style='font-size: 12px;font-weight: bold;' title='" + tooltip + "'> &nbsp;" + bool + "&nbsp;</span> "
-            text += "<span style='font-size: 12px' title='" + tooltip + "'>" +nodeLabel + "</span>"
+                text += "<br>";
+            text += selectHtml + "<span style='font-size: 12px' title='" + tooltip + "'>" + nodeLabel + "</span>"
 
             $("#currentConceptsSpan").html(text);
+            $("#" + selectId).val(bool)
         }
-
 
 
         $("#searchSelectedConceptsButton").css("display", "block")
         $("#resetSelectedConceptsButton").css("display", "block")
         //   $(".projection-item").css("display","block")
+    }
+
+    self.updateSelection = function (selectId) {
+        var array = selectId.split("_");
+        var value = $("#" + selectId).val();
+        if (array[0] == "R") {
+
+            var resourceId = Corpus.currentCorpusSelection[parseInt(array[1])][parseInt(array[2])];
+            if (resourceId)
+                Corpus.currentCorpusSelection[parseInt(array[1])].splice([parseInt(array[2])], 1)
+            if (value == "NO") {
+                $("#jstreeCorpusDiv").jstree(true).uncheck_node(resourceId)
+
+            }
+            if (value == "AND") {
+                $("#jstreeCorpusDiv").jstree(true).uncheck_node(resourceId)
+                Corpus.currentCorpusSelection[parseInt(array[0])].splice([parseInt(array[1])], 1)
+                Corpus.currentCorpusSelection[parseInt(array[0])].push(resourceId)
+            }
+            if (value == "OR") {
+                $("#jstreeCorpusDiv").jstree(true).uncheck_node(resourceId)
+                Corpus.currentCorpusSelection[parseInt(array[0])].splice([parseInt(array[1])], 1)
+                Corpus.currentCorpusSelection[parseInt(array[0])].push(resourceId)
+            }
+
+
+        } else if (array[0] == "C") {
+
+        }
+
+
     }
 
 

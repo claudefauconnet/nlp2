@@ -343,17 +343,28 @@ var paragraphs = (function () {
                   " <span class='popupMenuItem' onclick='Selection.graphActions.showLinked();'> show Relations</span>"
 
               $("#graphPopupDiv").html(html)*/
-            point.x += $("#selectionDiv").width();
-            Selection.graphActions.showPopup(point)
-
-        } else {
             var html = ""
-            html += "<span class='popupMenuItem' onclick='Selection.graphActions.showResourceConcepts(\"" + node.id + "\");'> node concepts</span><br>"
-            html += "<span class='popupMenuItem' onclick='Selection.graphActions.showResourceConceptsOfType(\"" + node.id + "\");'> node concepts ...</span><br>"
-            html += "<span class='popupMenuItem' onclick='Selection.graphActions.showResourceConcepts(\"" + node.id + "\",true);'> node concepts and relations</span><br>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.conceptInfos(\"" + node.id + "\");'>Hide</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.hideConcept(\"" + node.id + "\");'>Hide</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.expandConcept(\"" + node.id + "\");'> Expand</div>"
+            // html += "<span class='popupMenuItem' onclick='Selection.graphActions.showResourceConcepts(\"" + node.id + "\",true);'> node concepts and relations</span><br>"
 
             $("#graphPopupDiv").html(html)
-            point.x += $("#selectionDiv").width();
+            point.x += $("#tabs-Projection").width();
+            Selection.graphActions.showPopup(point)
+
+
+        } else {
+
+            var html = ""
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.resourceInfos(\"" + node.id + "\");'>Hide</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.showResourceParents(\"" + node.id + "\");'>Show parent</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.showResourceChildren(\"" + node.id + "\");'>Show children</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.expandResource(\"" + node.id + "\");'>Expand</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.showResourceConcepts(\"" + node.id + "\");'> Show concepts</div><br>"
+
+            $("#graphPopupDiv").html(html)
+            point.x += $("#tabs-Projection").width();
             Selection.graphActions.showPopup(point)
 
         }
@@ -575,46 +586,63 @@ var paragraphs = (function () {
               isQuantumConceptsQuery = true;*/
 
 
-        var corpusLevelMap = {
-            "/Domain/": "domain",
-            "/Branch/": "branch",
-            "/Document-type/": "documentType",
-            "/Document/": "document",
-            "/Chapter/": "chapter",
-            "/Paragraph/": "paragraph",
-
-
-        }
+        var corpusLevels = app_config.ontologies[app_config.currentOntology].resourceLevels;
 
         var whereCorpusQuery = ""
         var distinctSelectStr = ""
 
-        whereCorpusQuery += "?paragraph  skos:broader ?chapter ."
-        whereCorpusQuery += "?chapter  skos:prefLabel ?chapterLabel.";
-        whereCorpusQuery += "?chapter  skos:broader ?document ."
-        whereCorpusQuery += "?document skos:prefLabel ?documentLabel.";
-        whereCorpusQuery += "?document  skos:broader ?documentType ."
-        whereCorpusQuery += "?documentType  skos:prefLabel ?documentTypeLabel.";
-        whereCorpusQuery += "?documentType  skos:broader ?branch."
-        whereCorpusQuery += "?branch  skos:prefLabel ?branchLabel.";
-        whereCorpusQuery += "?documentType  skos:broader ?domain. "
-        whereCorpusQuery += "?domain  skos:prefLabel ?domainLabel.";
 
-        if ( options.corpusLevelAggr == "domain") {//(idCorpus[0].indexOf("/Domain/") > -1) {
+        var okDistinctSelect = true;
+        corpusLevels.forEach(function (item, index) {
+            if (index > 0) {
+                var child = "?" + corpusLevels[index - 1].label;
+                var parent = "?" + item.label;
+                whereCorpusQuery += child + "  skos:broader " + parent + "."
+                whereCorpusQuery += child + "  skos:prefLabel " + child + "Label.";
+                whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
+            }
+
+
+            if (okDistinctSelect) {
+                distinctSelectStr += "?" + item.label + " ?" + item.label + "Label "
+
+                if (options.corpusLevelAggr == item.label) {
+                    okDistinctSelect = false;
+                }
+            }
+
+        })
+
+
+        /*
+                whereCorpusQuery += "?paragraph  skos:broader ?chapter ."
+                whereCorpusQuery += "?chapter  skos:prefLabel ?chapterLabel.";
+                whereCorpusQuery += "?chapter  skos:broader ?document ."
+                whereCorpusQuery += "?document skos:prefLabel ?documentLabel.";
+                whereCorpusQuery += "?document  skos:broader ?documentType ."
+                whereCorpusQuery += "?documentType  skos:prefLabel ?documentTypeLabel.";
+                whereCorpusQuery += "?documentType  skos:broader ?branch."
+                whereCorpusQuery += "?branch  skos:prefLabel ?branchLabel.";
+                whereCorpusQuery += "?documentType  skos:broader ?domain. "
+                whereCorpusQuery += "?domain  skos:prefLabel ?domainLabel.";*/
+
+  /*      if (options.corpusLevelAggr == "domain") {//(idCorpus[0].indexOf("/Domain/") > -1) {
             distinctSelectStr += "?domain ?domainLabel"
         }
         if (options.corpusLevelAggr == "branch") {//(idCorpus[0].indexOf("/Domain/") > -1) {
-            distinctSelectStr += " ?domain ?domainLabel"+ " ?branch ?branchLabel"
+            distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel"
         } else if (options.corpusLevelAggr == "documentType") {//(idCorpus[0].indexOf("/Branch/") > -1) {
-            distinctSelectStr += " ?domain ?domainLabel"+" ?branch ?branchLabel"+ " ?documentType ?documentTypeLabel"
+            distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel"
         } else if (options.corpusLevelAggr == "document") {//(idCorpus[0].indexOf("/Document-type/") > -1) {
-            distinctSelectStr += " ?domain ?domainLabel"+ " ?branch ?branchLabel"+ " ?documentType ?documentTypeLabel"+" ?document ?documentLabel"
+            distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel"
         } else if (options.corpusLevelAggr == "chapter") {//(idCorpus[0].indexOf("/Document/") > -1) {
 
-            distinctSelectStr +=  "?domain ?domainLabel"+"?branch ?branchLabel"+ " ?documentType ?documentTypeLabel"+" ?document ?documentLabel"+" ?chapter ?chapterLabel"
+            distinctSelectStr += "?domain ?domainLabel" + "?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel" + " ?chapter ?chapterLabel"
         } else if (options.corpusLevelAggr == "paragraph") {//(idCorpus[0].indexOf("/Paragraph/") > -1 || idCorpus[0].indexOf("/Paragraph/") > -1) {
-            distinctSelectStr += "?domain ?domainLabel"+" ?branch ?branchLabel"+ " ?documentType ?documentTypeLabel"+" ?document ?documentLabel"+" ?chapter ?chapterLabel"+" ?paragraph "
-        }
+            distinctSelectStr += "?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel" + " ?chapter ?chapterLabel" + " ?paragraph "
+        }*/
+
+
         if (idCorpus) {
             var corpusIdsStr = "";
             if (!Array.isArray(idCorpus))
@@ -623,10 +651,14 @@ var paragraphs = (function () {
             var resourceName = ""
             idCorpus.forEach(function (id, index) {
                 if (index == 0) {
-                    for (var key in corpusLevelMap) {
+                    corpusLevels.forEach(function(item){
+                        if (id.indexOf(item.value) > -1)
+                            resourceName = item.label
+                    })
+                  /*  for (var key in corpusLevelMap) {
                         if (id.indexOf(key) > -1)
                             resourceName = corpusLevelMap[key]
-                    }
+                    }*/
 
                 } else
                     corpusIdsStr += ","
@@ -664,18 +696,19 @@ var paragraphs = (function () {
                     entityIdsStr += "<" + id + ">"
                 })
 
+                var linkedResourceName=corpusLevels[0].label;
                 if (isQuantumConceptsQuery) {
-                    whereConceptQuery += "  ?paragraph terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type . " + "?entity" + indexSet + " skos:exactMatch ?quantumConcept" + indexSet + ""
+                    whereConceptQuery += "  ?"+linkedResourceName+" terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type . " + "?entity" + indexSet + " skos:exactMatch ?quantumConcept" + indexSet + ""
                     if (entityIdsStr.length > 0)
                         whereConceptQuery += " filter (?quantumConcept" + indexSet + " in(" + entityIdsStr + "))"
                 } else {
-                    whereConceptQuery += "  ?paragraph terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type ."
+                    whereConceptQuery += "  ?"+linkedResourceName+" terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type ."
                     if (entityIdsStr.length > 0)
                         whereConceptQuery += " filter (?entity" + indexSet + " in(" + entityIdsStr + "))"
                 }
 
 
-                distinctSelectStr+= " ?entity"+indexSet+" ";
+                distinctSelectStr += " ?entity" + indexSet + " ";
                 /*   var i;
                    for(var i=indexSet;i<=options.conceptLevelAggr;i++){
 
@@ -687,8 +720,7 @@ var paragraphs = (function () {
             })
 
 
-          //  distinctSelectStr = " * "
-
+            //  distinctSelectStr = " * "
 
 
             self.previousWhereConceptQuery = whereConceptQuery
@@ -702,7 +734,7 @@ var paragraphs = (function () {
             "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
 
             "        select distinct " + distinctSelectStr + " where {" + whereCorpusQuery + whereConceptQuery + "}"
-        query+="GROUP BY "+distinctSelectStr;
+        query += "GROUP BY " + distinctSelectStr;
 
         query += " limit " + self.sparql_limit
 

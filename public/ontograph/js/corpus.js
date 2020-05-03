@@ -6,7 +6,18 @@ var Corpus = (function () {
 
         }
         self.loadCorpusJsTree = function () {
-            self.showJstreeResources(null, null, "Domain", 2);
+            var corpusScheme=app_config.ontologies[app_config.currentOntology].corpusScheme
+            self.showJstreeResources(null, null, corpusScheme, 2);
+        }
+        self.loadResourceLevelsSelect=function(){
+            var levels=app_config.ontologies[app_config.currentOntology].resourceLevels;
+            var defaultLevel=app_config.ontologies[app_config.currentOntology].resourceDefaultLevel;
+            common.fillSelectOptions("corpusAggrLevelSelect",levels,true,"label","label")
+            $("#corpusAggrLevelSelect").val(defaultLevel);
+
+
+
+
         }
 
 
@@ -19,9 +30,9 @@ var Corpus = (function () {
         }
 
 
-        self.showJstreeResources = function (word, id, type, depth, addToNode) {
+        self.showJstreeResources = function (word, id, scheme, depth, addToNode) {
 
-            self.sparql_searchResource(word, id, type, depth, function (err, result) {
+            self.sparql_searchResource(word, id, scheme, depth, function (err, result) {
                 if (err)
                     return common.message(err)
 
@@ -95,16 +106,18 @@ var Corpus = (function () {
         }
 
 
-        self.sparql_searchResource = function (word, id, type, depth, callback) {
-            var typeUri = "<http://data.total.com/resource/ontology/ctg/" + type + ">"
+
+
+        self.sparql_searchResource = function (word, id, scheme, depth, callback) {
+
 
 
             var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                 "select *  where{   " +
                 "" +
                 "?resource skos:prefLabel ?resourceLabel ."
-            if (type) {
-                query += "?resource <http://www.w3.org/2004/02/skos/core#inScheme> <http://data.total.com/resource/ontology/ctg/" + type + ">"
+            if (scheme) {
+                query += "?resource <http://www.w3.org/2004/02/skos/core#inScheme> <" + scheme + ">"
             }
             if (word) {
                 query += " FILTER contains(lcase(str(?resourceLabel )),\"" + word.toLowerCase() + "\") "
@@ -134,9 +147,10 @@ var Corpus = (function () {
             }
 
 
-            query += " }limit 2000"
+            query += " } ORDER BY ?resourceLabel limit 2000"
 
-            var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent("http://data.total.com/resource/corpus-description/ctg/") + "&query=";// + query + queryOptions
+            var corpusGraphUri=app_config.ontologies[app_config.currentOntology].corpusGraphUri
+            var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(corpusGraphUri) + "&query=";// + query + queryOptions
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err) {
@@ -179,8 +193,9 @@ var Corpus = (function () {
         self.onNodeChecked = function (evt, obj) {
 
             if (obj.event.ctrlKey && self.currentCorpusSelection) {
-                Selection.setConceptSelectedCBX(obj, "AND")
+
                 self.currentCorpusSelection.push([obj.node.id]);
+                Selection.setConceptSelectedCBX(obj, "AND")
 
             } else {
                 if (!self.currentCorpusSelection)

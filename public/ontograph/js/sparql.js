@@ -323,68 +323,7 @@ var sparql = (function () {
     }
 
 
-    self.listThesaurusConcepts = function (word, options, callback) {
-        var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent("http://data.total.com/resource/thesaurus/ctg/") + "&query=";// + query + queryOptions
 
-        var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
-            "" +
-            "SELECT *" +
-            "WHERE {" +
-            "  ?concept skos:prefLabel ?prefLabel ." +
-            "filter contains(lcase(str(?prefLabel )),\"" + word.toLowerCase() + "\")" +
-            "filter (lang(?prefLabel)=\"en\")" +
-            "" +
-            "OPTIONAL {" +
-            "?concept skos:broader ?broader1 ." +
-            "?broader1 skos:prefLabel ?broaderLabel1 ." +
-            "filter (lang(?broaderLabel1 )=\"en\")" +
-            "OPTIONAL {" +
-            "?broader1 skos:broader ?broader2 ." +
-            "?broader2 skos:prefLabel ?broaderLabel2 ." +
-            "filter (lang(?broaderLabel2)=\"en\")" +
-            "" +
-            "OPTIONAL {" +
-            "?broader2 skos:broader ?broader3 ." +
-            "?broader3 skos:prefLabel ?broaderLabel3 ." +
-            "filter (lang(?broaderLabel3)=\"en\")" +
-            "OPTIONAL {" +
-            "?broader3 skos:broader ?broader4 ." +
-            "?broader4 skos:prefLabel ?broaderLabel4 ." +
-            "filter (lang(?broaderLabel4)=\"en\")" +
-            "OPTIONAL {" +
-            "?broader4 skos:broader ?broader5 ." +
-            "?broader5 skos:prefLabel ?broaderLabel5 ." +
-            "filter (lang(?broaderLabel5)=\"en\")" +
-            "OPTIONAL {" +
-            "?broader5 skos:broader ?broader6 ." +
-            "?broader6 skos:prefLabel ?broaderLabel6 ." +
-            "filter (lang(?broaderLabel6)=\"en\")" +
-            "" +
-            "}" +
-            "}" +
-            "" +
-            "}" +
-            "" +
-            "}" +
-            "}" +
-            "}" +
-            "" +
-            "" +
-            "}" +
-            "LIMIT 2000"
-
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
-        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
-            if (err) {
-                return callback(err);
-            }
-            var bindings = [];
-            var ids = [];
-            return callback(null, result.results.bindings);
-        })
-
-
-    }
 
     self.querySPARQL_GET_proxy_cursor = function (url, query, queryOptions, options, callback) {
         var offset = 0;

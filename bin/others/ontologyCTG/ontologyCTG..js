@@ -165,7 +165,11 @@ var ontologyCTG = {
                 }
 
                 function getNewId(){
-                    return Date.now();
+
+                     var id=  ""+Math.round((Date.now()/100)*(Math.random()*1000))+Math.round(Math.random()*1000000);
+                   //  console.log(id)
+                    return id;
+
                 }
 
                 for (var key in entitiesMap) {
@@ -178,6 +182,7 @@ var ontologyCTG = {
                     var docId
 
                     var paragraphUrl = "<http://data.total.com/resource/ontology/ctg/Paragraph/" + item.ID + ">"
+
                     //    str += paragraphUrl + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg//" + "simple" + "> .\n"
 
 
@@ -188,7 +193,7 @@ var ontologyCTG = {
                             docId = item.Document
                            // docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + docId + ">"
                             docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + getNewId() + ">"
-                            if (true) {
+
                                 strDocs += docsMap[item.Document] + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/DocumentType/" + "GM_MEC" + "> .\n"
                                 strDocs += docsMap[item.Document] + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(item.Document) + "\"@en .\n"
 
@@ -232,8 +237,9 @@ var ontologyCTG = {
                                     var x = 3;
                                 }*/
 
-                            }
-                            str += paragraphUrl + " <http://purl.org/dc/terms/isPartOf> " + docsMap[item.Document] + ".\n"
+
+
+                         //   str += paragraphUrl + " <http://purl.org/dc/terms/isPartOf> " + docsMap[item.Document] + ".\n"
 
 
                         }

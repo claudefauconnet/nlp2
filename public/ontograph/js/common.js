@@ -37,6 +37,8 @@ var common = (function () {
             cascade="down"
         if (options.withCheckboxes)
             plugins.push("checkbox")
+        if (options.searchPlugin)
+            plugins.push("search")
         if ($('#' + jstreeDiv).jstree)
             $('#' + jstreeDiv).jstree("destroy")
         $('#' + jstreeDiv).jstree({

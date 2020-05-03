@@ -30,6 +30,8 @@
 
 
     <script src="js/questions.js"></script>
+    <script src="js/app_config.js"></script>
+
 
 
     <script src="../js/others/async.js"></script>
@@ -95,6 +97,7 @@
 
                 });
                 Corpus.loadCorpusJsTree();
+                Corpus.loadResourceLevelsSelect()
                 Concepts.loadConceptsJsTree();
 
 
@@ -107,6 +110,15 @@
                     if (e.keyCode == 13)
                         Corpus.searchResources($('#searchConceptInput').val())
                 })
+
+                var to = false;
+                $('#seachProjectionInput').keyup(function () {
+                    if(to) { clearTimeout(to); }
+                    to = setTimeout(function () {
+                        var v = $('#seachProjectionInput').val();
+                        $('#jstreeFilterConceptsDiv').jstree(true).search(v);
+                    }, 250);
+                });
 
             }
 
@@ -133,9 +145,10 @@
         }
 
         .popupMenuItem {
-            text-align: center;
-            margin: 5px;
-            padding: 3px;
+            text-align: left;
+            margin-left: 5px;
+            margin-right: 5px;
+            padding:1px;
             font-weight: normal;
         }
 
@@ -309,6 +322,7 @@
 -->
 
                         <div>
+                            Search <input id="seachProjectionInput" size="15">
                             <div id="jstreeFilterConceptsDiv" style="height: 450px;overflow: auto"></div>
 
                         </div>
@@ -337,13 +351,7 @@
             <div style="border: solid;border-width: 1px;border-radius: 3px;margin:3px">
                 Selected Resources : <span class='currentConceptsSpan' id="currentResourcesSpan"></span>
                 Level <select style="margin:10px;" onChange="filterGraph.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
-                <option></option>
-                <option>paragraph</option>
-                <option>chapter</option>
-                <option selected="selected">document</option>
-                <option>documentType</option>
-                <option>branch</option>
-                <option>domain</option>
+
             </select>
             </div>
             <div style="border: solid;border-width: 1px;border-radius: 3px;margin:3px">
@@ -377,7 +385,7 @@
 
 
 <div id="graphPopupDiv" onclick="ontograph.graphActions.hidePopup();"
-     style="position:absolute;flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+     style="position:absolute;flex-direction:column;padding:2px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
 
 
 </div>
