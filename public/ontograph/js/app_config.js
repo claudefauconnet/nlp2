@@ -40,5 +40,9 @@ var app_config = {
 
     }
 
+    ,visjsGraph:{
+        maxLabelLength:20,
+    }
+
 
 }

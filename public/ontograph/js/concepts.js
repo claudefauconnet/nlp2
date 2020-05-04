@@ -51,8 +51,7 @@ var Concepts = (function () {
             }
             result.forEach(function (item) {
                 var id = item.concept.value;
-                if (uniqueIds.indexOf(id) < 0) {
-                    uniqueIds.push(id)
+
                     var node = {id: id, text: item.prefLabel.value}
                     for (var i = 0; i < 6; i++) {
                         if (typeof (item["broader" + i]) != "undefined") {
@@ -60,13 +59,16 @@ var Concepts = (function () {
 
                                 if (conceptBroadersMap[item["broader" + i].value]) {
                                     node.parent = item["broader" + i].value;
-                                    jstreeData.push(node)
+                                    if (uniqueIds.indexOf(id) < 0) {
+                                        uniqueIds.push(id)
+                                        jstreeData.push(node)
+                                    }
 
                             }
                         }
                     }
 
-                }
+
 
             })
 
@@ -258,7 +260,7 @@ var Concepts = (function () {
 
     self.getSelectedConceptDescendants = function (options,callback) {
         var conceptsSelected = Concepts.currentConceptsSelection
-        if (!conceptsSelected || conceptsSelected.length==0)
+        if (!conceptsSelected || conceptsSelected.length==0 || conceptsSelected[0].length==0)
             return callback(null, [])
 
         var conceptsSets = [];
@@ -482,6 +484,10 @@ var Concepts = (function () {
     }
 
     self.getConceptsInfos = function (conceptIds, options, callback) {
+        if (!conceptIds || conceptIds.length==0)
+            return callback(null, [])
+
+
         if (!options) {
             options = {}
         }

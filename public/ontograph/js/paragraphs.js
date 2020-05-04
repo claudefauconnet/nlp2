@@ -38,8 +38,8 @@ var paragraphs = (function () {
                 }
 
 
-                if (corpusLabel.length > 12)
-                    corpusLabel = corpusLabel.substring(0, 12) + "..."
+                if (corpusLabel.length > app_config.visjsGraph.maxLabelLength)
+                    corpusLabel = corpusLabel.substring(0, app_config.visjsGraph.maxLabelLength) + "..."
 
                 allCorpusIds.push(corpusId)
 
@@ -193,7 +193,7 @@ var paragraphs = (function () {
                     return;
                 corpusId = item[options.corpusLevelAggr].value;
                 if (corpusId.indexOf("Paragraph") > -1)
-                    corpusLabel = corpusId
+                    corpusLabel = corpusId.substring(corpusId.lastIndexOf("/")+1)
                 else
                     corpusLabel = item[options.corpusLevelAggr + "Label"].value
                 /*  if (options.corpusLevelAggr == "documentType")
@@ -204,8 +204,8 @@ var paragraphs = (function () {
                       corpusLabel = item[options.corpusLevelAggr + "Label"].value*/
 
 
-                if (corpusLabel.length > 12)
-                    corpusLabel = corpusLabel.substring(0, 12) + "..."
+                if (corpusLabel.length > app_config.visjsGraph.maxLabelLength)
+                    corpusLabel = corpusLabel.substring(0, app_config.visjsGraph.maxLabelLength) + "..."
 
                 allCorpusIds.push(corpusId)
 
@@ -592,7 +592,7 @@ var paragraphs = (function () {
         var distinctSelectStr = ""
 
 
-        var okDistinctSelect = true;
+        var okSelectAncestors = false;
         corpusLevels.forEach(function (item, index) {
             if (index > 0) {
                 var child = "?" + corpusLevels[index - 1].label;
@@ -602,14 +602,18 @@ var paragraphs = (function () {
                 whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
             }
 
-
-            if (okDistinctSelect) {
+            if ( item.label == options.corpusLevelAggr || okSelectAncestors) {
                 distinctSelectStr += "?" + item.label + " ?" + item.label + "Label "
-
-                if (options.corpusLevelAggr == item.label) {
-                    okDistinctSelect = false;
-                }
+                okSelectAncestors=true;
             }
+
+            /* if (okDistinctSelect) {
+                 distinctSelectStr += "?" + item.label + " ?" + item.label + "Label "
+
+                 if (options.corpusLevelAggr == item.label) {
+                     okDistinctSelect = false;
+                 }
+             }*/
 
         })
 
@@ -626,21 +630,21 @@ var paragraphs = (function () {
                 whereCorpusQuery += "?documentType  skos:broader ?domain. "
                 whereCorpusQuery += "?domain  skos:prefLabel ?domainLabel.";*/
 
-  /*      if (options.corpusLevelAggr == "domain") {//(idCorpus[0].indexOf("/Domain/") > -1) {
-            distinctSelectStr += "?domain ?domainLabel"
-        }
-        if (options.corpusLevelAggr == "branch") {//(idCorpus[0].indexOf("/Domain/") > -1) {
-            distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel"
-        } else if (options.corpusLevelAggr == "documentType") {//(idCorpus[0].indexOf("/Branch/") > -1) {
-            distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel"
-        } else if (options.corpusLevelAggr == "document") {//(idCorpus[0].indexOf("/Document-type/") > -1) {
-            distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel"
-        } else if (options.corpusLevelAggr == "chapter") {//(idCorpus[0].indexOf("/Document/") > -1) {
+        /*      if (options.corpusLevelAggr == "domain") {//(idCorpus[0].indexOf("/Domain/") > -1) {
+                  distinctSelectStr += "?domain ?domainLabel"
+              }
+              if (options.corpusLevelAggr == "branch") {//(idCorpus[0].indexOf("/Domain/") > -1) {
+                  distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel"
+              } else if (options.corpusLevelAggr == "documentType") {//(idCorpus[0].indexOf("/Branch/") > -1) {
+                  distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel"
+              } else if (options.corpusLevelAggr == "document") {//(idCorpus[0].indexOf("/Document-type/") > -1) {
+                  distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel"
+              } else if (options.corpusLevelAggr == "chapter") {//(idCorpus[0].indexOf("/Document/") > -1) {
 
-            distinctSelectStr += "?domain ?domainLabel" + "?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel" + " ?chapter ?chapterLabel"
-        } else if (options.corpusLevelAggr == "paragraph") {//(idCorpus[0].indexOf("/Paragraph/") > -1 || idCorpus[0].indexOf("/Paragraph/") > -1) {
-            distinctSelectStr += "?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel" + " ?chapter ?chapterLabel" + " ?paragraph "
-        }*/
+                  distinctSelectStr += "?domain ?domainLabel" + "?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel" + " ?chapter ?chapterLabel"
+              } else if (options.corpusLevelAggr == "paragraph") {//(idCorpus[0].indexOf("/Paragraph/") > -1 || idCorpus[0].indexOf("/Paragraph/") > -1) {
+                  distinctSelectStr += "?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel" + " ?chapter ?chapterLabel" + " ?paragraph "
+              }*/
 
 
         if (idCorpus) {
@@ -651,14 +655,14 @@ var paragraphs = (function () {
             var resourceName = ""
             idCorpus.forEach(function (id, index) {
                 if (index == 0) {
-                    corpusLevels.forEach(function(item){
+                    corpusLevels.forEach(function (item) {
                         if (id.indexOf(item.value) > -1)
                             resourceName = item.label
                     })
-                  /*  for (var key in corpusLevelMap) {
-                        if (id.indexOf(key) > -1)
-                            resourceName = corpusLevelMap[key]
-                    }*/
+                    /*  for (var key in corpusLevelMap) {
+                          if (id.indexOf(key) > -1)
+                              resourceName = corpusLevelMap[key]
+                      }*/
 
                 } else
                     corpusIdsStr += ","
@@ -696,13 +700,13 @@ var paragraphs = (function () {
                     entityIdsStr += "<" + id + ">"
                 })
 
-                var linkedResourceName=corpusLevels[0].label;
+                var linkedResourceName = corpusLevels[0].label;
                 if (isQuantumConceptsQuery) {
-                    whereConceptQuery += "  ?"+linkedResourceName+" terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type . " + "?entity" + indexSet + " skos:exactMatch ?quantumConcept" + indexSet + ""
+                    whereConceptQuery += "  ?" + linkedResourceName + " terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type . " + "?entity" + indexSet + " skos:exactMatch ?quantumConcept" + indexSet + ""
                     if (entityIdsStr.length > 0)
                         whereConceptQuery += " filter (?quantumConcept" + indexSet + " in(" + entityIdsStr + "))"
                 } else {
-                    whereConceptQuery += "  ?"+linkedResourceName+" terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type ."
+                    whereConceptQuery += "  ?" + linkedResourceName + " terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type ."
                     if (entityIdsStr.length > 0)
                         whereConceptQuery += " filter (?entity" + indexSet + " in(" + entityIdsStr + "))"
                 }
