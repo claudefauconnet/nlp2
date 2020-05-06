@@ -380,17 +380,26 @@ var Concepts = (function () {
             result.results.bindings.forEach(function (item) {
 
                 for (var i = 1; i < 7; i++) {
-                    var concept = item["child" + i]
-                    if (typeof concept !== "undefined") {
-                        if (uniqueIds.indexOf(concept.value) < 0) {
-                            uniqueIds.push(concept.value);
-                            jstreeData.push({text: item["childLabel" + i].value, id: concept.value})
+                    var childConceptId = item["child" + i]
+                    if (typeof childConceptId !== "undefined") {
+                        if (uniqueIds.indexOf(childConceptId.value) < 0) {
+                            uniqueIds.push(childConceptId.value);
+                            var parent=item.concept.value
+                            if( i>1)
+                                parent=item["child" + (i-1)].value
+                            $("#jstreeConceptDiv").jstree(true).create_node(parent, {text: item["childLabel" + i].value, id: childConceptId.value}, "last")
+
+
+
+                             //   common.addNodesToJstree("jstreeConceptDiv", parent, {text: item["childLabel" + i].value, id: childConceptId.value});
+                        //    jstreeData.push({text: item["childLabel" + i].value, id: childConceptId.value,parent:parent})
                         }
                     }
                 }
             })
-            if (jstreeData.length > 0)
-                common.addNodesToJstree("jstreeConceptDiv", conceptId, jstreeData);
+            $("#jstreeConceptDiv").jstree(true).open_node(conceptId)
+          /*  if (jstreeData.length > 0)
+                common.addNodesToJstree("jstreeConceptDiv", conceptId, jstreeData);*/
         });
 
 

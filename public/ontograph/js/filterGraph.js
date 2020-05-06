@@ -74,17 +74,6 @@ var filterGraph = (function () {
     }
 
 
-    self.showConceptsParents = function (show) {
-        if (scope == "SelectedNode") {
-            if (!self.selectedGraphNode)
-                return;
-            self.showHideParents(self.selectedGraphNode)
-        } else {
-
-        }
-    }
-
-
     self.onConceptAggrLevelSliderChange = function (evt) {
         var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
         var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
@@ -98,16 +87,9 @@ var filterGraph = (function () {
 
 
     self.onAggregateCorpusSelectChange = function (type) {
-        return
-        var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
-        var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
-        self.resetUI();
-        paragraphs.drawParagraphsEntitiesGraphAggr(Selection.currentSelection.resources, Selection.currentSelection.conceptsInfos, {
-            conceptLevelAggr: conceptLevelAggr,
-            corpusLevelAggr: corpusLevelAggr
-        })
-
-        filterGraph.resetUI();
+      //  Selection.resetSelection();
+        Infos.setInfosDivHeight(5)
+        Selection.displayParagraphsGraph();
 
     }
 
@@ -175,7 +157,7 @@ var filterGraph = (function () {
                                 query += linkedResourceVar + " skos:broader ?xx . ?resource skos:broader ?xx .  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
                             else {
                                 corpusLevels.forEach(function (item, index) {
-                                    if (index>0 && okDistinctSelect) {
+                                    if (index > 0 && okDistinctSelect) {
                                         if (corpusAggrLevel != item.label) {
                                             query += " ?" + corpusLevels[index - 1].label + " skos:broader ?" + item.label + ".";
                                         } else {
@@ -227,31 +209,43 @@ var filterGraph = (function () {
                     // get concepts infos
                     function (callbackSeries) {
                         var conceptsIds = []
+
                         resourcesConcepts.forEach(function (item) {
-                            if (conceptsIds.indexOf(item.entity.value) < 0)
+                            if (conceptsIds.indexOf(item.entity.value) < 0) {
                                 conceptsIds.push(item.entity.value);
+                                var entityType = item.entityType.value;
+                                entityType = entityType.substring(entityType.lastIndexOf("/") + 1)
+                                conceptsMap[item.entity.value] = {
+                                    id: item.entity.value,
+                                    countEntities: 0,
+                                    type: entityType,
+                                    ancestors: [],
+                                    resources: []
+                                }
+                            }
+                            conceptsMap[item.entity.value].resources.push(item.resource.value);
+                            conceptsMap[item.entity.value].countEntities += parseInt(item.countEntities.value);
+
                         })
+
+
                         Concepts.getConceptsInfos(conceptsIds, {}, function (err, result) {
                             if (err)
                                 return callbackSeries(err);
 
                             result.forEach(function (item, index) {
-                                var countEntities = parseInt(resourcesConcepts[index].countEntities.value);
-                                var entityType = resourcesConcepts[index].entityType.value;
-                                entityType = entityType.substring(entityType.lastIndexOf("/") + 1)
-                                var obj = {id: item.concept.value, type: entityType, countEntities: countEntities, ancestors: [{id: item.concept.value, label: item.conceptLabel.value}], resources: []}
+                                if (!conceptsMap[item.concept.value])
+                                    return;
+                                var type = conceptsMap[item.concept.value].type
+                                conceptsMap[item.concept.value].ancestors.push({id: item.concept.value, label: item.conceptLabel.value, type: type})
+
                                 for (var i = 1; i < 7; i++) {
                                     var broader = item["broaderId" + i];
                                     if (typeof broader !== "undefined") {
                                         //   if (topSelectedConcepts.indexOf(broader.value) < 0)
-                                        obj.ancestors.push({id: broader.value, label: item["broader" + i].value})
+                                        conceptsMap[item.concept.value].ancestors.push({id: broader.value, label: item["broader" + i].value, type: type})
                                     }
                                 }
-                                conceptsMap[obj.id] = obj;
-                            })
-                            // add resources to  concepts map
-                            resourcesConcepts.forEach(function (item, index) {
-                                conceptsMap[item.entity.value].resources.push(item.resource.value);
 
                             })
 
@@ -273,10 +267,10 @@ var filterGraph = (function () {
                         for (var key in conceptsMap) {
                             var leafCountEntities = conceptsMap[key].countEntities;
                             var resources = conceptsMap[key].resources;
-                            var type = conceptsMap[key].type;
+                            //    var type = conceptsMap[key].type;
                             conceptsMap[key].ancestors.forEach(function (item, index) {
                                 if (!conceptsMapWithParents[item.id]) {
-                                    conceptsMapWithParents[item.id] = {id: item.id, text: item.label, data: {type: type, label: item.label, countEntities: 0, resources: []}};
+                                    conceptsMapWithParents[item.id] = {id: item.id, text: item.label, data: {type: item.type, label: item.label, countEntities: 0, resources: []}};
                                 }
                                 conceptsMapWithParents[item.id].data.countEntities += leafCountEntities || 0;
                                 conceptsMapWithParents[item.id].data.label = item.label;
@@ -296,7 +290,8 @@ var filterGraph = (function () {
 
                         for (var key in conceptsMapWithParents) {
                             var item = conceptsMapWithParents[key]
-                            item.text += " (" + item.data.countEntities + ")"
+                            var color = ontograph.entityTypeColors[item.data.type]
+                            item.text = "<span style='background-color:" + color + "'>" + item.text + " (" + item.data.countEntities + ")</span>"
                             jstreeData.push(conceptsMapWithParents[key])
                         }
                         jstreeData.sort(function (a, b) {
@@ -346,7 +341,7 @@ var filterGraph = (function () {
             var conceptType = obj.node.data.type;
             var countConcepts = obj.node.data.countEntities;
 
-            var conceptLabel = obj.node.text;
+            var conceptLabel = obj.node.data.label;
 
 
             var visjsData = {nodes: [], edges: []}
@@ -477,7 +472,7 @@ var filterGraph = (function () {
 
             existingNodes.forEach(function (node) {
 
-                if (!selectedResourceId || (selectedResourceId = node.id)) {
+                if (!selectedResourceId || (selectedResourceId == node.id)) {
                     var size = 15
                     var shape = "triangle"
                     var newNodeName = null;
@@ -557,35 +552,63 @@ var filterGraph = (function () {
         ,
 
         conceptInfos: function (resourceId) {
-
+            Infos.showInfos(resourceId);
         },
 
         hideConcept: function (conceptId) {
             $("#jstreeFilterConceptsDiv").jstree(true).uncheck_node(conceptId)
         },
 
+
         expandConcept: function (conceptId) {
-            $("#jstreeFilterConceptsDiv").jstree(true).uncheck_node(conceptId)
-            var node = $("#jstreeFilterConceptsDiv").jstree(true).select_node(conceptId)
+
+            var node = $("#jstreeFilterConceptsDiv").jstree(true).get_node(conceptId)
+            if (node.children.length > 0)
+                $("#jstreeFilterConceptsDiv").jstree(true).uncheck_node(conceptId)
             node.children.forEach(function (child) {
                 $("#jstreeFilterConceptsDiv").jstree(true).check_node(child)
 
             })
         },
         showResourceParents: function (resourceId) {
-
+            self.alterGraph.addResourcesParentsToGraph(resourceId)
         },
-        showResourceChildren: function (resourceId) {
 
-        },
         expandResource: function (resourceId) {
 
+
+            var conceptIdsStr = "";
+            var existingNodes = visjsGraph.data.nodes.getIds();
+            existingNodes.forEach(function (id, index) {
+                if (id.indexOf("/vocabulary/") > -1) {
+                    if (conceptIdsStr != "")
+                        conceptIdsStr += ","
+                    conceptIdsStr += "<" + id + ">"
+                }
+            })
+            var query = " select * where { ?childResource skos:broader  <" + resourceId + ">. ?childResource terms:subject ?concept. filter (?concept in (" + conceptIdsStr + "))} limit 5000"
+
+            var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+            sparql.querySPARQL_GET_proxy_cursor(url, query, queryOptions, null, function (err, result) {
+                if (err) {
+                    return common.message(err);
+                }
+
+
+            })
+
+
+        },
+        hideResource: function (conceptId) {
+            $("#jstreeFilterConceptsDiv").jstree(true).uncheck_node(conceptId)
         },
         showResourceConcepts: function (resourceId) {
 
         },
 
         resourceInfos: function (resourceId) {
+            Infos.showInfos(resourceId);
 
         },
 

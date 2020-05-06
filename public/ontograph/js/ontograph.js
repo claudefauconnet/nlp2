@@ -257,7 +257,7 @@ var ontograph = (function () {
         html += "<span class='text'>" + textRich + "</span>&nbsp;";
         //    html += "<span style='font-weight:bold'>" + text + "</span>&nbsp;";
         if (text)
-            $("#paragraphTextDiv").html(html);
+            $("#infosDiv").html(html);
     }
 
     self.onNodeClick = function (obj, point) {

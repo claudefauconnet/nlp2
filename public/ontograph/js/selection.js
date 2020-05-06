@@ -182,6 +182,7 @@ var Selection = (function () {
     }
 
     self.resetSelection = function (reload) {
+        Infos.setInfosDivHeight(5);
         $("#messageDiv").html("");
         $("#currentConceptsSpan").html("");
         $("#currentResourcesSpan").html("");

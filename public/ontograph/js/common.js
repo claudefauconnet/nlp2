@@ -141,6 +141,12 @@ var common = (function () {
 
     }
 
+    self.formatUriToJqueryId=function(uri){
+        var str=uri.toLowerCase().replace("http://","_");
+        return str.replace(/\//g,"_").replace(/\./g,"_");
+
+    }
+
 
     return self;
 

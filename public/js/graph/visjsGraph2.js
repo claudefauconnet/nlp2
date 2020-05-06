@@ -71,7 +71,9 @@ var visjsGraph = (function () {
                 }
                 self.simulationOn = !self.simulationOn;
                 // graphController.hideNodePopover();
-                $("#graphPopupDiv").css("display", "none")
+
+                if(_options.onclickFn)
+                    _options.onclickFn(null, point,options)
             }
 
             // select node

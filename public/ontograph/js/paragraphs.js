@@ -170,6 +170,8 @@ var paragraphs = (function () {
     }
 
     self.drawParagraphsEntitiesGraphSimple = function (data, conceptsInfosMap, options) {
+
+
         if (!options) {
             options = {
                 conceptLevelAggr: 0,
@@ -193,7 +195,7 @@ var paragraphs = (function () {
                     return;
                 corpusId = item[options.corpusLevelAggr].value;
                 if (corpusId.indexOf("Paragraph") > -1)
-                    corpusLabel = corpusId.substring(corpusId.lastIndexOf("/")+1)
+                    corpusLabel = corpusId.substring(corpusId.lastIndexOf("/") + 1)
                 else
                     corpusLabel = item[options.corpusLevelAggr + "Label"].value
                 /*  if (options.corpusLevelAggr == "documentType")
@@ -326,6 +328,7 @@ var paragraphs = (function () {
         ontograph.drawGraph(visjsData, {
             onclickFn: paragraphs.onNodeClick,
             onHoverNodeFn: paragraphs.onNodeHover,
+
             afterDrawing: function () {
                 common.message("")
                 $("#waitImg").css("display", "none")
@@ -336,6 +339,17 @@ var paragraphs = (function () {
     }
 
     self.onNodeClick = function (node, point) {
+
+        if (!node) {
+            $("#graphPopupDiv").css("display", "none")
+            Infos.setInfosDivHeight(5);
+            return;
+        }
+
+
+        var graphPos = $("#graphDiv").position()
+        point.x += graphPos.left
+        point.y += graphPos.top
         filterGraph.selectedGraphNode = node
         if (node.id.indexOf("/resource/vocabulary/") > -1) {
             /*  var html = " <span class='popupMenuItem' onclick='Selection.graphActions.expandResourceConcepts();'> Expand concepts</span>" +
@@ -344,28 +358,29 @@ var paragraphs = (function () {
 
               $("#graphPopupDiv").html(html)*/
             var html = ""
-            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.conceptInfos(\"" + node.id + "\");'>Hide</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.conceptInfos(\"" + node.id + "\");'>Infos</div>"
             html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.hideConcept(\"" + node.id + "\");'>Hide</div>"
             html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.expandConcept(\"" + node.id + "\");'> Expand</div>"
             // html += "<span class='popupMenuItem' onclick='Selection.graphActions.showResourceConcepts(\"" + node.id + "\",true);'> node concepts and relations</span><br>"
 
             $("#graphPopupDiv").html(html)
-            point.x += $("#tabs-Projection").width();
-            Selection.graphActions.showPopup(point)
 
+            Selection.graphActions.showPopup(point)
+            Infos.showInfos(node.id);
 
         } else {
 
             var html = ""
-            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.resourceInfos(\"" + node.id + "\");'>Hide</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.resourceInfos(\"" + node.id + "\");'>Infos</div>"
+            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.hideResource(\"" + node.id + "\");'>Hide</div>"
             html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.showResourceParents(\"" + node.id + "\");'>Show parent</div>"
-            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.showResourceChildren(\"" + node.id + "\");'>Show children</div>"
             html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.expandResource(\"" + node.id + "\");'>Expand</div>"
-            html += "<div class='popupMenuItem' onclick='filterGraph.alterGraph.showResourceConcepts(\"" + node.id + "\");'> Show concepts</div><br>"
+
 
             $("#graphPopupDiv").html(html)
-            point.x += $("#tabs-Projection").width();
+
             Selection.graphActions.showPopup(point)
+            Infos.showInfos(node.id);
 
         }
 
@@ -376,196 +391,6 @@ var paragraphs = (function () {
     }
     self.onNodeHover = function (obj, point) {
 
-        if (obj.id.indexOf("/Paragraph/") > -1) {
-
-            async.series([
-                function (callbackSeries) {
-                    if (!self.currentGraphInfos[obj.id]) {
-                        self.getParagraphsInfos([obj.id], null, function (err, result) {
-                            if (err)
-                                return common.message(err)
-                            result.forEach(function (item) {
-                                if (!self.currentGraphInfos[obj.id])
-                                    self.currentGraphInfos[obj.id] = {paragraph: item.paragraph, paragraphText: item.paragraphText, offsets: []};
-                                self.currentGraphInfos[obj.id].offsets.push(item.offset)
-                            })
-                            callbackSeries();
-                        })
-
-
-                    } else
-                        callbackSeries();
-
-                },
-                function (callbackSeries) {
-                    $("#messageDiv").html("");
-
-                    var html = ""
-
-                    var infos = self.currentGraphInfos[obj.id];
-
-                    var nodeData = obj.data;
-                    var text
-                    if (infos && infos.paragraphText)
-                        text = infos.paragraphText.value;
-                    else
-                        text = "??"
-                    var textRich = self.getEntichedParagraphText(infos);
-                    html += "<span class='paragraph-docTitle'>" + nodeData.documentLabel.value + "</span>&nbsp;";
-                    html += "<span class='paragraph-chapter'>" + nodeData.chapterLabel.value + "</span>&nbsp;";
-
-
-                    html += "<span class='text'>" + textRich + "</span>&nbsp;";
-                    //    html += "<span style='font-weight:bold'>" + text + "</span>&nbsp;";
-                    if (text)
-                        $("#paragraphTextDiv").html(html);
-                    callbackSeries();
-
-                }
-
-
-            ])
-
-        } else if (obj.id.indexOf("/resource/vocabulary/") > -1) {
-            async.series([
-                function (callbackSeries) {
-                    if (!self.currentGraphInfos[obj.id]) {
-                        Concepts.getConceptsInfos([obj.id], null, function (err, result) {
-                            self.currentGraphInfos[obj.id] = result[0];
-                            callbackSeries();
-                        })
-                    } else
-                        callbackSeries();
-                },
-                function (callbackSeries) {
-                    $("#messageDiv").html("");
-
-                    var html = ""
-
-                    var infos = self.currentGraphInfos[obj.id];
-
-                    html += "<span class='paragraph-docTitle'>" + infos.conceptLabel.value + "</span>&nbsp;";
-                    for (var i = 1; i < 8; i++) {
-                        var broader = infos["broader" + i]
-                        if (typeof broader !== "undefined") {
-                            html += "<span class='paragraph-chapter'>" + "/" + broader.value + "</span>&nbsp;";
-                        }
-                    }
-                    var definition = infos["definition"]
-                    if (typeof definition !== "undefined") {
-                        html += "<span class='paragraph-chapter'>definition:</span>&nbsp;" + definition.value;
-                    }
-                    var exactMatch = infos["exactMatch"]
-                    if (typeof exactMatch !== "undefined") {
-                        html += "<br>"
-                        html += "<span class='paragraph-chapter'>Quantum exact match:</span>&nbsp;" + exactMatch.value;
-                    }
-
-
-                    $("#paragraphTextDiv").html(html);
-                    callbackSeries();
-
-                }
-
-
-            ])
-
-
-        }
-    }
-
-
-    self.getParagraphsInfos = function (paragraphs, options, callback) {
-
-        if (!options)
-            options = {};
-        var slicedParagraphs = common.sliceArray(paragraphs, 5);
-        if (slicedParagraphs.length == 0)
-            return callback(null, [])
-
-        var allParaGraphsInfos = []
-        async.eachSeries(slicedParagraphs, function (paragraphs, callbackEach) {
-
-
-            var pargagraphsIdsStr = "";
-            paragraphs.forEach(function (id, index) {
-                if (index > 0)
-                    pargagraphsIdsStr += ","
-                pargagraphsIdsStr += "<" + id + ">"
-            })
-
-            var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
-
-            var query = "PREFIX terms:<http://purl.org/dc/terms/>" +
-                "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-                "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
-                "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
-                "select distinct *" +
-                //   "select ?paragraph ?paragraphText  ?chapter ?document ?documentType ?branch ?domain  ?chapterLabel ?documentLabel ?documentTypeLabel ?branchLabel ?domainLabel (sql:GROUP_CONCAT(REPLACE(?offset,'http://data.total.com/resource/vocabulary/',''), ' ; ') as ?offsets) " +
-                "where{" +
-                "?paragraph mime:Text ?paragraphText ." +
-                " filter (?paragraph in(" + pargagraphsIdsStr + "))"
-
-            query += "?paragraph <http://open.vocab.org/terms/hasOffset> ?offset ."
-
-
-            query += "} limit " + self.sparql_limit
-
-
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
-            sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
-                if (err) {
-                    console.log(query)
-                    return callbackEach(err);
-                }
-                allParaGraphsInfos = allParaGraphsInfos.concat(result.results.bindings)
-                callbackEach()
-
-
-            })
-        }, function (err) {
-            if (err)
-                return callback(err);
-            return callback(null, allParaGraphsInfos)
-        })
-
-    }
-
-    self.getEntichedParagraphText = function (paragraphInfos) {
-        var allOffsets = []
-        var allUniqueOffsets = []
-        paragraphInfos.offsets.forEach(function (offset) {
-            var offsetArray = offset.value.split("|");
-            if (allUniqueOffsets.indexOf(offsetArray[2] + "_" + offsetArray[3]) < 0) {
-                allUniqueOffsets.push(offsetArray[2] + "_" + offsetArray[3])
-                var type = offsetArray[0];
-                //   type=type.substring(type.lastIndexOf("/")+1)
-                allOffsets.push({type: type, start: parseInt(offsetArray[3]), end: parseInt(offsetArray[4])})
-            }
-
-        })
-
-        var previousOffset = 0
-        var chunks = [];
-
-        //   obj.text=obj.text.replace(/\  /g,"")
-        allOffsets.forEach(function (offset, index) {
-            chunks.push(paragraphInfos.paragraphText.value.substring(previousOffset, offset.start))
-
-            var color = ontograph.entityTypeColors[offset.type]
-            var newText = "<span style='background-color:" + color + "'>" + paragraphInfos.paragraphText.value.substring(offset.start, offset.end) + "</span>"
-            chunks.push(newText)
-            previousOffset = offset.end
-
-        })
-        //  chunks.push(obj.text.substring(previousOffset))
-        var htmlText = ""
-        chunks.forEach(function (chunk, index) {
-
-            htmlText += chunk
-        })
-        return htmlText;
     }
 
 
@@ -602,9 +427,9 @@ var paragraphs = (function () {
                 whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
             }
 
-            if ( item.label == options.corpusLevelAggr || okSelectAncestors) {
+            if (item.label == options.corpusLevelAggr || okSelectAncestors) {
                 distinctSelectStr += "?" + item.label + " ?" + item.label + "Label "
-                okSelectAncestors=true;
+                okSelectAncestors = true;
             }
 
             /* if (okDistinctSelect) {
@@ -712,7 +537,7 @@ var paragraphs = (function () {
                 }
 
 
-                distinctSelectStr += " ?entity" + indexSet + " ";
+                distinctSelectStr += " ?entity" + indexSet + " ?entity" + indexSet + "Type\ ";
                 /*   var i;
                    for(var i=indexSet;i<=options.conceptLevelAggr;i++){
 

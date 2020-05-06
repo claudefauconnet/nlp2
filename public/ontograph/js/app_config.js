@@ -1,6 +1,6 @@
 var app_config = {
 
-    currentOntology: "PLM",
+    currentOntology: "CTG",
 
     ontologies: {
 
