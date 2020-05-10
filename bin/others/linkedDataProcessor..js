@@ -913,7 +913,7 @@ var linkedDataProcessor = {
                                 "}  " +
                                 " " +
                                 "}LIMIT 1000"
-                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
 
 
                             var query2 = encodeURIComponent(query);
@@ -1080,7 +1080,7 @@ var linkedDataProcessor = {
 
 
                          //   query="SELECT+DISTINCT+*WHERE+%7B+++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2F"+id+"%3E++bn-lemon%3AsynsetID+%3FsynsetID+.+++++OPTIONAL+%7B++++++++++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs00022872n%3E+bn-lemon%3Adefinition+%3Fdefinition+.++++++++++%3Fdefinition+lemon%3Alanguage+%27EN%27+.++++++++++%3Fdefinition+bn-lemon%3Agloss+%3Fgloss+.++++++++++%3Fdefinition+dcterms%3Alicense+%3Flicense+.++++++++++%3Fdefinition+dc%3Asource+%3Fsourceurl+.+++++%7D%7D"
-                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                             url2 = url2 + query + queryOptions;*/
                     var url2 = "https://babelnet.org/sparql/?query=SELECT+DISTINCT+*WHERE+%7B+++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs" + id + "%3E++bn-lemon%3AsynsetID+%3FsynsetID+.+++++OPTIONAL+%7B++++++++++%3Chttp%3A%2F%2Fbabelnet.org%2Frdf%2Fs" + id + "%3E+bn-lemon%3Adefinition+%3Fdefinition+.++++++++++%3Fdefinition+lemon%3Alanguage+%27EN%27+.++++++++++%3Fdefinition+bn-lemon%3Agloss+%3Fgloss+.++++++++++%3Fdefinition+dcterms%3Alicense+%3Flicense+.++++++++++%3Fdefinition+dc%3Asource+%3Fsourceurl+.+++++%7D%7D&format=application%2Fsparql-results%2Bjson"
 

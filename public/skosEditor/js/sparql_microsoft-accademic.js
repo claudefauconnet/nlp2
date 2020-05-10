@@ -33,7 +33,7 @@ var sparql_microsoft_accademic = (function () {
             "?id map:hasParent ?broaderId . " +
             "?broaderId foaf:name ?broader. }" + " LIMIT 100"
         //  query = encodeURIComponent(query);
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, {headers: headers}, function (err, result) {
             if (err) {
@@ -92,7 +92,7 @@ var sparql_microsoft_accademic = (function () {
         console.log(query)
 
 
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, {headers: headers}, function (err, result) {
             if (err) {
@@ -133,7 +133,7 @@ var query=" PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX foa
             "}LIMIT 100"*/
 
 
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, {headers: headers}, function (err, result) {
             if (err) {
@@ -179,7 +179,7 @@ var query=" PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX foa
         "" +
         "}" +
         "limit 100"
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, {headers: headers}, function (err, result) {
             if (err) {

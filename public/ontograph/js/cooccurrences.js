@@ -213,7 +213,7 @@ var cooccurrences = (function () {
         query += "having( count (?paragraph)>" + countParagraphMin + ")" +
             "order by desc (count (?paragraph))"
         query += "limit 1000"
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
                 return callback(err);

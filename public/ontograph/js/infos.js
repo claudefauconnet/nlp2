@@ -72,7 +72,8 @@ var Infos = (function () {
                 html += "<div class='paragraph-docTitle'>DOCUMENT: " + infos.documentLabel.value + "</div>";
                 html += "<div class='paragraph-docTitle'>Title : " + infos.documentTitle.value + "</div>";
                 html += "<div class='paragraph-chapter'>Purpose : " + infos.documentPurpose.value + "</div>";
-                html += "<button onclick=\"Infos.resources.showDocChaptersList('" + infos.document.value + "')\" >Chapters...</button>";
+
+                html += "<img src='icons/plus.png' width='25px' onclick=\"Infos.resources.showDocChaptersList('" + infos.document.value + "')\"> </div>";
                 $("#infosDiv").html(html);
                 Infos.setInfosDivHeight(100);
             }
@@ -94,7 +95,7 @@ var Infos = (function () {
                     " filter (?document in(<" + documentId + ">))"
 
                 query += "} limit 10000"
-                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err)
                         return common.message(err)
@@ -122,7 +123,7 @@ var Infos = (function () {
                 " filter (?document in(<" + documentId + ">))"
 
             query += "} ORDER by ?chapterLabel limit 10000"
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err)
                     return common.message(err)
@@ -158,7 +159,7 @@ var Infos = (function () {
                 " filter (?chapter in(<" + chapterId + ">))"
 
             query += "} ORDER by ?paragraph limit 10000"
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err)
                     return common.message(err)
@@ -201,7 +202,7 @@ var Infos = (function () {
                 " filter (?chapter in(<" + chapterId + ">))"
 
             query += "} ORDER by ?paragraph limit 10000"
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err)
                     return common.message(err)
@@ -267,7 +268,7 @@ var Infos = (function () {
                 "?document skos:prefLabel ?documentLabel. " +
                 "?document terms:title ?documentTitle ."
                 query += "} limit 100"
-                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err) {
 

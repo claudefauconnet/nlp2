@@ -103,7 +103,7 @@ LIMIT 100
         console.log(query)
 
 
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, {headers: headers}, function (err, result) {
             if (err) {
@@ -140,7 +140,7 @@ LIMIT 100
             "}LIMIT 100"
 
 
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, {headers: headers}, function (err, result) {
             if (err) {
@@ -182,7 +182,7 @@ LIMIT 100
         "" +
         "}" +
         "limit 100"
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, {headers: headers}, function (err, result) {
             if (err) {

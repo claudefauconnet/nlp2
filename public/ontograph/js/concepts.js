@@ -15,7 +15,9 @@ var Concepts = (function () {
             var conceptBroadersMap = {};
             var uniqueIds = []
 
+
             result.forEach(function (item) {
+                var uniqueBroaderIds = []
                 var id = item.concept.value;
                 for (var i = 1; i < 6; i++) {
                     var broader = item["broader" + i];
@@ -32,7 +34,9 @@ var Concepts = (function () {
                             conceptBroadersMap[topNode.id] = topNode;
 
                         } else {
-                            node.parent = broader2.value;
+                            if(uniqueBroaderIds.indexOf(broader2.value)<0) {
+                                node.parent = broader2.value;
+                            }
                         }
 
                         conceptBroadersMap[broader] = node;
@@ -110,7 +114,7 @@ var Concepts = (function () {
                     "?concept skos:prefLabel ?conceptLabel."
                 query += "  }ORDER BY ?conceptLabel ";
                 query += "limit 5000 "
-                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err) {
                         return common.message(err)
@@ -151,7 +155,7 @@ var Concepts = (function () {
                     "}"
                 query += "  }ORDER BY ?conceptLabel ";
                 query += "limit 500 "
-                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err) {
                         return common.message(err)
@@ -244,7 +248,7 @@ var Concepts = (function () {
             "}" +
             "LIMIT 2000"
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
                 return callback(err);
@@ -323,7 +327,7 @@ var Concepts = (function () {
 
         var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
         var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
                 return common.message(err)
@@ -369,7 +373,7 @@ var Concepts = (function () {
         query += "  }ORDER BY ?childLabel1 ";
         query += "limit 1000 "
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
                 return common.message(err)
@@ -481,7 +485,7 @@ var Concepts = (function () {
         console.log(query)
 
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
 
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
@@ -567,7 +571,7 @@ var Concepts = (function () {
                 "LIMIT 1000"
 
 
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
 
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err) {

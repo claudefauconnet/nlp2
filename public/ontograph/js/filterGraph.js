@@ -190,7 +190,7 @@ var filterGraph = (function () {
 
 
                             var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
-                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                             sparql.querySPARQL_GET_proxy_cursor(url, query, queryOptions, null, function (err, result) {
                                 if (err) {
                                     return callbackEach(err);
@@ -589,7 +589,7 @@ var filterGraph = (function () {
             var query = " select * where { ?childResource skos:broader  <" + resourceId + ">. ?childResource terms:subject ?concept. filter (?concept in (" + conceptIdsStr + "))} limit 5000"
 
             var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             sparql.querySPARQL_GET_proxy_cursor(url, query, queryOptions, null, function (err, result) {
                 if (err) {
                     return common.message(err);

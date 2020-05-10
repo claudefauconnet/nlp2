@@ -7,11 +7,15 @@ var sparql_skos_generic = (function () {
 
     self.list = function (source, word, options, callback) {
 
-        var filter = " (lcase(str(?prefLabel)) = \"" + word.toLowerCase() + "\")";
+      /*  var filter = " (lcase(str(?prefLabel)) = \"" + word.toLowerCase() + "\")";
         if (!options.exactMatch) {
             filter = "contains(lcase(str(?prefLabel)),\"" + word.toLowerCase() + "\")";
-        }
+        }*/
 
+        var filter="  regex(?prefLabel, \"^"+word+"$\", \"i\")";
+        if (!options.exactMatch) {
+            filter = "  regex(?prefLabel, \""+word+"\", \"i\")";
+        }
 
         var url = source.sparql_url + "?default-graph-uri=" + encodeURIComponent(source.graphIRI) + "&query=";// + query + queryOptions
         word = word.charAt(0).toUpperCase() + word.slice(1)
@@ -20,14 +24,14 @@ var sparql_skos_generic = (function () {
             "WHERE {" +
             "?id skos:prefLabel ?prefLabel ." +
             " filter " + filter +
-            "  ?id ?prop ?valueId ." +
-            "  ?valueId skos:prefLabel ?value." +
+           // "  ?id ?prop ?valueId ." +
+            "  ?id skos:prefLabel ?value." +
             "?id skos:broader ?broaderId ." +
             "  ?broaderId skos:prefLabel ?broader." +
             "}" +
             "LIMIT 1000"
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=200000&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions,null, function (err, result) {
             if (err) {
@@ -96,7 +100,7 @@ var sparql_skos_generic = (function () {
         console.log(query)
 
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions,null, function (err, result) {
             if (err) {
@@ -140,7 +144,7 @@ var sparql_skos_generic = (function () {
             "}LIMIT 1000"
 
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions,null, function (err, result) {
             if (err) {
@@ -185,7 +189,7 @@ var sparql_skos_generic = (function () {
         "" +
         "}" +
         "limit 100"
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions,null, function (err, result) {
             if (err) {

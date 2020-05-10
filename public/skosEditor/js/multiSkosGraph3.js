@@ -113,7 +113,13 @@ var multiSkosGraph2 = (function () {
         });
 
         var selectedIds = [];
-        sources.forEach(function (source) {
+      //  sources.forEach(function (source) {
+            async.eachSeries(sources,function(source,callbackEach){
+
+                if(true && source.sparql_url!= 'http://vps475829.ovh.net:8890/sparql'){
+                    callbackEach()
+                }
+
             sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
 
                 if (err) {
@@ -129,22 +135,31 @@ var multiSkosGraph2 = (function () {
                         item.title = item.label + " / " + (item.description || "")
 
                         var newNode = {id: item.id, text: "<span class='tree_level_2'>" + item.title + "</span>", data: item}
-                        setTimeout(function () {
+                       // setTimeout(function () {
                             $("#conceptsJstreeDiv").jstree(true).create_node(source.name, newNode, "first", function () {
                                 $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
 
 
                             }, false);
-                        }, 1000)
+
+                      //  }, 1000)
                     }
 
                 })
+             if(source.sparql_url== 'http://vps475829.ovh.net:8890/sparql'){
+                    callbackEach()
+               }
+
 
 
             })
 
 
-        })
+        },function(err){
+                if(err)
+                  return  $("#messageDiv").html(err)
+                $("#messageDiv").html("done")
+            })
         setTimeout(function () {
 
             $("#conceptsJstreeDiv").jstree(true).select_node(selectedIds);
@@ -262,10 +277,11 @@ var multiSkosGraph2 = (function () {
 
 
     self.onNodeClick = function (obj, point) {
+if(obj) {
+    self.graphActions.currentNode = obj;
 
-        self.graphActions.currentNode = obj;
-        self.graphActions.showPopup(point)
-
+    self.graphActions.showPopup(point)
+}
 
     }
 

@@ -17,7 +17,7 @@
 
          var defaultIri="http://telanthropia.org/resource/ontology/PLM/"
          var url = sparql.source.sparql_url + "?default-graph-uri=" + defaultIri + "&query=";// + query + queryOptions
-         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
          sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
              if (err) {
                  return common.message(err)

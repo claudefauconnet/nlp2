@@ -2,6 +2,8 @@ var app_config = {
 
     currentOntology: "CTG",
 
+    currentOntology: "Energistics",
+
     ontologies: {
 
         "CTG": {
@@ -34,6 +36,20 @@ var app_config = {
             resourceDefaultLevel: "notice",
 
             conceptsGraphUri: "http://telanthropia.org/resource/thesaurus/PLM/",
+
+        },
+        "Energistics": {
+            corpusGraphUri: "http://www.energistics.org/energyml/data/",
+            corpusScheme: "http://www.energistics.org/energyml/data/",
+            resourceLevels: [
+                {value: "/Notice/", label: "notice"},
+                {value: "/SujetPLM/", label: "sujet"},
+
+
+            ],
+            resourceDefaultLevel: "notice",
+
+            conceptsGraphUri: "http://www.energistics.org/energyml/data/",
 
         }
 

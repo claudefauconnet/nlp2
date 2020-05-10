@@ -71,7 +71,7 @@ var Questions = (function () {
 
                 var url = sparql.source.sparql_url + "?default-graph-uri=";// + query + queryOptions
 
-                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err)
                         return callbackSeries();
@@ -122,7 +122,7 @@ var Questions = (function () {
 
                 var url = sparql.source.sparql_url + "?default-graph-uri=";// + query + queryOptions
 
-                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                     if (err)
                         return callbackSeries();

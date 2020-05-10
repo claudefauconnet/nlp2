@@ -110,7 +110,7 @@ var Corpus = (function () {
 
         self.sparql_searchResource = function (word, id, scheme, depth, callback) {
 
-
+callback(null,[])
 
             var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                 "select *  where{   " +
@@ -151,7 +151,7 @@ var Corpus = (function () {
 
             var corpusGraphUri=app_config.ontologies[app_config.currentOntology].corpusGraphUri
             var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(corpusGraphUri) + "&query=";// + query + queryOptions
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=5000&debug=on"
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err) {
                     return callback(err);

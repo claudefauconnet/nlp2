@@ -71,7 +71,7 @@ var sparql = (function () {
         console.log(query)
         query = encodeURIComponent(query)
 
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=5000&should-sponge=&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=20000&should-sponge=&debug=off"
         var url = "https://data.bnf.fr/sparql?default-graph-uri=&query=";// + query + queryOptions
         self.querySPARQL_GET(url, query, queryOptions, function (err, result) {
             if (err) {
@@ -100,7 +100,7 @@ var sparql = (function () {
         console.log(query)
         query = encodeURIComponent(query)
 
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=5000&should-sponge=&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=20000&should-sponge=&debug=off"
         var url = "https://data.bnf.fr/sparql?default-graph-uri=&query=";// + query + queryOptions
         self.querySPARQL_GET(url, query, queryOptions, function (err, result) {
             if (err) {
@@ -168,7 +168,7 @@ var sparql = (function () {
             "LIMIT 1000"
         query = encodeURIComponent(query)
 
-        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=5000&should-sponge=&debug=on"
+        var queryOptions = "&format=application%2Fsparql-results%2Bjson&timeout=20000&should-sponge=&debug=off"
         var url = "https://data.bnf.fr/sparql?default-graph-uri=&query=";// + query + queryOptions
         self.querySPARQL_GET(url, query, queryOptions, function (err, result) {
             if (err) {

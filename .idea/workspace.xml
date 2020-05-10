@@ -3,20 +3,25 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/indexOld.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/indexOld.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/indexOld2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/indexOld2.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/indexOld3.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/indexOld3.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/linkedDataProcessor..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/linkedDataProcessor..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/app_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/app_config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/common.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/concepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/concepts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/cooccurrences.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/cooccurrences.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/corpus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/corpus.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/filterGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/filterGraph.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/ontograph.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/infos.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/infos.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/selection.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/selection.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/telanthropia.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/telanthropia.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/questions.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/questions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparql.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/telanthropia.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/telanthropia.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql3.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_babelNet.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_babelNet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_microsoft-accademic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_microsoft-accademic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,24 +52,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/ontograph" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/others" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\bin\others" />
+      <recent name="D:\GitHub\nlp2\bin\others\telanthropia" />
+      <recent name="D:\GitHub\nlp2\public\ontograph" />
+      <recent name="D:\GitHub\nlp2\bin\others\ontologyCTG" />
+      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\public\ontograph\js" />
       <recent name="D:\GitHub\nlp2\public\js" />
       <recent name="D:\GitHub\nlp2\bin" />
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\ontograph" />
-      <recent name="D:\GitHub\nlp2\bin\others\telanthropia" />
-      <recent name="D:\GitHub\nlp2\bin\others\ontologyCTG" />
-      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -79,14 +84,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.ontologyCTG..js">
-    <configuration name="httpProxy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="httpProxy..js" working-dir="$PROJECT_DIR$/bin">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Node.js.xsdToSkos2..js">
     <configuration name="ontologyCTG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyCTG..js" working-dir="$PROJECT_DIR$/bin/others/ontologyCTG">
       <method v="2" />
     </configuration>
     <configuration name="ontologyCTG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" working-dir="$PROJECT_DIR$/bin/others/ontologyCTG">
+      <method v="2" />
+    </configuration>
+    <configuration name="ontologyKoha2..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyKoha2..js" working-dir="$PROJECT_DIR$/bin/others/telanthropia">
       <method v="2" />
     </configuration>
     <configuration name="ontologyKoha..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyKoha..js" working-dir="$PROJECT_DIR$/bin/others/telanthropia">
@@ -95,16 +100,16 @@
     <configuration name="paragraphs.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="paragraphs.js" working-dir="$PROJECT_DIR$/public/ontograph/js">
       <method v="2" />
     </configuration>
-    <configuration name="skosReader..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="skosReader..js" working-dir="$PROJECT_DIR$/bin/backoffice">
+    <configuration name="xsdToSkos2..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="xsdToSkos2..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.ontologyCTG..js" />
+        <item itemvalue="Node.js.xsdToSkos2..js" />
+        <item itemvalue="Node.js.ontologyKoha2..js" />
         <item itemvalue="Node.js.ontologyKoha..js" />
+        <item itemvalue="Node.js.ontologyCTG..js" />
         <item itemvalue="Node.js.paragraphs.js" />
-        <item itemvalue="Node.js.skosReader..js" />
-        <item itemvalue="Node.js.httpProxy..js" />
       </list>
     </recent_temporary>
   </component>
@@ -152,7 +157,10 @@
       <workItem from="1586628452068" duration="70914000" />
       <workItem from="1587111876191" duration="49022000" />
       <workItem from="1587483580374" duration="20037000" />
-      <workItem from="1587706736815" duration="175996000" />
+      <workItem from="1587706736815" duration="177389000" />
+      <workItem from="1588760470367" duration="17000" />
+      <workItem from="1588762897850" duration="43849000" />
+      <workItem from="1589103092503" duration="10494000" />
     </task>
     <servers />
   </component>
@@ -176,220 +184,16 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>997</line>
-          <option name="timeStamp" value="3007" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>974</line>
-          <option name="timeStamp" value="3009" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>965</line>
-          <option name="timeStamp" value="3011" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/termScienceToSkos..js</url>
-          <line>487</line>
-          <option name="timeStamp" value="3012" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1138</line>
-          <option name="timeStamp" value="3013" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1123</line>
-          <option name="timeStamp" value="3015" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1120</line>
-          <option name="timeStamp" value="3016" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/skosToElastic..js</url>
-          <line>119</line>
-          <option name="timeStamp" value="3025" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>287</line>
-          <option name="timeStamp" value="3050" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>422</line>
-          <option name="timeStamp" value="3077" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1182</line>
-          <option name="timeStamp" value="3091" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1194</line>
-          <option name="timeStamp" value="3100" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>976</line>
-          <option name="timeStamp" value="3113" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/routes/index.js</url>
-          <line>260</line>
-          <option name="timeStamp" value="3131" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph2.js</url>
-          <line>316</line>
-          <option name="timeStamp" value="3140" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql.js</url>
-          <line>219</line>
-          <option name="timeStamp" value="3142" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql.js</url>
-          <line>171</line>
-          <option name="timeStamp" value="3144" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js</url>
-          <line>155</line>
-          <option name="timeStamp" value="3165" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/routes/index.js</url>
-          <line>259</line>
-          <option name="timeStamp" value="3166" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js</url>
-          <line>17</line>
-          <option name="timeStamp" value="3188" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/termSciencesSkosproxy..js</url>
-          <line>11</line>
-          <option name="timeStamp" value="3194" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_termSciences..js</url>
-          <line>1462</line>
-          <option name="timeStamp" value="3211" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_regex..js</url>
-          <line>68</line>
-          <option name="timeStamp" value="3382" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1091</line>
-          <option name="timeStamp" value="3400" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1066</line>
-          <option name="timeStamp" value="3401" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1088</line>
-          <option name="timeStamp" value="3404" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1090</line>
-          <option name="timeStamp" value="3405" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1013</line>
-          <option name="timeStamp" value="3408" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/backoffice/annotator_regex..js</url>
-          <line>233</line>
-          <option name="timeStamp" value="3409" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1162</line>
-          <option name="timeStamp" value="3427" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/linkedDataProcessor..js</url>
-          <line>1160</line>
-          <option name="timeStamp" value="3428" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/ontograph.js</url>
-          <line>275</line>
-          <option name="timeStamp" value="3515" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
-          <line>132</line>
-          <option name="timeStamp" value="3518" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/thesaurusCrawlers/crawler_LOC..js</url>
-          <line>40</line>
-          <option name="timeStamp" value="3519" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/concepts.js</url>
-          <line>75</line>
-          <option name="timeStamp" value="3525" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>447</line>
-          <option name="timeStamp" value="3528" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/corpus.js</url>
-          <line>137</line>
-          <option name="timeStamp" value="3532" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/corpus.js</url>
-          <line>132</line>
-          <option name="timeStamp" value="3533" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyQuantum..js</url>
-          <line>142</line>
-          <option name="timeStamp" value="3549" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js</url>
-          <line>153</line>
-          <option name="timeStamp" value="3555" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/questions.js</url>
-          <line>137</line>
-          <option name="timeStamp" value="3580" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/concepts.js</url>
-          <line>113</line>
-          <option name="timeStamp" value="3593" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/filterGraph.js</url>
-          <line>129</line>
+          <url>file://$PROJECT_DIR$/bin/others/telanthropia/ontologyKoha2..js</url>
+          <line>292</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="3605" />
+          <option name="timeStamp" value="3701" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/xsdToSkos2..js</url>
+          <line>41</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3711" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
