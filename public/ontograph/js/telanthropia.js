@@ -7,7 +7,7 @@
 
          var query="select distinct * where {\n" +
              "\n" +
-             "?sujet  <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.telanthropia.org/resource/ontology/PLM/Sujet> .\n" +
+             "?sujet  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.telanthropia.org/resource/ontology/PLM/Sujet> .\n" +
              "?sujet skos:prefLabel ?sujetLabel .\n" +
              "}\n" +
              "\n" +

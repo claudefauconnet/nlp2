@@ -6,16 +6,14 @@ var Corpus = (function () {
 
         }
         self.loadCorpusJsTree = function () {
-            var corpusScheme=app_config.ontologies[app_config.currentOntology].corpusScheme
+            var corpusScheme = app_config.ontologies[app_config.currentOntology].corpusScheme
             self.showJstreeResources(null, null, corpusScheme, 2);
         }
-        self.loadResourceLevelsSelect=function(){
-            var levels=app_config.ontologies[app_config.currentOntology].resourceLevels;
-            var defaultLevel=app_config.ontologies[app_config.currentOntology].resourceDefaultLevel;
-            common.fillSelectOptions("corpusAggrLevelSelect",levels,true,"label","label")
+        self.loadResourceLevelsSelect = function () {
+            var levels = app_config.ontologies[app_config.currentOntology].resourceLevels;
+            var defaultLevel = app_config.ontologies[app_config.currentOntology].resourceDefaultLevel;
+            common.fillSelectOptions("corpusAggrLevelSelect", levels, true, "label", "label")
             $("#corpusAggrLevelSelect").val(defaultLevel);
-
-
 
 
         }
@@ -25,7 +23,7 @@ var Corpus = (function () {
             var idCorpus = null;
             var selectedCorpusResources = $("#jstreeCorpusDiv").jstree(true).get_checked()
             if (selectedCorpusResources.length > 0)
-                idCorpus = selectedCorpusResources[0]
+                idCorpus = selectedCorpusResources;
             return idCorpus
         }
 
@@ -106,11 +104,9 @@ var Corpus = (function () {
         }
 
 
-
-
         self.sparql_searchResource = function (word, id, scheme, depth, callback) {
 
-callback(null,[])
+//callback(null,[])
 
             var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                 "select *  where{   " +
@@ -149,7 +145,7 @@ callback(null,[])
 
             query += " } ORDER BY ?resourceLabel limit 2000"
 
-            var corpusGraphUri=app_config.ontologies[app_config.currentOntology].corpusGraphUri
+            var corpusGraphUri = app_config.ontologies[app_config.currentOntology].corpusGraphUri
             var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(corpusGraphUri) + "&query=";// + query + queryOptions
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -193,21 +189,19 @@ callback(null,[])
         self.onNodeChecked = function (evt, obj) {
 
             if (obj.event.ctrlKey && self.currentCorpusSelection) {
-
+                obj.type = "corpus";
                 self.currentCorpusSelection.push([obj.node.id]);
-                Selection.setConceptSelectedCBX(obj, "AND")
+                Selection.onJsTreeSelectionCBXchecked(obj, "AND")
 
             } else {
                 if (!self.currentCorpusSelection)
                     self.currentCorpusSelection = [[]];
                 var xx = self.currentCorpusSelection[self.currentCorpusSelection.length - 1]
                 self.currentCorpusSelection[self.currentCorpusSelection.length - 1].push(obj.node.id);
-                Selection.setConceptSelectedCBX(obj, "OR")
+                obj.type = "corpus";
+                Selection.onJsTreeSelectionCBXchecked(obj, "OR")
             }
         }
-
-
-
 
 
         return self;

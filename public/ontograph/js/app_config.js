@@ -2,7 +2,13 @@ var app_config = {
 
     currentOntology: "CTG",
 
-    currentOntology: "Energistics",
+currentOntology: "Energistics",
+
+  currentOntology: "PLM",
+    currentOntology: "CTG",
+    currentOntology: "Geosciml",
+
+
 
     ontologies: {
 
@@ -51,7 +57,36 @@ var app_config = {
 
             conceptsGraphUri: "http://www.energistics.org/energyml/data/",
 
+        },
+        "Geosciml": {
+            corpusGraphUri: "http://www.energistics.org/energyml/data/",
+            corpusScheme: "http://www.energistics.org/energyml/data/",
+            resourceLevels: [
+                {value: "/Notice/", label: "notice"},
+                {value: "/SujetPLM/", label: "sujet"},
+
+
+            ],
+            resourceDefaultLevel: "notice",
+
+            conceptsGraphUri: "http://resource.geosciml.org/",
+
+        },
+
+        "Tulsa": {
+            corpusGraphUri: "http://souslesens.org/oil-gas/upstream/",
+            corpusScheme: "http://souslesens.org/oil-gas/upstream/",
+            resourceLevels: [
+
+
+
+            ],
+            resourceDefaultLevel: "",
+
+            conceptsGraphUri: "http://souslesens.org/oil-gas/upstream/",
+
         }
+
 
 
     }

@@ -558,7 +558,7 @@ var paragraphs = (function () {
         var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
         var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
             "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-            "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
 

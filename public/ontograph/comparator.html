@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Souslesens MultiSkosGraph</title>
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../js/others/async.js" charset="utf-8"></script>
+    <!--   <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
+       <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>-->
+
+    <script type="text/javascript" src="../js/visjs/vis-network.min.js"></script>
+    <link href="../js/visjs/vis-network.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../js/graph/visjsGraph2.js"></script>
+
+    <script src="js/common.js"></script>
+    <script src="js/ontograph.js"></script>
+    <script src="js/sparql.js"></script>
+    <script src="js/cooccurrences.js"></script>
+    <script src="js/paragraphs.js"></script>
+    <script src="js/concepts.js"></script>
+    <script src="js/corpus.js"></script>
+    <script src="js/relations.js"></script>
+
+    <script src="js/selection.js"></script>
+    <script src="js/filterGraph.js"></script>
+
+
+    <script src="js/questions.js"></script>
+    <script src="js/app_config.js"></script>
+    <script src="js/infos.js"></script>
+
+    <script src="js/comparator.js"></script>
+
+
+
+
+    <script src="../js/others/async.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"/>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <!--  <script src="js/jstreeCF.js"></script>-->
+
+    <script>
+        $(function () {
+
+
+            $("#dialogDiv").dialog({
+                autoOpen: false,
+                height: 200,
+                width: 400,
+                modal: true,
+            })
+
+            $("#detailsDiv").dialog({
+                autoOpen: false,
+                height: 800,
+                width: 400,
+                modal: true,
+            })
+            if (false) {
+                config = {loginMode: "json", appName: "CTG"};
+                authentication.init()
+
+            } else {
+                $("#selectionDiv").height($(window).height() - 50)
+                $("#displayDiv").height($(window).height() - 50)
+                $("#displayDiv").width($(window).width() - $("#selectionDiv").width());
+                $("#projectionDiv").height($(window).height() - 50)
+                $("#graphDiv").height($(window).height() - 250);
+
+                $("#graphDiv").width($("#displayDiv").width())
+
+                Infos.setInfosDivHeight(10);
+
+                $("#lefTabs").tabs()
+
+
+                $("#accordion").accordion();
+                $("#accordion").accordion("option", {active: 1});
+                var handle = $("#custom-handle");
+                $("#conceptAggrLevelSlider").slider({
+                    range: "min",
+                    max: 7,
+                    min: 1,
+                    //   slide: Selection.onConceptAggrLevelSliderChange,
+                    //  change: filterGraph.onConceptAggrLevelSliderChange,
+                    create: function () {
+                        handle.text($(this).slider("value"));
+                    },
+                    slide: function (event, ui) {
+                        handle.text(ui.value);
+                    }
+
+                });
+                Corpus.loadCorpusJsTree();
+                Corpus.loadResourceLevelsSelect()
+                Concepts.loadConceptsJsTree();
+
+
+                $("#searchConceptInput").bind("keydown", function (e) {
+                    if (e.keyCode == 13)
+                        Concepts.searchConcept($('#searchConceptInput').val())
+                })
+
+                $("#searchCorpusInput").bind("keydown", function (e) {
+                    if (e.keyCode == 13)
+                        Corpus.searchResources($('#searchConceptInput').val())
+                })
+
+                var to = false;
+                $('#seachProjectionInput').keyup(function () {
+                    if(to) { clearTimeout(to); }
+                    to = setTimeout(function () {
+                        var v = $('#seachProjectionInput').val();
+                        $('#jstreeFilterConceptsDiv').jstree(true).search(v);
+                    }, 250);
+                });
+
+            }
+
+
+        })
+
+
+    </script>
+
+    <style>
+
+        body {
+            font-family: Verdana;
+            font-size: 14px;
+        }
+
+        .title {
+        / / font-weight: bold;
+            font-size: 18px;
+        }
+
+        .id {
+            font-size: 8px;
+        }
+
+        .popupMenuItem {
+            text-align: left;
+            margin-left: 5px;
+            margin-right: 5px;
+            padding:1px;
+            font-weight: normal;
+        }
+
+        .tree_level_1 {
+        / / font-weight: bold;
+            padding: 2px;
+            border-radius: 3px;
+        }
+
+        .tree_level_2 {
+        / / font-weight: bold;
+            padding: 2px;
+            border-radius: 3px;
+            background-color: #ddd;
+        }
+
+
+        .paragraph-docTitle {
+            color: #003eff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .paragraph-chapter {
+            color: #007fff;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        th {
+            font-size: 12px;
+        }
+
+        td {
+            font-size: 11px;
+        }
+
+        #custom-handle {
+            width: 3em;
+            height: 1.6em;
+            top: 50%;
+            margin-top: -.8em;
+            text-align: center;
+            line-height: 1.6em;
+        }
+
+
+        .entity-cell {
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .currentConceptsSpan {
+        / / color: #372806;
+            font-size: larger;
+            font-weight: bold;
+        }
+
+        .projection-item {
+
+            border-style: solid;
+            border-color: #372806;
+            border-radius: 3px;
+            margin: 5px;
+            padding: 5px;
+            border-width: 1px;
+
+
+        }
+
+        button {
+            margin: 2px;
+            padding: 2px;
+            font-weight: normal;
+            font-size: 14px;
+            border-radius: 3px;
+            background-color: #b3b6c2;
+            color: white;;
+        }
+    </style>
+
+</head>
+<body>
+<div id="main" style="display: flex;flex-direction: row">
+
+
+    <div>
+
+
+        <div id="lefTabs">
+            <ul>
+                <li><a href="#tabs-Selection">Selection</a></li>
+                <li><a href="#tabs-Projection">Projection</a></li>
+            </ul>
+            <div id="tabs-Selection">
+                <div id="selectionDiv" style="max-width:350px;border-style: solid;padding: 3px;margin: 3px">
+
+
+                    <div id="accordion">
+
+                        <h3><span class="title">Concepts </span></h3>
+                        <div style="margin:5px">
+                            <div><input size="15" id="searchConceptInput" value="">
+                                <button onclick="Concepts.searchConcept($('#searchConceptInput').val())">Search</button>
+                                <button onclick="Concepts.loadConceptsJsTree(true)">Reset</button>
+                            </div>
+                            <div id="jstreeConceptDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
+
+                        </div>
+
+                        <h3><span class="title">Corpus </span><span class='currentConceptsSpan' id="currentCorpusSpan"></span></h3>
+                        <div style="margin:5px">
+                            <div><input size="15" id="searchCorpusInput" value="">
+                                <button onclick="Corpus.searchResources($('#searchCorpusInput').val())">Search</button>
+                                <button onclick="Corpus.resetSelection()">Reset</button>
+                            </div>
+                            <div id="jstreeCorpusDiv" style="width:100%;height: 400px;overflow: auto"></div>
+
+                        </div>
+                        <h3><span class="title">Question </span></h3>
+                        <div style="margin:5px">
+                            <div><input size="30" id="searchQuestionInput" value="response time surge">
+                                <button onclick="Questions.respond($('#searchQuestionInput').val())">Search</button>
+                                <hr>
+                                Matching concepts
+                                <div id="question_matchingTokensDiv" style="max-height: 400px;overflow: auto"></div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div id="tabs-Projection">
+                <div id="projectionDiv" style="border-style: solid;padding: 3px;margin: 3px">
+
+
+                    <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
+                        <div class="title"> Corpus</div>
+
+
+                        Show
+                        <select id="filterGraphResourceSelect" onchange="filterGraph.onShowResources($(this).val())">
+                            <option></option>
+                            <option>ShowParents</option>
+                        </select>
+
+                    </div>
+                    <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
+                        <div class="title"> Concepts</div>
+
+<!--
+                        <hr/>
+                        Show
+                        <select id="filterGraphConceptSelect" onchange="filterGraph.onShowConcept($(this).val())">
+                            <option></option>
+                            <option>ShowParents</option>
+
+                            <option>ListAssociatedConcepts</option>
+                            <option>ShowCooccurrences</option>
+
+                        </select>
+
+-->
+
+                        <div>
+                            Search <input id="seachProjectionInput" size="15">
+                            <div id="jstreeFilterConceptsDiv" style="height: 450px;overflow: auto"></div>
+
+                        </div>
+                    </div>
+                    <!--   <div style="width:95%;border-style: solid;padding: 3px;border-radius:5px; margin: 3px">
+                          Export
+
+                       </div>-->
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    <div id="displayDiv" style="width:50%;border-style: solid;padding: 3px;margin: 3px">
+        <div style="display:flex;flex-direction:row ">
+            &nbsp;<div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/></div>
+            <div style="border: solid;border-width: 1px;border-radius: 3px;background-color:#bdbdbd;display: flex">
+                <button id='searchSelectedConceptsButton' style='display: none;' onclick='Selection.displayParagraphsGraph()'>Graph</button>
+                <button id='compareConceptsButton' style='display: none;' onclick='Comparator.showDialog()'>Compare</button>
+                <button id='resetSelectedConceptsButton' style='display: none;' onclick='Selection.resetSelection()'>X</button>
+            </div>
+
+
+            <div style="border: solid;border-width: 1px;border-radius: 3px;margin:3px">
+                Selected Resources : <span class='currentConceptsSpan' id="currentResourcesSpan"></span>
+                Level <select style="margin:10px;" onChange="filterGraph.onAggregateCorpusSelectChange($(this).val())" id="corpusAggrLevelSelect">
+
+            </select>
+            </div>
+            <div style="border: solid;border-width: 1px;border-radius: 3px;margin:3px">
+                Selected Concepts: <span class='currentConceptsSpan' id="currentConceptsSpan"></span>
+                <!--   <br>
+                   Level
+                   <div id="conceptAggrLevelSlider" style="margin:10px;width:200px">
+                       <div id="custom-handle" class="ui-slider-handle"></div>
+                   </div>-->
+            </div>
+            <div id="messageDiv"></div>
+        </div>
+        <div id="graphDiv" style="width:100%;"></div>
+        <div id="infosDiv" style="height:200px;overflow: auto;background-color: #d6d9d8"></div>
+    </div>
+
+
+</div>
+
+
+<div id="loginDiv" style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
+    <div> login<input id="loginInput">
+        password<input type="password" id="passwordInput" onkeydown="if (event.keyCode == 13)
+                        document.getElementById('loginButton').click()">
+        <button id="loginButton" onclick="authentication.doLogin()">OK</button>
+        <!--   <button id="xxx" onclick="Tablette.updateCotesParTabletteZeros()">TEST boites</button>-->
+
+        <div id="loginMessage"></div>
+    </div>
+</div>
+
+
+<div id="graphPopupDiv" onclick="ontograph.graphActions.hidePopup();"
+     style="position:absolute;flex-direction:column;padding:2px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+
+
+</div>
+<div id="detailsDiv" style="flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+
+
+</div>
+<div id="dialogDiv"></div>
+
+</body>
+</html>

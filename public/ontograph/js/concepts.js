@@ -105,12 +105,13 @@ var Concepts = (function () {
             function (callbackSeries) {
                 var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
                 var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
-                var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+                var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
                     "select distinct * " +
                     "where{" +
-
-                    "?concept skos:topConceptOf ?scheme." +
+                    "?scheme rdfsyn:type <http://www.w3.org/2004/02/skos/core#ConceptScheme>."+
+                    "?scheme skos:prefLabel ?schemeLabel."+
+                    "?concept skos:broader ?scheme."+
                     "?concept skos:prefLabel ?conceptLabel."
                 query += "  }ORDER BY ?conceptLabel ";
                 query += "limit 5000 "
@@ -126,9 +127,10 @@ var Concepts = (function () {
 
                         if (uniqueIds.indexOf(item.scheme.value) < 0) {
                             uniqueIds.push(item.scheme.value);
-                            var schemeLabel = item.scheme.value
-                            schemeLabel = schemeLabel.substring(0, schemeLabel.length - 1)
-                            schemeLabel = schemeLabel.substring(schemeLabel.lastIndexOf("/") + 1)
+
+                            var schemeLabel = item.schemeLabel.value
+                           // schemeLabel = schemeLabel.substring(0, schemeLabel.length - 1)
+                           // schemeLabel = schemeLabel.substring(schemeLabel.lastIndexOf("/") + 1)
                         //    jstreeData.push({text: schemeLabel, id: item.scheme.value, parent: "CTG"})
                             jstreeData.push({text: schemeLabel, id: item.scheme.value, parent: "#"})
                         }
@@ -143,11 +145,11 @@ var Concepts = (function () {
                 });
             },
             function (callbackSeries) {
-
+return callbackSeries();
                 var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
                 var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
 
-                var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>   PREFIX skos:<http://www.w3.org/2004/02/skos/core#> SELECT DISTINCT *WHERE {{?concept skos:broader  ?broader. ?concept skos:prefLabel  ?conceptLabel.  FILTER NOT EXISTS{?broader skos:broader  ?broader2. }FILTER contains(str(?concept),\"quantum/P\")}" +
+                var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>   PREFIX skos:<http://www.w3.org/2004/02/skos/core#> SELECT DISTINCT *WHERE {{?concept skos:broader  ?broader. ?concept skos:prefLabel  ?conceptLabel.  FILTER NOT EXISTS{?broader skos:broader  ?broader2. }FILTER contains(str(?concept),\"quantum/P\")}" +
                     "UNION{" +
                     " ?concept skos:prefLabel ?conceptLabel ." +
                     " FILTER (?concept=<http://data.total.com/resource/ontology/quantum/Attributes>)" +
@@ -262,7 +264,7 @@ var Concepts = (function () {
     }
 
 
-    self.getSelectedConceptDescendants = function (options,callback) {
+    self.getConceptDescendants = function (options,callback) {
         var conceptsSelected = Concepts.currentConceptsSelection
         if (!conceptsSelected || conceptsSelected.length==0 || conceptsSelected[0].length==0)
             return callback(null, [])
@@ -287,7 +289,11 @@ var Concepts = (function () {
     }
 
     self.sparql_geConceptDescendants = function (conceptSet, options,callback) {
-
+        if(!options){
+            options={lang:"en"}
+        }
+        if(!options.lang)
+            options.lang="en"
         if (!Array.isArray(conceptSet))
             conceptSet = [conceptSet]
 
@@ -306,8 +312,10 @@ var Concepts = (function () {
 
         var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
             "select distinct *" + //+"?concept" + thesaurusLevel+
-            " where{ ?concept"+ thesaurusLevel+" skos:prefLabel ?conceptLabel."
-            + "filter (?concept"+thesaurusLevel+" in(" + conceptIdsStr + "))"
+            " where{ ?concept"+ thesaurusLevel+" skos:prefLabel ?conceptLabel"+ thesaurusLevel+"."+
+        "FILTER (lang(?conceptLabel"+ thesaurusLevel+")='"+options.lang+"')"+
+            "filter (?concept"+thesaurusLevel+" in(" + conceptIdsStr + "))";
+
 
 
 
@@ -316,6 +324,10 @@ var Concepts = (function () {
         for (var i = thesaurusLevel; i < 7; i++) {
 
             query += " OPTIONAL{ ?concept" + (i + 1) + " skos:broader ?concept"+i+". "
+            if(options.selectLabels){
+                query+= "?concept"+ (i + 1)+" skos:prefLabel ?conceptLabel"+ (i + 1)+". "+
+                    "FILTER (lang(?conceptLabel"+ (i + 1)+")='"+options.lang+"')"
+            }
 
         }
         for (var i = thesaurusLevel; i < 7; i++) {
@@ -334,26 +346,29 @@ var Concepts = (function () {
             }
 
             var descendantsIds = [];
-
+            var descendantsLabels = [];
             result.results.bindings.forEach(function (item) {
                 for (var i = 1; i < 7; i++) {
                     var concept = item["concept" + i]
                     if (typeof concept !== "undefined") {
                         if (descendantsIds.indexOf(concept.value) < 0) {
                             descendantsIds.push(concept.value);
+                            if(options.selectLabels){
+                                descendantsLabels.push(item["conceptLabel" + i].value);
+                            }
                         }
                     }
                 }
 
             })
-            callback(null, {ids:descendantsIds,thesaurusLevel:thesaurusLevel})
+            callback(null, {ids:descendantsIds,labels:descendantsLabels,thesaurusLevel:thesaurusLevel})
         })
     }
 
     self.loadChildrenInConceptJstree = function (conceptId, depth) {
         var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
         var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
-        var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+        var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
             "select distinct *" +
             "where{ ?child1 skos:broader ?concept."
@@ -428,7 +443,11 @@ var Concepts = (function () {
     }
 
     self.sparql_getAncestors = function (conceptIds, options, callback) {
-
+if(!options){
+    options={lang:"en"}
+}
+if(!options.lang)
+    options.lang="en"
         var conceptIdsStr = ""
         conceptIds.forEach(function (id, index) {
             if (index > 0)
@@ -442,34 +461,45 @@ var Concepts = (function () {
             "SELECT DISTINCT *" +
             "WHERE {" +
             "?concept skos:prefLabel ?conceptPrefLabel ;" +
+
             "skos:broader ?broaderId1 . " +
             "  ?broaderId1 skos:prefLabel ?broader1 ." +
-            "filter (?concept in(" + conceptIdsStr + "))"
+            "filter (?concept in(" + conceptIdsStr + "))"+
+            "FILTER (lang(?conceptPrefLabel) ='"+options.lang+"')"+
+        "FILTER (lang(?broader1) ='"+options.lang+"')"
+
 
 
         query +=
             "OPTIONAL {" +
             "    ?broaderId1 skos:broader ?broaderId2 ." +
             "    ?broaderId2 skos:prefLabel ?broader2 ." +
+            "FILTER (lang(?broader2) = '"+options.lang+"')"+
             "     OPTIONAL {" +
             "   " +
             "       ?broaderId2 skos:broader ?broaderId3 ." +
             "    ?broaderId3 skos:prefLabel ?broader3 ." +
+            "FILTER (lang(?broader3) = '"+options.lang+"')"+
             "       OPTIONAL {" +
             "       ?broaderId3 skos:broader ?broaderId4 ." +
             "    ?broaderId4 skos:prefLabel ?broader4 ." +
+            "FILTER (lang(?broader4) = '"+options.lang+"')"+
             "           OPTIONAL {" +
             "       ?broaderId4 skos:broader ?broaderId5 ." +
             "    ?broaderId5 skos:prefLabel ?broader5 ." +
+            "FILTER (lang(?broader5) = '"+options.lang+"')"+
             "         OPTIONAL {   " +
             "       ?broaderId5 skos:broader ?broaderId6 ." +
             "    ?broaderId6 skos:prefLabel ?broader6 ." +
+            "FILTER (lang(?broader6) = '"+options.lang+"')"+
             "               OPTIONAL {   " +
             "       ?broaderId6 skos:broader ?broaderId7 ." +
             "    ?broaderId7 skos:prefLabel ?broader7 ." +
+            "FILTER (lang(?broader7) = '"+options.lang+"')"+
             "                 OPTIONAL {   " +
             "       ?broaderId7 skos:broader ?broaderId8 ." +
             "    ?broaderId8 skos:prefLabel ?broader8 ." +
+            "FILTER (lang(?broader8) = '"+options.lang+"')"+
             "              }" +
             "            }" +
             "        }" +
@@ -521,7 +551,7 @@ var Concepts = (function () {
 
             var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-                "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                "PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
                 "SELECT DISTINCT *" +
                 "WHERE {" +
                 "?concept skos:prefLabel ?conceptLabel ." +
@@ -605,16 +635,17 @@ var Concepts = (function () {
 var level=obj.node.parents.length-1;
 
         if (obj.event.ctrlKey && self.currentConceptsSelection) {
-
+            obj.type = "concept";
             self.currentConceptsSelection.push([{id:obj.node.id,level:level}]);
-            Selection.setConceptSelectedCBX(obj, "AND")
+            Selection.onJsTreeSelectionCBXchecked(obj, "AND")
 
         } else {
+
             if (!self.currentConceptsSelection)
                 self.currentConceptsSelection = [[]];
-
+            obj.type = "concept";
             self.currentConceptsSelection[self.currentConceptsSelection.length - 1].push({id:obj.node.id,level:level});
-            Selection.setConceptSelectedCBX(obj, "OR")
+            Selection.onJsTreeSelectionCBXchecked(obj, "OR")
         }
 
 

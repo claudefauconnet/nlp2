@@ -20,7 +20,7 @@ var sparql = (function () {
 
         var query = "PREFIX terms:<http://purl.org/dc/terms/>" +
             "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-            "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             "" +
             "select * " +
             "where {" +
@@ -71,7 +71,7 @@ var sparql = (function () {
 
         var query = "PREFIX terms:<http://purl.org/dc/terms/>" +
             "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-            "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             "" +
             // "select distinct *" +
             "select distinct ?entity1Type ?entity1 ?entity1Label ?entity2Type ?entity2 ?entity2Label (count (?paragraph) as?nOccurrences)" +
@@ -126,7 +126,7 @@ var sparql = (function () {
 
         var query = "PREFIX terms:<http://purl.org/dc/terms/>" +
             "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-            "PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "" +
             // "select distinct *" +
@@ -166,7 +166,7 @@ var sparql = (function () {
 
         var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
             "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-            "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "" +
             "        select *" +
@@ -214,7 +214,7 @@ var sparql = (function () {
 
         var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
             "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-            "        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
@@ -257,7 +257,7 @@ var sparql = (function () {
         })
         var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.source.graphIRI) + "&query=";// + query + queryOptions
 
-        var query = "PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+        var query = "PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "select *        where{ " +
             "" +
@@ -297,7 +297,7 @@ var sparql = (function () {
 
         var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent("http://data.total.com/resource/ontology/ctg/relations/") + "&query=";// + query + queryOptions
 
-        var query = "PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<https://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+        var query = "PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "PREFIX rels:<http://data.total.com/resource/ontology/ctg/relation/> " +
             "select *        where{ " +

@@ -42,7 +42,7 @@ var Selection = (function () {
                         conceptsSets = conceptIds;
                         return callbackSeries();
                     }
-                    Concepts.getSelectedConceptDescendants({depth: conceptLevelAggr}, function (err, concepts) {
+                    Concepts.getConceptDescendants({depth: conceptLevelAggr}, function (err, concepts) {
                         if (err)
                             return callbackSeries(err);
                         conceptsSets = concepts;
@@ -189,6 +189,8 @@ var Selection = (function () {
         $("#graphDiv").html("");
         $("#searchSelectedConceptsButton").css("display", "none")
         $("#resetSelectedConceptsButton").css("display", "none")
+        $("#compareConceptsButton").css("display", "none")
+
         $(".projection-item").css("display", "none")
         self.currentConceptsSelection = null;
         Concepts.currentConceptsSelection=[[]];
@@ -255,7 +257,7 @@ var Selection = (function () {
         visjsGraph.data.edges.add(edgesToCreate)
 
     }
-    self.setConceptSelectedCBX = function (obj, bool) {
+    self.onJsTreeSelectionCBXchecked = function (obj, bool) {
 
         var selectOptionHtml = "<option>OR</option>" + "<option>AND</option>" + "<option>NO</option>"
 
@@ -263,7 +265,7 @@ var Selection = (function () {
         var nodeLabel = obj.node.text;
         obj.node.parents.forEach(function (parent, index) {
             var jstree;
-            if (parent.indexOf("/vocabulary/") > -1)
+            if (  obj.type == "concept")
                 jstree = "#jstreeConceptDiv"
             else {
                 jstree = "#jstreeCorpusDiv"
@@ -275,8 +277,7 @@ var Selection = (function () {
                 tooltip += "/" + parentLabel.text
         })
 
-
-        if (obj.node.id.indexOf("/vocabulary/") < 0) {
+        if (  obj.type == "corpus") {
             var text = $("#currentResourcesSpan").html();
             var index = Corpus.currentCorpusSelection.length - 1;
             var index2 = Corpus.currentCorpusSelection[index].length - 1;
@@ -288,7 +289,7 @@ var Selection = (function () {
             $("#currentResourcesSpan").html(text);
             $("#" + selectId).val(bool)
 
-        } else {
+        } else if(  obj.type == "concept"){
 
             var text = $("#currentConceptsSpan").html();
             var index = Concepts.currentConceptsSelection.length - 1;
@@ -305,7 +306,9 @@ var Selection = (function () {
 
 
         $("#searchSelectedConceptsButton").css("display", "block")
-        $("#resetSelectedConceptsButton").css("display", "block")
+        $("#resetSelectedConceptsButton").css("display", "block");
+        $("#compareConceptsButton").css("display", "block");
+
         //   $(".projection-item").css("display","block")
     }
 

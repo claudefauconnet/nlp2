@@ -136,6 +136,10 @@ var ontologyCTG = {
 
                 var uniqueEntities = [];
                 var uniqueResource = [];
+
+                var topConceptsMap = {}
+                var topConceptsStr = "";
+
                 var str = ""
 
                 var strChapter = ""
@@ -184,7 +188,7 @@ var ontologyCTG = {
 
                     var paragraphUrl = "<http://data.total.com/resource/ontology/ctg/Paragraph/" + item.ID + ">"
 
-                    //    str += paragraphUrl + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg//" + "simple" + "> .\n"
+                    //    str += paragraphUrl + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg//" + "simple" + "> .\n"
 
 
                     //   console.log(JSON.stringify(item,null,2))
@@ -195,7 +199,7 @@ var ontologyCTG = {
                             // docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + docId + ">"
                             docsMap[item.Document] = "<http://data.total.com/resource/ontology/ctg/Document/" + getNewId() + ">"
 
-                            strDocs += docsMap[item.Document] + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/DocumentType/" + "GM_MEC" + "> .\n"
+                            strDocs += docsMap[item.Document] + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http:http://data.total.com/resource/ontology/ctg/DocumentType/" + "GM_MEC" + "> .\n"
                             strDocs += docsMap[item.Document] + " <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(item.Document) + "\"@en .\n"
 
 
@@ -288,7 +292,8 @@ var ontologyCTG = {
                     }
 
 
-                    var entitiesUriMap = {}
+
+
                     var entitiesUriStr = item["Entity_URI"];
                     if (entitiesUriStr && entitiesUriStr.split) {
 
@@ -300,10 +305,20 @@ var ontologyCTG = {
                             if (!label)
                                 return console.log("ERROR " + paragraphUrl + " :  " + splitArray.toString());
 
+
                             if (uniqueEntities.indexOf(entityId) < 0) {
                                 uniqueEntities.push(entityId);
                                 strEntities += "<" + entityId + ">  <http://www.w3.org/2000/01/rdf-schema#label> \"" + formatString(label) + "\"@en .\n";
-                                strEntities += "<" + entityId + "> <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.total.com/resource/ontology/ctg/EntityType/" + type + "> .\n"
+                                if(!topConceptsMap[type]){
+                                    topConceptsMap[type]=type;
+                                    topConceptsStr+= "<http://data.total.com/resource/ontology/ctg/EntityType/" + type + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> skos:ConceptScheme.\n";
+                                    topConceptsStr+= "<http://data.total.com/resource/ontology/ctg/EntityType/" + type + "> <http://www.w3.org/2004/02/skos/core#prefLabel> \""+type+"\" .\n";
+
+
+
+                                }
+                                strEntities += "<" + entityId + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.total.com/resource/ontology/ctg/EntityType/" + type + "> .\n"
+
                             }
 
                             str += paragraphUrl + " <http://purl.org/dc/terms/subject> " + "<" + entityId + ">.\n"
@@ -365,7 +380,7 @@ var ontologyCTG = {
 
                 var strAll = strDocs + strEntities + str;
 
-             //   fs.writeFileSync("D:\\NLP\\rdfs\\Total\\resourcesXX.rdf.nt", resourceStrXX)
+              fs.writeFileSync("D:\\NLP\\rdfs\\Total\\topConceptsX.rdf.nt", topConceptsStr)
 
 
                 //    fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontologyT.rdf.nt", strText)
@@ -454,7 +469,7 @@ module.exports = ontologyCTG
 
 var xlsx = "OntoCOR.xlsx"
 //xlsx="OntoMEC_triplet_20200402.xlsx"
-xlsx = "OntoAllDomain2.xlsx"
+xlsx = "OntoAllDomain.xlsx"
 ontologyCTG.readXlsx("D:\\NLP\\rdfs\\Total\\" + xlsx, function (err, result) {
 
 })

@@ -95,7 +95,7 @@ var xsdToSkos = {
                 parentId = "<" + graphURI + name + ">"
 
                 var typeId = "<" + graphURI + node.getAttribute("type") + ">";
-                strElements += parentId + " <https://www.w3.org/1999/02/22-rdf-syntax-ns#type> \"" + typeId + "\" .\n"
+                strElements += parentId + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> \"" + typeId + "\" .\n"
             }
 
 
