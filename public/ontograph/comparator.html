@@ -85,7 +85,7 @@
 
 
                 $("#accordion").accordion();
-                $("#accordion").accordion("option", {active: 1});
+                $("#accordion").accordion("option", {active: 0});
                 var handle = $("#custom-handle");
                 $("#conceptAggrLevelSlider").slider({
                     range: "min",
@@ -103,7 +103,8 @@
                 });
                 Corpus.loadCorpusJsTree();
                 Corpus.loadResourceLevelsSelect()
-                Concepts.loadConceptsJsTree();
+               // Concepts.loadConceptsJsTree();
+                Selection.initConceptsGraphUriSelect();
 
 
                 $("#searchConceptInput").bind("keydown", function (e) {
@@ -256,6 +257,7 @@
 
                         <h3><span class="title">Concepts </span></h3>
                         <div style="margin:5px">
+                           <div>  Graph<select id='Selection_conceptGraphUriSelect' onchange="Selection.loadConceptsUriGraph()" ></select></div>
                             <div><input size="15" id="searchConceptInput" value="">
                                 <button onclick="Concepts.searchConcept($('#searchConceptInput').val())">Search</button>
                                 <button onclick="Concepts.loadConceptsJsTree(true)">Reset</button>

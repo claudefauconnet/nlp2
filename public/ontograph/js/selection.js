@@ -6,6 +6,23 @@ var Selection = (function () {
     self.sliceZize = 500;
 
 
+
+    self.initConceptsGraphUriSelect=function(){
+        var options=[];
+        for( var key in app_config.ontologies) {
+            options.push({value: app_config.ontologies[key].conceptsGraphUri, label: key});
+        }
+        common.fillSelectOptions("Selection_conceptGraphUriSelect",options,true,"label","label");
+    }
+
+
+    self.loadConceptsUriGraph=function(){
+        app_config.currentOntology=$("#Selection_conceptGraphUriSelect").val()
+        Concepts.loadConceptsJsTree()
+    }
+
+
+
     self.displayParagraphsGraph = function (booleanQuery, corpusIds, conceptIds) {
         //  var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
         var conceptLevelAggr = 0;

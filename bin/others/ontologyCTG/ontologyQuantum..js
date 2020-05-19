@@ -198,7 +198,7 @@ var ontologyQuantum = {
                     })
 
                     var strAll = strEntities;
-                    fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontology.quantumAttrBorader.rdf.nt", strAll);
+                    fs.writeFileSync("D:\\NLP\\rdfs\\Total\\ontology.quantumAttrBroader.rdf.nt", strAll);
                 }
 
 

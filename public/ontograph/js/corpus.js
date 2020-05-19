@@ -146,7 +146,7 @@ var Corpus = (function () {
             query += " } ORDER BY ?resourceLabel limit 2000"
 
             var corpusGraphUri = app_config.ontologies[app_config.currentOntology].corpusGraphUri
-            var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(corpusGraphUri) + "&query=";// + query + queryOptions
+            var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(corpusGraphUri) + "&query=";// + query + queryOptions
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err) {

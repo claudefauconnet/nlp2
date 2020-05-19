@@ -83,7 +83,7 @@ var Infos = (function () {
                 display(infos)
             else {
 
-                var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+                var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
                 var query = "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
                     " PREFIX terms:<http://purl.org/dc/terms/>" +
                     " PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
@@ -112,7 +112,7 @@ var Infos = (function () {
         },
 
         showDocChaptersList: function (documentId) {
-            var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+            var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
             var query = "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
                 " PREFIX terms:<http://purl.org/dc/terms/>" +
                 " PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
@@ -146,7 +146,7 @@ var Infos = (function () {
         },
 
         showChapterParagraphs: function (chapterId) {
-            var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+            var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
             var query = "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
                 " PREFIX dcmitype:<http://purl.org/dc/dcmitype/> " +
                 " PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
@@ -184,7 +184,7 @@ var Infos = (function () {
 
         },
         showChapterInfos: function (chapterId) {
-            var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+            var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
             var query = "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
                 " PREFIX dcmitype:<http://purl.org/dc/dcmitype/> " +
                 " PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
@@ -252,7 +252,7 @@ var Infos = (function () {
             if (infos)
                 display(infos)
             else {
-                var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+                var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
                 var query = "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
                     " PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                     " PREFIX terms:<http://purl.org/dc/terms/>" +

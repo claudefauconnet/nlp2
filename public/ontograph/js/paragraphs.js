@@ -418,13 +418,14 @@ var paragraphs = (function () {
 
 
         var okSelectAncestors = false;
+        var parent;
         corpusLevels.forEach(function (item, index) {
             if (index > 0) {
                 var child = "?" + corpusLevels[index - 1].label;
-                var parent = "?" + item.label;
+                 parent = "?" + item.label;
                 whereCorpusQuery += child + "  skos:broader " + parent + "."
                 whereCorpusQuery += child + "  skos:prefLabel " + child + "Label.";
-                whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
+               // whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
             }
 
             if (item.label == options.corpusLevelAggr || okSelectAncestors) {
@@ -432,15 +433,9 @@ var paragraphs = (function () {
                 okSelectAncestors = true;
             }
 
-            /* if (okDistinctSelect) {
-                 distinctSelectStr += "?" + item.label + " ?" + item.label + "Label "
-
-                 if (options.corpusLevelAggr == item.label) {
-                     okDistinctSelect = false;
-                 }
-             }*/
 
         })
+        whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
 
 
         /*
@@ -555,7 +550,7 @@ var paragraphs = (function () {
             self.previousWhereConceptQuery = whereConceptQuery
         }
 
-        var url = sparql.source.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+        var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
         var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
             "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
             "        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
@@ -563,7 +558,7 @@ var paragraphs = (function () {
             "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
 
             "        select distinct " + distinctSelectStr + " where {" + whereCorpusQuery + whereConceptQuery + "}"
-        query += "GROUP BY " + distinctSelectStr;
+    //    query += "GROUP BY " + distinctSelectStr;
 
         query += " limit " + self.sparql_limit
 

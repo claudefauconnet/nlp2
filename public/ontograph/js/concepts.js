@@ -4,6 +4,11 @@ var Concepts = (function () {
 
     var rootUris = {}
 
+
+
+
+
+
     self.searchConcept = function (word) {
 
         self.listThesaurusConcepts(word, {}, function (err, result) {
@@ -104,14 +109,14 @@ var Concepts = (function () {
         async.series([
             function (callbackSeries) {
                 var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-                var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
+                var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
                 var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
                     "select distinct * " +
                     "where{" +
                     "?scheme rdfsyn:type <http://www.w3.org/2004/02/skos/core#ConceptScheme>."+
                     "?scheme skos:prefLabel ?schemeLabel."+
-                    "?concept skos:broader ?scheme."+
+                    "?concept skos:broader|skos:topConceptOf ?scheme."+
                     "?concept skos:prefLabel ?conceptLabel."
                 query += "  }ORDER BY ?conceptLabel ";
                 query += "limit 5000 "
@@ -147,7 +152,7 @@ var Concepts = (function () {
             function (callbackSeries) {
 return callbackSeries();
                 var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-                var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
+                var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
 
                 var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>   PREFIX skos:<http://www.w3.org/2004/02/skos/core#> SELECT DISTINCT *WHERE {{?concept skos:broader  ?broader. ?concept skos:prefLabel  ?conceptLabel.  FILTER NOT EXISTS{?broader skos:broader  ?broader2. }FILTER contains(str(?concept),\"quantum/P\")}" +
                     "UNION{" +
@@ -202,7 +207,7 @@ return callbackSeries();
 
     self.listThesaurusConcepts = function (word, options, callback) {
         var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-        var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
+        var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
         var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
             "" +
             "SELECT *" +
@@ -338,36 +343,46 @@ return callbackSeries();
 
 
         var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-        var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
+        var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
         sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
                 return common.message(err)
             }
 
-            var descendantsIds = [];
-            var descendantsLabels = [];
-            result.results.bindings.forEach(function (item) {
-                for (var i = 1; i < 7; i++) {
-                    var concept = item["concept" + i]
-                    if (typeof concept !== "undefined") {
-                        if (descendantsIds.indexOf(concept.value) < 0) {
-                            descendantsIds.push(concept.value);
-                            if(options.selectLabels){
-                                descendantsLabels.push(item["conceptLabel" + i].value);
+
+
+            if(options.rawData){
+
+              return  callback(null, result.results.bindings);
+
+                }else {
+
+                var descendantsIds = [];
+                var descendantsLabels = [];
+                result.results.bindings.forEach(function (item) {
+                    for (var i = 1; i < 7; i++) {
+                        var concept = item["concept" + i]
+                        if (typeof concept !== "undefined") {
+                            if (descendantsIds.indexOf(concept.value) < 0) {
+                                descendantsIds.push(concept.value);
+                                if (options.selectLabels) {
+                                    descendantsLabels.push(item["conceptLabel" + i].value);
+                                }
                             }
                         }
                     }
-                }
 
-            })
-            callback(null, {ids:descendantsIds,labels:descendantsLabels,thesaurusLevel:thesaurusLevel})
+                })
+
+                callback(null, {ids: descendantsIds, labels: descendantsLabels, thesaurusLevel: thesaurusLevel})
+            }
         })
     }
 
     self.loadChildrenInConceptJstree = function (conceptId, depth) {
         var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-        var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
+        var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
         var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
             "select distinct *" +
@@ -456,7 +471,7 @@ if(!options.lang)
         })
 
         var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-        var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
+        var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
         var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
             "SELECT DISTINCT *" +
             "WHERE {" +
@@ -547,7 +562,7 @@ if(!options.lang)
 
 
             var conceptsGraphUri=app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-            var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
+            var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(conceptsGraphUri) + "&query=";// + query + queryOptions
 
             var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
                 "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +

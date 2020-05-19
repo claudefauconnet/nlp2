@@ -69,7 +69,7 @@ var Questions = (function () {
                 query += whereConceptStr
                 query += "} limit 100000"
 
-                var url = sparql.source.sparql_url + "?default-graph-uri=";// + query + queryOptions
+                var url = app_config.sparql_url + "?default-graph-uri=";// + query + queryOptions
 
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -120,7 +120,7 @@ var Questions = (function () {
                 query += whereConceptStr
                 query += "} limit 100000"
 
-                var url = sparql.source.sparql_url + "?default-graph-uri=";// + query + queryOptions
+                var url = app_config.sparql_url + "?default-graph-uri=";// + query + queryOptions
 
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {

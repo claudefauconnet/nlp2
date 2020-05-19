@@ -1,12 +1,12 @@
 var app_config = {
-
+    sparql_url:"http://vps-c46025b8.vps.ovh.net:8890/sparql",
     currentOntology: "CTG",
 
 currentOntology: "Energistics",
-
+    currentOntology: "Geosciml",
   currentOntology: "PLM",
     currentOntology: "CTG",
-    currentOntology: "Geosciml",
+
 
 
 
@@ -86,6 +86,23 @@ currentOntology: "Energistics",
             conceptsGraphUri: "http://souslesens.org/oil-gas/upstream/",
 
         }
+        ,
+
+        "Quantum": {
+            corpusGraphUri: "http://data.total.com/resource/ontology/quantum/",
+            corpusScheme: "http://data.total.com/resource/ontology/quantum/",
+            resourceLevels: [
+
+
+
+            ],
+            resourceDefaultLevel: "",
+
+            conceptsGraphUri: "http://data.total.com/resource/ontology/quantum/",
+
+        }
+
+
 
 
 

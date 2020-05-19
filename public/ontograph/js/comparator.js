@@ -3,60 +3,60 @@ var Comparator = (function () {
         var self = {};
 
 
-        self.showDialog=function(){
+        self.showDialog = function () {
 
-            var graphsUrisOptions="";
-            for( var key in app_config.ontologies){
-                var selected=""
-                if(false && key==app_config.currentOntology)
-                    selected=" selected='selected' "
-                graphsUrisOptions+="<option "+selected+"value='"+app_config.ontologies[key].conceptsGraphUri+"'>"+key+"</option>";
+            var graphsUrisOptions = "";
+            for (var key in app_config.ontologies) {
+                var selected = ""
+                if (key != app_config.currentOntology)
+                    graphsUrisOptions += "<option " + selected + "value='" + app_config.ontologies[key].conceptsGraphUri + "'>" + key + "</option>";
 
             }
-            var html="<table>"
-            html+="<tr><td> targetGraphUri</td><td> <select id='comparator_targetGraphUriSelect'>"+graphsUrisOptions+"</select></td></tr>"
-            html+="<tr><td> outputType</td><td> <select id='comparator_outputTypeSelect'><option>graph></option></option></select></td></tr>"
-            html+="<tr><td>  <button onclick='Comparator.compareConcepts();'>Compare</button></td></tr>"
-            html+="</table>"
-
-
-
+            var html = "<table>"
+            html += "<tr><td> targetGraphUri</td><td> <select id='comparator_targetGraphUriSelect'>" + graphsUrisOptions + "</select></td></tr>"
+            html += "<tr><td> outputType</td><td> <select id='comparator_outputTypeSelect'><option>graph</option><option>table</option><option>stats</option></option></select></td></tr>"
+            html += "<tr><td>  <button onclick='Comparator.compareConcepts();'>Compare</button></td></tr>"
+            html += "</table>"
 
 
             $("#dialogDiv").html(html);
             $("#dialogDiv").dialog("open")
 
 
-
-
         }
-
-
 
 
         self.compareConcepts = function () {
 
-           // var targetThesaurusGraphURI = prompt("target thesaurus graphURI ", "http://souslesens.org/oil-gas/upstream/");
-            var targetThesaurusGraphURI=$("#comparator_targetGraphUriSelect").val()
+
+            self.targetThesaurusGraphURI = $("#comparator_targetGraphUriSelect").val()
+
+            var output = $("#comparator_outputTypeSelect").val();
+
             var lang = "en"
-            if (!targetThesaurusGraphURI)
+            if (!self.targetThesaurusGraphURI)
                 return;
 
-            var conceptLevelAggr = 6;
-            var targetConceptLevelAggr = 3;
+            var sourceConceptAggrDepth = 6;
+            var targetConceptAggrDepth = 6;
             var sliceSize = 20;
 
             var allSourceConcepts = [];
             var commonConceptsMap = {};
             $("#dialogDiv").dialog("close")
-            async.series([
 
+            if (output == "stats") {
+                return self.getdescendantsMatchingStats(sourceConceptAggrDepth, targetConceptAggrDepth)
+
+
+            }
+            async.series([
 
                     //getDescendants
                     function (callbackSeries) {
                         //    return callbackSeries();
 
-                        Concepts.getConceptDescendants({depth: conceptLevelAggr, selectLabels: true}, function (err, conceptsSets) {
+                        Concepts.getConceptDescendants({depth: sourceConceptAggrDepth, selectLabels: true}, function (err, conceptsSets) {
                             if (err)
                                 return callbackSeries(err);
 
@@ -78,8 +78,63 @@ var Comparator = (function () {
                         })
 
                     },
+
+
+                    //count matching target concept for each source concept
+                    function (callbackSeries) {
+                        if (output != "stats")
+                            return callbackSeries();
+                        var sourceConceptsSlices = common.sliceArray(allSourceConcepts, sliceSize)
+                        async.eachSeries(sourceConceptsSlices, function (sourceConcepts, callbackEach) {
+
+                            var regexStr = "("
+                            sourceConcepts.forEach(function (concept, index) {
+                                if (index > 0)
+                                    regexStr += "|";
+                                regexStr += concept.label;
+                            })
+                            regexStr += ")"
+
+
+                            var filter = "  regex(?prefLabel, \"^" + regexStr + "$\", \"i\")";
+                            if (false) {
+                                filter = "  regex(?prefLabel, \"" + regexStr + "\", \"i\")";
+                            }
+                            var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                                "SELECT count(*) " +
+                                "WHERE {" +
+                                "?id skos:prefLabel ?prefLabel ." +
+                                "FILTER (lang(?prefLabel) = '" + lang + "')" +
+                                " filter " + filter+"} limit 10000";
+
+
+
+
+                            var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
+                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+                            sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                                if (err) {
+                                    return callbackEach(err);
+                                }
+                                var bindings = [];
+                                var ids = [];
+                                if (result.results.bindings.length > 0) {
+                                    result.results.bindings.forEach(function (item) {
+                                    })
+                                }
+                                return callbackEach(err);
+                            })
+                        }, function (err) {
+                            callbackSeries(err)
+                        })
+                    },
+
+
                     //search selected concepts  and descendants in targetThesaurus
                     function (callbackSeries) {
+                        if (output == "stats")
+                            return callbackSeries();
+
 
                         var sourceConceptsSlices = common.sliceArray(allSourceConcepts, sliceSize)
                         async.eachSeries(sourceConceptsSlices, function (sourceConcepts, callbackEach) {
@@ -105,7 +160,7 @@ var Comparator = (function () {
                                 " filter " + filter
 
 
-                            for (var i = 1; i < targetConceptLevelAggr; i++) {
+                            for (var i = 1; i < targetConceptAggrDepth; i++) {
                                 if (i == 1) {
                                     query += " OPTIONAL{ ?id" + " skos:broader ?broader" + i + ". ";
                                 }
@@ -120,7 +175,7 @@ var Comparator = (function () {
                             query += "?broader" + i + " skos:prefLabel ?broaderLabel" + (i) + ". " +
                                 "FILTER (lang(?broaderLabel" + i + ") = '" + lang + "')"
 
-                            for (var i = 0; i < targetConceptLevelAggr; i++) {
+                            for (var i = 0; i < targetConceptAggrDepth; i++) {
                                 query += "}"
                             }
 
@@ -128,8 +183,7 @@ var Comparator = (function () {
                             query += "}" +
                                 "LIMIT 10000";
 
-                            var conceptsGraphUri = app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-                            var url = sparql.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(targetThesaurusGraphURI) + "&query=";// + query + queryOptions
+                            var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
                             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                                 if (err) {
@@ -146,7 +200,7 @@ var Comparator = (function () {
                                             label: item.prefLabel.value,
                                         }
                                         var targetBroaders = []
-                                        for (var i = 1; i < targetConceptLevelAggr; i++) {
+                                        for (var i = 1; i < targetConceptAggrDepth; i++) {
                                             var broaderId = item["broader" + i]
                                             if (typeof broaderId !== "undefined") {
                                                 if (targetBroaders.indexOf(broaderId.value) < 0) {
@@ -167,7 +221,7 @@ var Comparator = (function () {
                                         commonConceptsMap[item.prefLabel.value.toLowerCase()].target = targetObj
 
                                     })
-                                }else{
+                                } else {
 
                                 }
                                 return callbackEach();
@@ -175,8 +229,8 @@ var Comparator = (function () {
 
 
                         }, function (err) {
-                            if( Object.keys(commonConceptsMap).length==0){
-                              alert(  ("no matching concepts"))
+                            if (Object.keys(commonConceptsMap).length == 0) {
+                                alert(("no matching concepts"))
                             }
 
                             return callbackSeries(err);
@@ -186,6 +240,8 @@ var Comparator = (function () {
                     },
                     //get source broaders
                     function (callbackSeries) {
+                        if (output == "stats")
+                            return callbackSeries();
                         var conceptIds = []
 
                         for (var key in commonConceptsMap) {
@@ -193,8 +249,8 @@ var Comparator = (function () {
                             if (conceptIds.indexOf(sourceId) < 0)
                                 conceptIds.push(sourceId)
                         }
-                        if(conceptIds.length==0)
-                          return  callbackSeries();
+                        if (conceptIds.length == 0)
+                            return callbackSeries();
                         Concepts.sparql_getAncestors(conceptIds, {}, function (err, result) {
                             var sourceBroaders = [];
                             result.forEach(function (item) {
@@ -209,7 +265,9 @@ var Comparator = (function () {
                                         }
                                     }
                                 }
-                                commonConceptsMap[item.conceptPrefLabel.value.toLowerCase()].source.broaders = sourceBroaders;
+                                if (item.conceptPrefLabel && item.conceptPrefLabel.value.toLowerCase() && commonConceptsMap[item.conceptPrefLabel.value.toLowerCase()]) {
+                                    commonConceptsMap[item.conceptPrefLabel.value.toLowerCase()].source.broaders = sourceBroaders;
+                                }
                             })
 
                             return callbackSeries();
@@ -222,6 +280,8 @@ var Comparator = (function () {
                     //draw commonConcepts
                     function (callbackSeries) {
 
+                        if (output != "graph")
+                            return callbackSeries();
                         var visjsData = {nodes: [], edges: []};
                         var uniqueNodes = [];
                         var uniqueEdges = [];
@@ -231,7 +291,7 @@ var Comparator = (function () {
                         var yOffset = 30;
 
 
-                        function addBroaderNodes(broaders, childId, startOffest, direction,color) {
+                        function addBroaderNodes(broaders, childId, startOffest, direction, color) {
                             broaders.forEach(function (itemBroader, index) {
 
 
@@ -248,10 +308,10 @@ var Comparator = (function () {
 
                                     }
                                     visjsData.nodes.push(broaderSourceNode);
-                                }else{
-                                    visjsData.nodes.forEach(function(node){
-                                        if(node.id==itemBroader.id){
-                                            node.x= direction * (startOffest + (xOffset * (index + 1)))
+                                } else {
+                                    visjsData.nodes.forEach(function (node) {
+                                        if (node.id == itemBroader.id) {
+                                            node.x = direction * (startOffest + (xOffset * (index + 1)))
                                         }
 
                                     })
@@ -319,16 +379,72 @@ var Comparator = (function () {
                                         })
                                     }
                                 }
-                              addBroaderNodes(item.source.broaders, item.source.id, currentX, -1, "#add");
-                                  if (item.target && item.target.broaders)
-                                      addBroaderNodes(item.target.broaders, item.target.id, currentX + xOffset, +1, "#dda")
+                                addBroaderNodes(item.source.broaders, item.source.id, currentX, -1, "#add");
+                                if (item.target && item.target.broaders)
+                                    addBroaderNodes(item.target.broaders, item.target.id, currentX + xOffset, +1, "#dda")
 
                             }
                             currentY += yOffset;
 
                         }
-                        visjsGraph.draw("graphDiv", visjsData)
+                        visjsGraph.draw("graphDiv", visjsData, {onclickFn: Comparator.onClickNode})
                         return callbackSeries();
+                    },
+
+
+                    //draw table
+                    function (callbackSeries) {
+
+                        if (output != "table")
+                            return callbackSeries();
+                        var nSourceBroaders = 0;
+                        var nTargetBroaders = 0;
+                        for (var key in commonConceptsMap) {
+                            var item = commonConceptsMap[key];
+                            nSourceBroaders = Math.max(nSourceBroaders, item.source.broaders.length);
+                            if (item.target)
+                                nTargetBroaders = Math.max(nTargetBroaders, item.target.broaders.length);
+                        }
+
+                        var csv = "";
+                        for (var key in commonConceptsMap) {
+                            var item = commonConceptsMap[key];
+
+                            /*   for( var i=nSourceBroaders;i>-1;i--){
+                                   if(i>=item.source.broaders.length)
+                                       csv +=  "\t";
+                                   else
+                                       csv += item.source.broaders[i].label+ "\t";
+                               }*/
+                            var sourceBroadersStr = ""
+                            for (var i = 0; i < nSourceBroaders; i++) {
+                                if (i >= item.source.broaders.length)
+                                    sourceBroadersStr += "\t";
+                                else
+                                    sourceBroadersStr = item.source.broaders[i].label + "\t" + sourceBroadersStr
+                                // csv += item.source.broaders[i].label+ "\t";
+                            }
+                            csv += sourceBroadersStr;
+                            csv += item.source.label + "\t";
+
+
+                            if (item.target) {
+
+                                csv += item.target.label + "\t";
+
+                                for (var i = 0; i < nTargetBroaders; i++) {
+                                    if (i >= item.target.broaders.length)
+                                        csv += "\t";
+                                    else
+                                        csv += item.target.broaders[i].label + "\t";
+                                }
+                            }
+
+                            csv += "\n";
+
+                        }
+                        console.log(csv);
+
                     }
 
 
@@ -343,6 +459,194 @@ var Comparator = (function () {
             )
 
 
+        }
+
+        self.onClickNode = function (node, point) {
+            if (!node) {
+                return Infos.setInfosDivHeight(20)
+            }
+            var sourceThesaurusGraphURI = app_config.ontologies[app_config.currentOntology].conceptsGraphUri
+            var query = "select *" +
+
+                "FROM <" + sourceThesaurusGraphURI + ">" +
+                "FROM <" + self.targetThesaurusGraphURI + ">" +
+                " where {<" + node.id + "> ?prop ?value. } limit 200";
+
+            var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+            sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                if (err) {
+                    return common.message(err);
+                }
+                var html = "<table>"
+                result.results.bindings.forEach(function (item) {
+
+                    html += "<tr><td>" + item.prop.value + "</td><td> " + item.value.value + "</td></tr>"
+                })
+                html += "</table>"
+                $("#infosDiv").html(html);
+                Infos.setInfosDivHeight(300);
+
+
+            })
+
+
+        }
+
+        self.getdescendantsMatchingStats = function (sourceConceptAggrDepth, targetConceptAggrDepth) {
+            var conceptLabelsMap = {};
+            var matchingConceptsTreeArray=[];
+            var uniqueConceptIds=[]
+            async.series([
+                    function (callbackSeries) {
+                        Concepts.getConceptDescendants({depth: sourceConceptAggrDepth, selectLabels: true, rawData: true}, function (err, conceptsSets) {
+                            if (err)
+                                return callbackSeries(err);
+
+
+                            var minIndex;
+                            conceptsSets.forEach(function (conceptSet) {
+                                conceptSet.forEach(function (item) {
+                                    for (var i = 0; i < 10; i++) {
+                                        if (typeof item["concept" + i] != "undefined") {
+                                            if (!minIndex) {
+                                                minIndex = i;
+                                            }
+
+                                            var parentId;
+                                            var parentLabel;
+                                            if (i == minIndex) {
+                                                parentId = "#";
+                                                parentLabel="#"
+                                            }else {
+                                                parentId = item["concept" + (i - 1)].value
+                                                parentLabel= item["conceptLabel" + (i - 1)].value
+                                            }
+                                            var label = item["conceptLabel" + i].value;
+                                            if (!conceptLabelsMap[label.toLowerCase()])
+                                                conceptLabelsMap[label.toLowerCase()] = ({parentId: parentId, parentLabel:parentLabel, parentLabel,id: item["concept" + i].value, label: label, count: 0})
+
+
+                                        }
+
+                                    }
+                                })
+
+
+                            })
+                            callbackSeries();
+                        })
+                    }
+
+                            // get matching target concepts
+                            , function (callbackSeries) {
+                                var allSourceConcepts = Object.keys(conceptLabelsMap);
+                                var sliceSize = 50;
+                                var lang="en"
+                                var sourceConceptsSlices = common.sliceArray(allSourceConcepts, sliceSize);
+                                async.eachSeries(sourceConceptsSlices, function (sourceConcepts, callbackEach) {
+
+                                    var regexStr = "("
+                                    sourceConcepts.forEach(function (concept, index) {
+                                        if (index > 0)
+                                            regexStr += "|";
+                                        regexStr += concept;
+                                    })
+                                    regexStr += ")"
+
+
+                                    var filter = "  regex(?prefLabel, \"^" + regexStr + "$\", \"i\")";
+                                    if (false) {
+                                        filter = "  regex(?prefLabel, \"" + regexStr + "\", \"i\")";
+                                    }
+                                    var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                                        "SELECT ?id ?prefLabel  count(?id as ?count) " +
+                                        "WHERE {" +
+                                        "?id skos:prefLabel ?prefLabel ." +
+                                        "FILTER (lang(?prefLabel) = '" + lang + "')" +
+                                        " filter " + filter+"  } GROUP by ?id ?prefLabel   limit 10000"
+
+
+                                    var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
+                                    var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+                                    sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                                        if (err) {
+                                            return callbackEach(err);
+                                        }
+                                        var bindings = [];
+                                        var ids = [];
+
+                                        if (result.results.bindings.length > 0) {
+                                            result.results.bindings.forEach(function (item) {
+                                                var sourceConcept=conceptLabelsMap[item.prefLabel.value.toLowerCase()]
+                                                if(sourceConcept && uniqueConceptIds.indexOf(sourceConcept.id)<0){
+                                                    uniqueConceptIds.push(sourceConcept.id)
+                                                    matchingConceptsTreeArray.push({
+                                                        id:sourceConcept.id,
+                                                        text :sourceConcept.label,
+                                                        parent:sourceConcept.parentId,
+                                                        data:{count:1,parentLabel:sourceConcept.parentLabel}
+
+
+                                                    })
+
+                                                }
+                                            })
+                                        }
+                                        // add missing parents
+                                        matchingConceptsTreeArray.forEach(function(item) {
+                                            if(uniqueConceptIds.indexOf(item.parent)<0){
+
+                                                var parentConcept=conceptLabelsMap[item.data.parentLabel]
+                                                if(item.data.parentId=="#" || !parentConcept )
+                                                    return;
+                                                matchingConceptsTreeArray.push({
+                                                    id:parentConcept.id,
+                                                    text :parentConcept.label,
+                                                    parent:parentConcept.parentId,
+                                                    data:{count:0}
+                                                })
+                                            }
+
+                                        })
+                                                return callbackEach(err);
+
+                                    })
+                                }, function (err) {
+                                //    var x=matchingConceptsTreeArray;
+                                    callbackSeries(err)
+                                })
+
+
+
+                    },
+                function(callbackSeries){
+
+                console.log(JSON.stringify(matchingConceptsTreeArray,null,2))
+                    $("#lefTabs").tabs("option", "active", 1);
+                    common.loadJsTree("jstreeFilterConceptsDiv", matchingConceptsTreeArray, {
+                        withCheckboxes: 1,
+                        //  openAll: true,
+                        selectDescendants: true,
+                        searchPlugin: true,
+                        onCheckNodeFn: function (evt, obj) {
+                            filterGraph.alterGraph.onFilterConceptsChecked(evt, obj);
+                        },
+                        onUncheckNodeFn: function (evt, obj) {
+                            filterGraph.alterGraph.onFilterConceptsChecked(evt, obj);
+                        }
+
+                    })
+
+
+
+
+                }
+
+                ], function (err) {
+                    return common.message(err);
+                }
+            )
         }
 
 
