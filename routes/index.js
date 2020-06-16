@@ -230,7 +230,15 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                     processResponse(response, err, result)
                 })
             }else{
-                httpProxy.get(req.body.url, JSON.parse(req.body.options), function (err, result) {
+                var options={};
+                if(req.body.options){
+                    if(typeof req.body.options=="string")
+                        options=JSON.parse(req.body.options);
+                    else
+                        options=req.body.options
+
+                }
+                httpProxy.get(req.body.url, options, function (err, result) {
                     processResponse(response, err, result)
                 })
             }

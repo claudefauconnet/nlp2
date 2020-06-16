@@ -21,9 +21,9 @@ WHERE {
 
 var sparql_abstract = (function () {
     var self = {};
-
+    self.rdfsMap = {}
     self.initSources = function (all) {
-        self.rdfsMap = {}
+
 
 
         var userGroups = authentication.currentUser.groupes;

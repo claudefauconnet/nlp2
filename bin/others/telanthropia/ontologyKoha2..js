@@ -5,7 +5,7 @@ var fs = require('fs')
 var ontologyKoha = {
 
 
-    generate: function () {
+    generate: function (fileRootName, startFileIndex,endFileIndex) {
         var str = "";
         var ontologyIri = "http://data.telanthropia.org/resource"
 
@@ -53,8 +53,9 @@ var ontologyKoha = {
         }
 
         var jsonAll = [];
-        for (var i = 0; i < 5; i++) {
-            var str0 = "" + fs.readFileSync("D:\\telanthropia\\telanthropia_koha_02_20_" + i + ".json");
+        for (var i = startFileIndex; i < endFileIndex; i++) {
+            var str0 = "" + fs.readFileSync(fileRootName + i + ".json");
+
             var json = JSON.parse(str0);
             jsonAll = jsonAll.concat(json)
         }
@@ -262,136 +263,166 @@ var ontologyKoha = {
         })
 
 
-        if( true) {
+        if (true) {
             var strBnfOk = "";
-
+            var strBnfKo = "";
+var uniqueWords=[];
             jsonAll.forEach(function (item) {
-                var type = "nomsGeographiques"
+                var type = "nomsGeographiques";
                 item[type].forEach(function (item) {
+
                     if (nomsGeographiquesMap[item.id])
-                        strBnfOk += type + "\t" + item.label + "\t" + item.id+"\n";
+                        strBnfOk += "OK" + "\t" +type + "\t" + item.label + "\t" + item.id + "\n";
+                    else if( uniqueWords.indexOf(item.label)<0) {
+                        uniqueWords.push(item.label)
+                        strBnfKo += "KO" + "\t" + type + "\t" + item.label + "\n";
+                    }
                 })
-                var type = "nomsCommuns"
+                var type = "nomsCommuns";
                 item[type].forEach(function (item) {
                     if (nomsCommunsMap[item.id])
-                        strBnfOk += type + "\t" + item.label + "\t" + item.id+"\n";
+                        strBnfOk += "OK" + "\t" +type + "\t" + item.label + "\t" + item.id + "\n";
+                    else if( uniqueWords.indexOf(item.label)<0) {
+                        uniqueWords.push(item.label)
+                        strBnfKo += "KO" + "\t" + type + "\t" + item.label + "\n";
+                    }
                 })
-                var type = "collectivites"
+                var type = "collectivites";
                 item[type].forEach(function (item) {
                     if (collectivitesMap[item.id])
-                        strBnfOk += type + "\t" + item.label + "\t" + item.id+"\n";
+                        strBnfOk += "OK" + "\t" +type + "\t" + item.label + "\t" + item.id + "\n";
+                    else if( uniqueWords.indexOf(item.label)<0) {
+                        uniqueWords.push(item.label)
+                        strBnfKo += "KO" + "\t" + type + "\t" + item.label + "\n";
+                    }
                 })
-                var type = "personnes"
+                var type = "personnes";
                 item[type].forEach(function (item) {
                     if (personnesMap[item.id])
-                        strBnfOk += type + "\t" + item.label + "\t" + item.id+"\n";
+                        strBnfOk += "OK" + "\t" +type + "\t" + item.label + "\t" + item.id + "\n";
+                    else if( uniqueWords.indexOf(item.label)<0) {
+                        uniqueWords.push(item.label)
+                        strBnfKo += "KO" + "\t" + type + "\t" + item.label + "\n";
+                    }
                 })
 
 
             })
 
-            fs.writeFileSync("D:\\telanthropia\\telanthropia_bnf_OK_Ids.csv", strBnfOk)
+            fs.writeFileSync(fileRootName + "_bnf_Ids.csv", strBnfOk+strBnfKo)
+
         }
 
-        if(false) {
-            var type = "personnes"
-            var type = "nomsGeographiques"
-            //   var type ="collectivites"
-            var type = "nomsCommuns"
+        if (false) {
+
+            //    var type = "nomsGeographiques";
+            //   var type ="collectivites";
+            //   var type = "nomsCommuns";
+
+            var type = "personnes";
 
             var ok = false;
             var orphans = [];
-            jsonAll.forEach(function (item) {
-
-                item[type].forEach(function (item) {
-                    if (!personneNamesMap[item.label.toLowerCase()])
-                        if (orphans.indexOf(item.label) < 0)
-                            orphans.push(item.label)
-
-                    orphanStr += item.label + "_" + item.titre + "_" + item.subdivision + "\n";
-                })
-            })
+            if (type == "personnes")
 
 
-            var async = require("async")
-
-            var bnfIds = "";
-            async.eachSeries(orphans, function (orphan, callbackEach) {
-                if (orphan == "Messie") {
-                    ok = true
-                }
-                if (!ok)
-                    return callbackEach();
-                if (type == "personnes") {
-                    var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-                        "SELECT DISTINCT * " +
-                        "WHERE {" +
-                        "?id foaf:familyName ?prefLabel ." +
-                        " filter regex(?prefLabel, \"^" + orphan + "$\", \"i\")" +
-                        "}" +
-                        "LIMIT 1000"
-                }
-                if (type == "nomsGeographiques" || type == "collectivites") {
-
-                    if (orphan.indexOf("(") > -1)
-                        orphan = orphan.substring(0, orphan.indexOf(" ("))
-                    var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-                        "SELECT DISTINCT * " +
-                        "WHERE {" +
-                        "?id foaf:name ?prefLabel ." +
-                        //  "?id  <http://purl.org/dc/terms/isPartOf> ?scheme"+
-                        " filter regex(?prefLabel, \"^" + orphan + "$\", \"i\")" +
-                        "}" +
-                        "LIMIT 1000"
-                }
-
-                if (type == "nomsCommuns") {
-
-                    var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-                        "SELECT DISTINCT * " +
-                        "WHERE {" +
-                        "?id skos:prefLabel ?prefLabel ." +
-                        "?id  <http://purl.org/dc/terms/isPartOf> ?scheme" +
-                        " filter regex(?prefLabel, \"^" + orphan + "$\", \"i\")" +
-                        "}" +
-                        "LIMIT 1000"
-                }
+                jsonAll.forEach(function (item) {
 
 
-                var url = 'https://data.bnf.fr/sparql' + "?default-graph-uri=" + encodeURIComponent('http://data.bnf.fr') + "&query=";// + query + queryOptions
-                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
-                var payload = {
-                    params: {query: query},
-                    headers: {
-                        "Accept": "application/sparql-results+json",
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    }
-                }
-                var httpProxy = require("../../httpProxy.");
+                    item[type].forEach(function (item) {
+                        if (!personneNamesMap[item.label.toLowerCase()]) {
+                            if (orphans.indexOf(item.label) < 0) {
+                                orphans.push(item.label)
 
-                console.log("X\t" + orphan + "\n");
-                httpProxy.post(url, payload.headers, payload.params, function (err, result) {
-                    if (err) {
-                        return console.log(err);
-                    }
-                    if (result.results.bindings.length == 0)
-                        bnfIds += "X\t" + orphan + "\n"
-                    else {
-                        result.results.bindings.forEach(function (item) {
-                            bnfIds += "A\t" + orphan + "\t" + item.id.value + "\n"
-                            console.log("A\t" + orphan + "\t" + item.id.value + "\n");
-                        })
-                    }
-                    callbackEach()
+                                orphanStr += item.label + "_" + item.titre + "_" + item.subdivision + "\n";
+                            }
+                        }
 
-                })
-
-
-            }, function (err) {
-                fs.writeFileSync("D:\\telanthropia\\telanthropia_bnf" + type + "Ids.csv", bnfIds)
+                    })
 
             })
 
+
+            fs.writeFileSync(fileRootName + "_bnf_KO_"+type+".csv", orphanStr)
+            if (false) {
+                var async = require("async")
+
+                var bnfIds = "";
+                async.eachSeries(orphans, function (orphan, callbackEach) {
+
+                    if (!ok)
+                        return callbackEach();
+                    if (type == "personnes") {
+                        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                            "SELECT DISTINCT * " +
+                            "WHERE {" +
+                            "?id foaf:familyName ?prefLabel ." +
+                            " filter regex(?prefLabel, \"^" + orphan + "$\", \"i\")" +
+                            "}" +
+                            "LIMIT 1000"
+                    }
+                    if (type == "nomsGeographiques" || type == "collectivites") {
+
+                        if (orphan.indexOf("(") > -1)
+                            orphan = orphan.substring(0, orphan.indexOf(" ("))
+                        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                            "SELECT DISTINCT * " +
+                            "WHERE {" +
+                            "?id foaf:name ?prefLabel ." +
+                            //  "?id  <http://purl.org/dc/terms/isPartOf> ?scheme"+
+                            " filter regex(?prefLabel, \"^" + orphan + "$\", \"i\")" +
+                            "}" +
+                            "LIMIT 1000"
+                    }
+
+                    if (type == "nomsCommuns") {
+
+                        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                            "SELECT DISTINCT * " +
+                            "WHERE {" +
+                            "?id skos:prefLabel ?prefLabel ." +
+                            "?id  <http://purl.org/dc/terms/isPartOf> ?scheme" +
+                            " filter regex(?prefLabel, \"^" + orphan + "$\", \"i\")" +
+                            "}" +
+                            "LIMIT 1000"
+                    }
+
+
+                    var url = 'https://data.bnf.fr/sparql' + "?default-graph-uri=" + encodeURIComponent('http://data.bnf.fr') + "&query=";// + query + queryOptions
+                    var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+                    var payload = {
+                        params: {query: query},
+                        headers: {
+                            "Accept": "application/sparql-results+json",
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        }
+                    }
+                    var httpProxy = require("../../httpProxy.");
+
+                    console.log("X\t" + orphan + "\n");
+                    httpProxy.post(url, payload.headers, payload.params, function (err, result) {
+                        if (err) {
+                            return console.log(err);
+                        }
+                        if (result.results.bindings.length == 0)
+                            bnfIds += "X\t" + orphan + "\n"
+                        else {
+                            result.results.bindings.forEach(function (item) {
+                                bnfIds += "A\t" + orphan + "\t" + item.id.value + "\n"
+                                console.log("A\t" + orphan + "\t" + item.id.value + "\n");
+                            })
+                        }
+                        callbackEach()
+
+                    })
+
+
+                }, function (err) {
+                    fs.writeFileSync(fileRootName + "_bnf" + type + "Ids.csv", bnfIds)
+
+                })
+
+            }
         }
 
 
@@ -411,22 +442,13 @@ var ontologyKoha = {
         strThesaurus += nomsGeographiquesStr;
 
 
-        // strAll=strSujetsX;
-
-        //    fs.writeFileSync("D:\\telanthropia\\telanthropia_all.rdf.nt", strAll)
-
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_resources.rdf.nt", strResources)
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_thesaurus.rdf.nt", strThesaurus);
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_orphanPersons.rdf.nt", orphanStr);
+        var dir = "D:\\telanthropia\\telanthropia_";
+        fs.writeFileSync(dir + "_resources.rdf.nt", strResources)
+        fs.writeFileSync(dir + "_thesaurus.rdf.nt", strThesaurus);
+        fs.writeFileSync(dir + "_orphanPersons.rdf.nt", orphanStr);
 
 
         return;
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_notices.rdf.nt", strNotices)
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_personnes.rdf.nt", strPersonnes)
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_nomsCommunsrdf.nt", nomsCommunsStr)
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_ncollectivites .rdf.nt", collectivitesStr)
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_nomsGeographiques.rdf.nt", nomsGeographiquesStr)
-        fs.writeFileSync("D:\\telanthropia\\telanthropia_sujets.rdf.nt", sujetsStr)
 
 
     }
@@ -434,7 +456,11 @@ var ontologyKoha = {
 
 }
 
-ontologyKoha.generate()
+/*var str0 = "" + fs.readFileSync("D:\\telanthropia\\telanthropia_koha_02_20_" + i + ".json");
+var str0 = "" + fs.readFileSync("D:\\telanthropia\\MEP_05_20_"+fileIndex+".json", JSON.stringify(allNotices, null, 2))*/
+
+//ontologyKoha.generate("D:\\telanthropia\\koha_PLM__05_20\\koha_",0,3)
+ontologyKoha.generate("D:\\telanthropia\\MEP_05_20_", 0,16)
 
 
 

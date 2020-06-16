@@ -6,29 +6,27 @@ var Selection = (function () {
     self.sliceZize = 500;
 
 
-
-    self.initConceptsGraphUriSelect=function(){
-        var options=[];
-        for( var key in app_config.ontologies) {
+    self.initConceptsGraphUriSelect = function () {
+        var options = [];
+        for (var key in app_config.ontologies) {
             options.push({value: app_config.ontologies[key].conceptsGraphUri, label: key});
         }
-        common.fillSelectOptions("Selection_conceptGraphUriSelect",options,true,"label","label");
+        common.fillSelectOptions("Selection_conceptGraphUriSelect", options, true, "label", "label");
     }
 
 
-    self.loadConceptsUriGraph=function(){
-        app_config.currentOntology=$("#Selection_conceptGraphUriSelect").val()
+    self.loadConceptsUriGraph = function () {
+        app_config.currentOntology = $("#Selection_conceptGraphUriSelect").val();
         Concepts.loadConceptsJsTree()
     }
-
 
 
     self.displayParagraphsGraph = function (booleanQuery, corpusIds, conceptIds) {
         //  var conceptLevelAggr = parseInt($("#conceptAggrLevelSlider").slider("option", "value"));
         var conceptLevelAggr = 0;
         var corpusLevelAggr = $("#corpusAggrLevelSelect").val();
-      /*  if (conceptLevelAggr == "0")
-            conceptLevelAggr = "1";*/
+        /*  if (conceptLevelAggr == "0")
+              conceptLevelAggr = "1";*/
 
 
         options = {
@@ -206,12 +204,14 @@ var Selection = (function () {
         $("#graphDiv").html("");
         $("#searchSelectedConceptsButton").css("display", "none")
         $("#resetSelectedConceptsButton").css("display", "none")
+        $("#compareConceptBroadersButton").css("display", "none")
+
         $("#compareConceptsButton").css("display", "none")
 
         $(".projection-item").css("display", "none")
         self.currentConceptsSelection = null;
-        Concepts.currentConceptsSelection=[[]];
-        Corpus.currentCorpusSelection=[[]];
+        Concepts.currentConceptsSelection = [[]];
+        Corpus.currentCorpusSelection = [[]];
         $("#jstreeConceptDiv").jstree(true).uncheck_all();
         $("#jstreeCorpusDiv").jstree(true).uncheck_all();
         if (reload) {
@@ -282,7 +282,7 @@ var Selection = (function () {
         var nodeLabel = obj.node.text;
         obj.node.parents.forEach(function (parent, index) {
             var jstree;
-            if (  obj.type == "concept")
+            if (obj.type == "concept")
                 jstree = "#jstreeConceptDiv"
             else {
                 jstree = "#jstreeCorpusDiv"
@@ -294,7 +294,7 @@ var Selection = (function () {
                 tooltip += "/" + parentLabel.text
         })
 
-        if (  obj.type == "corpus") {
+        if (obj.type == "corpus") {
             var text = $("#currentResourcesSpan").html();
             var index = Corpus.currentCorpusSelection.length - 1;
             var index2 = Corpus.currentCorpusSelection[index].length - 1;
@@ -306,7 +306,7 @@ var Selection = (function () {
             $("#currentResourcesSpan").html(text);
             $("#" + selectId).val(bool)
 
-        } else if(  obj.type == "concept"){
+        } else if (obj.type == "concept") {
 
             var text = $("#currentConceptsSpan").html();
             var index = Concepts.currentConceptsSelection.length - 1;
@@ -324,6 +324,8 @@ var Selection = (function () {
 
         $("#searchSelectedConceptsButton").css("display", "block")
         $("#resetSelectedConceptsButton").css("display", "block");
+        $("#compareConceptBroadersButton").css("display", "block");
+
         $("#compareConceptsButton").css("display", "block");
 
         //   $(".projection-item").css("display","block")

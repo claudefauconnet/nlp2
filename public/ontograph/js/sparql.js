@@ -323,14 +323,12 @@ var sparql = (function () {
     }
 
 
-
-
     self.querySPARQL_GET_proxy_cursor = function (url, query, queryOptions, options, callback) {
         var offset = 0;
         var limit = 5000;
         var resultSize = 1;
         var allData = {
-            results:{bindings:[]}
+            results: {bindings: []}
         }
 
         var p = query.toLowerCase().indexOf("limit")
@@ -341,7 +339,7 @@ var sparql = (function () {
 
         async.whilst(
             function (callbackTest) {//test
-                return  resultSize > 0;
+                return resultSize > 0;
             },
             function (callbackWhilst) {//iterate
 
@@ -384,9 +382,9 @@ var sparql = (function () {
                         /*  if (data.results.bindings.length == 0)
                               return callback({data.results.bindings:},[])*/
                         callbackWhilst(null, data);
-                        resultSize=data.results.bindings.length
-                        allData.results.bindings= allData.results.bindings.concat( data.results.bindings);
-                        offset+=limit;
+                        resultSize = data.results.bindings.length
+                        allData.results.bindings = allData.results.bindings.concat(data.results.bindings);
+                        offset += limit;
 
                     }
                     , error: function (err) {
@@ -395,21 +393,17 @@ var sparql = (function () {
                         $("#waitImg").css("display", "none");
                         console.log(JSON.stringify(err))
                         console.log(JSON.stringify(query))
-                            return callbackWhilst(err)
+                        return callbackWhilst(err)
 
                     }
 
                 });
 
             }, function (err) {
-callback(err,allData)
+                callback(err, allData)
 
             })
     }
-
-
-
-
 
 
     self.querySPARQL_GET_proxy = function (url, query, queryOptions, options, callback) {
@@ -420,8 +414,10 @@ callback(err,allData)
             query2 = query2.replace(/%2B/g, "+").trim()
         }
 
+
+
         var body = {
-            params: {query: query },
+            params: {query: query},
             headers: {
                 "Accept": "application/sparql-results+json",
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -432,14 +428,22 @@ callback(err,allData)
         $("#waitImg").css("display", "block");
 
 
-     //   url="http://vps475829.ovh.net:8890/sparql"
+
+
         var payload = {
             httpProxy: 1,
             url: url,
             body: body,
-            POST: true,
+            options:queryOptions
+
 
         }
+
+        if (options.method && options.method=="GET")
+            payload.GET=true;
+        else
+            payload.POST=true;
+
         $.ajax({
             type: "POST",
             url: "/elastic",

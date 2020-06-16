@@ -34,12 +34,31 @@
     <script src="js/infos.js"></script>
 
     <script src="js/comparator.js"></script>
+    <script src="js/ancestorsComparator.js"></script>
+    <script src="../skosEditor/js/sparql_abstract.js"></script>
+    <script src="../skosEditor/js/multiSkosGraph3.js"></script>
+
+
+
+    <script src="js/sparqlProxies/sparql_facade.js"></script>
+    <script src="js/sparqlProxies/sparql_skos_generic.js"></script>
+    <script src="js/sparqlProxies/sparql_ISO_15926.js"></script>
+
+
 
 
 
 
     <script src="../js/others/async.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.flash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+      <script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
 
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"/>
@@ -101,6 +120,9 @@
                     }
 
                 });
+
+
+
                 Corpus.loadCorpusJsTree();
                 Corpus.loadResourceLevelsSelect()
                // Concepts.loadConceptsJsTree();
@@ -261,6 +283,8 @@
                             <div><input size="15" id="searchConceptInput" value="">
                                 <button onclick="Concepts.searchConcept($('#searchConceptInput').val())">Search</button>
                                 <button onclick="Concepts.loadConceptsJsTree(true)">Reset</button>
+                                <button onclick="Concepts.conceptTreeToTable()">toTable</button>
+
                             </div>
                             <div id="jstreeConceptDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
 
@@ -351,7 +375,8 @@
             &nbsp;<div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"/></div>
             <div style="border: solid;border-width: 1px;border-radius: 3px;background-color:#bdbdbd;display: flex">
                 <button id='searchSelectedConceptsButton' style='display: none;' onclick='Selection.displayParagraphsGraph()'>Graph</button>
-                <button id='compareConceptsButton' style='display: none;' onclick='Comparator.showDialog()'>Compare</button>
+                <button id='compareConceptsButton' style='display: none;' onclick='Comparator.showDialog()'>Compare children</button>
+                <button id='compareConceptBroadersButton' style='display: none;' onclick='AncestorsComparator.compare()'>Compare broaders</button>
                 <button id='resetSelectedConceptsButton' style='display: none;' onclick='Selection.resetSelection()'>X</button>
             </div>
 

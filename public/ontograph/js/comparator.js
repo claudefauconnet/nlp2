@@ -15,6 +15,9 @@ var Comparator = (function () {
             var html = "<table>"
             html += "<tr><td> targetGraphUri</td><td> <select id='comparator_targetGraphUriSelect'>" + graphsUrisOptions + "</select></td></tr>"
             html += "<tr><td> outputType</td><td> <select id='comparator_outputTypeSelect'><option>graph</option><option>table</option><option>stats</option></option></select></td></tr>"
+
+            html+="<tr><td><input type='checkbox' id='showAllSourceNodesCBX'>showAllSourceNodes</td></tr>"
+            html+="<tr><td><input type='checkbox' id='showOlderAncestorsOnlyCBX'>showOlderAncestorsOnly</td></tr>"
             html += "<tr><td>  <button onclick='Comparator.compareConcepts();'>Compare</button></td></tr>"
             html += "</table>"
 
@@ -32,6 +35,8 @@ var Comparator = (function () {
             self.targetThesaurusGraphURI = $("#comparator_targetGraphUriSelect").val()
 
             var output = $("#comparator_outputTypeSelect").val();
+            var showAllSourceNodes=$("#showAllSourceNodesCBX").prop("checked");
+            var showOlderAncestorsOnly=$("#showOlderAncestorsOnlyCBX").prop("checked");
 
             var lang = "en"
             if (!self.targetThesaurusGraphURI)
@@ -41,6 +46,8 @@ var Comparator = (function () {
             var targetConceptAggrDepth = 6;
             var sliceSize = 20;
 
+
+            var bindings = [];
             var allSourceConcepts = [];
             var commonConceptsMap = {};
             $("#dialogDiv").dialog("close")
@@ -105,9 +112,7 @@ var Comparator = (function () {
                                 "WHERE {" +
                                 "?id skos:prefLabel ?prefLabel ." +
                                 "FILTER (lang(?prefLabel) = '" + lang + "')" +
-                                " filter " + filter+"} limit 10000";
-
-
+                                " filter " + filter + "} limit 10000";
 
 
                             var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
@@ -189,9 +194,11 @@ var Comparator = (function () {
                                 if (err) {
                                     return callbackEach(err);
                                 }
-                                var bindings = [];
+
                                 var ids = [];
+
                                 if (result.results.bindings.length > 0) {
+
                                     result.results.bindings.forEach(function (item) {
 
 
@@ -201,6 +208,7 @@ var Comparator = (function () {
                                         }
                                         var targetBroaders = []
                                         for (var i = 1; i < targetConceptAggrDepth; i++) {
+
                                             var broaderId = item["broader" + i]
                                             if (typeof broaderId !== "undefined") {
                                                 if (targetBroaders.indexOf(broaderId.value) < 0) {
@@ -211,7 +219,10 @@ var Comparator = (function () {
                                                         broaderLabel = broaderId.value
                                                     targetBroaders.push({level: i, id: broaderId.value, label: broaderLabel});
                                                 }
+                                            } else {
+                                                //   targetBroaders.push({level: j, id:null, label: ""})
                                             }
+
                                         }
                                         targetObj.broaders = targetBroaders;
                                         if (!commonConceptsMap[item.prefLabel.value.toLowerCase()]) {
@@ -342,50 +353,53 @@ var Comparator = (function () {
                         for (var key in commonConceptsMap) {
                             var item = commonConceptsMap[key];
 
-                            if (uniqueNodes.indexOf(item.source.id) < 0) {
-                                uniqueNodes.push(item.source.id)
-                                var sourceNode = {
-                                    id: item.source.id,
-                                    label: item.source.label,
-                                    color: "#add",
-                                    shape: "box",
-                                    fixed: {x: true, y: true},
-                                    x: currentX,
-                                    y: currentY
-                                }
-                                visjsData.nodes.push(sourceNode);
-                                if (item.target) {
-                                    if (uniqueNodes.indexOf(item.target.id) < 0) {
-                                        uniqueNodes.push(item.target.id)
-                                        var targetNode = {
-                                            id: item.target.id,
-                                            label: item.target.label,
-                                            color: "#dda",
-                                            shape: "box",
-                                            fixed: {x: true, y: true},
-                                            x: currentX + xOffset,
-                                            y: currentY
-                                        }
-                                        visjsData.nodes.push(targetNode);
-                                    }
-                                    var edgeId = item.source.id + "_" + item.target.id
-                                    if (uniqueEdges.indexOf(edgeId) < 0) {
-                                        uniqueEdges.push(edgeId)
-                                        visjsData.edges.push({
-                                            id: edgeId,
-                                            from: item.source.id,
-                                            to: item.target.id
+                            if (showAllSourceNodes || (!showAllSourceNodes && item.target)) {
 
-                                        })
+                                if (uniqueNodes.indexOf(item.source.id) < 0) {
+                                    uniqueNodes.push(item.source.id)
+                                    var sourceNode = {
+                                        id: item.source.id,
+                                        label: item.source.label,
+                                        color: "#add",
+                                        shape: "box",
+                                        fixed: {x: true, y: true},
+                                        x: currentX,
+                                        y: currentY
                                     }
+                                    visjsData.nodes.push(sourceNode);
+                                    if (item.target) {
+                                        if (uniqueNodes.indexOf(item.target.id) < 0) {
+                                            uniqueNodes.push(item.target.id)
+                                            var targetNode = {
+                                                id: item.target.id,
+                                                label: item.target.label,
+                                                color: "#dda",
+                                                shape: "box",
+                                                fixed: {x: true, y: true},
+                                                x: currentX + xOffset,
+                                                y: currentY
+                                            }
+                                            visjsData.nodes.push(targetNode);
+                                        }
+                                        var edgeId = item.source.id + "_" + item.target.id
+                                        if (uniqueEdges.indexOf(edgeId) < 0) {
+                                            uniqueEdges.push(edgeId)
+                                            visjsData.edges.push({
+                                                id: edgeId,
+                                                from: item.source.id,
+                                                to: item.target.id
+
+                                            })
+                                        }
+                                    }
+                                    addBroaderNodes(item.source.broaders, item.source.id, currentX, -1, "#add");
+                                    if (item.target && item.target.broaders)
+                                        addBroaderNodes(item.target.broaders, item.target.id, currentX + xOffset, +1, "#dda")
+
                                 }
-                                addBroaderNodes(item.source.broaders, item.source.id, currentX, -1, "#add");
-                                if (item.target && item.target.broaders)
-                                    addBroaderNodes(item.target.broaders, item.target.id, currentX + xOffset, +1, "#dda")
+                                currentY += yOffset;
 
                             }
-                            currentY += yOffset;
-
                         }
                         visjsGraph.draw("graphDiv", visjsData, {onclickFn: Comparator.onClickNode})
                         return callbackSeries();
@@ -397,6 +411,8 @@ var Comparator = (function () {
 
                         if (output != "table")
                             return callbackSeries();
+
+
                         var nSourceBroaders = 0;
                         var nTargetBroaders = 0;
                         for (var key in commonConceptsMap) {
@@ -409,41 +425,88 @@ var Comparator = (function () {
                         var csv = "";
                         for (var key in commonConceptsMap) {
                             var item = commonConceptsMap[key];
-
-                            /*   for( var i=nSourceBroaders;i>-1;i--){
-                                   if(i>=item.source.broaders.length)
-                                       csv +=  "\t";
-                                   else
-                                       csv += item.source.broaders[i].label+ "\t";
-                               }*/
-                            var sourceBroadersStr = ""
-                            for (var i = 0; i < nSourceBroaders; i++) {
-                                if (i >= item.source.broaders.length)
-                                    sourceBroadersStr += "\t";
-                                else
-                                    sourceBroadersStr = item.source.broaders[i].label + "\t" + sourceBroadersStr
-                                // csv += item.source.broaders[i].label+ "\t";
-                            }
-                            csv += sourceBroadersStr;
-                            csv += item.source.label + "\t";
+                            if (showAllSourceNodes  || (!showAllSourceNodes && item.target)) {
 
 
-                            if (item.target) {
+                                var sourceBroadersStr = ""
+                                for (var i = 0; i < nSourceBroaders; i++) {
 
-                                csv += item.target.label + "\t";
-
-                                for (var i = 0; i < nTargetBroaders; i++) {
-                                    if (i >= item.target.broaders.length)
-                                        csv += "\t";
+                                    if (i >= item.source.broaders.length)
+                                        sourceBroadersStr += "\t";
                                     else
-                                        csv += item.target.broaders[i].label + "\t";
+                                        sourceBroadersStr = item.source.broaders[i].label + "\t" + sourceBroadersStr
+                                    // csv += item.source.broaders[i].label+ "\t";
                                 }
-                            }
+                                csv += sourceBroadersStr;
+                                csv += item.source.label + "\t";
 
-                            csv += "\n";
+
+                                if (item.target) {
+
+                                    csv += item.target.label + "\t";
+                                    if(showOlderAncestorsOnly ){
+                                        if(  item.target.broaders.length>0) {
+                                            if (item.target.broaders.length > 1)
+                                                csv += item.target.broaders[item.target.broaders.length - 2].label + "\t";
+                                            csv += item.target.broaders[item.target.broaders.length - 1].label;
+                                        }
+
+
+                                    }else {
+
+
+                                        for (var i = nTargetBroaders; i > 0; i--) {
+                                            if (item.target.broaders.length <= nTargetBroaders - i) {
+                                                csv += "\t";
+                                                //   if (i <item.target.broaders.length)
+                                            } else {
+                                                csv += item.target.broaders[(nTargetBroaders - i)].label + "\t";
+                                            }
+                                        }
+                                    }
+                                }
+
+                                csv += "\n";
+                            }
 
                         }
-                        console.log(csv);
+                        var maxCols = 0
+                        var dataSet = []
+                        var lines = csv.split("\n")
+                        lines.forEach(function (line) {
+                            var lineArray = [];
+                            var cols = line.split("\t")
+                            maxCols = Math.max(maxCols, cols.length)
+                            cols.forEach(function (col) {
+                                lineArray.push(col);
+                            })
+                            dataSet.push(lineArray);
+                        })
+                        var colnames = []
+                        for (var i = 0; i < maxCols; i++) {
+                            colnames.push({title: "col" + i})
+                        }
+
+                        dataSet.forEach(function (line) {
+                            for (var i = line.length; i < maxCols; i++) {
+                                line.push("")
+                            }
+                        })
+
+                        $('#graphDiv').html("<table id='dataTableDiv'></table>");
+
+                        $('#dataTableDiv').DataTable({
+                            data: dataSet,
+                            columns: colnames,
+                           // async: false,
+                            dom: 'Bfrtip',
+                            buttons: [
+                                'copy', 'csv', 'excel', 'pdf', 'print'
+                            ]
+
+
+                        });
+                        //     console.log(csv);
 
                     }
 
@@ -465,38 +528,15 @@ var Comparator = (function () {
             if (!node) {
                 return Infos.setInfosDivHeight(20)
             }
-            var sourceThesaurusGraphURI = app_config.ontologies[app_config.currentOntology].conceptsGraphUri
-            var query = "select *" +
-
-                "FROM <" + sourceThesaurusGraphURI + ">" +
-                "FROM <" + self.targetThesaurusGraphURI + ">" +
-                " where {<" + node.id + "> ?prop ?value. } limit 200";
-
-            var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
-            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
-            sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
-                if (err) {
-                    return common.message(err);
-                }
-                var html = "<table>"
-                result.results.bindings.forEach(function (item) {
-
-                    html += "<tr><td>" + item.prop.value + "</td><td> " + item.value.value + "</td></tr>"
-                })
-                html += "</table>"
-                $("#infosDiv").html(html);
-                Infos.setInfosDivHeight(300);
-
-
-            })
+          Infos.concepts.showConceptInfos(node.id)
 
 
         }
 
         self.getdescendantsMatchingStats = function (sourceConceptAggrDepth, targetConceptAggrDepth) {
             var conceptLabelsMap = {};
-            var matchingConceptsTreeArray=[];
-            var uniqueConceptIds=[]
+            var matchingConceptsTreeArray = [];
+            var uniqueConceptIds = []
             async.series([
                     function (callbackSeries) {
                         Concepts.getConceptDescendants({depth: sourceConceptAggrDepth, selectLabels: true, rawData: true}, function (err, conceptsSets) {
@@ -517,14 +557,14 @@ var Comparator = (function () {
                                             var parentLabel;
                                             if (i == minIndex) {
                                                 parentId = "#";
-                                                parentLabel="#"
-                                            }else {
+                                                parentLabel = "#"
+                                            } else {
                                                 parentId = item["concept" + (i - 1)].value
-                                                parentLabel= item["conceptLabel" + (i - 1)].value
+                                                parentLabel = item["conceptLabel" + (i - 1)].value
                                             }
                                             var label = item["conceptLabel" + i].value;
                                             if (!conceptLabelsMap[label.toLowerCase()])
-                                                conceptLabelsMap[label.toLowerCase()] = ({parentId: parentId, parentLabel:parentLabel, parentLabel,id: item["concept" + i].value, label: label, count: 0})
+                                                conceptLabelsMap[label.toLowerCase()] = ({parentId: parentId, parentLabel: parentLabel, parentLabel, id: item["concept" + i].value, label: label, count: 0})
 
 
                                         }
@@ -538,115 +578,168 @@ var Comparator = (function () {
                         })
                     }
 
-                            // get matching target concepts
-                            , function (callbackSeries) {
-                                var allSourceConcepts = Object.keys(conceptLabelsMap);
-                                var sliceSize = 50;
-                                var lang="en"
-                                var sourceConceptsSlices = common.sliceArray(allSourceConcepts, sliceSize);
-                                async.eachSeries(sourceConceptsSlices, function (sourceConcepts, callbackEach) {
+                    // get matching target concepts
+                    , function (callbackSeries) {
+                        var allSourceConcepts = Object.keys(conceptLabelsMap);
+                        var sliceSize = 50;
+                        var lang = "en"
+                        var sourceConceptsSlices = common.sliceArray(allSourceConcepts, sliceSize);
+                        async.eachSeries(sourceConceptsSlices, function (sourceConcepts, callbackEach) {
 
-                                    var regexStr = "("
-                                    sourceConcepts.forEach(function (concept, index) {
-                                        if (index > 0)
-                                            regexStr += "|";
-                                        regexStr += concept;
-                                    })
-                                    regexStr += ")"
-
-
-                                    var filter = "  regex(?prefLabel, \"^" + regexStr + "$\", \"i\")";
-                                    if (false) {
-                                        filter = "  regex(?prefLabel, \"" + regexStr + "\", \"i\")";
-                                    }
-                                    var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-                                        "SELECT ?id ?prefLabel  count(?id as ?count) " +
-                                        "WHERE {" +
-                                        "?id skos:prefLabel ?prefLabel ." +
-                                        "FILTER (lang(?prefLabel) = '" + lang + "')" +
-                                        " filter " + filter+"  } GROUP by ?id ?prefLabel   limit 10000"
+                            var regexStr = "("
+                            sourceConcepts.forEach(function (concept, index) {
+                                if (index > 0)
+                                    regexStr += "|";
+                                regexStr += concept;
+                            })
+                            regexStr += ")"
 
 
-                                    var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
-                                    var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
-                                    sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
-                                        if (err) {
-                                            return callbackEach(err);
-                                        }
-                                        var bindings = [];
-                                        var ids = [];
-
-                                        if (result.results.bindings.length > 0) {
-                                            result.results.bindings.forEach(function (item) {
-                                                var sourceConcept=conceptLabelsMap[item.prefLabel.value.toLowerCase()]
-                                                if(sourceConcept && uniqueConceptIds.indexOf(sourceConcept.id)<0){
-                                                    uniqueConceptIds.push(sourceConcept.id)
-                                                    matchingConceptsTreeArray.push({
-                                                        id:sourceConcept.id,
-                                                        text :sourceConcept.label,
-                                                        parent:sourceConcept.parentId,
-                                                        data:{count:1,parentLabel:sourceConcept.parentLabel}
+                            var filter = "  regex(?prefLabel, \"^" + regexStr + "$\", \"i\")";
+                            if (false) {
+                                filter = "  regex(?prefLabel, \"" + regexStr + "\", \"i\")";
+                            }
+                            var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                                "SELECT ?id ?prefLabel  count(?id as ?count) " +
+                                "WHERE {" +
+                                "?id skos:prefLabel ?prefLabel ." +
+                                "FILTER (lang(?prefLabel) = '" + lang + "')" +
+                                " filter " + filter + "  } GROUP by ?id ?prefLabel   limit 10000"
 
 
-                                                    })
+                            var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
+                            var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+                            sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                                if (err) {
+                                    return callbackEach(err);
+                                }
+                                var bindings = [];
+                                var ids = [];
 
-                                                }
+                                if (result.results.bindings.length > 0) {
+                                    result.results.bindings.forEach(function (item) {
+                                        var sourceConcept = conceptLabelsMap[item.prefLabel.value.toLowerCase()]
+                                        if (sourceConcept && uniqueConceptIds.indexOf(sourceConcept.id) < 0) {
+                                            uniqueConceptIds.push(sourceConcept.id)
+                                            matchingConceptsTreeArray.push({
+                                                id: sourceConcept.id,
+                                                text: sourceConcept.label,
+                                                parent: sourceConcept.parentId,
+                                                data: {count: 1, parentLabel: sourceConcept.parentLabel}
+
+
                                             })
+
                                         }
-                                        // add missing parents
-                                        matchingConceptsTreeArray.forEach(function(item) {
-                                            if(uniqueConceptIds.indexOf(item.parent)<0){
-
-                                                var parentConcept=conceptLabelsMap[item.data.parentLabel]
-                                                if(item.data.parentId=="#" || !parentConcept )
-                                                    return;
-                                                matchingConceptsTreeArray.push({
-                                                    id:parentConcept.id,
-                                                    text :parentConcept.label,
-                                                    parent:parentConcept.parentId,
-                                                    data:{count:0}
-                                                })
-                                            }
-
-                                        })
-                                                return callbackEach(err);
-
                                     })
-                                }, function (err) {
-                                //    var x=matchingConceptsTreeArray;
-                                    callbackSeries(err)
-                                })
+                                }
+                                // add missing parents
+                                matchingConceptsTreeArray.forEach(function (item) {
+                                    if (uniqueConceptIds.indexOf(item.parent) < 0) {
 
+                                        var parentConcept = conceptLabelsMap[item.data.parentLabel]
+                                        if (item.data.parentId == "#" || !parentConcept)
+                                            return;
+                                        matchingConceptsTreeArray.push({
+                                            id: parentConcept.id,
+                                            text: parentConcept.label,
+                                            parent: parentConcept.parentId,
+                                            data: {count: 0}
+                                        })
+                                    }
+
+                                })
+                                return callbackEach(err);
+
+                            })
+                        }, function (err) {
+                            //    var x=matchingConceptsTreeArray;
+                            callbackSeries(err)
+                        })
 
 
                     },
-                function(callbackSeries){
+                    function (callbackSeries) {
 
-                console.log(JSON.stringify(matchingConceptsTreeArray,null,2))
-                    $("#lefTabs").tabs("option", "active", 1);
-                    common.loadJsTree("jstreeFilterConceptsDiv", matchingConceptsTreeArray, {
-                        withCheckboxes: 1,
-                        //  openAll: true,
-                        selectDescendants: true,
-                        searchPlugin: true,
-                        onCheckNodeFn: function (evt, obj) {
-                            filterGraph.alterGraph.onFilterConceptsChecked(evt, obj);
-                        },
-                        onUncheckNodeFn: function (evt, obj) {
-                            filterGraph.alterGraph.onFilterConceptsChecked(evt, obj);
-                        }
+                        console.log(JSON.stringify(matchingConceptsTreeArray, null, 2))
+                        $("#lefTabs").tabs("option", "active", 1);
+                        common.loadJsTree("jstreeFilterConceptsDiv", matchingConceptsTreeArray, {
+                            withCheckboxes: 1,
+                            //  openAll: true,
+                            selectDescendants: true,
+                            searchPlugin: true,
+                            onCheckNodeFn: function (evt, obj) {
+                                filterGraph.alterGraph.onFilterConceptsChecked(evt, obj);
+                            },
+                            onUncheckNodeFn: function (evt, obj) {
+                                filterGraph.alterGraph.onFilterConceptsChecked(evt, obj);
+                            }
 
-                    })
-
-
+                        })
 
 
-                }
+                    }
 
                 ], function (err) {
                     return common.message(err);
                 }
             )
+        }
+
+        self.getAllSchemesStats = function () {
+            /*
+
+            select distinct ?scheme  count(?concept1) count(?concept2)  count(?concept3)  count(?concept4)  count(?concept5)  count(?concept6) {?scheme <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+
+ ?concept1 skos:broader ?scheme.
+
+ OPTIONAL{
+ ?concept2 skos:broader ?concept1.
+ OPTIONAL{
+ ?concept3 skos:broader ?concept2.
+ OPTIONAL{
+ ?concept4 skos:broader ?concept3.
+ OPTIONAL{
+ ?concept5 skos:broader ?concept4.
+ OPTIONAL{
+ ?concept6 skos:broader ?concept5.
+
+ }
+ }
+
+ }
+
+ }
+ }
+
+
+
+
+ }
+
+ group by ?scheme order by ?scheme
+
+ limit 200
+             */
+
+
+            /*
+        select distinct ?scheme ?schemeLabel  ?conceptLabel1   ?conceptLabel2  {
+
+ ?scheme <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+
+ OPTIONAL{
+
+ ?scheme skos:prefLabel ?schemeLabel. filter(lang(?schemeLabel)='en')
+ }
+
+ ?concept1 skos:broader ?scheme. ?concept1  skos:prefLabel ?conceptLabel1. filter(lang(?conceptLabel1)='en')
+
+
+ OPTIONAL{
+ ?concept2 skos:broader ?concept1. ?concept2 skos:prefLabel ?conceptLabel2. filter(lang(?conceptLabel2)='en')
+
+             */
         }
 
 

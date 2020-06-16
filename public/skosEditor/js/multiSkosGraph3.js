@@ -1,4 +1,4 @@
-var multiSkosGraph2 = (function () {
+var multiSkosGraph3 = (function () {
     var self = {};
 
     var maxEdges = 200
@@ -113,12 +113,12 @@ var multiSkosGraph2 = (function () {
         });
 
         var selectedIds = [];
-      //  sources.forEach(function (source) {
-            async.eachSeries(sources,function(source,callbackEach){
+        //  sources.forEach(function (source) {
+        async.eachSeries(sources, function (source, callbackEach) {
 
-                if(true && source.sparql_url!= 'http://vps475829.ovh.net:8890/sparql'){
-                    callbackEach()
-                }
+            if (true && source.sparql_url != 'http://vps475829.ovh.net:8890/sparql') {
+                callbackEach()
+            }
 
             sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
 
@@ -135,31 +135,30 @@ var multiSkosGraph2 = (function () {
                         item.title = item.label + " / " + (item.description || "")
 
                         var newNode = {id: item.id, text: "<span class='tree_level_2'>" + item.title + "</span>", data: item}
-                       // setTimeout(function () {
-                            $("#conceptsJstreeDiv").jstree(true).create_node(source.name, newNode, "first", function () {
-                                $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
+                        // setTimeout(function () {
+                        $("#conceptsJstreeDiv").jstree(true).create_node(source.name, newNode, "first", function () {
+                            $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
 
 
-                            }, false);
+                        }, false);
 
-                      //  }, 1000)
+                        //  }, 1000)
                     }
 
                 })
-             if(source.sparql_url== 'http://vps475829.ovh.net:8890/sparql'){
+                if (source.sparql_url == 'http://vps475829.ovh.net:8890/sparql') {
                     callbackEach()
-               }
-
+                }
 
 
             })
 
 
-        },function(err){
-                if(err)
-                  return  $("#messageDiv").html(err)
-                $("#messageDiv").html("done")
-            })
+        }, function (err) {
+            if (err)
+                return $("#messageDiv").html(err)
+            $("#messageDiv").html("done")
+        })
         setTimeout(function () {
 
             $("#conceptsJstreeDiv").jstree(true).select_node(selectedIds);
@@ -212,8 +211,8 @@ var multiSkosGraph2 = (function () {
     }
 
     self.displayGraph = function () {
-      $('#dialogDiv').dialog('close')
-      //  self.fadeDialog();
+        $('#dialogDiv').dialog('close')
+        //  self.fadeDialog();
         var selectedConcepts = []
         var xx = $("#conceptsJstreeDiv").jstree(true).get_checked(null, true)
         xx.forEach(function (nodeId) {
@@ -265,8 +264,8 @@ var multiSkosGraph2 = (function () {
         var visjsData = {nodes: [], edges: []}
         visjsData.nodes.push(self.rootNode);
         visjsGraph.draw("graphDiv", visjsData, {
-            onclickFn: multiSkosGraph2.onNodeClick,
-          //  onHoverNodeFn: multiSkosGraph2.onNodeClick,
+            onclickFn: multiSkosGraph3.onNodeClick,
+            //  onHoverNodeFn: multiSkosGraph3.onNodeClick,
             afterDrawing: function () {
                 $("#waitImg").css("display", "none")
             }
@@ -277,11 +276,11 @@ var multiSkosGraph2 = (function () {
 
 
     self.onNodeClick = function (obj, point) {
-if(obj) {
-    self.graphActions.currentNode = obj;
+        if (obj) {
+            self.graphActions.currentNode = obj;
 
-    self.graphActions.showPopup(point)
-}
+            self.graphActions.showPopup(point)
+        }
 
     }
 
@@ -350,7 +349,11 @@ if(obj) {
     self.pathsToVisjsData = function (node) {
         var thesaurus = node.thesaurus
         var source = node.source
-        var color = sparql_abstract.rdfsMap[node.source].color;
+        var color = "#dda";
+        if (sparql_abstract.rdfsMap[node.source])
+            color = sparql_abstract.rdfsMap[node.source].color;
+        if (node.color)
+            color = node.color;
         var ancestorsStr = node.ancestors;
         var ancestorsStr = ancestorsStr.replace(/\|/g, "\n")
 
@@ -379,9 +382,9 @@ if(obj) {
                         to: id,
                         id: self.rootNode.id + "_" + id,
                         type: "match",
-                       // arrows: "to",
-                        color:color,
-                        width:6,
+                        // arrows: "to",
+                        color: color,
+                        width: 6,
                         label: thesaurus,
                         font: {
                             color: color,
@@ -429,7 +432,9 @@ if(obj) {
                     //   color = rootNodeColor;
                     size = 10;
                 } else {
-                    color = sparql_abstract.rdfsMap[node.source].color;
+                  /*  var color = "#dda"
+                    if (sparql_abstract.rdfsMap[node.source])
+                        color = sparql_abstract.rdfsMap[node.source].color;*/
                     var shape = "box";
                     var size = 20;
                 }
@@ -509,15 +514,14 @@ if(obj) {
             self.context.selectedNode = parent;
 
 
-
         }
 
     }
 
-    self.fadeDialog=function(){
-        $("#dialogDiv").css("opacity",0.5);
-        $("#dialogDiv").css("left",0);
-        $("#dialogDiv").css("top",0);
+    self.fadeDialog = function () {
+        $("#dialogDiv").css("opacity", 0.5);
+        $("#dialogDiv").css("left", 0);
+        $("#dialogDiv").css("top", 0);
     }
 
     /*-------------------------------------------------------------------------------------------*/
@@ -530,7 +534,7 @@ if(obj) {
 
     self.setTheaurusList = function (thesaurusList) {
         var html = "<ul>"
-        html += " <li><input type='checkbox' checked='checked' onchange='multiSkosGraph2.switchThesCbxs($(this))' class='thesCBXall' id='thes_all" + "'>"
+        html += " <li><input type='checkbox' checked='checked' onchange='multiSkosGraph3.switchThesCbxs($(this))' class='thesCBXall' id='thes_all" + "'>"
         for (var key in thesaurusList) {
             //    console.log(thesaurusList);
             var color = thesaurusList[key]
@@ -540,7 +544,7 @@ if(obj) {
         }
         html += "</ul>"
         $("#thesaurusListDiv").html(html);
-        $(".thesCBX").bind('change', multiSkosGraph2.onThesCBXChange);
+        $(".thesCBX").bind('change', multiSkosGraph3.onThesCBXChange);
     }
 
 
@@ -655,7 +659,7 @@ if(obj) {
                 }
 
                 visjsGraph.draw("graphDiv", visjsData, {
-                    onclickFn: multiSkosGraph2.onNodeClick,
+                    onclickFn: multiSkosGraph3.onNodeClick,
                     afterDrawing: function () {
                         $("#waitImg").css("display", "none")
                     }

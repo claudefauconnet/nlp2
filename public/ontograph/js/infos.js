@@ -20,6 +20,27 @@ var Infos = (function () {
 
     self.concepts = {
         showConceptInfos: function (conceptId) {
+            $("#infosDiv").html("");
+            sparql_facade.getNodeInfos(conceptId, {}, function (err, result) {
+
+
+                if (err)
+                    return common.message(err)
+
+                var html = "<table>"
+                result.forEach(function (item) {
+
+                    html += "<tr><td>" + item.prop.value + "</td><td> " + item.value.value + "</td></tr>"
+                })
+                html += "</table>"
+                $("#infosDiv").html(html);
+                Infos.setInfosDivHeight(300);
+
+
+            })
+        },
+
+        showConceptInfosXX: function (conceptId) {
             function display(infos) {
                 $("#messageDiv").html("");
                 var html = ""
@@ -50,7 +71,7 @@ var Infos = (function () {
             if (infos)
                 display(infos)
             else {
-                Concepts.getConceptsInfos([conceptId], null, function (err, result) {
+                Concepts.getConceptsInfos([conceptId], {noAncestors: true}, function (err, result) {
                     infos = result[0];
                     self.currentGraphInfos[conceptId] = infos
                     display(infos)
@@ -59,6 +80,8 @@ var Infos = (function () {
                 })
             }
         }
+
+
     }
 
 
@@ -234,7 +257,7 @@ var Infos = (function () {
             function display(infos) {
                 $("#messageDiv").html("");
                 var html = ""
-                  var text = infos.paragraphText.value;
+                var text = infos.paragraphText.value;
                 var textRich = Infos.resources.getEntichedParagraphText(infos);
                 html += "<div class='paragraph-docTitle'>DOCUMENT: " + infos.documentLabel.value + "</div>";
                 html += "<div class='paragraph-docTitle'>Title : " + infos.documentTitle.value + "</div>";
@@ -262,11 +285,11 @@ var Infos = (function () {
                     " filter (?paragraph in(<" + paragraphId + ">))"
 
                 query += "?paragraph <http://open.vocab.org/terms/hasOffset> ?offset ." +
-                "?paragraph skos:broader ?chapter ." +
-                "?chapter skos:prefLabel ?chapterLabel. " +
-                "?chapter skos:broader ?document. " +
-                "?document skos:prefLabel ?documentLabel. " +
-                "?document terms:title ?documentTitle ."
+                    "?paragraph skos:broader ?chapter ." +
+                    "?chapter skos:prefLabel ?chapterLabel. " +
+                    "?chapter skos:broader ?document. " +
+                    "?document skos:prefLabel ?documentLabel. " +
+                    "?document terms:title ?documentTitle ."
                 query += "} limit 100"
                 var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                 sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -274,17 +297,17 @@ var Infos = (function () {
 
                         return common.message(err);
                     }
-                    var infos={}
-                    result.results.bindings.forEach(function(item,index){
-                        if(index==0){
-                            infos=result.results.bindings[0];
-                            infos.offsets=[];
+                    var infos = {}
+                    result.results.bindings.forEach(function (item, index) {
+                        if (index == 0) {
+                            infos = result.results.bindings[0];
+                            infos.offsets = [];
                         }
                         infos.offsets.push(item.offset.value)
 
                     })
-                    self.currentGraphInfos[infos.paragraph.value]=infos;
-                 display(infos)
+                    self.currentGraphInfos[infos.paragraph.value] = infos;
+                    display(infos)
                     self.setInfosDivHeight(300)
 
 
@@ -293,9 +316,6 @@ var Infos = (function () {
             }
         }
         ,
-
-
-
 
 
         getEntichedParagraphText: function (paragraphInfos) {

@@ -13,6 +13,7 @@ currentOntology: "Energistics",
     ontologies: {
 
         "CTG": {
+
             corpusGraphUri: "http://data.total.com/resource/corpus-description/ctg/",
             corpusScheme: "http://data.total.com/resource/ontology/ctg/Domain",
 
@@ -30,7 +31,7 @@ currentOntology: "Energistics",
             conceptsGraphUri: "http://data.total.com/resource/thesaurus/ctg/",
 
         },
-        "PLM": {
+     /*   "PLM": {
             corpusGraphUri: "http://telanthropia.org/resource/ontology/PLM/",
             corpusScheme: "http://data.telanthropia.org/resource/ontology/PLM/Sujet",
             resourceLevels: [
@@ -43,7 +44,7 @@ currentOntology: "Energistics",
 
             conceptsGraphUri: "http://telanthropia.org/resource/thesaurus/PLM/",
 
-        },
+        },*/
         "Energistics": {
             corpusGraphUri: "http://www.energistics.org/energyml/data/",
             corpusScheme: "http://www.energistics.org/energyml/data/",
@@ -100,7 +101,18 @@ currentOntology: "Energistics",
 
             conceptsGraphUri: "http://data.total.com/resource/ontology/quantum/",
 
+        },
+
+        ISO_15926:{
+            isExternal:true,
+
+
+
+
+
         }
+
+
 
 
 

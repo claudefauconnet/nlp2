@@ -119,9 +119,7 @@ var common = (function () {
         $(".jstree-anchor").css("height", "18px")
         $(".jstree-anchor").css("font-size", "14px")
      $("#" + jstreeDiv).jstree(true).open_node(parentNodeId);
-      //  $("#" + jstreeDiv).jstree(true).select_node(parentNodeId);
         var offset=$(document.getElementById(parentNodeId)).offset();
-    //    $("#" + jstreeDiv).scrollTop( offset.top)
     }
 
 

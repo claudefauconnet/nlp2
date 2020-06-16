@@ -609,7 +609,8 @@ if (false) {
 
 
 if (true) {
-    var dirPath = "D:\\telanthropia\\koha_02_20\\"
+    var dirPath = "D:\\telanthropia\\koha_PLM__05_20\\";
+   // var dirPath = "D:\\telanthropia\\missionsEtrangeres\\"
 
     var motsClesCotesPath = "D:\\telanthropia\\cotesSujets.txt";
 
@@ -635,7 +636,10 @@ if (true) {
 
                 })
 
-                    fs.writeFileSync("D:\\telanthropia\\telanthropia_koha_02_20_"+fileIndex+".json", JSON.stringify(allNotices, null, 2))
+                  //  fs.writeFileSync("D:\\telanthropia\\telanthropia_koha_02_20_"+fileIndex+".json", JSON.stringify(allNotices, null, 2))
+                fs.writeFileSync(dirPath+"koha_"+fileIndex+".json", JSON.stringify(allNotices, null, 2))
+
+
             })
 
 
