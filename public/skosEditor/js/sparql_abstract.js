@@ -33,11 +33,12 @@ var sparql_abstract = (function () {
         }
 
 
-
+        self.rdfsMap['ISO_15926']= {sparql_url: 'http://68.71.136.105/sparql/', graphIRI: '', sparqlBuilder: "sparql_ISO_15926"};
+        self.rdfsMap['GEMET']= {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://www.eionet.europa.eu/gemet/', sparqlBuilder: "sparql_GEMET"};
         self.rdfsMap['BNF']={sparql_url: 'https://data.bnf.fr/sparql', graphIRI: 'http://data.bnf.fr', sparqlBuilder: "sparql_skos_generic"};
         self.rdfsMap['Dbpedia']={sparql_url: 'http://dbpedia.org/sparql', graphIRI: 'http://dbpedia.org', sparqlBuilder: "sparql_skos_generic"};
 
-
+        self.rdfsMap['USGS']= {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'https://www2.usgs.gov/science/USGSThesaurus/', sparqlBuilder: "sparql_skos_generic"};
         //    'Oil&Gas-Upstream': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
         self.rdfsMap['TermSciences']= {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"};
         self.rdfsMap['ThesaurusIngenieur']= {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.souslesens.org/thesaurusIngenieur/', sparqlBuilder: "sparql_skos_generic"};
@@ -47,6 +48,9 @@ var sparql_abstract = (function () {
         self.rdfsMap['Wikidata']= {sparql_url: 'https://query.wikidata.org/', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_Wikidata"};
         self.rdfsMap['Microsoft-accademic']= {sparql_url: 'http://ma-graph.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_microsoft-accademic"};
         self.rdfsMap['BabelNet']= {sparql_url: 'https://babelnet.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_babelNet"};
+
+
+
 
 
         }
@@ -88,6 +92,16 @@ var sparql_abstract = (function () {
         if (sparqlBuilder == "sparql_babelNet")
             return sparql_babelNet.list(source, word, options, callback)
 
+        if (sparqlBuilder == "sparql_ISO_15926")
+            return sparql_ISO_15926.list(source, word, options, callback)
+        if (sparqlBuilder == "sparql_GEMET")
+            return sparql_GEMET.list(source, word, options, callback)
+
+     /*   if (sparqlBuilder == "sparql_BGS")
+            return sparql_BGS.list(source, word, options, callback)
+        if (sparqlBuilder == "sparql_GBA")
+            return sparql_GBA.list(source, word, options, callback)*/
+
 
         return callback(null, []);
     }
@@ -106,9 +120,19 @@ var sparql_abstract = (function () {
 
         if (sparqlBuilder == "sparql_microsoft-accademic")
             return sparql_microsoft_accademic.getAncestors(source, id, options, callback)
-        return callback(null, []);
+      //  return callback(null, []);
         if (sparqlBuilder == "sparql_babelNet")
             return sparql_babelNet.getAncestors(source, id, options, callback)
+        if (sparqlBuilder == "sparql_ISO_15926")
+            return sparql_ISO_15926.getAncestors(source, id, options, callback)
+
+        if (sparqlBuilder == "sparql_GEMET")
+            return sparql_GEMET.getAncestors(source, id, options, callback)
+
+     /*   if (sparqlBuilder == "sparql_BGS")
+            return sparql_BGS.getAncestors(source, id, options, callback)
+        if (sparqlBuilder == "sparql_GBA")
+            return sparql_GBA.getAncestors(source, id, options, callback)*/
     }
 
 
@@ -118,7 +142,7 @@ var sparql_abstract = (function () {
         var sparqlBuilder = source.sparqlBuilder
 
         $("#messageDiv").html("searching " + sourceName);
-        if (sparqlBuilder == "sparql_skos_generic")
+        if (true || sparqlBuilder == "sparql_skos_generic")
             return sparql_skos_generic.getDetails(source, id, options, callback)
 
         if (sparqlBuilder == "sparql_Wikidata")
@@ -128,6 +152,16 @@ var sparql_abstract = (function () {
             return sparql_microsoft_accademic.getDetails(source, id, options, callback)
         if (sparqlBuilder == "sparql_babelNet")
             return sparql_babelNet.getDetails(source, id, options, callback)
+        if (sparqlBuilder == "sparql_ISO_15926")
+            return sparql_ISO_15926.getDetails(source, id, options, callback)
+
+        if (sparqlBuilder == "sparql_GEMET")
+            return sparql_GEMET.getDetails(source, id, options, callback)
+
+     /*   if (sparqlBuilder == "sparql_BGS")
+            return sparql_BGS.getDetails(source, id, options, callback)
+        if (sparqlBuilder == "sparql_GBA")
+            return sparql_GBA.getDetails(source, id, options, callback)*/
 
         return callback(null, []);
     }
@@ -149,6 +183,16 @@ var sparql_abstract = (function () {
             return sparql_microsoft_accademic.getChildren(source, id, options, callback)
         if (sparqlBuilder == "sparql_babelNet")
             return sparql_babelNet.getChildren(source, id, options, callback)
+        if (sparqlBuilder == "sparql_ISO_15926")
+            return sparql_ISO_15926.getChildren(source, id, options, callback)
+
+        if (sparqlBuilder == "sparql_GEMET")
+            return sparql_GEMET.getChildren(source, id, options, callback)
+
+       /* if (sparqlBuilder == "sparql_BGS")
+            return sparql_BGS.getChildren(source, id, options, callback)
+        if (sparqlBuilder == "sparql_GBA")
+            return sparql_GBA.getChildren(source, id, options, callback)*/
     }
 
     self.querySPARQL_GET = function (url, query, queryOptions, callback) {

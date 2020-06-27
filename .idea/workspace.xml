@@ -3,20 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/telanthropia/kohaImport..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/telanthropia/kohaImport..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/telanthropia/ontologyKoha2..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/telanthropia/ontologyKoha2..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/comparator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/ancestorsComparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/ancestorsComparator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/app_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/app_config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/common.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/comparator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/concepts.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/concepts.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/infos.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/infos.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/selection.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/selection.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparql.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparql.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_ISO_15926.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_ISO_15926.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_facade.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_facade.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_skos_generic.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,24 +45,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bailletArchives" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/skosEditor/js" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
+      <recent name="D:\GitHub\nlp2\public\ontograph\js\sparqlProxies" />
+      <recent name="D:\GitHub\nlp2\public\ontograph" />
+      <recent name="D:\GitHub\nlp2\bin\others" />
+      <recent name="D:\GitHub\nlp2\bin\others\telanthropia" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\public\ontograph\js" />
       <recent name="D:\GitHub\nlp2\public\js" />
       <recent name="D:\GitHub\nlp2\bin" />
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\ontograph" />
-      <recent name="D:\GitHub\nlp2\bin\others" />
-      <recent name="D:\GitHub\nlp2\bin\others\telanthropia" />
-      <recent name="D:\GitHub\nlp2\bin\others\ontologyCTG" />
-      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -161,7 +159,8 @@
       <workItem from="1589955065710" duration="286000" />
       <workItem from="1589955541467" duration="12081000" />
       <workItem from="1590156478773" duration="42503000" />
-      <workItem from="1591859995424" duration="38959000" />
+      <workItem from="1591859995424" duration="86629000" />
+      <workItem from="1593245380949" duration="20039000" />
     </task>
     <servers />
   </component>
@@ -190,27 +189,8 @@
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/routes/index.js</url>
-          <line>228</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
-          <line>53</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
-          <line>37</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_ISO_15926.js</url>
           <line>37</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>

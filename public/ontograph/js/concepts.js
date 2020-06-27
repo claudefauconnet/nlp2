@@ -84,7 +84,7 @@ var Concepts = (function () {
                     var schemeLabel = item.schemeLabel.value
                     jstreeData.push({text: schemeLabel, id: item.scheme.value, parent: "#"})
                 }
-                if (uniqueIds.indexOf(item.concept.value) < 0) {
+                if (item.concept && uniqueIds.indexOf(item.concept.value) < 0) {
                     uniqueIds.push(item.concept.value);
                     var scheme = "#"
                     if (item.scheme)
@@ -218,8 +218,8 @@ var Concepts = (function () {
         })
     }
 
-    self.loadChildrenInConceptJstree = function (conceptId, depth) {
-        sparql_facade.getNodeChildren(conceptId, depth, function (err, result) {
+    self.loadChildrenInConceptJstree = function (conceptId, options) {
+        sparql_facade.getNodeChildren(conceptId, options, function (err, result) {
             if (err)
                 return common.message(err)
             var jstreeData = [];
@@ -232,7 +232,7 @@ var Concepts = (function () {
 
             result.forEach(function (item) {
 
-                for (var i = 1; i <= depth; i++) {
+                for (var i = 1; i <= options.depth; i++) {
                     var childConceptId = item["child" + i]
                     if (typeof childConceptId !== "undefined") {
                         childConceptId = childConceptId.value;
@@ -462,19 +462,7 @@ var Concepts = (function () {
     self.onNodeSelect = function (evt, obj) {
 
         var node = obj.node
-
-
-        /*  var ontologyDesc = app_config.ontologies[app_config.currentOntology]
-          if (ontologyDesc.isExternal) {
-              if (obj.event.ctrlKey) {
-                  return eval(app_config.currentOntology + ".showConceptInfos('"+obj.node.id+"')")
-
-              }
-              if (node.children.length > 0)
-                  return;
-              return eval(app_config.currentOntology + ".loadConceptsJsTree('"+obj.node.id+"',{level:"+obj.node.parents.length+"})")
-          }*/
-
+        node.id=node.id.replace("!!","")
 
         if (obj.event.ctrlKey) {
 
@@ -482,7 +470,7 @@ var Concepts = (function () {
         }
         if (node.children.length > 0)
             return;
-        self.loadChildrenInConceptJstree(obj.node.id, 1)
+        self.loadChildrenInConceptJstree(obj.node.id,{depth:1,level:node.parents.length})
 
     }
 

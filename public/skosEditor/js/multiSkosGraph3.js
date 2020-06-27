@@ -1,7 +1,8 @@
 var multiSkosGraph3 = (function () {
     var self = {};
 
-    var maxEdges = 200
+    var maxEdges = 200;
+    self.multisearchTimeout = 500;
     self.distinctThesaurus = {};
     self.context = {currentSelectdNode: null};
 
@@ -111,7 +112,6 @@ var multiSkosGraph3 = (function () {
 
 
         });
-
         var selectedIds = [];
         //  sources.forEach(function (source) {
         async.eachSeries(sources, function (source, callbackEach) {
@@ -159,6 +159,9 @@ var multiSkosGraph3 = (function () {
                 return $("#messageDiv").html(err)
             $("#messageDiv").html("done")
         })
+        return;
+
+
         setTimeout(function () {
 
             $("#conceptsJstreeDiv").jstree(true).select_node(selectedIds);
@@ -210,7 +213,7 @@ var multiSkosGraph3 = (function () {
 
     }
 
-    self.displayGraph = function () {
+    self.displayGraph = function (direction) {
         $('#dialogDiv').dialog('close')
         //  self.fadeDialog();
         var selectedConcepts = []
@@ -225,27 +228,40 @@ var multiSkosGraph3 = (function () {
         self.drawRootNode(self.context.currentWord)
         setTimeout(function () {
             selectedConcepts.forEach(function (concept) {
+                concept.color = "ddd"
+                if (sparql_abstract.rdfsMap[concept.source])
+                    concept.color = sparql_abstract.rdfsMap[concept.source].color;
 
-                sparql_abstract.getAncestors(concept.source, concept.id, {exactMatch: true}, function (err, result) {
-                    if (err)
-                        return console.log(err)
-                    if (!result || !result.forEach)
-                        return;
-                    result.forEach(function (binding) {
-                        binding.source = concept.source;
-                        if (!binding.thesaurus)
-                            binding.thesaurus = concept.source;
+                if (direction == "ancestors") {
+                    sparql_abstract.getAncestors(concept.source, concept.id, {exactMatch: true}, function (err, result) {
+                        if (err)
+                            return console.log(err)
+                        if (!result || !result.forEach)
+                            return;
+                        result.forEach(function (binding) {
+                            binding.source = concept.source;
+                            if (!binding.thesaurus)
+                                binding.thesaurus = concept.source;
 
-                        var visjsData = self.pathsToVisjsData(binding)
+                            var visjsData = self.pathsToVisjsData(binding)
 
-                        self.addVisJsDataToGraph(visjsData)
+                            self.addVisJsDataToGraph(visjsData)
 
+                        })
                     })
-                })
+                } else if (direction == "children") {
+
+                    self.drawSourceRootNode(self.context.currentWord, concept);
+                    sparql_abstract.getChildren(concept.source, concept.id, {}, function (err, result) {
+                        if (err)
+                            return console.log(err);
+                        self.addChildrenNodesToGraph(concept, result)
+                    })
+                }
 
 
             })
-                , 1000
+                , self.multisearchTimeout
         })
 
 
@@ -274,6 +290,38 @@ var multiSkosGraph3 = (function () {
 
     }
 
+    self.drawSourceRootNode = function (rootNode, sourceRootNode) {
+
+        var nodes = [{
+            label: sourceRootNode.title,
+            id: sourceRootNode.id,
+            color: sourceRootNode.color,
+            data: {source: sourceRootNode.source, thesaurus: sourceRootNode.source, ancestors: ""},
+            shape: "dot",
+            size: 10
+        }];
+
+
+        var edges = [{
+            from: self.rootNode.id,
+            to: sourceRootNode.id,
+            id: self.rootNode.id + "_" + sourceRootNode.id,
+            type: "match",
+            // arrows: "to",
+            color: sourceRootNode.color,
+            width: 6,
+            label: sourceRootNode.source,
+            font: {
+                color: sourceRootNode.color,
+                weight: "bold",
+                size: 12
+            }
+        }]
+        visjsGraph.data.nodes.add(nodes);
+        visjsGraph.data.edges.add(edges);
+
+    }
+
 
     self.onNodeClick = function (obj, point) {
         if (obj) {
@@ -282,6 +330,14 @@ var multiSkosGraph3 = (function () {
             self.graphActions.showPopup(point)
         }
 
+    }
+    self.onAllConceptsCbxChange=function(){
+        var checked=$("#allConceptsCbx").prop("checked")
+       if(checked){
+           $("#conceptsJstreeDiv").jstree(true).check_all ()
+       }else{
+           $("#conceptsJstreeDiv").jstree(true).uncheck_all ()
+       }
     }
 
 
@@ -306,30 +362,91 @@ var multiSkosGraph3 = (function () {
             })
         }
         ,
-        showDetails: function () {
+        showDetails: function (defaultLang) {
+
             self.graphActions.hidePopup();
 
-            sparql_abstract.getDetails(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, {}, function (err, details) {
-                var str = ""
-                for (var key in details.properties) {
-                    if (key == "P268")
-                        self.context.currentBNFid = details.properties[key].value
-                    if (key == "P244")
-                        self.context.currentLOCid = details.properties[key].value
 
-                    if (key.indexOf('image') > -1) {
-                        str += "<img src='" + details.properties[key].value + "' width='200px'/></br>"
-                    } else {
-//var link="<a target='_blank' href='"+result.properties[key].id+"'>"
-                        str += "<span style='font-style: italic'>" + details.properties[key].name + " : </span>" + "<span style='font-weight: bold'>" + details.properties[key].value + "</span><br>";
-                    }
+            var defaultProps = ["UUID", "http://www.w3.org/2004/02/skos/core#prefLabel",
+                "http://www.w3.org/2004/02/skos/core#definition", "" +
+                "http://www.w3.org/2004/02/skos/core#altLabel",
+                "http://www.w3.org/2004/02/skos/core#broader",
+                "http://www.w3.org/2004/02/skos/core#narrower",
+                "http://www.w3.org/2004/02/skos/core#related",
+                "http://www.w3.org/2004/02/skos/core#exactMatch",
+                "http://www.w3.org/2004/02/skos/core#closeMatch",
+                //  "http://www.w3.org/2004/02/skos/core#sameAs"
+            ];
+
+            if (!defaultLang)
+                defaultLang = 'en';
+            sparql_abstract.getDetails(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, {}, function (err, details) {
+                for (var key in details.properties) {
+                    if (defaultProps.indexOf(key) < 0)
+                        defaultProps.push(key)
                 }
+                var str = "<table >"
+                str += "<tr><td>UUID</td><td><a target='_blank' href='"+details.id+"'>"+details.id+"</a></td></tr>"
+
+                defaultProps.forEach(function (key) {
+                    if (!details.properties[key])
+                        return;
+
+                    str += "<tr >"
+
+
+                    if (details.properties[key].value) {
+                        var value=details.properties[key].value;
+                        if(value.indexOf("http")==0)
+                            value="<a target='_blank' href='"+value+"'>"+value+"</a>"
+                        str += "<td class='detailsCell'>" + details.properties[key].name + "</td>"
+                        str += "<td class='detailsCell'>" + value + "</td>"
+
+                    } else {
+                        var keyName = details.properties[key].name
+                        var selectId = "detailsLangSelect_" + keyName
+                        var propNameSelect = "<select id='" + selectId + "' onchange=multiSkosGraph3.graphActions.onDetailsLangChange('" + keyName + "') >"
+                        var langDivs = "";
+
+                        for (var lang in details.properties[key].langValues) {
+                            var value = details.properties[key].langValues[lang];
+
+                            if(value.indexOf("http")==0)
+                                value="<a target='_blank' href='"+value+"'>"+value+"</a>"
+                            var selected = "";
+                            if (lang == defaultLang)
+                                selected = "selected";
+                            propNameSelect += "<option " + selected + ">" + lang + "</option> ";
+
+
+                            langDivs += "<div class='detailsLangDiv_"+keyName+"' id='detailsLangDiv_" + keyName + "_" + lang + "'>" + value + "</div>"
+                        }
+                        propNameSelect += "</select>"
+
+                        str += "<td class='detailsCell'>" + details.properties[key].name + " " + propNameSelect + "</td>"
+                        str += "<td class='detailsCell'>" + langDivs + "</td>";
+                        if(details.properties[key].langValues[defaultLang])
+                        str += "<script>multiSkosGraph3.graphActions.onDetailsLangChange('" + keyName + "','" + defaultLang + "') </script>";
+
+                    }
+                    str += "</tr>"
+                })
+                str += "<table>"
+
 
                 $("#detailsDiv").html(str)
                 $("#detailsDiv").dialog("open");
 
 
             })
+
+        },
+        onDetailsLangChange: function (property, lang) {
+           $('.detailsLangDiv_'+property).css('display', 'none')
+            if (!lang)
+                lang = $("#detailsLangSelect_" + property).val();
+            if( $("#detailsLangDiv_" + property + "_" + lang).html())
+            $("#detailsLangDiv_" + property + "_" + lang).css("display", "block");
 
         }
         ,
@@ -432,9 +549,9 @@ var multiSkosGraph3 = (function () {
                     //   color = rootNodeColor;
                     size = 10;
                 } else {
-                  /*  var color = "#dda"
-                    if (sparql_abstract.rdfsMap[node.source])
-                        color = sparql_abstract.rdfsMap[node.source].color;*/
+                    /*  var color = "#dda"
+                      if (sparql_abstract.rdfsMap[node.source])
+                          color = sparql_abstract.rdfsMap[node.source].color;*/
                     var shape = "box";
                     var size = 20;
                 }

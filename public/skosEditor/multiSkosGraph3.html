@@ -28,6 +28,9 @@
     <script src="js/sparql_microsoft-accademic.js"></script>
     <script src="js/sparql_babelNet.js"></script>
     <script src="js/sparql_skos_generic.js"></script>
+    <script src="js/sparql_ISO_15926.js"></script>
+    <script src="js/sparql_GEMET.js"></script>
+    <script src="js/sparql_USGS.js"></script>
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
@@ -110,6 +113,12 @@
             border-radius: 3px;
             background-color: #ddd;
         }
+        .detailsCell{
+            padding: 2px;
+            border-radius: 3px;
+            border: 1px solid black;
+            background-color: white;
+        }
     </style>
 
 </head>
@@ -167,13 +176,15 @@
 
     <div id="dialogDiv" style="display: flex;flex-direction: column">
         <input id="searchWordInput" value="zinc">
-        <div><button onclick="multiSkosGraph3.searchConcepts($('#searchWordInput').val())">Search</button><input type="checkbox" checked="checked" id="exactMatchCBX">Exact Match</div>
+        <div><button onclick="multiSkosGraph3.searchConcepts($('#searchWordInput').val())">Search</button><input type="checkbox" checked="checked" id="exactMatchCBX">Exact Match
+            &nbsp;<input type="checkbox" id='allConceptsCbx' onchange="multiSkosGraph3.onAllConceptsCbxChange()">All</div>
         <div id="conceptsJstreeDiv" style="width: 500px;height: 800px;overflow: auto"></div>
 
         <div id="conceptOperationsDiv">
 
      <!--  <button onclick="multiSkosGraph3.searchConceptsContainWord()">search more concepts</button>-->
-        <button onclick="multiSkosGraph3.displayGraph()">display Graph</button>
+        <button onclick="multiSkosGraph3.displayGraph('ancestors')">display ancestors Graph</button>&nbsp;
+            <button onclick="multiSkosGraph3.displayGraph('children')">display children Graph</button>
         </div>
     </div>
 </div>

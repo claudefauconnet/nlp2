@@ -28,6 +28,7 @@ var Infos = (function () {
                     return common.message(err)
 
                 var html = "<table>"
+                html += "<tr><td>UUID</td><td><a target='_blank' href='"+conceptId+"'> " +conceptId+ "</a></td></tr>"
                 result.forEach(function (item) {
 
                     html += "<tr><td>" + item.prop.value + "</td><td> " + item.value.value + "</td></tr>"

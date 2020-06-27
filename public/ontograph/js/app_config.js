@@ -88,6 +88,20 @@ currentOntology: "Energistics",
 
         }
         ,
+        "BGS": {
+            corpusGraphUri: "http://http://data.bgs.ac.uk/",
+            corpusScheme: "http://http://data.bgs.ac.uk/",
+            resourceLevels: [
+
+
+
+            ],
+            resourceDefaultLevel: "",
+
+            conceptsGraphUri: "http://http://data.bgs.ac.uk/",
+
+        },
+
 
         "Quantum": {
             corpusGraphUri: "http://data.total.com/resource/ontology/quantum/",
@@ -103,6 +117,8 @@ currentOntology: "Energistics",
 
         },
 
+
+
         ISO_15926:{
             isExternal:true,
 
@@ -110,7 +126,20 @@ currentOntology: "Energistics",
 
 
 
+        },
+        "GEMET":{
+            isExternal:true,
+
+        },
+        "GBA":{
+            isExternal:true,
         }
+        ,
+        "USGS": {
+         isExternal:true,
+
+
+        },
 
 
 

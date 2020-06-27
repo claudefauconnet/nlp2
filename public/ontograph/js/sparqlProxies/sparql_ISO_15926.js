@@ -58,12 +58,18 @@ var sparql_ISO_15926 = (function () {
             })
         }
 
-        self.searchConceptAndAncestors = function (word, options, callback) {
+        self.searchConceptAndAncestors = function (word,depth, options, callback) {
 
 
-            var filter = "  regex(?conceptLabel, \"^" + word + "$\", \"i\")";
-            if (!options.exactMatch) {
-                filter = "  regex(?conceptLabel, \"" + word + "\", \"i\")";
+            if(word) {
+                var filter = "  regex(?conceptLabel, \"^" + word + "$\", \"i\")";
+                if (!options.exactMatch) {
+                    filter = "  regex(?conceptLabel, \"" + word + "\", \"i\")";
+                }
+            }else{
+                if(options.conceptId){
+                    filter = "  ?concept =<"+options.conceptId+">";
+                }
             }
 
             var query = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
@@ -132,6 +138,7 @@ var sparql_ISO_15926 = (function () {
                  },*/
 
                 success: function (data, textStatus, jqXHR) {
+
                     var xx = data;
                     //  $("#messageDiv").html("found : " + data.results.bindings.length);
                     $("#waitImg").css("display", "none");
