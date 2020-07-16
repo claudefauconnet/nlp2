@@ -48,10 +48,8 @@ var sparql_GEMET = (function () {
             result.results.bindings.forEach(function (item) {
 
                 if (ids.indexOf(item.id < 0)) {
-                    var parts = item.id.value.split("/");
-                    var part = parts[parts.length - 2]
                     ids.push(item.id)
-                    bindings.push({id: item.id.value, label: part + "_" + item.prefLabel.value, description: item.broader.value})
+                    bindings.push({id: item.id.value, label:  item.prefLabel.value, description: item.broader.value})
                 }
 
             })
@@ -100,13 +98,13 @@ var sparql_GEMET = (function () {
             }
             result.results.bindings.forEach(function (item) {
 
-                for (var i = 1; i <= depth; i++) {
+              /*  for (var i = 1; i <= depth; i++) {
                     if (typeof item["broaderId" + i] != "undefined") {
                         var parts = item["broaderId" + i].value.split("/");
                         var part = parts[parts.length - 2];
                         item["broader" + i].value = part + "." + item["broader" + i].value
                     }
-                }
+                }*/
 
             })
 
@@ -152,10 +150,6 @@ var sparql_GEMET = (function () {
             var bindings = []
             result.results.bindings.forEach(function (item) {
                 if (item.narrowerId) {
-
-                    var parts = item.narrowerId.value.split("/");
-                    var part = parts[parts.length - 2];
-                    item.narrowerLabel.value = part + "." + item.narrowerLabel.value
 
 
                     var countNarrowers2 = 10

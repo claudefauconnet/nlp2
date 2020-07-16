@@ -174,7 +174,7 @@ var sparql_Wikidata = (function () {
     }
 
     self.processDataWikiData = function (id, data) {
-        var nLevels = 8;
+        var nLevels = 5;
         var bindings = data.results.bindings;
         var paths = []
         var str2 = "";

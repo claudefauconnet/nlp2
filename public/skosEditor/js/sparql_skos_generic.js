@@ -215,47 +215,7 @@ var sparql_skos_generic = (function () {
         })
     }
 
-  /*  self.getDetails = function (source, id, options, callback) {
-        var url = source.sparql_url + "?default-graph-uri=" + encodeURIComponent(source.graphIRI) + "&query=";// + query + queryOptions
 
-        var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-            "" +
-            "select distinct *" +
-            "" +
-            "where {" +
-            "?id ?prop ?value . filter(?id= <" + id + ">)" +
-            "" +
-            " optional{\n" +
-            "?prop rdf:label ?propLabel .\n" +
-            "}\n" +
-            " optional{\n" +
-            "?value rdf:label ?valueLabel .\n" +
-            "}\n" +
-            "\n" +
-            "}"
-        "" +
-        "}" +
-        "limit 100"
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
-
-        sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions,null, function (err, result) {
-            if (err) {
-                return callback(err);
-            }
-            var bindings = []
-            var obj = {label: options.label, id: id, properties: {}};
-            result.results.bindings.forEach(function (item) {
-                var propName = item.prop.value
-                var p = propName.lastIndexOf("#")
-                if (p == -1)
-                    var p = propName.lastIndexOf("/")
-                if (p > -1)
-                    var propName = item.prop.value.substring(p + 1)
-                obj.properties[item.prop.value] = {name: propName, value: item.value.value}
-            })
-            callback(null, obj)
-        })
-    }*/
 
 
 

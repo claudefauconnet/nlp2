@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../js/others/async.js" charset="utf-8"></script>
+    <!--   <script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
+       <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css"/>-->
+
+    <script type="text/javascript" src="visjs/vis-network.min.js"></script>
+    <link href="visjs/vis-network.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../js/graph/visjsGraph2.js"></script>
+
+    <script src="js/common.js"></script>
+    <script src="js/theaususList.js"></script>
+    <script src="../js/others/async.js"></script>
+
+    <script src="js/multiSkosGraph3.js"></script>
+    <script src="js/authentification.js"></script>
+    <script src="js/sparql_abstract.js"></script>
+    <script src="js/sparql_Wikidata.js"></script>
+    <script src="js/sparql_private.js"></script>
+    <script src="js/sparql_microsoft-accademic.js"></script>
+    <script src="js/sparql_babelNet.js"></script>
+    <script src="js/sparql_skos_generic.js"></script>
+    <script src="js/sparql_ISO_15926.js"></script>
+    <script src="js/sparql_GEMET.js"></script>
+    <script src="js/sparql_USGS.js"></script>
+
+    <script src="js/enpoint.js"></script>
+
+    <script src="../ontograph/js/app_config.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+</head>
+<body>
+
+<div>
+sparql endpoint <input style="width:300px" id="defaultGraphUriInput">
+    <select onclick="Endpoint.setSparqlEndoint($(this).val())">
+
+
+    </select>
+</div>
+<div>
+    <textarea style="width: 90%;height: 300px" id="sparqlInput"></textarea>
+</div>
+<div>
+    <select id="outputFormatSelect"><option>html</option></select>&nbsp;<button onclick="Endpoint.execQuery()">Execute</button>
+</div>
+
+
+
+</body>
+</html>

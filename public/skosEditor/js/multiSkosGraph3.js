@@ -431,7 +431,7 @@ var multiSkosGraph3 = (function () {
                     }
                     str += "</tr>"
                 })
-                str += "<table>"
+                str += "</table>"
 
 
                 $("#detailsDiv").html(str)

@@ -44,15 +44,19 @@ LIMIT 100
 
 
 
-
+     //  var url="https://babelnet.org/v1/completer?"
         var url = "https://babelnet.io/v5/getSynsetIds?"
-        var query = "lemma="+word+"&searchLang=EN&POS=NOUN&key="+key
+     // var query = "lemma="+word+"&searchLang=EN&POS=NOUN&key="+key+"&source=BABELNET"
+        var query = "lemma="+word+"&searchLang=EN&POS=NOUN&key="+key;
+      //  var query="lang=EN&term="+word
         sparql_abstract.querySPARQL_GET_proxy(url, query,"", {doNotEncode:true}, function (err, result) {
             if (err) {
                 return callback(err);
             }
             var bindings = [];
             var ids = [];
+            if(!result)
+                callback(null, bindings)
             result.forEach(function (item) {
                 if (ids.indexOf(item.id < 0)) {
                     ids.push(item.id)

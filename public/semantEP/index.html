@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>semantE&P</title>
+
+
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+    <script src="../js/others/async.js" charset="utf-8"></script>
+    <script src="js/sparql/sparql_facade.js" charset="utf-8"></script>
+    <script src="js/mainController.js" charset="utf-8"></script>
+
+
+
+
+
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+    <script>
+
+
+        $(function(){
+            $("#lefTabs").tabs()
+            $("#accordion").accordion();
+
+            MainController.initClasses()
+
+        })
+    </script>
+
+
+
+</head>
+<body>
+
+
+<div id="main" style="display: flex;flex-direction: row">
+
+
+    <div>
+
+
+        <div id="lefTabs">
+            <ul>
+                <li><a href="#tabs-Selection">Selection</a></li>
+
+            </ul>
+            <div id="tabs-Selection">
+                <div id="selectionDiv" style="max-width:350px;border-style: solid;padding: 3px;margin: 3px">
+
+
+                    <div id="accordion">
+
+                        <h3><span class="title">Concepts </span></h3>
+                        <div style="margin:5px">
+
+                            <div id="jstreeClassDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+<div id="displayDiv" style="width:50%;border-style: solid;padding: 3px;margin: 3px">
+        <div id="messageDiv"></div>
+    </div>
+    <div id="graphDiv" style="width:100%;"></div>
+    <div id="infosDiv" style="height:200px;overflow: auto;background-color: #d6d9d8"></div>
+</div>
+
+
+</div>
+
+
+</body>
+</html>

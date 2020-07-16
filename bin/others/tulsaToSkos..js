@@ -25,11 +25,12 @@ var tulsaToSkos = {
         var rootConcepts = [];
         var jsonArray = [];
 
-        var filePath = "D:\\NLP\\Tulsa.txt";
+        var filePath = "D:\\NLP\\drafts\\Tulsa.txt";
 
         var str = "" + fs.readFileSync(filePath);
         var lines = str.split("\n");
         var isPreviousBT = false
+        var types={}
         lines.forEach(function (line, index) {
             var offset1 = 32;
             var offset2 = 41;
@@ -42,7 +43,9 @@ var tulsaToSkos = {
                 return;
             var obj
             var type = line.substring(0, 6).trim();
-
+if(!types[type])
+    types[type]=0;
+types[type]+=1
             if (type == "DS") {
                 obj = {
                     type: type,
@@ -63,6 +66,7 @@ var tulsaToSkos = {
 
             jsonArray.push(obj);
         })
+        console.log(JSON.stringify(types,null,2))
         return jsonArray;
     },
 
@@ -115,8 +119,8 @@ var tulsaToSkos = {
 
         jsonArray.forEach(function (item, indexItem) {
 
-            if (item.term && item.term.indexOf("ADDED") > -1)
-                return;
+         /*   if (item.term && item.term.indexOf("ADDED") > -1)
+                return;*/
             item.term = unicodeEscape(item.term).replace(/&/g, " ").replace(/'/g, " ")
             // remove dates and annotations  see Format of PA Thesauri USE...
             item.term = item.term.replace(/.*\(\d+\-*\d*\)\s*/g, "");
@@ -152,7 +156,7 @@ var tulsaToSkos = {
             } else if (item.type == "SA") {
                 if (entity.relateds.indexOf(item.term) < 0)
                     entity.relateds.push(item.term)
-            } else if (item.type.indexOf("SN") == 0) {
+            } else if (item.type.indexOf("US") == 0) {
                 /*  var p;
                   if ((p = item.term.indexOf(")")) > -1)
                       item.term = item.term.substring(p + 2)*/
@@ -181,8 +185,7 @@ var tulsaToSkos = {
 
         function recurse(parent, currentScheme) {
 
-            if (parent == "TESTING")
-                var x = 3
+
             if (!entitiesMap[parent] || !entitiesMap[parent].narrowers)
                 return;
             entitiesMap[parent].narrowers.forEach(function (narrower) {
@@ -217,8 +220,7 @@ var tulsaToSkos = {
         }
 
         for (var key in entitiesMap) {
-            if (key == "TIP SCREENOUT FRACTURING")
-                var x = 3
+
             var entity = entitiesMap[key];
             var scheme = recurseParent(entity);
             if (scheme)
@@ -227,10 +229,7 @@ var tulsaToSkos = {
         }
 
         function recurse(parent, currentScheme) {
-            if (parent == "TIP SCREENOUT FRACTURING")
-                var x = 3
-            if (parent == "TESTING")
-                var x = 3
+
             if (!entitiesMap[parent] || !entitiesMap[parent].narrowers)
                 return;
             entitiesMap[parent].narrowers.forEach(function (narrower) {
@@ -274,7 +273,7 @@ console.log(entitiesArray.length);
             str += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<rdf:RDF xmlns:skos=\"http://www.w3.org/2004/02/skos/core#\"  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">"
 
-            str += "<skos:ConceptScheme rdf:about='http://PetroleumAbstractsThesaurus/" + scheme + "'>"
+            str += "<skos:ConceptScheme rdf:about='http://PetroleumAbstractsThesaurus/" + scheme.replace(/ /g,'_')  + "'>"
             str += "  <skos:prefLabel xml:lang='en'>" + scheme + "</skos:prefLabel>"
             str += "</skos:ConceptScheme>";
 
@@ -303,8 +302,8 @@ console.log(entitiesArray.length);
                 }
 
 
-                str += "<skos:Concept rdf:about='http://PetroleumAbstractsThesaurus/" + entity.prefLabel + "'>\n"
-                str += "  <skos:inScheme rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.inScheme + "'/>\n"
+                str += "<skos:Concept rdf:about='http://PetroleumAbstractsThesaurus/" + entity.prefLabel.replace(/ /g,'_') + "'>\n"
+                str += "  <skos:inScheme rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.inScheme.replace(/ /g,'_') + "'/>\n"
 
                 str += "  <skos:prefLabel xml:lang='en'>" + entity.prefLabel + "</skos:prefLabel>\n"
 
@@ -313,11 +312,11 @@ console.log(entitiesArray.length);
                 })
 
                 if (entity.broader)
-                    str += "  <skos:broader rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.broader + "'/>\n"
+                    str += "  <skos:broader rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.broader.replace(/ /g,'_') + "'/>\n"
 
 
                 entity.relateds.forEach(function (related) {
-                    str += "  <skos:related rdf:resource='http://PetroleumAbstractsThesaurus/" + related + "'/>\n"
+                    str += "  <skos:related rdf:resource='http://PetroleumAbstractsThesaurus/" + related.replace(/ /g,'_') + "'/>\n"
                 })
                 str += "</skos:Concept>\n"
 
@@ -352,3 +351,9 @@ var entitiesMap = tulsaToSkos.setEntitiesBoadersScheme(entitiesMap);
 
 
 tulsaToSkos.generateRdf(entitiesMap)
+//!!!!!!!!!  ATTENTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/*Post import
+    insert into <http://souslesens.org/oil-gas/upstream/>
+{?c  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>}
+
+    where {?a skos:broader ?c filter( NOT EXISTS{ ?c skos:broader ?d.})}*/
