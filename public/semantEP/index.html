@@ -12,8 +12,10 @@
     <script src="js/sparql/sparql_facade.js" charset="utf-8"></script>
     <script src="js/mainController.js" charset="utf-8"></script>
 
+    <script type="text/javascript" src="../js/visjs/vis-network.min.js"></script>
+    <link href="../js/visjs/vis-network.css" rel="stylesheet" type="text/css"/>
 
-
+    <script src="../js/graph/visjsGraph2.js"></script>
 
 
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
@@ -25,15 +27,45 @@
     <script>
 
 
-        $(function(){
+        $(function () {
+            $("#dialogDiv").dialog({
+                autoOpen: false,
+                height: 200,
+                width: 400,
+                modal: true,
+            })
+
+            $("#detailsDiv").dialog({
+                autoOpen: false,
+                height: 800,
+                width: 400,
+                modal: true,
+            })
+
+                $("#selectionDiv").height($(window).height() - 50)
+                $("#displayDiv").height($(window).height() - 50)
+                $("#displayDiv").width($(window).width() - $("#selectionDiv").width());
+                $("#projectionDiv").height($(window).height() - 50)
+                $("#graphDiv").height($(window).height() - 250);
+
+                $("#graphDiv").width($("#displayDiv").width())
+
+               /// Infos.setInfosDivHeight(10);
+
+
+
+
+                $("#accordion").accordion();
+                $("#accordion").accordion("option", {active: 1});
+
             $("#lefTabs").tabs()
             $("#accordion").accordion();
 
-            MainController.initClasses()
+            MainController.initClasses();
+
 
         })
     </script>
-
 
 
 </head>
@@ -43,46 +75,44 @@
 <div id="main" style="display: flex;flex-direction: row">
 
 
-    <div>
+    <div id="lefTabs">
+        <ul>
+            <li><a href="#tabs-Selection">Selection</a></li>
 
 
-        <div id="lefTabs">
-            <ul>
-                <li><a href="#tabs-Selection">Selection</a></li>
+        </ul>
+        <div id="tabs-Selection">
 
-            </ul>
-            <div id="tabs-Selection">
-                <div id="selectionDiv" style="max-width:350px;border-style: solid;padding: 3px;margin: 3px">
+            <div id="selectionDiv" style="max-width:350px;border-style: solid;padding: 3px;margin: 3px">
 
 
-                    <div id="accordion">
+                <div id="accordion">
 
-                        <h3><span class="title">Concepts </span></h3>
-                        <div style="margin:5px">
-
-                            <div id="jstreeClassDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
-
-                        </div>
-
+                    <h3><span class="title">Concepts </span></h3>
+                    <div style="margin:5px">
+                        <button onclick="MainController.drawPropAndClassesGraph();"></button>
+                        <div id="jstreeClassDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
 
                     </div>
 
 
                 </div>
 
-            </div>
 
+            </div>
 
         </div>
 
+
     </div>
-</div>
-<div id="displayDiv" style="width:50%;border-style: solid;padding: 3px;margin: 3px">
+
+
+    <div id="displayDiv" style="width:100%;border-style: solid;padding: 3px;margin: 3px">
         <div id="messageDiv"></div>
+
+        <div id="graphDiv" style="width:100%;height: 500px"></div>
+        <div id="infosDiv" style="height:200px;overflow: auto;background-color: #d6d9d8"></div>
     </div>
-    <div id="graphDiv" style="width:100%;"></div>
-    <div id="infosDiv" style="height:200px;overflow: auto;background-color: #d6d9d8"></div>
-</div>
 
 
 </div>

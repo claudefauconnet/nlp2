@@ -47,6 +47,55 @@ var Sparql_facade=(function(){
 
 
    }
+   
+   
+   self.getOwlClassesAndProperties=function(owlPropType,callback){
+       var query="PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+           "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+           "prefix owl: <http://www.w3.org/2002/07/owl#>" +
+           "" +
+           "select   distinct * from <http://sws.ifi.uio.no/ontology/npd-v2/>  where {" +
+           " ?prop   rdf:type owl:ObjectProperty." +
+           "  ?prop rdfs:domain ?domain." +
+           "   ?prop rdfs:range ?range." +
+           "  " +
+           " " +
+           "}limit 1000"
+
+       self.querySPARQL_proxy(query,null,null,null,function(err, result){
+           if(err){
+               return callback(err);
+           }
+           return callback(null,result.results.bindings);
+
+
+
+
+
+       })
+   }
+
+    self.getOwlSubClasses=function(id,callback){
+        var query="PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+            "prefix owl: <http://www.w3.org/2002/07/owl#>" +
+            "" +
+            "select   distinct * from <http://sws.ifi.uio.no/ontology/npd-v2/>  where {" +
+            "?subClassId   rdfs:subClassOf <"+id+">."+
+            "}limit 1000"
+
+        self.querySPARQL_proxy(query,null,null,null,function(err, result){
+            if(err){
+                return callback(err);
+            }
+            return callback(null,result.results.bindings);
+
+
+
+
+
+        })
+    }
 
 
 

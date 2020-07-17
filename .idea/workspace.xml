@@ -3,17 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/tulsaToSkos..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/tulsaToSkos..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_GEMET.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_GEMET.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_Wikidata.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_Wikidata.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_babelNet.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_babelNet.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_skos_generic.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/theaususList2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/theaususList2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/multiSkosGraph3.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/semantEP/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/semantEP/js/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/js/mainController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/semantEP/js/sparql/sparql_facade.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/js/sparql/sparql_facade.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -162,7 +154,7 @@
       <workItem from="1593245380949" duration="36594000" />
       <workItem from="1593676576457" duration="1494000" />
       <workItem from="1593850732870" duration="22682000" />
-      <workItem from="1594883918969" duration="5233000" />
+      <workItem from="1594883918969" duration="14373000" />
     </task>
     <servers />
   </component>
