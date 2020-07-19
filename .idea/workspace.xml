@@ -36,24 +36,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/semantEP/js" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\semantEP\js" />
+      <recent name="D:\GitHub\nlp2\public\yasguy" />
+      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
+      <recent name="D:\GitHub\nlp2\public\ontograph\js\sparqlProxies" />
+      <recent name="D:\GitHub\nlp2\public\ontograph" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\public\ontograph\js" />
       <recent name="D:\GitHub\nlp2\public\js" />
       <recent name="D:\GitHub\nlp2\bin" />
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\yasguy" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
-      <recent name="D:\GitHub\nlp2\public\ontograph\js\sparqlProxies" />
-      <recent name="D:\GitHub\nlp2\public\ontograph" />
-      <recent name="D:\GitHub\nlp2\bin\others" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -154,7 +154,7 @@
       <workItem from="1593245380949" duration="36594000" />
       <workItem from="1593676576457" duration="1494000" />
       <workItem from="1593850732870" duration="22682000" />
-      <workItem from="1594883918969" duration="14373000" />
+      <workItem from="1594883918969" duration="44086000" />
     </task>
     <servers />
   </component>
@@ -186,6 +186,12 @@
           <url>file://$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_ISO_15926.js</url>
           <line>37</line>
           <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/semantEP/js/mainController.js</url>
+          <line>271</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
