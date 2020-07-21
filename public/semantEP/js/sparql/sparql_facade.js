@@ -1,5 +1,7 @@
 //https://ontology101tutorial.readthedocs.io/en/latest/OWL_ClassRestrictions.html
 
+//https://gitlab.com/logid/npd-factpages/-/tree/develop/ontology
+
 
 var Sparql_facade = (function () {
         var self = {};
@@ -72,6 +74,49 @@ var Sparql_facade = (function () {
 
             })
         }
+
+        self.getOwlClassesObjectProperties = function (classId, callback) {
+            var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                "SELECT ?class ?property ?range ?domain ?propType from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE {" +
+                " ?bNode rdf:type <http://www.w3.org/2002/07/owl#Restriction>." +
+                " ?class rdfs:subClassOf ?bNode." +
+                " ?bNode <http://www.w3.org/2002/07/owl#onProperty> ?property." +
+                "  filter (?class=<" + classId + ">)" +
+                "  ?property rdfs:domain ?domain." +
+                "   ?property rdfs:range ?range." +
+                " ?property rdf:type ?propType"+
+                "}order by ?q LIMIT 1000";
+            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, result.results.bindings);
+
+
+            })
+        }
+        self.getOwlClassesDataProperties = function (propId, callback) {
+           var query = "PREFIX owl: <http://www.w3.org/2002/07/owl#>PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+               "SELECT * from  <http://sws.ifi.uio.no/vocab/npd-v2/>" +
+                "WHERE" +
+                "{" +
+                "  ?property rdf:type ?type." +
+                "  ?property rdfs:domain ?domain." +
+                "   ?property rdfs:range ?range." +
+                "   filter (?property =<" + propId + ">)" +
+                "}  LIMIT 1000"
+
+            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, result.results.bindings);
+
+
+            })
+        }
+
 
         self.getOwlDataTypeProperties = function (callback) {
             var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>prefix owl: <http://www.w3.org/2002/07/owl#>" +
@@ -168,10 +213,9 @@ var Sparql_facade = (function () {
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
                 "SELECT * from  <http://sws.ifi.uio.no/vocab/npd-v2/> WHERE {" +
                 " ?sourceDomain rdfs:subClassOf ?prop1. filter (?sourceDomain=<" + sourceDomain + ">)." +
-                " ?prop1 owl:onProperty ?targetDomain."+
+                " ?prop1 owl:onProperty ?targetDomain." +
 
-            "OPTIONAL {?targetDomain  owl:onProperty  ?prop1 .}"
-
+                "OPTIONAL {?targetDomain  owl:onProperty  ?prop1 .}"
 
 
             query += "}  LIMIT 1000"
@@ -264,7 +308,154 @@ var Sparql_facade = (function () {
             });
         }
 
+        self.listDataValues = function (domain, prop, value, callback) {
+
+
+            var query =
+
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#>" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                "SELECT * from  <http://sws.ifi.uio.no/vocab/npd-v2/> from <http://sws.ifi.uio.no/data/npd-v2/> WHERE {" +
+                " ?x <" + prop + ">  ?y";
+            if (value)
+                query += " filter(regex(?y,'" + value + "','i'))"
+
+
+            query += "}order by ?y  LIMIT 1000"
+
+            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, result.results.bindings);
+
+
+            })
+
+
+        }
+
+        self.searchData = function (word, callback) {
+
+            var query = "PREFIX owl: <http://www.w3.org/2002/07/owl#>" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                "SELECT distinct ?id ?name ?class " +
+                "from  <http://sws.ifi.uio.no/vocab/npd-v2/>" +
+                "from <http://sws.ifi.uio.no/data/npd-v2/>" +
+                "from <http://resource.geoscimlx.org/>" +
+                "WHERE { ?id <http://sws.ifi.uio.no/vocab/npd-v2#name>  ?name. filter(regex(?name,'" + word + "','i'))  ?id ?p ?class." +
+                "?class rdf:type rdfs:Class }order by ?class ?name LIMIT 1000"
+
+            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, result.results.bindings);
+
+
+            })
+
+
+        }
+
+        self.searchClasses = function (word, callback) {
+
+            var query = "PREFIX owl: <http://www.w3.org/2002/07/owl#>" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                "SELECT  ?classProp ?type (count(?z) as ?countInstances)" +
+                "from  <http://sws.ifi.uio.no/vocab/npd-v2/>from <http://sws.ifi.uio.no/data/npd-v2/>from <http://resource.geoscimlx.org/>WHERE " +
+                "{?classProp rdf:type ?type filter(regex(str(?classProp),'" + word + "','i')) filter(?type in(rdfs:Class,rdf:Property)). ?z ?w ?classProp } group by ?classProp ?type  LIMIT 10000"
+
+            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, result.results.bindings);
+
+
+            })
+        }
+
 
         return self;
     }
 )()
+
+
+/* ***************************************
+contenu des restrictions
+
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT * from <http://sws.ifi.uio.no/data/npd-v2/> from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE {
+
+ ?q rdf:type <http://www.w3.org/2002/07/owl#Restriction>.
+ ?xx ?yy ?q.
+   ?q 	<http://www.w3.org/2002/07/owl#onProperty> ?qq.
+}order by ?q LIMIT 1000
+
+
+
+/* *********************************
+Object properties
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT distinct * from <http://sws.ifi.uio.no/vocab/npd-v2/>  from <http://sws.ifi.uio.no/data/npd-v2/> WHERE {
+ ?pred rdf:type owl:ObjectProperty.
+  ?a ?pred ?c.
+// filter (?pred=<http://sws.ifi.uio.no/vocab/npd-v2#inLithostratigraphicUnit>)
+} LIMIT 1000
+/
+
+
+/* *******************************************
+ FunctionalProperties (only idNPD)
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT distinct ?pred from <http://sws.ifi.uio.no/vocab/npd-v2/>  from <http://sws.ifi.uio.no/data/npd-v2/> WHERE {
+ ?pred rdf:type owl:FunctionalProperty.
+
+
+} LIMIT 100
+ */
+
+
+/* *************************************************
+DataTypeProperty (s'applique aux blancq nodes)
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT distinct * from <http://sws.ifi.uio.no/vocab/npd-v2/>  from <http://sws.ifi.uio.no/data/npd-v2/> WHERE {
+ ?pred rdf:type owl:DatatypeProperty.
+ ?x ?y ?pred
+
+} LIMIT 1000
+
+/* **************************************************
+AnnotationProperty
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT distinct * from <http://sws.ifi.uio.no/vocab/npd-v2/>  from <http://sws.ifi.uio.no/data/npd-v2/> WHERE {
+ ?pred rdf:type owl:AnnotationProperty.
+
+
+} LIMIT 100
+ */
+
+
+
+
+
+
+
+

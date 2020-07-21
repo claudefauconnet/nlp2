@@ -31,6 +31,13 @@ var MainController = (function () {
 
         }
 
+        self.nodeColors = {
+            Class: "#aba",
+            Property: "#bac",
+            "http://www.w3.org/2002/07/owl#ObjectProperty":"#aba",
+            "http://www.w3.org/2002/07/owl#DatatypeProperty":"#bac",
+        }
+
         self.initClasses = function () {
 
 
@@ -266,7 +273,7 @@ var MainController = (function () {
 
                     if (nodeIds.indexOf(sourceDomainId) < 0) {
                         nodeIds.push(sourceDomainId);
-                        visjsData.nodes.push({id: sourceDomainId, label: sourceDomainLabel, shape: "box", color: "red"})
+                        visjsData.nodes.push({id: sourceDomainId, label: sourceDomainLabel, shape: "box", color: "red", data: item})
                     } else {
                         if (visjsData.data)
                             visjsData.data.nodes.update({id: sourceDomainId, color: sourceDomainColor})
@@ -285,7 +292,7 @@ var MainController = (function () {
                          } else {*/
                     if (nodeIds.indexOf(targetDomainId) < 0) {
                         nodeIds.push(targetDomainId);
-                        visjsData.nodes.push({id: targetDomainId, label: targetDomainLabel, shape: "box", color: targetDomainColor})
+                        visjsData.nodes.push({id: targetDomainId, label: targetDomainLabel, shape: "box", color: targetDomainColor, data: item})
                     } else {
                         if (visjsData.data)
                             visjsData.data.nodes.update({id: targetDomainId, color: targetDomainColor})
@@ -398,18 +405,175 @@ var MainController = (function () {
             })
         }
 
-        self.addNodeToQuery = function (node) {
 
-            if (node.data) {
-                var name = node.data.prop1.value
-                var type = node.data.targetDomain.value
-                var html = "<div><span id='fieldName'>" + name + "</sspan></div>"
-                $("#queryDiv").html(html)
+
+        self.searchData = function () {
+            var word = $("#questionInput").val();
+            Sparql_facade.searchData(word, function (err, result) {
+                if (err)
+                    return self.setMessage(err);
+                var classes = []
+                var jstreeData = []
+                result.forEach(function (item) {
+                    var classId = item.class.value;
+                    var classLabel = classId.substring(classId.lastIndexOf("#") + 1);
+                    var id = item.id.value;
+                    var name = item.name.value;
+
+                    if (classes.indexOf(classId) < 0) {
+                        classes.push(classId)
+                        jstreeData.push({
+                            id: classId,
+                            text: "<span class='tree_level_1' style='background-color:#e78f08'>" + classLabel + "</span>",
+                            children: [],
+                            parent: "#"
+                        })
+                        jstreeData.push({
+                            id: id,
+                            text: "<span class='tree_level_1' style='background-color:#e78f08'>" + name + "</span>",
+                            children: [],
+                            parent: classId
+                        })
+                    }
+                })
+
+                common.loadJsTree("jstreeClassDiv", jstreeData, {
+                    withCheckboxes: true,
+                    selectNodeFn: MainController.onJstreeSearchClassNode,
+                    onCheckNodeFn: MainController.onJstreeCheckNode,
+                })
+
+
+            })
+
+        }
+
+        self.searchClasses = function () {
+            var word = $("#questionInput").val();
+            Sparql_facade.searchClasses(word, function (err, result) {
+                if (err)
+                    return self.setMessage(err);
+                var jstreeData = []
+
+
+                result.sort(function (a, b) {
+                    var ax = parseInt(a.countInstances.value)
+                    var bx = parseInt(b.countInstances.value)
+                    if (ax > bx)
+                        return -1;
+                    if (ax > bx)
+                        return 1;
+                    return 0;
+                })
+                result.forEach(function (item) {
+                    var classPropId = item.classProp.value;
+                    var classPropLabel = classPropId.substring(classPropId.lastIndexOf("#") + 1);
+                    var typeId = item.type.value;
+                    var typeLabel = typeId.substring(typeId.lastIndexOf("#") + 1)
+                    var countInstances = item.countInstances.value;
+
+
+                    jstreeData.push({
+                        id: classPropId,
+                        text: "<span class='tree_level_1' style='background-color: " + self.nodeColors[typeLabel] + "'>" + classPropLabel + "(" + countInstances + ")" + "</span>",
+                        children: [],
+                        data:{type:"Class"},
+                        parent: "#"
+                    })
+                })
+                common.loadJsTree("jstreeClassDiv", jstreeData, {
+                    withCheckboxes: true,
+                    selectNodeFn: MainController.onJstreeSelectDataNode,
+                    onCheckNodeFn: MainController.onJstreeCheckNode,
+                })
+            })
+        }
+
+        self.onJstreeSearchDataNode = function (event, object) {
+            $("#infosDiv").html(object.node.id)
+        }
+
+
+        self.onJstreeSelectDataNode = function (event, object) {
+            $("#infosDiv").html(object.node.id);
+            if(object.node.data.type=="Class" || object.node.data.propType=="http://www.w3.org/2002/07/owl#ObjectProperty") {
+                Sparql_facade.getOwlClassesObjectProperties(object.node.id, function (err, result) {
+                    if (err)
+                        return self.setMessage(err);
+                    var jstreeData = []
+                    var classId = null;
+                    result.forEach(function (item) {
+                        classId = item.class.value;
+                        var classLabel = classId.substring(classId.lastIndexOf("#") + 1);
+                        var propId = item.property.value;
+                        var propLabel = propId.substring(propId.lastIndexOf("#") + 1)
+                        var domain = item.domain.value;
+                        var range = item.range.value;
+                        var propType=item.propType.value;
+
+
+                        jstreeData.push({
+                            id: propId,
+                            text: "<span class='tree_level_1' style='background-color: " + self.nodeColors[propType] + "'>" + propLabel + "</span>",
+                            children: [],
+                            data: {propType:propType,classId:classId,id:propId, range: range, domain: domain},
+                            parent: classId
+                        })
+
+                    })
+                    common.addNodesToJstree("jstreeClassDiv", classId, jstreeData)
+                })
+            }
+            else  if(object.node.data.propType=="http://www.w3.org/2002/07/owl#DatatypeProperty") {
+                self.queryNode(object.node)
+
             }
         }
 
         self.setMessage = function (message) {
             $("#messageDiv").html(message)
+
+        }
+
+
+        self.queryNode = function (node) {
+
+            if (node.data) {
+                var propId = node.data.prop1.value;
+                var nodeId = propId.substring(propId.lastIndexOf("/") + 1)
+                var sourceDomain = node.data.sourceDomain.value;
+                var targetDomain = node.data.targetDomain.value;
+                var html = ""
+                if (targetDomain.indexOf("http://www.w3.org/2001/XMLSchema#") > -1) {
+                    html += "<div><span id='_Node_prop_" + nodeId + "'>" + nodeId + "</span>"
+                    html += "<input id='_Node_operator_" + nodeId + "'>"
+                    html += "<input id='_Node_value_" + nodeId + "'>"
+                } else {
+                    html += "<div><span id='_Node_prop_" + nodeId + "'>" + targetDomain + "</span>"
+                    html += "<input id='_Node_value_" + nodeId + "'>"
+                    html += "<button onclick=MainController.listDomainValues('" + nodeId + "','" + sourceDomain + "','" + targetDomain + "')>List</button>"
+                    html += "<select id='_Node_possible_values_" + nodeId + "'></select>"
+                }
+
+                html += "<button onclick=MainController.searchData()>Search</button>"
+                html += "</div>"
+
+                $("#queryDiv").html(html)
+            }
+        }
+
+
+        self.listDomainValues = function (nodeId, sourceDomain, targetDomain) {
+            var value = $("#_Node_value_" + nodeId).val()
+            Sparql_facade.listDataValues(sourceDomain, targetDomain, value, function (err, result) {
+                result.forEach(function (item) {
+                    item.name = item.y.value;
+                    item.id = item.x.value;
+
+                })
+                common.fillSelectOptions("_Node_possible_values_" + nodeId, result, true, "name", "id")
+            })
+
 
         }
 
