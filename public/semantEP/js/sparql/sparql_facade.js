@@ -85,7 +85,7 @@ var Sparql_facade = (function () {
                 "  filter (?class=<" + classId + ">)" +
                 "  ?property rdfs:domain ?domain." +
                 "   ?property rdfs:range ?range." +
-                " ?property rdf:type ?propType"+
+                " ?property rdf:type ?propType" +
                 "}order by ?q LIMIT 1000";
             self.querySPARQL_proxy(query, null, null, null, function (err, result) {
                 if (err) {
@@ -97,8 +97,8 @@ var Sparql_facade = (function () {
             })
         }
         self.getOwlClassesDataProperties = function (propId, callback) {
-           var query = "PREFIX owl: <http://www.w3.org/2002/07/owl#>PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
-               "SELECT * from  <http://sws.ifi.uio.no/vocab/npd-v2/>" +
+            var query = "PREFIX owl: <http://www.w3.org/2002/07/owl#>PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                "SELECT * from  <http://sws.ifi.uio.no/vocab/npd-v2/>" +
                 "WHERE" +
                 "{" +
                 "  ?property rdf:type ?type." +
@@ -377,6 +377,82 @@ var Sparql_facade = (function () {
 
 
             })
+        }
+
+        self.getObjectPropertyValues = function (objectPropertyId, callback) {
+            var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+                "prefix owl: <http://www.w3.org/2002/07/owl#>" +
+                "SELECT * from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE { " +
+                " ?bNode owl:onProperty ?objectProperty ." +
+                " ?bNode rdf:type owl:Restriction ." +
+                "  ?bNode owl:someValuesFrom ?someValue." +
+                "  ?someValue rdf:type ?someValueType." +
+                "  filter (?objectProperty=<" + objectPropertyId + ">)  } LIMIT 1000"
+
+            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, result.results.bindings);
+
+
+            })
+
+
+        }
+
+        self.getLinkedClasses = function (word, direction, callback) {
+
+            var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>SELECT * from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE {" +
+
+                "?prop rdfs:domain ?domain." +
+                "?prop rdfs:range ?range." +
+                "?prop rdf:type ?propType."
+
+
+            if (word.indexOf("http") > -1) {
+                if (direction == 0)
+                    query += "  filter (?domain=<" + word + ">  || ?range=<" + word + ">) "
+                else if (direction > 0)
+                    query += "  filter (?domain=<" + word + "> ) "
+                else
+                    query += "  filter ( ?range=<" + word + ">) "
+
+
+            } else {
+                if (direction == 0)
+                    query += "  filter (regex(?domain,'" + word + "','i')|| regex(?domain,'" + word + "','i')) "
+                if (direction > 0)
+                    query += "  filter (regex(?range,'" + word + "','i')) "
+                else
+                    query += "  filter ( regex(?domain,'" + word + "','i')) "
+            }
+            query += " } LIMIT 1000"
+            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, result.results.bindings);
+
+
+            })
+
+
+        }
+
+        self.getOwlObjInfos=function(objId,callback){
+            var query="  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>SELECT * from <http://sws.ifi.uio.no/vocab/npd-v2/>  " +
+                " WHERE {?id ?prop ?value filter(?id=<"+objId+">)  } LIMIT 1000";
+            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, result.results.bindings);
+
+
+            })
+
         }
 
 
