@@ -419,31 +419,41 @@ var Sparql_facade = (function () {
 
         self.getLinkedClasses = function (word, direction, callback) {
 
-            var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>SELECT distinct * from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE {" +
-
-                "?prop rdfs:domain ?domain." +
-                "?prop rdfs:range ?range." +
-                "?prop rdf:type ?propType."
 
 
+
+
+var filter="";
             if (word.indexOf("http") > -1) {
                 if (direction == 0)
-                    query += "  filter (?domain=<" + word + ">  || ?range=<" + word + ">) "
+                    filter += "  filter (?domain=<" + word + ">  || ?range=<" + word + ">) "
                 else if (direction > 0)
-                    query += "  filter (?domain=<" + word + "> ) "
+                    filter += "  filter (?domain=<" + word + "> ) "
                 else
-                    query += "  filter ( ?range=<" + word + ">) "
+                    filter += "  filter ( ?range=<" + word + ">) "
 
 
             } else {
                 if (direction == 0)
-                    query += "  filter (regex(?range,'" + word + "','i')|| regex(?domain,'" + word + "','i')) "
+                    filter += "  filter (regex(?range,'" + word + "','i')|| regex(?domain,'" + word + "','i')) "
                 else if (direction > 0)
-                    query += "  filter (regex(?range,'" + word + "','i')) "
+                    filter += "  filter (regex(?range,'" + word + "','i')) "
                 else
-                    query += "  filter ( regex(?domain,'" + word + "','i')) "
+                    filter += "  filter ( regex(?domain,'" + word + "','i')) "
             }
+
+            var query = "SELECT distinct * from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE {{?domain rdfs:subClassOf ?bNode. " +
+                filter+
+                "  ?bNode  owl:onProperty  ?prop." +
+                "    ?prop rdf:type ?propType." +
+                "  optional{ ?prop ?xx ?range. filter(?xx in( rdfs:range))}"+
+                "  }" +
+                "  UNION" +
+                "     {?prop rdfs:domain ?domain.?prop rdfs:range ?range.?prop rdf:type ?propType.  " +filter+
+                "    }"
+
             query += " } LIMIT 1000"
+
             self.querySPARQL_proxy(query, null, null, null, function (err, result) {
                 if (err) {
                     return callback(err);

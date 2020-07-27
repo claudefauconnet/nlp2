@@ -561,7 +561,12 @@ var MainController = (function () {
 
                             data.forEach(function (item) {
                                 var propId = item.prop.value;
-                                var rangeId = item.range.value;
+                                var rangeId = null;
+
+                                if(item.range)
+                                    rangeId=  item.range.value;
+                                else// cas des ObjectProperties
+                                    rangeId=item.prop.value;
                                 var rangeLabel = rangeId.substring(rangeId.lastIndexOf("#") + 1);
                                 var propType = item.propType.value;
 
@@ -741,7 +746,7 @@ var MainController = (function () {
             var propIds = []
             var nodesMap = {}
             valueNodes.forEach(function (node, index) {
-                if (!node.data.selected)
+                if (!node.data.selected && node.data.propType!= "http://www.w3.org/2002/07/owl#ObjectProperty")
                     return;
                 var subjectLabel = node.data.domain.substring(node.data.domain.lastIndexOf("#") + 1)
                 var predicateLabel = node.data.propId;
@@ -758,8 +763,10 @@ var MainController = (function () {
 
                 }else{
                     querySelection += "optional{ ?" + subjectLabel + " <" + predicateLabel + ">  ?" + valueLabel + "_value. "
+                    if(node.data.propType!= "http://www.w3.org/2002/07/owl#ObjectProperty")
                     querySelection += "optional  {?" + subjectLabel + "<http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + subjectLabel + "_name.}} "
-
+                    else
+                        querySelection += "optional  {?" + valueLabel+ "_value " + "<http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + subjectLabel + "_name.}} "
                 }
 
                 node.parents.forEach(function (parent, parentIndex) {
