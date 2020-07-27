@@ -32,24 +32,26 @@ var Sparql_facade = (function () {
 
         }
 
-        self.searchClasses = function (word, callback) {
+        /*   self.searchClasses = function (word, callback) {
 
 
-            var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
-                "select   distinct * from <http://sws.ifi.uio.no/data/npd-v2/>  where {?class rdf:type rdfs:Class.?class rdfs:label ?classLabel filter  regex(?classLabel, \"" + word + "\", \"i\")}"
+               var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                   "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                   "select   distinct * from <http://sws.ifi.uio.no/data/npd-v2/>  where {" +
+                   "?class rdf:type rdfs:Class." +
+                   "?class rdfs:label ?classLabel filter  regex(?classLabel, \"" + word + "\", \"i\")}"
 
-            self.querySPARQL_proxy(query, null, null, null, function (err, result) {
-                if (err) {
-                    return callback(err);
-                }
-                return callback(null, result.results.bindings);
+               self.querySPARQL_proxy(query, null, null, null, function (err, result) {
+                   if (err) {
+                       return callback(err);
+                   }
+                   return callback(null, result.results.bindings);
 
 
-            })
+               })
 
 
-        }
+           }*/
 
 
         self.getOwlClassesAndObjectProperties = function (owlPropType, callback) {
@@ -361,13 +363,26 @@ var Sparql_facade = (function () {
         }
 
         self.searchClasses = function (word, callback) {
+            var word2 = "XXXX"
+          //  word2 =word
+            var filterClass=""
+            var filterProp=""
+            if(word && word!="") {
+                filterClass = " filter(regex(str(?classProp),'" + word + "','i')) ";
+                filterProp = " filter(regex(str(?classProp),'" + word2 + "','i')) ";
+            }
 
-            var query = "PREFIX owl: <http://www.w3.org/2002/07/owl#>" +
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
-                "SELECT  ?classProp ?type (count(?z) as ?countInstances)" +
-                "from  <http://sws.ifi.uio.no/vocab/npd-v2/>from <http://sws.ifi.uio.no/data/npd-v2/>from <http://resource.geoscimlx.org/>WHERE " +
-                "{?classProp rdf:type ?type filter(regex(str(?classProp),'" + word + "','i')) filter(?type in(rdfs:Class,rdf:Property)). ?z ?w ?classProp } group by ?classProp ?type  LIMIT 10000"
+            var query = "PREFIX owl: <http://www.w3.org/2002/07/owl#>PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                "SELECT  ?classProp ?propId ?type ?parent (count(?z) as ?countInstances) from  <http://sws.ifi.uio.no/vocab/npd-v2/>from <http://sws.ifi.uio.no/data/npd-v2/>from <http://resource.geoscimlx.org/>WHERE {" +
+                "  {" +
+                "  ?classProp rdf:type ?type. "+filterClass+" filter(?type in(rdfs:Class))" +
+                "  ?classProp rdfs:subClassOf ?nNode. ?nNode owl:someValuesFrom ?parent. ?parent rdf:type owl:Class.?nNode owl:onProperty ?propId. ?z ?w ?classProp." +
+                "  }" +
+             /*   "  UNION{" +
+                "      ?classProp rdf:type ?type."+filterProp+" filter(?type in(rdf:Property))" +
+                "  ?classProp rdfs:range ?parent. ?parent rdf:type owl:Class. ?z ?w ?classProp" +
+                "  }" +*/
+                "} group by ?classProp ?propId ?type ?parent LIMIT 10000"
 
             self.querySPARQL_proxy(query, null, null, null, function (err, result) {
                 if (err) {
@@ -404,7 +419,7 @@ var Sparql_facade = (function () {
 
         self.getLinkedClasses = function (word, direction, callback) {
 
-            var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>SELECT * from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE {" +
+            var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>SELECT distinct * from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE {" +
 
                 "?prop rdfs:domain ?domain." +
                 "?prop rdfs:range ?range." +
@@ -422,8 +437,8 @@ var Sparql_facade = (function () {
 
             } else {
                 if (direction == 0)
-                    query += "  filter (regex(?domain,'" + word + "','i')|| regex(?domain,'" + word + "','i')) "
-                if (direction > 0)
+                    query += "  filter (regex(?range,'" + word + "','i')|| regex(?domain,'" + word + "','i')) "
+                else if (direction > 0)
                     query += "  filter (regex(?range,'" + word + "','i')) "
                 else
                     query += "  filter ( regex(?domain,'" + word + "','i')) "
@@ -441,9 +456,9 @@ var Sparql_facade = (function () {
 
         }
 
-        self.getOwlObjInfos=function(objId,callback){
-            var query="  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>SELECT * from <http://sws.ifi.uio.no/vocab/npd-v2/>  " +
-                " WHERE {?id ?prop ?value filter(?id=<"+objId+">)  } LIMIT 1000";
+        self.getOwlObjInfos = function (objId, callback) {
+            var query = "  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>SELECT * from <http://sws.ifi.uio.no/vocab/npd-v2/>  " +
+                " WHERE {?id ?prop ?value filter(?id=<" + objId + ">)  } LIMIT 1000";
             self.querySPARQL_proxy(query, null, null, null, function (err, result) {
                 if (err) {
                     return callback(err);

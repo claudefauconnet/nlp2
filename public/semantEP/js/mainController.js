@@ -36,6 +36,7 @@ var MainController = (function () {
             Property: "#bac",
             "http://www.w3.org/2002/07/owl#ObjectProperty": "#aba",
             "http://www.w3.org/2002/07/owl#DatatypeProperty": "#bac",
+            Value: "#0072d5",
         }
 
         self.initClasses = function () {
@@ -94,55 +95,67 @@ var MainController = (function () {
                         var edgeIds = [];
 
                         result.forEach(function (item) {
+
                             var rangeId = item.range.value;
                             var rangeLabel = rangeId.substring(rangeId.lastIndexOf("#") + 1);
                             var domainId = item.domain.value;
                             var domainLabel = domainId.substring(domainId.lastIndexOf("#") + 1)
                             var propId = item.prop.value;
                             var propLabel = propId.substring(propId.lastIndexOf("#") + 1);
+                            /*   if(domainId=="http://sws.ifi.uio.no/vocab/npd-v2#WellboreDrillStemTest")
+                                   var x=3
+                               if(propId=="http://sws.ifi.uio.no/vocab/npd-v2#WellboreDrillStemTest")
+                                   var x=3
+                               if(rangeId=="http://sws.ifi.uio.no/vocab/npd-v2#WellboreDrillStemTest")
+                                   var x=3*/
 
-                            if (nodeIds.indexOf(domainId) < 0) {
+                            if (rangeId.indexOf("http://www.w3.org/2001/XMLSchema") > -1) {
+                                if (nodeIds.indexOf(propId) < 0) {
+                                    nodeIds.push(propId);
+                                    visjsData.nodes.push({id: propId, label: propLabel, shape: "box", color: self.getNodeColor(rangeLabel), data: {domain: domainId, range: rangeId, prop: propId}})
+                                    jstreeData.push({
+                                        id: propId,
+                                        text: "<span class='tree_level_1' style='background-color: " + self.getNodeColor(rangeId) + "'>" + propLabel + "</span>",
+                                        children: [],
+                                        data: {domain: domainId, range: propId, propId: rangeId},
+                                        parent: "#"
+                                    })
+                                }
+
+
+                            } else if (nodeIds.indexOf(rangeId) < 0) {
+                                nodeIds.push(rangeId);
+                                jstreeData.push({
+                                    id: rangeId,
+                                    text: "<span class='tree_level_1' style='background-color: " + self.getNodeColor(rangeLabel) + "'>" + rangeLabel + "</span>",
+                                    children: [],
+                                    data: {domain: domainId, range: rangeId, propId: propId},
+                                    parent: "#"
+                                })
+
+                                visjsData.nodes.push({id: rangeId, label: rangeLabel, shape: "box", color: self.getNodeColor(rangeLabel), data: {domain: domainId, range: rangeId, prop: propId}})
+                            } else if (nodeIds.indexOf(domainId) < 0) {
                                 nodeIds.push(domainId);
                                 jstreeData.push({
                                     id: domainId,
                                     text: "<span class='tree_level_1' style='background-color: " + self.getNodeColor(domainLabel) + "'>" + domainLabel + "</span>",
                                     children: [],
+                                    data: {domain: domainId, range: rangeId, propId: propId},
                                     parent: "#"
                                 })
 
-                                visjsData.nodes.push({id: domainId, label: domainLabel, shape: "box", color: self.getNodeColor(domainLabel)})
+                                visjsData.nodes.push({id: domainId, label: domainLabel, shape: "box", color: self.getNodeColor(domainLabel), data: {domain: domainId, range: rangeId, prop: propId}})
                             }
 
-                            if (rangeId.indexOf("http://www.w3.org/2001/XMLSchema") > -1) {
-                                if (nodeIds.indexOf(propId) < 0) {
-                                    nodeIds.push(propId);
-                                    visjsData.nodes.push({id: propId, label: propLabel, shape: "box", color: self.getNodeColor(rangeLabel)})
-                                }
-                                if (edgeIds.indexOf(propId) < 0) {
-                                    edgeIds.push(propId);
-                                    visjsData.edges.push({id: propId, from: domainId, to: propId, label: rangeLabel})
-                                }
 
-                            } else {
-                                if (nodeIds.indexOf(rangeId) < 0) {
-                                    nodeIds.push(rangeId);
-                                    jstreeData.push({
-                                        id: rangeId,
-                                        text: "<span class='tree_level_1' style='background-color: " + self.getNodeColor(rangeLabel) + "'>" + rangeLabel + "</span>",
-                                        children: [],
-                                        parent: "#"
-                                    })
-
-                                    visjsData.nodes.push({id: rangeId, label: rangeLabel, shape: "box", color: self.getNodeColor(rangeLabel)})
-                                }
-                                if (edgeIds.indexOf(propId) < 0) {
-                                    edgeIds.push(propId);
-                                    visjsData.edges.push({id: propId, from: domainId, to: rangeId, label: propLabel})
-                                }
+                            if (edgeIds.indexOf(propId) < 0) {
+                                edgeIds.push(propId);
+                                visjsData.edges.push({id: propId, from: domainId, to: propId, label: rangeLabel})
                             }
 
 
                         })
+
 
                         visjsGraph.draw("graphDiv", visjsData, {onclickFn: MainController.onGraphNodeClick})
 
@@ -170,9 +183,11 @@ var MainController = (function () {
 
 
         self.onJstreeCheckNode = function (event, obj) {
+            self.onJstreeCheckClassNode(event, obj);
             self.drawOwlNodePathsGraph(obj.node, {depth: 1});
         }
         self.onJstreeSelectNode = function (event, obj) {
+            self.onJstreeSelectClassNode(event, obj)
             visjsGraph.network.focus(obj.node.id, {
                 scale: 1,
             })
@@ -447,8 +462,12 @@ var MainController = (function () {
 
         }
 
-        self.searchClasses = function () {
-            var word = $("#questionInput").val();
+        self.searchClasses = function (word) {
+            if (!word)
+                word = $("#questionInput").val();
+            //  return  self.onJstreeSelectClassNode("null", {node:{id:word}},{resetGraph:1});
+
+
             Sparql_facade.searchClasses(word, function (err, result) {
                 if (err)
                     return self.setMessage(err);
@@ -464,21 +483,43 @@ var MainController = (function () {
                         return 1;
                     return 0;
                 })
+                var nodeIds = []
                 result.forEach(function (item) {
                     var classPropId = item.classProp.value;
                     var classPropLabel = classPropId.substring(classPropId.lastIndexOf("#") + 1);
                     var typeId = item.type.value;
+                    var propId = item.propId.value;
                     var typeLabel = typeId.substring(typeId.lastIndexOf("#") + 1)
                     var countInstances = item.countInstances.value;
 
-
+                    nodeIds.push(classPropId)
                     jstreeData.push({
                         id: classPropId,
                         text: "<span class='tree_level_1' style='background-color: " + self.nodeColors[typeLabel] + "'>" + classPropLabel + "(" + countInstances + ")" + "</span>",
                         children: [],
-                        data: {type: "Class"},
+                        data: {type: "Class", parent: item.parent.value, id: classPropId, propId: propId},
                         parent: "#"
                     })
+                })
+
+                jstreeData.forEach(function (item) {
+                    if (item.id == "http://sws.ifi.uio.no/vocab/npd-v2#WellboreDrillStemTest")
+                        var x = 3
+
+                    item.parent = item.data.parent;
+                    if (nodeIds.indexOf(item.data.parent) < 0) {
+                        nodeIds.push(item.data.parent);
+                        var parentLabel = item.data.parent.substring(item.data.parent.lastIndexOf("#") + 1)
+                        jstreeData.push({
+                            id: item.data.parent,
+                            text: "<span class='tree_level_1' style='background-color: " + self.nodeColors["Class"] + "'>" + parentLabel + "</span>",
+                            children: [],
+                            data: {type: "Class", id: item.data.parent},
+                            parent: "#"
+                        })
+
+                    }
+
                 })
                 common.loadJsTree("jstreeClassDiv", jstreeData, {
                     withCheckboxes: true,
@@ -493,7 +534,9 @@ var MainController = (function () {
         }
 
 
-        self.onJstreeSelectClassNode = function (event, object) {
+        self.onJstreeSelectClassNode = function (event, object, options) {
+            if (!options)
+                options = {}
             $("#infosDiv").html(object.node.id);
 
             if (true) {
@@ -509,19 +552,6 @@ var MainController = (function () {
                                 callbackSeries()
                             })
                         },
-
-                        /*   function (callbackSeries) {//inverse
-                               if (false || data.length > 0)
-                                   return callbackSeries()
-                               direction=-1
-                               Sparql_facade.getLinkedClasses(object.node.id, -1, function (err, result) {
-                                   if (err)
-                                       return callbackSeries(err);
-                                   data = data.concat(data,result);
-                                   callbackSeries()
-                               })
-
-                           },*/
 
 
                         function (callbackSeries) {
@@ -564,7 +594,7 @@ var MainController = (function () {
                                         text: "<span class='tree_level_1' style='background-color: " + self.nodeColors[propType] + "'>" + rangeLabel + "</span>",
                                         children: [],
                                         data: {propType: propType, propId: propId, range: rangeId, domain: domainId, litteralType: litteralType},
-                                        //  parent: parent
+                                        parent: "#"
                                     })
                                 } else {
                                     // parent=rangeId;
@@ -573,12 +603,24 @@ var MainController = (function () {
                                         text: "<span class='tree_level_1' style='background-color: " + self.nodeColors[propType] + "'>" + domainLabel + "</span>",
                                         children: [],
                                         data: {propType: propType, propId: propId, range: rangeId, domain: domainId, litteralType: litteralType},
-                                        //parent: parent
+                                        parent: "#"
                                     })
                                 }
 
-                            })
-                            common.addNodesToJstree("jstreeClassDiv", parent, jstreeData);
+                            });
+                            if (options.resetGraph) {
+
+                                common.loadJsTree("jstreeClassDiv", jstreeData, {
+                                    withCheckboxes: true,
+                                    selectNodeFn: MainController.onJstreeSelectClassNode,
+                                    onCheckNodeFn: MainController.onJstreeCheckClassNode,
+                                })
+
+                            } else {
+                                common.addNodesToJstree("jstreeClassDiv", parent, jstreeData);
+                            }
+
+
                             callbackSeries()
                         }
                         ,
@@ -655,13 +697,20 @@ var MainController = (function () {
             var id = $("#_Node_prop_" + nodeId).html();
             var operator = $("#_Node_operator_" + nodeId).val();
             var value = $("#_Node_value_" + nodeId).val();
-            var text = id + " " + operator + " " + value
+            var text = id;
+            var domain = $("#jstreeClassDiv").jstree(true).get_node(propId);
+            domain = domain.data.domain;
+            var data = {propId: propId, domain: domain, selected: true}
+            if (value != "") {
+                data.filter = {operator: operator, value: value}
+                text += " " + operator + " " + value;
+            }
             var jstreeData = []
             jstreeData.push({
                 id: text,
                 text: "<span class='tree_level_1' style='background-color: " + self.nodeColors["Value"] + "'>" + text + "</span>",
                 children: [],
-                data: {propType: propId, operator: operator, value: value},
+                data: data,
                 //  parent: parent
             })
             common.addNodesToJstree("jstreeClassDiv", propId, jstreeData, {checkNodes: 1});
@@ -686,21 +735,68 @@ var MainController = (function () {
         self.execDataQuery = function () {
 
             var valueNodes = $("#jstreeClassDiv").jstree(true).get_checked(true);
-            var query = ""
 
+            var querySelection = ""
+            var queryProjection = "";
+            var propIds = []
+            var nodesMap = {}
             valueNodes.forEach(function (node, index) {
+                if (!node.data.selected)
+                    return;
+                var subjectLabel = node.data.domain.substring(node.data.domain.lastIndexOf("#") + 1)
+                var predicateLabel = node.data.propId;
+                var valueLabel = predicateLabel.substring(predicateLabel.lastIndexOf("#") + 1)
 
-                var parents = node.parents;
-                var data = node.data;
-                index = index + 1
-                query += "?subject_" + index + " ?predicate_" + index + " ?object_" + index + "."
-                if (data.operator)
-                    query += "filter(" + "?object_" + index + data.operator + data.value;
+                if (!nodesMap[node.id])
+                    nodesMap[node.id] = subjectLabel
 
-                console.log(query)
+                if (node.data.filter) {
+                querySelection += " ?" + subjectLabel + " <" + predicateLabel + ">  ?" + valueLabel + "_value. "
+                querySelection += "optional  {?" + subjectLabel + "<http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + subjectLabel + "_name.} "
+
+                    querySelection += " filter(?" + valueLabel + "_value" + node.data.filter.operator + node.data.filter.value + ") ";
+
+                }else{
+                    querySelection += "optional{ ?" + subjectLabel + " <" + predicateLabel + ">  ?" + valueLabel + "_value. "
+                    querySelection += "optional  {?" + subjectLabel + "<http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + subjectLabel + "_name.}} "
+
+                }
+
+                node.parents.forEach(function (parent, parentIndex) {
+                    if (parent == "#" || parentIndex == 0)
+                        return;
+                    var parentNode = $("#jstreeClassDiv").jstree(true).get_node(parent);
+
+                    if (parentNode.parent == "#")
+                        return;
+                    if (!nodesMap[parentNode.id]) {
+                        var parentSubjectLabel = parentNode.parent.substring(parentNode.parent.lastIndexOf("#") + 1)
+                        var parentPredicateLabel = parentNode.data.propId;
+
+                        if (nodesMap[parentNode.id])
+                            return;
+                        nodesMap[parentNode.id] = parentSubjectLabel
+
+                        querySelection += " ?" + subjectLabel + "<" + parentPredicateLabel + "> ?" + parentSubjectLabel + ". "
+                        querySelection += "optional { ?" + parentSubjectLabel + "<http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + parentSubjectLabel + "_name.} "
+
+
+                    }
+                })
 
 
             })
+
+            /*     for( var key in nodesMap){
+                     queryProjection+= " <"+nodesMap[key]+"> ?property ?value.  ?property rdfs:label ?label. "
+                 }*/
+
+            var query = "SELECT * from <http://sws.ifi.uio.no/data/npd-v2/>   WHERE {";
+            query += querySelection + queryProjection +
+                "} limit 10000"
+
+
+            console.log(query)
 
 
         }
