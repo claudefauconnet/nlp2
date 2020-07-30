@@ -39,6 +39,9 @@ var common = (function () {
             plugins.push("checkbox")
         if (options.searchPlugin)
             plugins.push("search")
+        if(options.contextMenu)
+            plugins.push("contextmenu")
+
         if ($('#' + jstreeDiv).jstree)
             $('#' + jstreeDiv).jstree("destroy")
         $('#' + jstreeDiv).jstree({
@@ -58,7 +61,7 @@ var common = (function () {
                 tie_selection: false,
                 three_state: false,
             },
-
+            contextmenu: {items: options.contextMenu}
 
         }).on('loaded.jstree', function () {
             if (options.openAll)
@@ -124,6 +127,17 @@ var common = (function () {
         })
     }
 
+    self.getJstreeAllNodes=function(jstreeDiv,options){
+
+        var ids = [];
+        var jsonNodes = $("#" + jstreeDiv).jstree(true).get_json('#', { flat: true });
+        $.each(jsonNodes, function (i, val) {
+            ids.push($(val).attr('id'));
+        })
+        return ids;
+
+    }
+
 
     self.sliceArray = function (array, sliceSize) {
         var slices = [];
@@ -140,6 +154,8 @@ var common = (function () {
 
 
     }
+
+
 
     self.formatUriToJqueryId = function (uri) {
         var str = uri.toLowerCase().replace("http://", "_");

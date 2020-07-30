@@ -237,6 +237,7 @@ var Sparql_facade = (function () {
 
         self.querySPARQL_proxy = function (query, url, queryOptions, options, callback) {
             console.log(query)
+            $("#waitImg").css("display","block")
             if (!url) {
                 url = self.proxyUrl;
             }

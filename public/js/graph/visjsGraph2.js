@@ -3,7 +3,7 @@ var visjsGraph = (function () {
 
     var self = {};
     self.network = null;
-    self.simulationTimeOut = 1000;
+    self.simulationTimeOut = 3000;
     self.data;
     self.legendLabels = [];
     self.context = {};
@@ -85,7 +85,9 @@ var visjsGraph = (function () {
                 var point = params.pointer.DOM;
                 self.context.currentNode = node;
                 var options = {
-                    ctrlKey: (params.event.srcEvent.ctrlKey ? 1 : 0)
+                    ctrlKey: (params.event.srcEvent.ctrlKey ? 1 : 0),
+                    altKey: (params.event.srcEvent.altKey ? 1 : 0),
+                    shiftKey:(params.event.srcEvent.shiftKey ? 1 : 0),
                 }
                 if(_options.onclickFn)
                     _options.onclickFn(node, point,options)

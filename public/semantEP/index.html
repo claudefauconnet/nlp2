@@ -43,6 +43,7 @@
                 modal: true,
             })
             var selectionDivWidth = 450
+            var infosdivHeight = 150
 
             $("#selectionDiv").width(selectionDivWidth)
             $("#selectionDiv").height($(window).height() - 50)
@@ -53,6 +54,8 @@
 
             $("#graphDiv").width($("#displayDiv").width())
 
+            $("#graphDiv").height($(window).height() - infosdivHeight)
+            $("#infosDiv").height(infosdivHeight);
             /// Infos.setInfosDivHeight(10);
 
 
@@ -60,10 +63,12 @@
             $("#accordion").accordion("option", {active: 1});
 
             $("#lefTabs").tabs()
+            $("#rightTabs").tabs()
             $("#accordion").accordion();
 
-          MainController.searchClasses("");
-        //    MainController.drawPropAndClassesGraph();
+            //  MainController.searchClasses("");
+            MainController.searchObjects();
+            //    MainController.drawPropAndClassesGraph();
 
 
         })
@@ -96,8 +101,11 @@
                         <button onclick="MainController.searchData();">Data</button>
                         <button onclick="MainController.searchClasses();">DataType</button>
                         <div id="jstreeClassDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
+                        <div id="queryDiv" style="width:100%;height: 200px;overflow: auto"></div>
+                        <img src="waitAnimated.gif" id="waitImg" style="display: none;width:20px"></span>
                         <button onclick="MainController.execDataQuery()">EXEC</button>
-                        <div id="queryDiv" style="width:100%;height: 400px;overflow: auto"></div>
+                        <button onclick="MainController.clearQuery()">RESET</button>
+
                     </div>
 
 
@@ -110,18 +118,30 @@
 
 
     </div>
-
-
     <div id="displayDiv" style="width:100%;border-style: solid;padding: 3px;margin: 3px">
         <div id="messageDiv"></div>
+        <div id="rightTabs">
+            <ul>
+                <li><a href="#tabs-Graph-Select">Select</a></li>
+                <li><a href="#tabs-Query-Result">Results</a></li>
 
-        <div id="graphDiv" style="width:100%;height: 500px"></div>
-        <div id="infosDiv" style="height:200px;overflow: auto;background-color: #d6d9d8"></div>
+            </ul>
+            <div id="tabs-Graph-Select">
+                <div id="graphDiv" style="width:100%;height: 500px"></div>
+                <div id="infosDiv" style="height:200px;overflow: auto;background-color: #d6d9d8"></div>
+            </div>
+            <div id="tabs-Query-Result">
+                <div id="queryResultDiv" style="width:100%;height: 500px"></div>
+                <div id="queryResultInfosDiv" style="height:200px;overflow: auto;background-color: #d6d9d8"></div>
+            </div>
+        </div>
+
+
     </div>
-<div id="dialogDiv"></div>
+    <div id="dialogDiv"></div>
+    <div id="graphPopupDiv" style="position:absolute;display:none;background-color: #95a4bd;min-width: 200px;min-height: 100px"></div>
 
 </div>
-
 
 </body>
 </html>

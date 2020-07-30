@@ -39,6 +39,8 @@ var common = (function () {
             plugins.push("checkbox")
         if (options.searchPlugin)
             plugins.push("search")
+        if(options.contextMenu)
+            plugins.push("contextmenu")
         if ($('#' + jstreeDiv).jstree)
             $('#' + jstreeDiv).jstree("destroy")
         $('#' + jstreeDiv).jstree({
@@ -58,6 +60,8 @@ var common = (function () {
                 tie_selection:false,
                 three_state:false,
               },
+
+             contextmenu: {items: options.contextMenu}
 
 
         }).on('loaded.jstree', function () {
