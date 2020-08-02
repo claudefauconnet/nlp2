@@ -115,7 +115,7 @@ var visjsGraph = (function () {
                 _options.onHoverNodeFn(node, point,options)
 
         }).on("blurNode", function (params) {
-            $("#graphPopupDiv").css("display", "none")
+           // $("#graphPopupDiv").css("display", "none")
 
         }).on("zoom", function (params) {
             self.onScaleChange()

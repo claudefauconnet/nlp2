@@ -12,6 +12,7 @@
     <script src="js/sparql/sparql_facade.js" charset="utf-8"></script>
     <script src="js/mainController.js" charset="utf-8"></script>
     <script src="js/common.js" charset="utf-8"></script>
+    <script src="js/mediawiki.js" charset="utf-8"></script>
 
     <script type="text/javascript" src="../js/visjs/vis-network.min.js"></script>
     <link href="../js/visjs/vis-network.css" rel="stylesheet" type="text/css"/>
@@ -95,17 +96,23 @@
 
                 <div id="accordion">
 
-                    <h3><span class="title">Concepts </span></h3>
+                    <h3><span class="title">NPD </span></h3>
                     <div style="margin:5px">
                         <input style="width :200px" alt="question" id="questionInput" value="">
                         <button onclick="MainController.searchData();">Data</button>
                         <button onclick="MainController.searchClasses();">DataType</button>
-                        <div id="jstreeClassDiv" style="width:100%;height: 400px;overflow: auto" ;></div>
+                        <div id="jstreeClassDiv" style="width:100%;height: 400px;overflow: auto"></div>
                         <div id="queryDiv" style="width:100%;height: 200px;overflow: auto"></div>
                         <img src="waitAnimated.gif" id="waitImg" style="display: none;width:20px"></span>
                         <button onclick="MainController.execDataQuery()">EXEC</button>
                         <button onclick="MainController.clearQuery()">RESET</button>
 
+                    </div>
+                    <h3><span class="title">MediaWiki </span></h3>
+                    <div style="margin:5px">
+                        <input style="width :200px" alt="question" id="mediaWikiwordInput" value="">
+                        <button onclick="Mediawiki.searchData();">Data</button>
+                        <div id="jstreeMediawikiClassDiv" style="width:100%;height: 400px;overflow: auto"></div>
                     </div>
 
 

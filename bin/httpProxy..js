@@ -19,6 +19,8 @@ var httpProxy = {
         request.end((err, res) => {
             if (err)
                 return callback(err);
+            if(res.text)
+                return  callback(null, res.text);
             callback(null, res.body)
         })
 

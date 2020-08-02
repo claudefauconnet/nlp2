@@ -26,7 +26,7 @@ var MainController = (function () {
         self.nodeColors = {
             Class: "#aba",
             Property: "#bac",
-            "ObjectProperty": "#ff6983",
+            "ObjectProperty": "#584f99",
             "http://www.w3.org/2002/07/owl#DatatypeProperty": "#bac",
             Value: "#0072d5",
             Litteral: "#a6f1ff",
@@ -106,7 +106,7 @@ var MainController = (function () {
         }
 
 
-        self.searchDatatypeProperties = function (object,callback) {
+        self.searchDatatypeProperties = function (object, callback) {
 
             var query = "  PREFIX owl: <http://www.w3.org/2002/07/owl#>PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
                 "SELECT distinct * from <http://sws.ifi.uio.no/vocab/npd-v2/>   WHERE {{?object rdfs:subClassOf ?bNode." +
@@ -159,7 +159,7 @@ var MainController = (function () {
 
 
                 })
-                if(callback){
+                if (callback) {
                     return callback(null, visjsData.nodes)
                 }
                 visjsGraph.data.nodes.add(visjsData.nodes);
@@ -232,14 +232,17 @@ var MainController = (function () {
                 }, 3000)
 
 
-                MainController.searchDatatypeProperties(node,function(err,result){
-                    self.currentObjectProperties={};
+                MainController.searchDatatypeProperties(node, function (err, result) {
+                    self.currentObjectProperties = {};
                     var html = "<div style='display: flex;flex-direction: column'>"
-                    html+="<div>"+node.label+"</div>"
-                    result.forEach(function(item){
-                        self.currentObjectProperties[item.objectId]=item;
-                        html +=  "<div style='border-radius: 3px;color:"+item.color+"'>  <input type='checkbox' class='popupPropertyCBX'  id='popupPropertyCBX_'"+item.data.propId+"'>"+item.data.propLabel+"</div> </td></tr>"
+                    html += "<div>" + node.label + "  <input type='checkbox' onchange='MainController.popupSelectAllproperties($(this))'></div>"
+                    result.forEach(function (item) {
+                        self.currentObjectProperties[item.data.propId] = item.data;
+                        html += "<div style='margin: 2px;padding:1px;border-radius: 2px;background-color:" + item.color + "'> " +
+                            " <input type='checkbox' class='popupPropertyCBX'  id='popupPropertyCBX_" + item.data.propId + "'>" +
+                            item.data.propLabel + "" + "</div>"
                     })
+                    html += "<button onclick='MainController.popupOnPropertiesSelected()'>Select</div>"
                     $("#graphPopupDiv").html(html)
                     $("#graphPopupDiv").css("top", point.y)
                     var left = point.x + $("#lefTabs").width()
@@ -247,8 +250,7 @@ var MainController = (function () {
                     $("#graphPopupDiv").css("display", "block")
                 });
                 return;
-            }
-            else if (node.data.type == "Litteral" || node.data.type == "ObjectProperty") {
+            } else if (node.data.type == "Litteral" || node.data.type == "ObjectProperty") {
 
                 if (options.ctrlKey)
                     return MainController.addGraphPropertyToQuery()
@@ -266,6 +268,40 @@ var MainController = (function () {
                 $("#graphPopupDiv").css("display", "block")
 
             }
+
+        }
+
+
+        self.popupSelectAllproperties = function (cbx) {
+            var checked = $(cbx).prop("checked")
+            $(".popupPropertyCBX").prop("checked", checked)
+
+
+        }
+
+        self.popupOnPropertiesSelected = function () {
+            $(".popupPropertyCBX").each(function (index, prop) {
+                if ($(this).prop("checked")) {
+                    var id = $(this).prop("id").substring(17)
+                    var node = self.currentObjectProperties[id]
+                    self.queryNodes[id] = node;
+                }
+
+            })
+            var html = "<div style='display: flex;flex-direction: column'>"
+
+            for (var key in self.queryNodes) {
+                var idDiv = key.substring(key.lastIndexOf("#") + 1)
+                html += "<div style='margin: 2px;padding:1px;border-radius: 2px;background-color: #ddd  '> " +
+                    " <button onclick=MainController.showPropertyValueDialog('" + key + "','popupFilter_" + idDiv + "')>" +
+                    self.queryNodes[key].propLabel + "" + "</button>"
+                html += "</div> "
+                html += "<div id='popupFilter_" + idDiv + "'></div>"
+            }
+            html += "<button onclick='  $(\"#graphPopupDiv\").css(\"display\", \"none\")'>OK</button>"
+            html += "<button onclick='MainController.execDataQuery()'>EXEC</button>"
+            $("#graphPopupDiv").html(html)
+
 
         }
 
@@ -291,8 +327,15 @@ var MainController = (function () {
         }
 
 
-        self.showPropertyValueDialog = function (node) {
-            $("#graphPopupDiv").css("display", "none")
+        self.showPropertyValueDialog = function (node, div) {
+            if (!div)
+                $("#graphPopupDiv").css("display", "none")
+            else {
+                node=self.currentObjectProperties[node];
+                node = {data: node}
+            }
+
+
             if (!node)
                 node = self.currentGraphNode;
             if (node.data) {
@@ -325,9 +368,13 @@ var MainController = (function () {
 
                 html += "<button onclick=MainController.addGraphPropertyFilterToQuery('" + id + "')>AddPropertyValue</button>"
                 html += "</div>"
+                if (div) {
+                    $("#" + div).html(html)
+                }else {
 
-                $("#dialogDiv").html(html)
-                $("#dialogDiv").dialog("open");
+                    $("#dialogDiv").html(html)
+                    $("#dialogDiv").dialog("open");
+                }
             }
         }
 
@@ -346,7 +393,7 @@ var MainController = (function () {
             }
         }
         self.addGraphPropertyToQuery = function (node) {
-            $("#graphPopupDiv").css("display", "none")
+          //  $("#graphPopupDiv").css("display", "none")
             if (!node)
                 node = self.currentGraphNode;
             self.queryNodes[node.id] = node.data;
@@ -454,7 +501,7 @@ var MainController = (function () {
         }
 
         self.execDataQuery = function () {
-
+            $("#graphPopupDiv").css("display", "none")
             //  var valueNodes = $("#jstreeClassDiv").jstree(true).get_checked(true);
 
             var querySelection = ""
@@ -470,7 +517,6 @@ var MainController = (function () {
                 var predicateLabel = queryNodeData.propId;
 
 
-
                 if (!nodesMap[key]) {
                     nodesMap[key] = subjectLabel
 
@@ -480,26 +526,26 @@ var MainController = (function () {
                         querySelection += "optional  {?" + subjectLabel + "<http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + subjectLabel + "_name.} "
 
                         if (queryNodeData.filter) {
-                            if(queryNodeData.filter.operator=="contains")
-                                querySelection += " filter(regex(?" + valueLabel + "_value,'" +queryNodeData.filter.value+"','i'))";
+                            if (queryNodeData.filter.operator == "contains")
+                                querySelection += " filter(regex(?" + valueLabel + "_value,'" + queryNodeData.filter.value + "','i'))";
                             else
-                            querySelection += " filter(?" + valueLabel + "_value" + queryNodeData.filter.operator + queryNodeData.filter.value + ") ";
+                                querySelection += " filter(?" + valueLabel + "_value" + queryNodeData.filter.operator + queryNodeData.filter.value + ") ";
 
                         }
-                    }  else if (queryNodeData.type == "ObjectProperty") {
-                    var valueLabel = predicateLabel.substring(predicateLabel.lastIndexOf("#") + 1)
-                    querySelection += " ?" + subjectLabel + " <" + predicateLabel + ">  ?" + valueLabel + "_value" +". "
-                    querySelection += "optional  {?" + valueLabel + "_value <http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + valueLabel + "_name.} "
+                    } else if (queryNodeData.type == "ObjectProperty") {
+                        var valueLabel = predicateLabel.substring(predicateLabel.lastIndexOf("#") + 1)
+                        querySelection += " ?" + subjectLabel + " <" + predicateLabel + ">  ?" + valueLabel + "_value" + ". "
+                        querySelection += "optional  {?" + valueLabel + "_value <http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + valueLabel + "_name.} "
 
-                    if (queryNodeData.filter) {
-                        if(queryNodeData.filter.operator=="contains")
-                            querySelection += " filter(regex(?" + valueLabel + "_name,'" +queryNodeData.filter.value+"','i'))";
-                        else
-                            querySelection += " filter(?" + valueLabel + "_name" + queryNodeData.filter.operator + queryNodeData.filter.value + ") ";
+                        if (queryNodeData.filter) {
+                            if (queryNodeData.filter.operator == "contains")
+                                querySelection += " filter(regex(?" + valueLabel + "_name,'" + queryNodeData.filter.value + "','i'))";
+                            else
+                                querySelection += " filter(?" + valueLabel + "_name" + queryNodeData.filter.operator + queryNodeData.filter.value + ") ";
 
-                    }
+                        }
 
-                } else if (queryNodeData.type == "Class") {
+                    } else if (queryNodeData.type == "Class") {
                         var parentObjectId = queryNodeData.parentObjectId;
                         var objectLabel = parentObjectId.substring(parentObjectId.lastIndexOf("#") + 1)
                         querySelection += "optional{ ?" + subjectLabel + " <" + predicateLabel + ">  ?" + objectLabel + " . "
@@ -589,7 +635,7 @@ var MainController = (function () {
 
 
             });
-            $("#rightTabs").tabs("option",'active',1)
+            $("#rightTabs").tabs("option", 'active', 1)
 
 
         }

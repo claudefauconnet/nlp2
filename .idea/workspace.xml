@@ -3,12 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/graph/visjsGraph2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/common.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/semantEP/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/semantEP/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/js/common.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/semantEP/js/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/js/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/semantEP/js/sparql/sparql_facade.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/js/sparql/sparql_facade.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,9 +22,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JS module" />
         <option value="HTML File" />
         <option value="JavaScript File" />
+        <option value="JS module" />
       </list>
     </option>
   </component>
@@ -71,17 +71,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
-    <configuration name="comparator.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="comparator.js" working-dir="$PROJECT_DIR$/public/ontograph/js">
+  <component name="RunManager" selected="Node.js.onTheFlyTagger..js">
+    <configuration name="AAPG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="AAPG..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
       <method v="2" />
     </configuration>
-    <configuration name="kohaImport..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="kohaImport..js" working-dir="$PROJECT_DIR$/bin/others/telanthropia">
+    <configuration name="httpProxy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="httpProxy..js" working-dir="$PROJECT_DIR$/bin">
       <method v="2" />
     </configuration>
-    <configuration name="ontologyCTG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/bin/others/ontologyCTG/ontologyCTG..js" working-dir="$PROJECT_DIR$/bin/others/ontologyCTG">
-      <method v="2" />
-    </configuration>
-    <configuration name="ontologyKoha2..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyKoha2..js" working-dir="$PROJECT_DIR$/bin/others/telanthropia">
+    <configuration name="onTheFlyTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="onTheFlyTagger..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
     <configuration name="ontologyPierre..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyPierre..js" working-dir="$PROJECT_DIR$/bin/others">
@@ -92,11 +89,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.onTheFlyTagger..js" />
+        <item itemvalue="Node.js.AAPG..js" />
+        <item itemvalue="Node.js.httpProxy..js" />
         <item itemvalue="Node.js.ontologyPierre..js" />
         <item itemvalue="Node.js.tulsaToSkos..js" />
-        <item itemvalue="Node.js.comparator.js" />
-        <item itemvalue="Node.js.ontologyKoha2..js" />
-        <item itemvalue="Node.js.kohaImport..js" />
       </list>
     </recent_temporary>
   </component>
@@ -158,7 +155,7 @@
       <workItem from="1593676576457" duration="1494000" />
       <workItem from="1593850732870" duration="22682000" />
       <workItem from="1594883918969" duration="119205000" />
-      <workItem from="1596006544650" duration="41029000" />
+      <workItem from="1596006544650" duration="78897000" />
     </task>
     <servers />
   </component>
@@ -190,6 +187,36 @@
           <url>file://$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_ISO_15926.js</url>
           <line>37</line>
           <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/AAPG..js</url>
+          <line>55</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>172</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="74" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>105</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="93" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>95</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="97" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>106</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="98" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

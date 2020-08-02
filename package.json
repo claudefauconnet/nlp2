@@ -39,7 +39,6 @@
     "request": "^2.88.0",
     "socket.io": "^2.3.0",
     "spacy": "0.0.4",
-    "spacy-nlp": "git+https://github.com/jeffreyflynt/spacy-nlp.git",
     "stemmer": "^1.0.5",
     "streams": "^0.1.0",
     "superagent": "^5.2.2",
