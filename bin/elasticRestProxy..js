@@ -18,7 +18,7 @@ var elasticRestProxy = {
             },
             url: url
         };
-        if (debug)
+        if (false && debug)
             console.log(JSON.stringify(query, null, 2));
         request(options, function (error, response, body) {
             if (error)
