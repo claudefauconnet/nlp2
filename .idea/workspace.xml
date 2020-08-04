@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/elasticRestProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/elasticRestProxy..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/onTheFlyTagger..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/onTheFlyTagger..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -153,7 +150,7 @@
       <workItem from="1593676576457" duration="1494000" />
       <workItem from="1593850732870" duration="22682000" />
       <workItem from="1594883918969" duration="119205000" />
-      <workItem from="1596006544650" duration="110919000" />
+      <workItem from="1596006544650" duration="124269000" />
     </task>
     <servers />
   </component>
@@ -200,15 +197,21 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>332</line>
+          <line>195</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="196" />
+          <option name="timeStamp" value="234" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>379</line>
+          <line>319</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="201" />
+          <option name="timeStamp" value="253" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>563</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="258" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
