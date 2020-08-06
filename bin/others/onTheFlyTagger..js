@@ -170,7 +170,7 @@ var onTheFlyTagger = {
                 return cb(null, length > 0);
             },
             function iter(callbackWhilst) {
-              
+
 
                 //  query=query+" offset "+(""+offset);
                 var params = {query: (query + " offset " + offset)}
@@ -201,8 +201,9 @@ var onTheFlyTagger = {
 
     }
 
-    , getpagesData: function () {
-        var str = "" + fs.readFileSync("D:\\Total\\2020\\Stephanie\\AAPG-Pages.txt");
+    , csvToJson: function (filePath) {
+        var str = "" + fs.readFileSync(filePath);
+        str = str.replace(/[\u{0080}-\u{FFFF}]/gu, "");//charactrese vides
         var lines = str.split("\n");
         var pagesJson = [];
         var cols = [];
@@ -247,7 +248,7 @@ var onTheFlyTagger = {
                         categories = options.categories;
                         return callbackSeries();
                     } else if (options.subjects) {
-                        var pagesData = onTheFlyTagger.getpagesData();
+                        var pagesData = onTheFlyTagger.csvToJson("D:\\Total\\2020\\Stephanie\\AAPG-Pages.txt");
                         pagesData.forEach(function (item) {
                             if (options.subjects.length == 0 || options.subjects.indexOf(item.subject) > -1)
                                 categories.push(item.uri)
@@ -278,7 +279,7 @@ var onTheFlyTagger = {
                         "SELECT distinct * from <http://wiki.aapg.org/data/> WHERE {" +
                         "?page  ?x ?category. filter (?category in (" + filter + ")) ?page rdfs:label ?pageLabel} order by ?category limit 5000"
 
-                   
+
                     var params = {query: (query)}
                     httpProxy.post(onTheFlyTagger.sparqlUrl, null, params, function (err, result) {
                         if (err)
@@ -401,8 +402,8 @@ var onTheFlyTagger = {
     }
     , printCategoriesTriples: function (categoriesStatsFilePath) {
         var json = JSON.parse("" + fs.readFileSync(categoriesStatsFilePath));
-        onTheFlyTagger.maxInsertCategories=5000
-        var graphCategoriesTriplesMap={}
+        onTheFlyTagger.maxInsertCategories = 5000
+        var graphCategoriesTriplesMap = {}
         for (var category in json) {
             for (var graph in json[category]) {
                 if (!graphCategoriesTriplesMap[graph])
@@ -411,28 +412,27 @@ var onTheFlyTagger = {
                 var terms = json[category][graph].terms;
                 var strs = [];
 
-                terms.forEach(function (term,index) {
+                terms.forEach(function (term, index) {
 
                     var category2 = category.replace("Special:URIResolver/Category-3A", "Category:")
 
                     strs.push("<" + term.id + "> <http://souslesens.org/vocab#wikimedia-category> <" + category2 + ">. ")
-                    if(strs.length>=onTheFlyTagger.maxInsertCategories) {
+                    if (strs.length >= onTheFlyTagger.maxInsertCategories) {
                         graphCategoriesTriplesMap[graph].push(strs)
-                        strs=[];
+                        strs = [];
                     }
 
                 })
                 graphCategoriesTriplesMap[graph].push(strs);
             }
         }
-       return graphCategoriesTriplesMap;
+        return graphCategoriesTriplesMap;
     }
-    
-    
 
-    ,insertGraphCategories:function(graphCategoriesTriplesMap,callback) {
+
+    , insertGraphCategories: function (graphCategoriesTriplesMap, callback) {
         var graphs = Object.keys(graphCategoriesTriplesMap);
-        
+
         async.eachSeries(graphs, function (graph, callbackEach) {
             var query = "WITH <" + graphs + ">" +
                 "DELETE { ?a ?property ?b } " +
@@ -448,24 +448,24 @@ var onTheFlyTagger = {
 
                 var queries = graphCategoriesTriplesMap[graph];
                 async.eachSeries(queries, function (queryArray, callbackEach2) {
-                    var query="";
-                    queryArray.forEach(function(item){
-                        query+=item
+                    var query = "";
+                    queryArray.forEach(function (item) {
+                        query += item
                     })
-                query= "INSERT DATA" +
-                    "  { " +
-                    "    GRAPH <" + graph + "> " +
-                    "      { "+query+  "}}"
-                var params = {query: (query)}
+                    query = "INSERT DATA" +
+                        "  { " +
+                        "    GRAPH <" + graph + "> " +
+                        "      { " + query + "}}"
+                    var params = {query: (query)}
 
-                httpProxy.post(onTheFlyTagger.sparqlUrl, null, params, function (err, result) {
-                    if (err) {
-                        console.log(params.query)
-                        return callbackEach2(err);
-                    }
-                    return callbackEach2()
-                })
-            },function(err){
+                    httpProxy.post(onTheFlyTagger.sparqlUrl, null, params, function (err, result) {
+                        if (err) {
+                            console.log(params.query)
+                            return callbackEach2(err);
+                        }
+                        return callbackEach2()
+                    })
+                }, function (err) {
                     return callbackEach();
                 })
             })
@@ -474,6 +474,323 @@ var onTheFlyTagger = {
         }, function (err) {
             return callback(err);
         })
+    }
+    ,
+    getCategoriesSignificantWords: function () {
+
+        var wordsByCategory = {};
+        var wordsStatsMap = {};
+        var allCategoriesLabels = [];
+        var allWordsLabels = [];
+        var wordsTotalFreq = [];
+        var thesauriiMap = {};
+        var catThemes = {};
+        var allThemesLabels = [];
+
+
+        var printCategories = false
+        async.series([
+
+
+                //get unique words and frequency in each category
+                function (callbackSeries) {
+                    var pageWords = JSON.parse("" + fs.readFileSync("D:\\Total\\2020\\Stephanie\\pagesWords.json"));
+                    var pagesCategories = onTheFlyTagger.csvToJson("D:\\Total\\2020\\Stephanie\\pagesCategories.txt");
+
+                    var pagesCatsMap = {}
+                    pagesCategories.forEach(function (item) {
+                        if (item.category) {
+                            var page = item.page.substring(item.page.lastIndexOf('/') + 1)
+                            var category = item.category.substring(item.category.lastIndexOf('/') + 11)//2
+                            pagesCatsMap[page] = category
+                            if (allCategoriesLabels.indexOf(category) < 0)
+                                allCategoriesLabels.push(category);
+
+                        }
+
+                    })
+
+
+                    for (var page in pageWords) {
+                        var page2 = page.substring(page.lastIndexOf('/') + 1)
+                        var category = pagesCatsMap[page2];
+                        if (category) {
+                            if (!wordsByCategory[category])
+                                wordsByCategory[category] = {words: {}}
+                            pageWords[page].forEach(function (word) {
+                                if (!wordsByCategory[category].words[word])
+                                    wordsByCategory[category].words[word] = 0;
+                                wordsByCategory[category].words[word] += 1;
+                            })
+                        }
+
+                    }
+                    callbackSeries();
+                },
+
+                // get number of categories forEachword (uniqueness)
+                function (callbackSeries) {
+                    for (var category in wordsByCategory) {
+                        for (var word in wordsByCategory[category].words) {
+                            if (!wordsStatsMap[word])
+                                wordsStatsMap[word] = {word: word, totalFreq: 0, catFreq: {}}
+                            wordsStatsMap[word].totalFreq += wordsByCategory[category].words[word];
+                            wordsStatsMap[word].catFreq[category] = wordsByCategory[category].words[word];
+
+                        }
+
+                    }
+                    callbackSeries();
+                },
+                // get number of categories forEachword (uniqueness)
+                function (callbackSeries) {
+
+
+                    for (var word in wordsStatsMap) {
+                        if (allWordsLabels.indexOf(word) < 0)
+                            allWordsLabels.push(word)
+                        var obj = wordsStatsMap[word]
+                        obj.nCats = Object.keys(obj.catFreq).length;
+                        wordsTotalFreq.push(obj);
+                    }
+                    wordsTotalFreq.sort(function (a, b) {
+                        if (a.nCats > b.nCats)
+                            return -1;
+                        if (a.nCats < b.nCats)
+                            return 1;
+                        return 0;
+                    })
+                    callbackSeries();
+                },
+
+
+                //map organisation theme
+                function (callbackSeries) {
+
+
+                    function printCharCodes(str) {
+
+                        var codes = ""
+                        for (var i = 0; i < str.length; i++) {
+                            codes += (str.charCodeAt(i) + "_")
+                        }
+                        console.log(codes)
+
+
+                    }
+
+                    var catsOrgJson = onTheFlyTagger.csvToJson("D:\\Total\\2020\\Stephanie\\AAPGcats-org.txt");
+
+                    catsOrgJson.forEach(function (line) {
+                        if (line.category) {
+                            catThemes[line.category] = line;
+                            if (allThemesLabels.indexOf(line.theme) < 0)
+                                allThemesLabels.push(line.theme)
+                            // printCharCodes(line.category)
+                        }
+
+                    })
+
+
+                    wordsTotalFreq.forEach(function (item, wordIndex) {
+                        for (var cat in item.catFreq) {
+
+                            var cat2 = cat.substring(1).replace(/_/g, " ").trim()
+                            /*   if(wordIndex==0)
+                                   printCharCodes(cat2)*/
+                            var theme = catThemes[cat2];
+                            if (theme) {
+                                if (!item.themes)
+                                    item.themes = {}
+                                if (!item.themes[theme.theme])
+                                    item.themes[theme.theme] = 0;
+                                item.themes[theme.theme] += item.catFreq[cat]
+                            }
+
+                        }
+
+                    })
+                    callbackSeries();
+
+                },
+
+
+                //print csv
+                function (callbackSeries) {
+
+                    var thesauriiLabels = Object.keys[thesauriiMap]
+                    var str = "";
+                    /* thesauriiLabels.forEach(function (thesaurus){
+                         str+=thesaurus+"\t";
+                     })*/
+                    str += "word\ttotalFreq\tnCats\t";
+                    if (printCategories) {
+                        allCategoriesLabels.forEach(function (cat) {
+                            str += cat + "\t"
+                        })
+                    }
+
+
+                    allThemesLabels.forEach(function (theme) {
+                        str += theme + "\t"
+                    })
+
+                    str += "\n"
+                    wordsTotalFreq.forEach(function (item, wordIndex) {
+
+                            /*   {//print thesaurus presence
+
+
+                                   thesauriiLabels.forEach(function (thesaurus) {
+                                     if( thesauriiMap[thesaurus].indexOf(wordIndex)>-1)
+                                       str += "X"+ "\t";
+                                     else
+                                         str += "no"+ "\t";
+                                   })
+                               }*/
+
+
+                            str += item.word + "\t" + item.totalFreq + "\t" + item.nCats + "\t";
+
+                            if (printCategories) {//print cat freqs
+                                var catStrs = [];
+                                allCategoriesLabels.forEach(function (cat) {
+                                    catStrs.push(0)
+                                })
+                                for (var cat in item.catFreq) {
+                                    var index = allCategoriesLabels.indexOf(cat);
+                                    catStrs[index] = item.catFreq[cat];
+                                }
+                                catStrs.forEach(function (cat) {
+                                    str += cat + "\t";
+                                })
+                            }
+
+                            {//print cat themes
+                                allThemesLabels.forEach(function (theme) {
+                                    try {
+                                        if ( item.themes ) {
+                                            var themeFreq = item.themes[theme]
+                                            if(themeFreq)
+                                            str += themeFreq + "\t";
+                                            else
+                                                str += "0" + "\t";
+                                        }
+                                    } catch (e) {
+                                        var w=3
+                                    }
+
+                                })
+
+                            }
+
+
+                            str += "\n"
+                        }
+                    )
+                    fs.writeFileSync("D:\\Total\\2020\\Stephanie\\wordsCategoriesMatrix.csv", str);
+                    callbackSeries();
+                },
+
+
+// set word presence in each thesaurus
+                function (callbackSeries) {
+                    var thesaurusGraphUris = ["http://souslesens.org/oil-gas/upstream/", "http://www.eionet.europa.eu/gemet/", "https://www2.usgs.gov/science/USGSThesaurus/"]
+
+                    str += "\n"
+                    async.eachSeries(thesaurusGraphUris, function (graph, callbackEach) {
+                            onTheFlyTagger.getThesaurusConcepts(graph, {}, function (err, thesaurusWords) {
+                                if (err)
+                                    return callbackEach(err);
+
+                                var commonWords = onTheFlyTagger.intersection_destructive(thesaurusWords, JSON.parse(JSON.stringify(allWordsLabels)))
+
+                                thesauriiMap[graph] = [];
+                                commonWords.forEach(function (word) {
+                                    var p = allWordsLabels.indexOf(word);
+                                    if (p > -1)
+                                        thesauriiMap[graph].push(p);
+                                })
+
+
+                                callbackEach();
+                            })
+
+
+                        },
+
+
+                        function (err) {
+                            if (err)
+                                return callbackSeries(err);
+                            var str = ""
+                            var thesauriiLabels = Object.keys(thesauriiMap)
+                            thesauriiLabels.forEach(function (thesaurus) {
+                                str += thesaurus + "\t";
+                            })
+                            str += "\t"
+
+
+                            allWordsLabels.forEach(function (word, wordIndex) {
+                                str += word + "\t";
+                                thesauriiLabels.forEach(function (thesaurus) {
+
+                                    if (thesauriiMap[thesaurus].indexOf(wordIndex) > -1)
+                                        str += "X" + "\t";
+                                    else
+                                        str += "no" + "\t";
+                                })
+                                str += "\n"
+                            })
+                            console.log(str)
+                            callbackSeries();
+                        })
+                }
+
+                ,
+
+            ],
+
+            function (err) {
+                return console.log(err);
+            }
+        )
+
+
+        var xx = wordsByCategory;
+
+    },
+
+    getCommonWords: function (thesaurus, words, callback) {
+
+
+        onTheFlyTagger.getThesaurusConcepts(thesaurus, {}, function (err, thesaurusWords) {
+            if (err)
+                return callback(err);
+
+            var commonWords = onTheFlyTagger.intersection_destructive(thesaurusWords, words)
+            return callback(commonWords);
+        })
+
+
+    }
+    ,
+    setThesaursusConceptsOrganisation: function () {
+
+        var catsOrgJson = onTheFlyTagger.csvToJson("D:\\Total\\2020\\Stephanie\\AAPGcats-org.txt");
+        var wordsMatrix = onTheFlyTagger.csvToJson("D:\\Total\\2020\\Stephanie\\wordsCategoriesMatrix.csv");
+
+        var catsOrgJsonMap = {}
+        catsOrgJson.forEach(function (line) {
+            catsOrgJsonMap[line.category] = line;
+        })
+
+        wordsMatrix.forEach(function (line) {
+            var theme = catsOrgJsonMap[line.word];
+            line.theme = theme;
+        })
+
+
     }
 
 
@@ -543,8 +860,8 @@ if (false) {
     ]
     var options = {
         // subjects: ["structural geology"],
-         subjects: [],
-      //  pages: errorPages1
+        subjects: [],
+        //  pages: errorPages1
 
     }
 
@@ -557,16 +874,22 @@ if (false) {
 
 }
 
+if (false) {
+
+    var graphCategoriesTriplesMap = onTheFlyTagger.printCategoriesTriples("D:\\Total\\2020\\Stephanie\\_categoriesStats.json");
+    onTheFlyTagger.insertGraphCategories(graphCategoriesTriplesMap, function (err, result) {
+        if (err)
+            return console.log(err);
+        console.log("DONE !!!")
+    })
+
+
+}
+
 if (true) {
-
-   var graphCategoriesTriplesMap= onTheFlyTagger.printCategoriesTriples("D:\\Total\\2020\\Stephanie\\_categoriesStats.json");
-   onTheFlyTagger.insertGraphCategories(graphCategoriesTriplesMap,function(err, result){
-       if(err)
-           return console.log(err);
-       console.log("DONE !!!")
-   })
-
-
-
+    onTheFlyTagger.getCategoriesSignificantWords()
+}
+if (false) {
+    onTheFlyTagger.setThesaursusConceptsOrganisation()
 
 }

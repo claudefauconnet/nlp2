@@ -34,24 +34,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/semantEP" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/backoffice" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\bin\backoffice" />
+      <recent name="D:\GitHub\nlp2\public\semantEP" />
+      <recent name="D:\GitHub\nlp2\public\semantEP\js" />
+      <recent name="D:\GitHub\nlp2\public\yasguy" />
+      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\public\ontograph\js" />
       <recent name="D:\GitHub\nlp2\public\js" />
       <recent name="D:\GitHub\nlp2\bin" />
       <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\semantEP" />
-      <recent name="D:\GitHub\nlp2\public\semantEP\js" />
-      <recent name="D:\GitHub\nlp2\public\yasguy" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
-      <recent name="D:\GitHub\nlp2\public\ontograph\js\sparqlProxies" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -66,11 +66,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.onTheFlyTagger..js">
+  <component name="RunManager" selected="Node.js.mediawikiTagger..js">
     <configuration name="AAPG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="AAPG..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
       <method v="2" />
     </configuration>
     <configuration name="httpProxy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="httpProxy..js" working-dir="$PROJECT_DIR$/bin">
+      <method v="2" />
+    </configuration>
+    <configuration name="mediawikiTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="mediawikiTagger..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
       <method v="2" />
     </configuration>
     <configuration name="onTheFlyTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="onTheFlyTagger..js" working-dir="$PROJECT_DIR$/bin/others">
@@ -79,16 +82,13 @@
     <configuration name="ontologyPierre..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyPierre..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
-    <configuration name="tulsaToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="tulsaToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.mediawikiTagger..js" />
         <item itemvalue="Node.js.onTheFlyTagger..js" />
         <item itemvalue="Node.js.AAPG..js" />
         <item itemvalue="Node.js.httpProxy..js" />
         <item itemvalue="Node.js.ontologyPierre..js" />
-        <item itemvalue="Node.js.tulsaToSkos..js" />
       </list>
     </recent_temporary>
   </component>
@@ -151,6 +151,7 @@
       <workItem from="1593850732870" duration="22682000" />
       <workItem from="1594883918969" duration="119205000" />
       <workItem from="1596006544650" duration="124269000" />
+      <workItem from="1596561486565" duration="36325000" />
     </task>
     <servers />
   </component>
@@ -186,32 +187,166 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/AAPG..js</url>
           <line>55</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
           <line>147</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
           <line>195</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="234" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>319</line>
-          <properties lambdaOrdinal="-1" />
+          <line>320</line>
           <option name="timeStamp" value="253" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>563</line>
+          <line>428</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="258" />
+          <option name="timeStamp" value="260" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>412</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="261" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>767</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="304" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>766</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="305" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>793</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="326" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
+          <line>690</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="351" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>420</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="360" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>419</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="361" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>424</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="362" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>423</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="363" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>66</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="368" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>164</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="376" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>212</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="377" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>213</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="378" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>227</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="379" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>236</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="380" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>325</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="384" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
+          <line>50</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="385" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
+          <line>49</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="388" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
+          <line>87</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="389" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
+          <line>89</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="390" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>305</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="392" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>160</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="397" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>129</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="400" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
