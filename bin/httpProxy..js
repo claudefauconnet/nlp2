@@ -48,16 +48,24 @@ var httpProxy = {
         };
 
         request(options, function (error, response, body) {
-            if (error)
+            if (error) {
+                console.log(JSON.stringify(params,null,2))
                 return callback(error);
-         /*   if (body.indexOf("Error") > -1)
-                return callback(body);*/
+            }
+
             try {
-                var obj = JSON.parse(body);
-                callback(null, obj)
+
+             if(body.indexOf("{")<10) {
+                 var obj = JSON.parse(body);
+                 return callback(null, obj)
+             }
+             else{
+                 return callback(null, body)
+             }
             }
             catch(e){
-                callback(e)
+                console.log(body)
+               return callback(e)
             }
 
             return;
