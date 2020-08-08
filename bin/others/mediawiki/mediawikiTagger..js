@@ -40,11 +40,11 @@ var mediaWikiTagger = {
                 //getPageCategories
                 function (callbackSeries) {
                     var regex = /wgCategories":\[([^\].]*)/m
-                    var regex=/wgCategories":([^\]]*)/m
-                  //  var strCats = regex.exec(rawPageText)
+                    var regex = /wgCategories":([^\]]*)/m
+                    //  var strCats = regex.exec(rawPageText)
                     var strCats = regex.exec(rawPageText)[1];
                     var x = strCats
-                    pageCategories = strCats.replace(/[\[\]]/g,"").replace(/"/g, "").split(",")
+                    pageCategories = strCats.replace(/[\[\]]/g, "").replace(/"/g, "").split(",")
                     callbackSeries();
                 },
 
@@ -87,41 +87,41 @@ var mediaWikiTagger = {
 
 
     },
-    tagPages: function (thesaurusGraphUris,elasticUrl, indexName,wikiUri,callback) {
+    tagPages: function (thesaurusGraphUris, elasticUrl, indexName, wikiUri, callback) {
 
-        var x=3
+        var x = 3
 
         async.series([
-            //getThesaurusTerms
-            function (callbackSeries) {
+                //getThesaurusTerms
+                function (callbackSeries) {
 
 
-                //  var conceptsWords=["area","example","central","control","exploration","liner","center","development","effect","energy","interpretation","lateral","archean","block","coefficient","crust","displacement","distance","forward","fundamental","impact","information","intensity","interface","accuracy","acquisition","amplitude","attenuation","borehole","calculating","change","communication","comparison","computer","conference","convolution","correlation","cube","density","error","fracturing","frequency","impedance","interest","landsat","deformation","earth","activity","black","boundary","color","competition","distribution","evolution","float","history","kinematics","academic","africa","amorphous","application","asia","coast","constant","cretaceous","differential","drift","east","environment","extension","facies","faulting","four","friction","geometry","growth","human","ice","level","light","administration","anhydrite","anisotropy","anomaly","antarctica","anticline","array","astronomy","astrophysics","atlas","atmosphere","axial","azimuth","bahrain","basin","belt","bend","cap","carbon","carbonate","carboniferous","chart","circuit","cleavage","coal","collision","column","component","composition","compression","concentration","concrete","conservation","continent","continuous","convection","convergent","crest","crystal","current","cutting","cycle","damage","decrease","dependent","determining","devonian","diagenesis","diagram","dip","dipmeter","direction","dynamics","earthquake","eccentricity","efficiency","eocene","equator","equilibrium","erosion","europe","evaporite","fabric","factor","fluid","force","foreland","forming","geochemistry","geophysics","glossary","gondwanaland","graptolite","hazard","heat","heating","hook","horizontal","increase","india","input","insolation","integration","iron","island","japan","jurassic","laurasia","layer","lead","liquid","lithology","abandonment","absorption","acceleration","accretion","acoustics","actinolite","activation","air","alignment","alteration","analog","anatase","anchor","anchoring","apatite","applying","appraisal","approximation","aquifer","association","australia","averaging","bali","barite","barrier","battery","beach","bearing","bedding","bibliography","bid","biodegradation","biostratigraphy","bitumen","brazil","breakthrough","brine","brittleness","bubble","budget","buildings","buoy","buoyancy","buried","cable","calcium","calibration","california","caliper","canyon","capacity","carrier","cause","cement","cenozoic","chain","chalcedony","chalk","channel","characteristic","characterization","chemical","chemistry","chert","chlorine","chlorite","circumference","classification","clay","claystone","clinoform","collar","colombia","colorado","company","compound","compressibility","computing","condensate","conglomerate","connection","construction","contouring","contractor","conversion","copper","coring","correction","cost","cristobalite","croatia","crossover","database","decentralization","decollement","deconvolution","deepening","deflection","delta","demand","depletion","deposit","desert","design","detection","detector","device","dewatering","diameter","diatomite","digital","dipole","discriminator","document","domain","dome","downward","drawdown","drop","ductility","dynamite","education","egypt","electrode","electronics","elevation","elongation","embayment","engineer","engineering","entropy","equalizing","equation","equipment","evaluation","examination","explosion","explosive","exsolution","extrapolation","failure","fan","fiber","filling","film","filter","filtrate","fire","focusing","foraminifera","france","generator","geologist","geophone","glass","goethite","government","graben","gradient","granite","graph","gravity","greenland","guinea","gun","gypsum","handling","head","helicopter","hematite","heterogeneity","hinge","histogram","hydrogen","hydrology","hydrophone","identification","illite","imaging","inclination","indicator","industry","injection","inorganic","instrument","instrumentation","inter","interference","interpolation","ireland","isolation","isostasy","isotope","keyboard","laboratory","lake","laser","latitude","length","leon","lidar","lignite","limestone","limonite","linear","abundance","alaska","ambient","avulsion","bentonite","biogeography","bioturbation","borneo","boundstone","breccia","brunei","canada","capsule","cathodoluminescence","cave","cavern","cementing","chenier","china","climate","contamination","cooling","crystallization","decision","diffusion","dolomitization","drainage","dune","electron","flood","gold","grainstone","gravel","halite","indonesia","inlet","intercrystalline","ion","italy","karst","lagoon","lime"]
-                // thesauriiConcepts["test"]={conceptsWords:conceptsWords};
+                    //  var conceptsWords=["area","example","central","control","exploration","liner","center","development","effect","energy","interpretation","lateral","archean","block","coefficient","crust","displacement","distance","forward","fundamental","impact","information","intensity","interface","accuracy","acquisition","amplitude","attenuation","borehole","calculating","change","communication","comparison","computer","conference","convolution","correlation","cube","density","error","fracturing","frequency","impedance","interest","landsat","deformation","earth","activity","black","boundary","color","competition","distribution","evolution","float","history","kinematics","academic","africa","amorphous","application","asia","coast","constant","cretaceous","differential","drift","east","environment","extension","facies","faulting","four","friction","geometry","growth","human","ice","level","light","administration","anhydrite","anisotropy","anomaly","antarctica","anticline","array","astronomy","astrophysics","atlas","atmosphere","axial","azimuth","bahrain","basin","belt","bend","cap","carbon","carbonate","carboniferous","chart","circuit","cleavage","coal","collision","column","component","composition","compression","concentration","concrete","conservation","continent","continuous","convection","convergent","crest","crystal","current","cutting","cycle","damage","decrease","dependent","determining","devonian","diagenesis","diagram","dip","dipmeter","direction","dynamics","earthquake","eccentricity","efficiency","eocene","equator","equilibrium","erosion","europe","evaporite","fabric","factor","fluid","force","foreland","forming","geochemistry","geophysics","glossary","gondwanaland","graptolite","hazard","heat","heating","hook","horizontal","increase","india","input","insolation","integration","iron","island","japan","jurassic","laurasia","layer","lead","liquid","lithology","abandonment","absorption","acceleration","accretion","acoustics","actinolite","activation","air","alignment","alteration","analog","anatase","anchor","anchoring","apatite","applying","appraisal","approximation","aquifer","association","australia","averaging","bali","barite","barrier","battery","beach","bearing","bedding","bibliography","bid","biodegradation","biostratigraphy","bitumen","brazil","breakthrough","brine","brittleness","bubble","budget","buildings","buoy","buoyancy","buried","cable","calcium","calibration","california","caliper","canyon","capacity","carrier","cause","cement","cenozoic","chain","chalcedony","chalk","channel","characteristic","characterization","chemical","chemistry","chert","chlorine","chlorite","circumference","classification","clay","claystone","clinoform","collar","colombia","colorado","company","compound","compressibility","computing","condensate","conglomerate","connection","construction","contouring","contractor","conversion","copper","coring","correction","cost","cristobalite","croatia","crossover","database","decentralization","decollement","deconvolution","deepening","deflection","delta","demand","depletion","deposit","desert","design","detection","detector","device","dewatering","diameter","diatomite","digital","dipole","discriminator","document","domain","dome","downward","drawdown","drop","ductility","dynamite","education","egypt","electrode","electronics","elevation","elongation","embayment","engineer","engineering","entropy","equalizing","equation","equipment","evaluation","examination","explosion","explosive","exsolution","extrapolation","failure","fan","fiber","filling","film","filter","filtrate","fire","focusing","foraminifera","france","generator","geologist","geophone","glass","goethite","government","graben","gradient","granite","graph","gravity","greenland","guinea","gun","gypsum","handling","head","helicopter","hematite","heterogeneity","hinge","histogram","hydrogen","hydrology","hydrophone","identification","illite","imaging","inclination","indicator","industry","injection","inorganic","instrument","instrumentation","inter","interference","interpolation","ireland","isolation","isostasy","isotope","keyboard","laboratory","lake","laser","latitude","length","leon","lidar","lignite","limestone","limonite","linear","abundance","alaska","ambient","avulsion","bentonite","biogeography","bioturbation","borneo","boundstone","breccia","brunei","canada","capsule","cathodoluminescence","cave","cavern","cementing","chenier","china","climate","contamination","cooling","crystallization","decision","diffusion","dolomitization","drainage","dune","electron","flood","gold","grainstone","gravel","halite","indonesia","inlet","intercrystalline","ion","italy","karst","lagoon","lime"]
+                    // thesauriiConcepts["test"]={conceptsWords:conceptsWords};
 
-                async.eachSeries(thesaurusGraphUris, function (graphUri, callbackEach) {
-                    if (thesauriiConcepts[graphUri]) {
-                        return callbackEach();
-                    } else {
-                        mediaWikiTagger.getThesaurusConcepts(graphUri, {withIds: true}, function (err, thesaurusConcepts) {
-                            if (err) {
-                                return callbackEach(err)
-                            }
-                            thesauriiConcepts[graphUri] = {concepts: thesaurusConcepts};
-                            callbackEach()
-
-
-                        })
-
-                    }
-                }, function (err) {
-                    callbackSeries(err);
+                    async.eachSeries(thesaurusGraphUris, function (graphUri, callbackEach) {
+                        if (thesauriiConcepts[graphUri]) {
+                            return callbackEach();
+                        } else {
+                            mediaWikiTagger.getThesaurusConcepts(graphUri, {withIds: true}, function (err, thesaurusConcepts) {
+                                if (err) {
+                                    return callbackEach(err)
+                                }
+                                thesauriiConcepts[graphUri] = {concepts: thesaurusConcepts};
+                                callbackEach()
 
 
-                })
+                            })
+
+                        }
+                    }, function (err) {
+                        callbackSeries(err);
 
 
-            },
+                    })
+
+
+                },
 
 
                 //extract TheasurusPageWords in    categoriesRdfTriples and store them
@@ -158,7 +158,7 @@ var mediaWikiTagger = {
                                 ,
                                 "from": 0,
                                 "size": 10000,
-                                "_source": ["uri","categories"],
+                                "_source": ["uri", "categories"],
                                 /*  "highlight": {
                                       "number_of_fragments": 0,
                                       "fragment_size": 0,
@@ -204,9 +204,11 @@ var mediaWikiTagger = {
 
                                     var page = response.hits.hits[0]._id
                                     var concept = thesauriiConcepts[graphUri].concepts[responseIndex];
-                                    var categories= response.hits.hits[0]._source.categories
-                                   categories.forEach(function (category) {
-                                       var categoryUri=category.replace(/[\r\n ]/g, "_")
+                                    var categories = response.hits.hits[0]._source.categories
+                                    categories.forEach(function (category) {
+                                        if (category == "")
+                                            return;
+                                        var categoryUri = category.replace(/[\r\n ]/g, "_")
                                         triples.push("<" + concept.id + "> <http://souslesens.org/vocab#wikimedia-category> <" + wikiUri + "Category:" + categoryUri + "> . ");
                                     })
                                     //  triples.push("<" + concept.id + "> <http://souslesens.org/vocab#wikimedia-page> <" + page + "> . ");
@@ -238,10 +240,10 @@ var mediaWikiTagger = {
 
 
                 , function (callbackSeries) {
-                callbackSeries();
+                    callbackSeries();
 
 
-            }
+                }
 
 
             ],
@@ -316,8 +318,8 @@ var mediaWikiTagger = {
 
         var query = "INSERT DATA" +
             "  { " +
-            "    GRAPH <" + graphUri + "> "+
-        "      { " + triplesStr + "}}"
+            "    GRAPH <" + graphUri + "> " +
+            "      { " + triplesStr + "}}"
         var params = {query: (query)}
 
         httpProxy.post(mediaWikiTagger.sparqlUrl, null, params, function (err, result) {
@@ -420,8 +422,8 @@ var mediaWikiTagger = {
     }
     ,
     deleteTriples: function (graph) {
-        var query = "DELETE WHERE  {\n" +
-            "  GRAPH <http://souslesens.org/oil-gas/upstream/>\n" +
+        var query = "DELETE WHERE  {" +
+            "  GRAPH <http://souslesens.org/oil-gas/upstream/>" +
             "  { ?concept <http://souslesens.org/vocab#wikimedia-category> ?category} }"
 
 
@@ -429,7 +431,7 @@ var mediaWikiTagger = {
     ,
 
 
-    indexPages: function (elasticUri,indexName, filePath, from, to, callack) {
+    indexPages: function (elasticUri, indexName, filePath, from, to, callack) {
         var json = JSON.parse("" + fs.readFileSync(filePath));
         var index = -1;
         var t1 = new Date();
@@ -441,7 +443,7 @@ var mediaWikiTagger = {
                 return callack();
             var t3 = new Date();
             // processPage: function (wikiUri, pageName, elasticUrl, indexName, thesaurusGraphUris, callback) {
-            mediaWikiTagger.indexPage(json.wikiUri,escape( page.replace(/ /g, "_")), elasticUri, indexName, function (err, result) {
+            mediaWikiTagger.indexPage(json.wikiUri, escape(page.replace(/ /g, "_")), elasticUri, indexName, function (err, result) {
                 if (err) {
                     console.log(err)
                     return callbackEach()
@@ -461,7 +463,101 @@ var mediaWikiTagger = {
 
 
     },
+    generateCatWordsMatrix: function (categoryWord, thesaurusWord, callback) {
 
+        var limit = 1000;
+        var offset = 0;
+        var length = 1;
+        var catWordsMap = {};
+        var Allconcepts = [];
+
+
+        var filter = ""
+        var catFilter = ""
+        var thesaurusFilter = ""
+        if (categoryWord)
+            catFilter = " regex(str(?category),\"" + categoryWord + "\",\"i\")"
+
+        if(thesaurusWord )
+            thesaurusFilter = " regex(str(?a),\"" + thesaurusWord + "\",\"i\")"
+
+        if(thesaurusWord && categoryWord)
+            filter="filter ("+catFilter+" && "+thesaurusFilter+")"
+        else if(categoryWord)
+            filter="filter ("+catFilter+")"
+        else if(thesaurusWord)
+            filter="filter ("+thesaurusFilter+")"
+
+        var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
+            "select ?concept ?category   where { GRAPH ?g {" +
+            "    ?a <http://souslesens.org/vocab#wikimedia-category> ?category. "+filter + " ?a skos:prefLabel ?concept filter(lang(?concept)='en')" +
+            "?a skos:broader ?broader. ?broader skos:prefLabel ?broaderLabel. filter(lang(?broaderLabel)='en')" +
+            " " +
+            "" +
+            "}} order by ?concept limit " + limit;
+
+        async.whilst(
+            function (callbackTest) {//test
+                return callbackTest(null, (length > 0 && offset<10000));
+            },
+            function iter(callbackWhilst) {
+                var params = {query: (query + " offset " + offset)}
+                offset += limit;
+
+                httpProxy.post(mediaWikiTagger.sparqlUrl, null, params, function (err, result) {
+                    if (err) {
+                        console.log(params.query)
+                        return callback(err);
+                    }
+                    length = result.results.bindings.length
+                    result.results.bindings.forEach(function (item) {
+                        var concept = item.concept.value.toLowerCase();
+                        var category = item.category.value.toLowerCase();
+                        category = category.substring(category.lastIndexOf("/") + 1)
+                        if (Allconcepts.indexOf(concept) < 0)
+                            Allconcepts.push(concept)
+                        if (!catWordsMap[category])
+                            catWordsMap[category] = {concepts: [], occurences: []};
+                        catWordsMap[category].concepts.push(concept);
+
+                    })
+
+
+                    callbackWhilst()
+                })
+
+            },
+            function (err, n) {
+                if (err)
+                    return callback(err);
+
+                Allconcepts.forEach(function (concept) {
+                    for (var category in catWordsMap) {
+                        if (catWordsMap[category].concepts.indexOf(concept) > -1) {
+                            catWordsMap[category].occurences.push(1)
+                        } else
+                            catWordsMap[category].occurences.push(0)
+                    }
+
+
+                })
+
+                var str = ""
+                for (var category in catWordsMap) {
+                    str += category + "\t";
+                    catWordsMap[category].occurences.forEach(function (occurence, index) {
+                        if (index > 0)
+                            str += ","
+                        str += occurence
+                    })
+                    str += "\n"
+                }
+                fs.writeFileSync("D:\\Total\\2020\\Stephanie\\catWordsMatrix.csv", str)
+
+            })
+
+
+    }
 
 
 }
@@ -478,15 +574,36 @@ var thesaurusGraphUris = ["http://souslesens.org/oil-gas/upstream/", "http://www
 
 //var thesaurusGraphUris = ["http://souslesens.org/oil-gas/upstream/", "http://www.eionet.europa.eu/gemet/"]
 
-var indexName="mediawiki-pages-seg"
+
 if (false) {
     var filePath = "D:\\Total\\2020\\Stephanie\\pagesAAPG.json"
     var filePath = "D:\\Total\\2020\\Stephanie\\pagesPETROWIKI.json"
     var filePath = "D:\\Total\\2020\\Stephanie\\pagesSEG.json"
+    var indexName = "mediawiki-pages-seg"
     var from = 0;
     var to = 5000
 //mediaWikiTagger.processPage("https://wiki.aapg.org/", "Kerogen", elasticUri, "mediawiki", thesaurusGraphUris, function (err, result) {
-    mediaWikiTagger.indexPages(elasticUri,indexName, filePath, from, to, function (err, result) {
+    mediaWikiTagger.indexPages(elasticUri, indexName, filePath, from, to, function (err, result) {
+        if (err)
+            console.log(err);
+        console.log("Done " + filePath + "from " + from + " to " + to);
+
+    })
+}
+
+if (false) {
+
+
+    var wikiUrl = "https://wiki.seg.org/wiki/"
+    var indexName = "mediawiki-pages-seg"
+
+    var wikiUrl = "https://petrowiki.spe.org/"
+    var indexName = "mediawiki-pages-spe"
+
+    var wikiUrl = "https://wiki.aapg.org/"
+    var indexName = "mediawiki-pages"
+
+    mediaWikiTagger.tagPages(thesaurusGraphUris, elasticUri, indexName, wikiUrl, function (err, result) {
         if (err)
             console.log(err);
         console.log("Done " + filePath + "from " + from + " to " + to);
@@ -495,15 +612,15 @@ if (false) {
 }
 
 if (true) {
-var  wikiUrl="https://wiki.aapg.org/"
-    var wikiUrl="https://petrowiki.spe.org/"
-    var wikiUrl="https://wiki.seg.org/wiki/"
 
-        mediaWikiTagger.tagPages(thesaurusGraphUris, elasticUri,indexName, wikiUrl,function (err, result) {
+    //mediaWikiTagger.generateCatWordsMatrix("aapg", "gemet", function (err, result) {
+        mediaWikiTagger.generateCatWordsMatrix("aapg", null, function (err, result) {
         if (err)
             console.log(err);
-        console.log("Done " + filePath + "from " + from + " to " + to);
+        console.log("Done ");
 
     })
+
+
 }
 //mediaWikiTagger.createMediawikiIndex(elasticUri,"mediawiki");

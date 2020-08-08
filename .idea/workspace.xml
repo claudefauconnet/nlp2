@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,8 +18,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
-        <option value="JavaScript File" />
         <option value="JS module" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -35,17 +34,17 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/backoffice" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/others/mediawiki" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\bin\others\mediawiki" />
       <recent name="D:\GitHub\nlp2\bin\backoffice" />
       <recent name="D:\GitHub\nlp2\public\semantEP" />
       <recent name="D:\GitHub\nlp2\public\semantEP\js" />
       <recent name="D:\GitHub\nlp2\public\yasguy" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\public\ontograph\js" />
@@ -67,11 +66,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.mediawikiTagger..js">
+  <component name="RunManager" selected="Node.js.mediawikiStats..js">
     <configuration name="AAPG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="AAPG..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
       <method v="2" />
     </configuration>
     <configuration name="httpProxy..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="httpProxy..js" working-dir="$PROJECT_DIR$/bin">
+      <method v="2" />
+    </configuration>
+    <configuration name="mediawikiStats..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="mediawikiStats..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
       <method v="2" />
     </configuration>
     <configuration name="mediawikiTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="mediawikiTagger..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
@@ -80,16 +82,13 @@
     <configuration name="onTheFlyTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="onTheFlyTagger..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
-    <configuration name="ontologyPierre..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="ontologyPierre..js" working-dir="$PROJECT_DIR$/bin/others">
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.mediawikiStats..js" />
         <item itemvalue="Node.js.mediawikiTagger..js" />
         <item itemvalue="Node.js.onTheFlyTagger..js" />
         <item itemvalue="Node.js.AAPG..js" />
         <item itemvalue="Node.js.httpProxy..js" />
-        <item itemvalue="Node.js.ontologyPierre..js" />
       </list>
     </recent_temporary>
   </component>
@@ -152,7 +151,7 @@
       <workItem from="1593850732870" duration="22682000" />
       <workItem from="1594883918969" duration="119205000" />
       <workItem from="1596006544650" duration="124269000" />
-      <workItem from="1596561486565" duration="65888000" />
+      <workItem from="1596561486565" duration="77326000" />
     </task>
     <servers />
   </component>
@@ -243,33 +242,45 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>409</line>
+          <line>411</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="360" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>413</line>
+          <line>415</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="362" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>412</line>
+          <line>414</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="363" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>401</line>
+          <line>403</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="461" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>208</line>
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiStats..js</url>
+          <line>88</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="485" />
+          <option name="timeStamp" value="504" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiStats..js</url>
+          <line>56</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="505" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiStats..js</url>
+          <line>32</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="514" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
