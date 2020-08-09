@@ -66,7 +66,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.mediawikiStats..js">
+  <component name="RunManager" selected="Node.js.mediawikiTagger..js">
     <configuration name="AAPG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="AAPG..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
       <method v="2" />
     </configuration>
@@ -84,8 +84,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.mediawikiStats..js" />
         <item itemvalue="Node.js.mediawikiTagger..js" />
+        <item itemvalue="Node.js.mediawikiStats..js" />
         <item itemvalue="Node.js.onTheFlyTagger..js" />
         <item itemvalue="Node.js.AAPG..js" />
         <item itemvalue="Node.js.httpProxy..js" />
@@ -151,7 +151,7 @@
       <workItem from="1593850732870" duration="22682000" />
       <workItem from="1594883918969" duration="119205000" />
       <workItem from="1596006544650" duration="124269000" />
-      <workItem from="1596561486565" duration="77326000" />
+      <workItem from="1596561486565" duration="85412000" />
     </task>
     <servers />
   </component>
@@ -242,25 +242,25 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>411</line>
+          <line>413</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="360" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>415</line>
+          <line>417</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="362" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>414</line>
+          <line>416</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="363" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>403</line>
+          <line>405</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="461" />
         </line-breakpoint>

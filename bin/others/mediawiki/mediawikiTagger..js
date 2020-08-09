@@ -312,6 +312,8 @@ var mediaWikiTagger = {
 
         var triplesStr = "";
         triples.forEach(function (triple) {
+            if(triple.indexOf("https://wiki.aapg.org/")>-1)
+                var x=3
             triplesStr += triple
         })
 
@@ -591,14 +593,25 @@ if (false) {
     })
 }
 
-if (false) {
+if (true) {
 
 
-    var wikiUrl = "https://wiki.seg.org/wiki/"
-    var indexName = "mediawiki-pages-seg"
+
+
+
+
+
+
+
+
+
+
 
     var wikiUrl = "https://petrowiki.spe.org/"
     var indexName = "mediawiki-pages-spe"
+
+    var wikiUrl = "https://wiki.seg.org/wiki/"
+    var indexName = "mediawiki-pages-seg"
 
     var wikiUrl = "https://wiki.aapg.org/"
     var indexName = "mediawiki-pages"
@@ -611,7 +624,7 @@ if (false) {
     })
 }
 
-if (true) {
+if (false) {
 
     //mediaWikiTagger.generateCatWordsMatrix("aapg", "gemet", function (err, result) {
         mediaWikiTagger.generateCatWordsMatrix("aapg", null, function (err, result) {
