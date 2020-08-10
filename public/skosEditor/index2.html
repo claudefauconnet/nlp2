@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Souslesens simple SKOS editor</title>
+
+
+    <link rel="stylesheet" href="css/editor.css">
+
+    <!-- Foundation CSS framework (Bootstrap and jQueryUI also supported) -->
+    <!--link rel='stylesheet' href='//cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css'-->
+    <!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
+    <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Multiselect - Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.2/multiple-select.min.css">
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+
+    <!-- Multiselect - Latest compiled and minified JavaScript -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.2/multiple-select.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+    <!--  <link rel="stylesheet" href="../js/backoffice/jstree/proton/style.css"/>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>-->
+    <script src="js/jstreeCF.js"></script>
+    <!--script src="js/json-editor.js"></script-->
+    <script src="js/simpleSkosEditor.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/theaususList.js"></script>
+    <script src="../js/others/async.js" charset="utf-8"></script>
+    <script src="js/authentification.js"></script>
+
+    <script src="js/rdfTripleSkosProxy.js"></script>
+
+
+
+
+
+    <script>
+        // Set the default CSS theme and icon library globally
+        /*   JSONEditor.defaults.theme = 'foundation5';
+           JSONEditor.defaults.iconlib = 'fontawesome4';*/
+    </script>
+
+    <style>
+        body {
+            font-size: 16px;
+        }
+
+        .panel {
+            margin-bottom: 1rem;
+            padding: .2rem;
+        }
+
+        .WWconcept_details {
+            margin: 3px;
+            padding: 3px;
+        }
+
+        .WWconcept_lang {
+            width: 10px;
+        }
+
+        .WWconcept_value {
+            width: 50px;
+        }
+
+        .WWconcept_row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+
+        .jstree {
+            height: 800px;
+            width: 400px;
+            overflow: auto;
+
+        }
+        #drop_zone {
+            border: 1px solid blue;
+            width:  150px;
+            height: 100px;
+        }
+
+    </style>
+    <script>
+        function dragOverHandler(ev) {
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+        }
+        function dropHandler(ev) {
+            console.log('File(s) dropped');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+
+            if (ev.dataTransfer.items) {
+                var xx=  ev.dataTransfer.files[0].path;
+                // Use DataTransferItemList interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+
+                    // If dropped items aren't files, reject them
+                    if (ev.dataTransfer.items[i].kind === 'file') {
+                        var file = ev.dataTransfer.items[i].getAsFile();
+                        console.log('... file[' + i + '].name = ' + file.name);
+
+                        $("#skosInput1").val( $("#dropFileDirPath1").val()+file.name)
+
+                    }
+                }
+            }
+        }
+        $(function () {
+
+
+
+            config={loginMode:"none",appName:"CTG"};
+            authentication.init()
+            skosEditor.initThesaurusSelects()
+            // var to = false;
+            $('#treeSearchInput1').keyup(function (e) {
+                if (e.keyCode == 13) {
+                    $('#treeDiv1').jstree(true).clear_search();
+                  /*  $('#treeDiv1').jstree(true).refresh();
+                    $('#treeDiv1').jstree(true).open_node("#");*/
+
+                    var v = $('#treeSearchInput1').val();
+                   if (v == ""){
+
+                    //   var data= $('#treeDiv1').jstree(true).settings.core.data;
+                   }
+
+                    else
+                        $('#treeDiv1').jstree(true).search(v);
+                }
+
+            });
+        });
+    </script>
+</head>
+<body>
+<div class='row'>
+
+</div>
+<div style="display: flex;flex-direction: row;justify-content:left">
+    <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+        <input id="dropFileDirPath1" value="D:\NLP\" size="12">
+        <p>Drag File here ...</p>
+
+    </div>
+    <div style='min-width:50px'>
+
+    </div>
+    <div style='max-width: 400px;'>
+        thesaurus (rdf)<br>
+
+     <!--   <select id="thesaurusSelect1" onclick="$('#skosInput1').val($(this).val())"></select>
+        <input id="skosInput1" value="" size="40"><br>-->
+        <input type="button" onclick="rdfTripleSkosProxy.loadThesaurus()" value="New">
+      <!--  <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
+        <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1"><option>first</option><option>last</option>
+
+        <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
+        concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput1">
+       </select><button onclick="skosEditor.openAllTree(1)">Expand</button>-->
+
+        <div id="treeDiv1"></div>
+    </div>
+
+
+    <div style=' max-width: 800px; width: 750px;'>
+        <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"> <span id="messageDiv"></span></div>
+        <div class='medium-12-columns'>
+            <span id='valid_indicator' class='label'></span>
+        </div>
+        <div id='editorDivId' class='medium-12 columns'></div>
+    </div>
+</div>
+<div id="loginDiv"
+     style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
+    <div> login<input id="loginInput">
+        password<input type="password" id="passwordInput" onkeydown="if (event.keyCode == 13)
+                        document.getElementById('loginButton').click()">
+        <button id="loginButton" onclick="authentication.doLogin()">OK</button>
+        <!--   <button id="xxx" onclick="Tablette.updateCotesParTabletteZeros()">TEST boites</button>-->
+
+        <div id="loginMessage"></div>
+    </div>
+</div>
+
+
+</body>
+</html>

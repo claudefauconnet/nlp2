@@ -5,6 +5,7 @@ skosEditor = (function () {
     var elasticUrl = "../elastic";
     var thesaurusNodeId = "_thesaurusNodeId"
     self.editor = null;
+    self.options = {}
 
 
     self.initThesaurusSelects = function () {
@@ -18,8 +19,9 @@ skosEditor = (function () {
 
     }
 
-    self.drawJsTree = function (treeDiv, jsTreeData) {
-
+    self.drawJsTree = function (treeDiv, jsTreeData, options) {
+        if (options)
+            self.options =options
 
         function customMenu(node) {
             skosEditor.editSkosMenuNode = node;
@@ -95,6 +97,9 @@ skosEditor = (function () {
 
         }).on("select_node.jstree",
             function (evt, obj) {
+
+                if (self.options.onClikNodeFn)
+                    return self.options.onClikNodeFn(evt, obj);
                 if (skosEditor.onJstreeNodeClick) {
                     skosEditor.onJstreeNodeClick(evt, obj);
                     return;
@@ -256,7 +261,7 @@ skosEditor = (function () {
 
                 data.forEach(function (item, index) {
                     item.icon = "concept-icon.png";
-                    item.data.treeDivId = "treeDiv"+thesaurusIndex;
+                    item.data.treeDivId = "treeDiv" + thesaurusIndex;
 
                 })
 
@@ -793,7 +798,7 @@ skosEditor = (function () {
         str += "\n";
 
         var descendants = topNode.children_d;
-        var treeDivId=topNode.data.treeDivId;
+        var treeDivId = topNode.data.treeDivId;
         var map = {}
 
         /*    self.context.data.forEach(function (node){
@@ -803,11 +808,10 @@ skosEditor = (function () {
             })*/
 
 
-
         var recurseChildren = function (nodeId, lineStr, level) {
 
             // var node = map[nodeId]
-            var node = $("#"+treeDivId).jstree(true).get_node(nodeId);
+            var node = $("#" + treeDivId).jstree(true).get_node(nodeId);
             var children = node.children;
             lineStr += node.text + "\t";
             if (level > depth || !children || children.length == 0) {
