@@ -55,6 +55,9 @@
 
 
 
+    <script type="text/javascript" src="visjs/vis-network.min.js"></script>
+    <link href="visjs/vis-network.css" rel="stylesheet" type="text/css"/>
+    <script src="../js/graph/visjsGraph2.js"></script>
 
 
     <script>
@@ -166,14 +169,7 @@
 
 </div>
 <div style="display: flex;flex-direction: row;justify-content:left">
-    <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
-        <input id="dropFileDirPath1" value="D:\NLP\" size="12">
-        <p>Drag File here ...</p>
 
-    </div>
-    <div style='min-width:50px'>
-
-    </div>
     <div style='max-width: 400px;'>
         thesaurus (rdf)<br>
 
@@ -196,7 +192,14 @@
         <div class='medium-12-columns'>
             <span id='valid_indicator' class='label'></span>
         </div>
-        <div id='editorDivId' class='medium-12 columns'></div>
+        <div id='editorDivId'>
+
+            <div id="graphDiv" style="width: 1000px;height: 1000px"></div>
+            <div id="graphPopupDiv" style="position: absolute;display: none">
+                <table>
+                    <tr><td><span onclick="rdfTripleSkosProxy.graphActions.showConceptChildren()">show children Nodes</span> </td></tr>
+                </table>
+            </div>
     </div>
 </div>
 <div id="loginDiv"
