@@ -308,13 +308,13 @@ var similarNodes={}
             return
       self.hightlightPath(node);
 
-self.graphActions. showPopup()
+self.graphActions. showPopup(point)
 
     }
 
     self.graphActions = {
         showPopup: function (point) {
-            $("#graphPopupDiv").css("left", point.x)
+            $("#graphPopupDiv").css("left", point.x+400)
             $("#graphPopupDiv").css("top", point.y)
             $("#graphPopupDiv").css("display", "flex")
         },
@@ -336,7 +336,7 @@ var query="prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
     "" +
     "  ?childConcept skos:broader|^skos:narrower ?concept." +
     "?concept skos:prefLabel ?conceptLabel filter(lang(?conceptLabel)='en')" +
-    "  filter(?concept=<"+node+">)" +
+    "  filter(?concept=<"+node.id+">)" +
     "?childConcept skos:prefLabel ?childConceptLabel filter(lang(?childConceptLabel)='en')" +
 
     "} limit 1000"
@@ -346,10 +346,10 @@ var query="prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
                 return console.log(err);
             }
 
-            var allnodes =visjsGraph.data.nodes.getIds()
-            var allEdges =visjsGraph.data.edges.getIds()
+            var allnodes = visjsGraph.data.nodes.getIds()
+            var allEdges = visjsGraph.data.edges.getIds()
             var visjsData = {nodes: [], edges: []}
-            var similarNodes={}
+            var similarNodes = {}
 
 
             //   visjsData.nodes.push({id: nodeId, label: nodeId, shape: "box"})
@@ -359,11 +359,19 @@ var query="prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
                 var conceptId = item.concept.value;
                 var conceptLabel = item.conceptLabel.value;
                 var childConceptLabel = item.childConceptLabel.value;
-                var childConcept = item.childConcept.value;
+                var childConceptId = item.childConcept.value;
+                if(allnodes.indexOf(childConceptId)<0){
+                    allnodes.push(childConceptId)
+                    visjsData.nodes.push({id:childConceptId,label:childConceptLabel, color:"green"})
+                    var edgeId=conceptId+"_"+childConceptId
+                    visjsData.edges.push({id:edgeId,from:conceptId,to:childConceptId,arrow:{to:true}})
+                }
 
             })
 
-
+            visjsGraph.data.edges.update( visjsData.edges)
+            visjsGraph.data.nodes.update( visjsData.nodes)
+        })
     }
 
     self.hightlightPath=function(node) {
