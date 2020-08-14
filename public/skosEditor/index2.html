@@ -54,7 +54,6 @@
     <script src="js/rdfTripleSkosProxy.js"></script>
 
 
-
     <script type="text/javascript" src="visjs/vis-network.min.js"></script>
     <link href="visjs/vis-network.css" rel="stylesheet" type="text/css"/>
     <script src="../js/graph/visjsGraph2.js"></script>
@@ -102,9 +101,10 @@
             overflow: auto;
 
         }
+
         #drop_zone {
             border: 1px solid blue;
-            width:  150px;
+            width: 150px;
             height: 100px;
         }
 
@@ -114,6 +114,7 @@
             // Prevent default behavior (Prevent file from being opened)
             ev.preventDefault();
         }
+
         function dropHandler(ev) {
             console.log('File(s) dropped');
 
@@ -121,7 +122,7 @@
             ev.preventDefault();
 
             if (ev.dataTransfer.items) {
-                var xx=  ev.dataTransfer.files[0].path;
+                var xx = ev.dataTransfer.files[0].path;
                 // Use DataTransferItemList interface to access the file(s)
                 for (var i = 0; i < ev.dataTransfer.items.length; i++) {
 
@@ -130,33 +131,31 @@
                         var file = ev.dataTransfer.items[i].getAsFile();
                         console.log('... file[' + i + '].name = ' + file.name);
 
-                        $("#skosInput1").val( $("#dropFileDirPath1").val()+file.name)
+                        $("#skosInput1").val($("#dropFileDirPath1").val() + file.name)
 
                     }
                 }
             }
         }
+
         $(function () {
 
 
-
-            config={loginMode:"none",appName:"CTG"};
+            config = {loginMode: "none", appName: "CTG"};
             authentication.init()
             skosEditor.initThesaurusSelects()
             // var to = false;
             $('#treeSearchInput1').keyup(function (e) {
                 if (e.keyCode == 13) {
                     $('#treeDiv1').jstree(true).clear_search();
-                  /*  $('#treeDiv1').jstree(true).refresh();
-                    $('#treeDiv1').jstree(true).open_node("#");*/
+                    /*  $('#treeDiv1').jstree(true).refresh();
+                      $('#treeDiv1').jstree(true).open_node("#");*/
 
                     var v = $('#treeSearchInput1').val();
-                   if (v == ""){
+                    if (v == "") {
 
-                    //   var data= $('#treeDiv1').jstree(true).settings.core.data;
-                   }
-
-                    else
+                        //   var data= $('#treeDiv1').jstree(true).settings.core.data;
+                    } else
                         $('#treeDiv1').jstree(true).search(v);
                 }
 
@@ -173,21 +172,21 @@
     <div style='max-width: 400px;'>
         thesaurus (rdf)<br>
 
-     <!--   <select id="thesaurusSelect1" onclick="$('#skosInput1').val($(this).val())"></select>
-        <input id="skosInput1" value="" size="40"><br>-->
+        <!--   <select id="thesaurusSelect1" onclick="$('#skosInput1').val($(this).val())"></select>
+           <input id="skosInput1" value="" size="40"><br>-->
         <input type="button" onclick="rdfTripleSkosProxy.loadThesaurus()" value="New">
-      <!--  <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
-        <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1"><option>first</option><option>last</option>
+        <!--  <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
+          <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1"><option>first</option><option>last</option>
 
-        <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
-        concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput1">
-       </select><button onclick="skosEditor.openAllTree(1)">Expand</button>-->
+          <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
+          concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput1">
+         </select><button onclick="skosEditor.openAllTree(1)">Expand</button>-->
 
         <div id="treeDiv1"></div>
     </div>
 
 
-    <div style=' max-width: 800px; width: 750px;'>
+    <div style=' max-width: 1000px; width: 1000px;'>
         <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"> <span id="messageDiv"></span></div>
         <div class='medium-12-columns'>
             <span id='valid_indicator' class='label'></span>
@@ -197,11 +196,18 @@
             <div id="graphDiv" style="width: 1000px;height: 1000px"></div>
             <div id="graphPopupDiv" style="position: absolute;display: none;background-color:#b3b6c2">
                 <table>
-                    <tr><td><span onclick="rdfTripleSkosProxy.graphActions.showConceptChildren()">show children Nodes</span> </td></tr>
+                    <tr>
+                        <td><span onclick="rdfTripleSkosProxy.graphActions.showConceptChildren()">show children Nodes</span></td>
+                    </tr>
                 </table>
             </div>
+        </div>
+    </div>
+    <div style='max-width: 200px;'>
+      max countPages  <input id="countPagesMax" value="10">
     </div>
 </div>
+
 <div id="loginDiv"
      style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
     <div> login<input id="loginInput">
