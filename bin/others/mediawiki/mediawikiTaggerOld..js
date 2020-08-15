@@ -175,7 +175,7 @@ var mediaWikiTagger = {
                             })
 
 
-                            var queryLine = {
+                         var queryLine = {
                                 "query": {
                                     "query_string": {
                                         "query": queryString,
@@ -184,14 +184,14 @@ var mediaWikiTagger = {
                                     }
                                 }
 
-                                /*    var queryLine = {
-                                        "query": {
-                                        "match": {
-                                            "content": {
-                                                "query": concept.synonyms[0]
-                                            }
-                                        }
-                                    }*/
+                        /*    var queryLine = {
+                                "query": {
+                                "match": {
+                                    "content": {
+                                        "query": concept.synonyms[0]
+                                    }
+                                }
+                            }*/
 
                                 ,
                                 "from": 0,
@@ -221,19 +221,20 @@ var mediaWikiTagger = {
 
                             url: elasticUrl + "_msearch"
                         };
-                        /*  const superagent = require('superagent');
-                          superagent
-                              .post(options.url)
-                              .send(bulkStr) // sends a JSON post body
-                              .set('content-type', 'application/x-ndjson')
-                              .set('accept', 'json')
-                              .end((error, json) => {*/
+                      /*  const superagent = require('superagent');
+                        superagent
+                            .post(options.url)
+                            .send(bulkStr) // sends a JSON post body
+                            .set('content-type', 'application/x-ndjson')
+                            .set('accept', 'json')
+                            .end((error, json) => {*/
 
 
-                        request(options, function (error, response, body) {
+
+                     request(options, function (error, response, body) {
                             if (error)
                                 return callbackSeries(error);
-                            var json = JSON.parse(response.body);
+                          var json = JSON.parse(response.body);
                             if (json.error) {
                                 return callback(json.error);
                             }
@@ -252,8 +253,8 @@ var mediaWikiTagger = {
                                     var concept = thesauriiConcepts[graphUri].concepts[responseIndex];
                                     var categories = response.hits.hits[0]._source.categories
                                     categories.forEach(function (category) {
-                                        if (category.indexOf("3.2.6") > -1)
-                                            var x = -1
+                                        if (category.indexOf("3.2.6")>-1)
+                                           var x=-1
                                         if (category == "")
                                             return;
                                         var categoryUri = category.replace(/[\r\n ]/g, "_")
@@ -274,8 +275,8 @@ var mediaWikiTagger = {
 
 
                             async.eachSeries(splittedtTriples, function (triples, callbackResponse) {
-                                return callbackEach();
-                                mediaWikiTagger.storeTriples(graphUri, triples, function (err, result) {
+                         return  callbackEach();
+                              mediaWikiTagger.storeTriples(graphUri, triples, function (err, result) {
                                     callbackResponse(err);
 
                                 })
@@ -482,6 +483,38 @@ var mediaWikiTagger = {
     ,
 
 
+    indexPages: function (elasticUri, indexName, filePath, from, to, callack) {
+        var json = JSON.parse("" + fs.readFileSync(filePath));
+        var index = -1;
+        var t1 = new Date();
+        async.eachSeries(json.pages, function (page, callbackEach) {
+
+            if ((++index) < from)
+                return callbackEach();
+            if (index > to)
+                return callack();
+            var t3 = new Date();
+            // processPage: function (wikiUri, pageName, elasticUrl, indexName, thesaurusGraphUris, callback) {
+            mediaWikiTagger.indexPage(json.wikiUri, escape(page.replace(/ /g, "_")), elasticUri, indexName, function (err, result) {
+                if (err) {
+                    console.log(err)
+                    return callbackEach()
+                }
+
+                var t2 = new Date();
+                console.log("processed " + page + " in " + (t3 - t2) + " msec.")
+                callbackEach()
+            })
+
+
+        }, function (err) {
+            var t2 = new Date();
+            console.log("processed " + (to - from) + "pages in " + (t2 - t1) + " msec.")
+            return callack(err)
+        })
+
+
+    },
     generateCatWordsMatrix: function (categoryWord, thesaurusWord, callback) {
 
         var limit = 1000;
@@ -595,7 +628,7 @@ var mediaWikiTagger = {
             // letters.forEach(function(letter,indexLetter){
             console.log("getting pages from " + letter)
             var categoryUrl = wikiUrl + "/index.php?title=Special%3AAllPages&from=" + letters[indexLetter] + "&to=" + letters[indexLetter + 1] + "&namespace=0"
-            var categoryUrl = wikiUrl + "/wiki/Special:AllPages?from=" + letters[indexLetter] + "&to=" + letters[indexLetter + 1] + "&namespace=0"
+       var categoryUrl = wikiUrl + "/wiki/Special:AllPages?from=" + letters[indexLetter] + "&to=" + letters[indexLetter + 1] + "&namespace=0"
 
             indexLetter++;
             var rawPageText = ""
@@ -644,10 +677,10 @@ var mediaWikiTagger = {
                     //getPageContent
                     function (callbackSeries) {
 
-                        var excludedPages = ["/PetroWiki:Copyright", "/Help:Editing_a_page", "/PetroWiki:Disclaimer", "#mw-head", "#p-search"]
+                var excludedPages=["/PetroWiki:Copyright","/Help:Editing_a_page","/PetroWiki:Disclaimer","#mw-head","#p-search"]
                         async.eachSeries(pages, function (page, callbackEach2) {
 
-                            if (excludedPages.indexOf(page) > -1)
+                            if(excludedPages.indexOf(page)>-1)
                                 return callbackEach2();
 
                             totalPages += 1
@@ -679,7 +712,7 @@ var mediaWikiTagger = {
     }
 
     ,
-    listIndexCategories: function (elasticUrl, indexName, callback) {
+    listIndexCategories:function(elasticUrl,indexName,callback) {
         var query = {
             "_source": ["categories", "pageName"],
             "from": 0,
@@ -700,59 +733,25 @@ var mediaWikiTagger = {
                 return callback(error);
 
             var hits = body.hits.hits;
-            var allCategories = []
-            var categoriesAssociations = []
-            hits.forEach(function (hit) {
-                var categories = hit._source.categories
-                var str = ""
-                categories.forEach(function (category, index) {
+            var allCategories=[]
+            var categoriesAssociations=[]
+            hits.forEach(function(hit){
+               var  categories=hit._source.categories
+                var str=""
+                categories.forEach(function(category,index){
                     allCategories.push(category)
-                    if (index > 0)
-                        str += "|"
-                    str += category
+                    if(index>0)
+                        str+="|"
+                    str+=category
                 })
                 categoriesAssociations.push(str)
 
             })
         })
     }
-    , getCategoriesPagesRdf: function (elasticUrl, indexName,wikiUrl) {
-        var query = {
-            "query": {
-                "match_all": {}
-            },
-            "_source": ["categories", "pageName"],
-            "from": 0,
-            "size": 10000
-        }
-        var options = {
-            method: 'POST',
-            json: query,
-            headers: {
-                'content-type': 'application/json'
-            },
-
-            url: elasticUrl +indexName+ "/_search"
-        };
 
 
-        request(options, function (error, response, body) {
-            if (error)
-                return callbackSeries(error);
 
-            var str=""
-            body.hits.hits.forEach(function (hit) {
-                var pageName=hit._source.pageName;
-                var categories=hit._source.categories
-                categories.forEach(function(category){
-               str+=" <"+wikiUrl+"Category:"+category+"> <http://xmlns.com/foaf/0.1/page> <"+wikiUrl+pageName+">.\n"
-                })
-
-
-            })
-            console.log(str)
-        })
-    }
 }
 
 
@@ -767,7 +766,78 @@ var thesaurusGraphUris = ["http://souslesens.org/oil-gas/upstream/", "http://www
 
 //var thesaurusGraphUris = [ "http://www.eionet.europa.eu/gemet/"]
 
+
 if (false) {
+    var filePath = "D:\\Total\\2020\\Stephanie\\pagesAAPG.json"
+    var filePath = "D:\\Total\\2020\\Stephanie\\pagesPETROWIKI.json"
+    var filePath = "D:\\Total\\2020\\Stephanie\\pagesSEG.json"
+    var indexName = "mediawiki-pages-seg"
+
+    var filePath = "D:\\Total\\2020\\Stephanie\\pagesTestSPE.json"
+    var indexName = "mediawiki-pages-test"
+
+
+    var from = 0;
+    var to = 5000
+//mediaWikiTagger.processPage("https://wiki.aapg.org/", "Kerogen", elasticUri, "mediawiki", thesaurusGraphUris, function (err, result) {
+    mediaWikiTagger.indexPages(elasticUrl, indexName, filePath, from, to, function (err, result) {
+        if (err)
+            console.log(err);
+        console.log("Done " + filePath + "from " + from + " to " + to);
+
+    })
+}
+
+if (true) {
+
+
+
+    var wikiUrl = "https://wiki.seg.org/wiki/"
+    var indexName = "mediawiki-pages-seg"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    var wikiUrl = "https://wiki.aapg.org/"
+    var indexName = "mediawiki-pages-aapg"
+
+    var wikiUrl = "https://petrowiki.spe.org/"
+    var indexName = "mediawiki-pages-spe"
+
+
+    var elasticUrl = "http://vps254642.ovh.net:2009/"
+    mediaWikiTagger.tagPages(thesaurusGraphUris, elasticUrl, indexName, wikiUrl, function (err, result) {
+        if (err)
+            console.log(err);
+        console.log("Done " );
+
+    })
+}
+
+if (false) {
+
+    //mediaWikiTagger.generateCatWordsMatrix("aapg", "gemet", function (err, result) {
+    mediaWikiTagger.generateCatWordsMatrix("aapg", null, function (err, result) {
+        if (err)
+            console.log(err);
+        console.log("Done ");
+
+    })
+
+
+}
+if(false) {
     if (false) {
         var wikiUrl = "https://wiki.aapg.org"
         var startMark = '<table class=\"mw-allpages-table-chunk"'
@@ -794,51 +864,10 @@ if (false) {
 
 }
 
-
-if (false) {
-
-    var wikiUrl = "https://wiki.seg.org/wiki/"
-    var indexName = "mediawiki-pages-seg"
-
-    var wikiUrl = "https://wiki.aapg.org/"
-    var indexName = "mediawiki-pages-aapg"
-
-    var wikiUrl = "https://petrowiki.spe.org/"
-    var indexName = "mediawiki-pages-spe"
-
-    var elasticUrl = "http://vps254642.ovh.net:2009/"
-    mediaWikiTagger.tagPages(thesaurusGraphUris, elasticUrl, indexName, wikiUrl, function (err, result) {
-        if (err)
-            console.log(err);
-        console.log("Done ");
-
-    })
-}
-
-if (false) {
-
-    //mediaWikiTagger.generateCatWordsMatrix("aapg", "gemet", function (err, result) {
-    mediaWikiTagger.generateCatWordsMatrix("aapg", null, function (err, result) {
-        if (err)
-            console.log(err);
-        console.log("Done ");
-
-    })
-
-
-}
-
-
-if (false) {
+if(false){
     var elasticUrl = "http://vps254642.ovh.net:2009/"
     var indexName = "mediawiki-pages-aapg"
-    mediaWikiTagger.listIndexCategories(elasticUrl, indexName)
+    mediaWikiTagger.listIndexCategories(elasticUrl,indexName)
 
-}
-if(true){
-    var elasticUrl = "http://vps254642.ovh.net:2009/"
-    var indexName="mediawiki-pages-aapg"
-    var wikiUrl="https://wiki.aapg.org/"
-    mediaWikiTagger.getCategoriesPagesRdf (elasticUrl, indexName,wikiUrl)
 }
 //mediaWikiTagger.createMediawikiIndex(elasticUrl,"mediawiki");

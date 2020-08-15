@@ -26,16 +26,22 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         if (req.body.executeQuery) {
             var queryObj = JSON.parse(req.body.executeQuery);
             var indexesStr = "";
-            var indexes = JSON.parse(req.body.indexes);
-            if (Array.isArray(indexes)) {
-                indexes.forEach(function (index, p) {
-                    if (p > 0)
-                        indexesStr += ","
-                    indexesStr += index;
-                })
-            } else
-                indexesStr = indexes
-            elasticRestProxy.executePostQuery(indexesStr + "/_search", queryObj, function (error, result) {
+            if(req.body.indexes) {
+                var indexes = JSON.parse(req.body.indexes);
+                if (Array.isArray(indexes)) {
+                    indexes.forEach(function (index, p) {
+                        if (p > 0)
+                            indexesStr += ","
+                        indexesStr += index;
+                    })
+                } else
+                    indexesStr = indexes
+            }
+            var url="";
+            if(req.body.url)
+              url=req.body.url
+
+            elasticRestProxy.executePostQuery(  url+indexesStr + "/_search", queryObj, function (error, result) {
                 //   logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
                 processResponse(response, error, result);
 

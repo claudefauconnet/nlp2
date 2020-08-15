@@ -68,8 +68,18 @@ var rdfTripleSkosProxy = (function () {
 
     self.onTreeClikNode = function (evt, obj) {
         $("#messageDiv").html("");
+        self.currentTreeNode = obj.node
+
+
         if (obj.event.ctrlKey)
-            self.showNodeConceptsGraph(obj.node.id)
+            self.showNodeConceptsGraph(obj.node)
+        if (obj.event.altKey) {
+            if (obj.node.data && obj.node.data.type == "wikiPage")
+                return self.getWikiPagesWords(obj.node)
+            else
+                return self.addWikiPagesToTree(obj.node)
+        }
+
         if (obj.node.children.length > 0)
             return;
 
@@ -172,13 +182,35 @@ var rdfTripleSkosProxy = (function () {
         })
     }
 
-    self.showNodeConceptsGraph = function (nodeId) {
-        var countPagesMax=$("#countPagesMax").val()
+    self.showNodeConceptsGraph = function (node) {
+        if (!node)
+            node = self.currentTreeNode;
+        if (!node)
+            return;
+
+        var countPagesMax = $("#countPagesMax").val();
+        var countAllPages = $("#countAllPages").prop("checked")
+        var countPagesMaxFilter = ""
+        if (!countAllPages) countPagesMaxFilter = " filter(?countPages<" + countPagesMax + ")"
+
+
+        var parentCategoriesFilter = " filter (?category not in("
+        node.parents.forEach(function (parent, index) {
+
+            if (parent != "#") {
+                if (index > 0)
+                    parentCategoriesFilter += ","
+                parentCategoriesFilter += "<" + parent + ">";
+            }
+        })
+        parentCategoriesFilter += "))"
+
+
         $("#messageDiv").html("Searching...");
         var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>prefix foaf: <http://xmlns.com/foaf/0.1/>prefix schema: <http://schema.org/>SELECT distinct  * WHERE{ " +
-            " ?concept  <http://souslesens.org/vocab#wikimedia-category>  ?category." +
-            "  ?category  <http://souslesens.org/vocab/countPages> ?countPages . filter(?countPages<"+countPagesMax+")  " +
-            "  ?category foaf:topic ?subject.  filter ( ?subject=<" + nodeId + ">)" +
+            " ?concept  <http://souslesens.org/vocab#wikimedia-category>  ?category." + parentCategoriesFilter +
+            "  ?category  <http://souslesens.org/vocab/countPages> ?countPages . " + countPagesMaxFilter +
+            "  ?category foaf:topic ?subject.  filter ( ?subject=<" + node.id + ">)" +
             "  " +
             "  ?concept skos:prefLabel ?conceptLabel. filter(lang(?conceptLabel)='en')    " +
             "  BIND (LCASE(?conceptLabel) as ?conceptLabelLower)  " +
@@ -195,16 +227,27 @@ var rdfTripleSkosProxy = (function () {
             var similarNodes = {}
             var offsetY = -400
 
-            if( result.results.bindings.length==0)
-                $("#messageDiv").html("no results");
-            //   visjsData.nodes.push({id: nodeId, label: nodeId, shape: "box"})
-            result.results.bindings.forEach(function (item) {
 
+            var maxPages = 0;
+            var minPages = 1000000;
+
+            if (result.results.bindings.length == 0)
+                return $("#messageDiv").html("no concepts matching");
+
+            if (result.results.bindings.length > 200)
+                return $("#messageDiv").html("too many concepts to show :" + result.results.bindings.length);
+
+
+            result.results.bindings.forEach(function (item) {
+                $("#messageDiv").html(node.text + " concepts :" + result.results.bindings.length);
 
                 var subject = item.subject.value;
                 var conceptId = item.concept.value;
-                var countPages=item.countPages.value;
-                //  var schemeId = item.scheme.value;
+                var countPages = parseInt(item.countPages.value);
+
+                maxPages = Math.max(maxPages, countPages)
+                minPages = Math.min(minPages, countPages)
+
 
                 var graphLabel = "";
                 var color = "#ddd";
@@ -229,13 +272,15 @@ var rdfTripleSkosProxy = (function () {
 
                 if (allnodes.indexOf(graphLabel) < 0) {
                     allnodes.push(graphLabel)
-                    visjsData.nodes.push({id: graphLabel, label: graphLabel, shape: "ellipse", color: color, fixed: {x: true}, x: 500, y: offsetY})
+                    visjsData.nodes.push({id: graphLabel, label: graphLabel, shape: "ellipse", color: color, fixed: {x: true}, x: 500, y: offsetY, data: {type: "graph"}})
 
                 }
                 if (allnodes.indexOf(conceptId) < 0) {
                     allnodes.push(conceptId)
-                    visjsData.nodes.push({id: conceptId, label: conceptLabel+" "+countPages, shape: "box", color: color, fixed: {x: true, y: true}, x: -500, y: offsetY})
-                    offsetY += 30;
+                    // visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "text", color: color,size:Math.round(20/countPages), fixed: {x: true, y: true}, x: -500, y: offsetY})
+                    visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "box", color: color, fixed: {x: true, y: true}, x: -500, y: offsetY, data: {type: "leafConcept"}})
+
+                    offsetY += 30 + (20 / countPages);
                     //  visjsData.edges.push({id: nodeId + "_" + conceptId, from: nodeId, to: conceptId, color: color})
                 }
                 for (var i = 1; i < 5; i++) {
@@ -245,7 +290,7 @@ var rdfTripleSkosProxy = (function () {
                         if (allnodes.indexOf(broaderId) < 0) {
                             allnodes.push(broaderId)
                             var broaderLabel = item["broader" + i + "Label"].value
-                            visjsData.nodes.push({id: broaderId, label: broaderLabel, color: color})
+                            visjsData.nodes.push({id: broaderId, label: broaderLabel, color: color, data: {type: "broaderConcept"}})
                         }
                         if (i == 1) {
                             var edgeId = conceptId + "_" + broaderId
@@ -297,6 +342,11 @@ var rdfTripleSkosProxy = (function () {
                 }
             }
             visjsGraph.draw("graphDiv", visjsData, {onclickFn: rdfTripleSkosProxy.onGraphNodeClick})
+            $("#sliderCountPagesMax").slider("option", "max", maxPages);
+            $("#sliderCountPagesMax").slider("option", "mmin", minPages);
+            $("#minPages").html(minPages)
+            $("#maxPages").html(maxPages)
+            //  $( "#sliderCountPagesMax" ).slider( "option", "value", maxPages );
         })
     }
 
@@ -306,7 +356,17 @@ var rdfTripleSkosProxy = (function () {
             return
         self.hightlightPath(node);
 
-        self.graphActions.showPopup(point)
+        var html = "<table>" +
+            "  <tr>"
+        if (node.data && node.data.type == "broaderConcept")
+            html += "      <td><span onclick=\"rdfTripleSkosProxy.graphActions.showConceptChildren()\">show children Nodes</span></td>"
+
+        html += "  </tr>" +
+            "</table>"
+        if (html != "")
+            self.graphActions.showPopup(point)
+        $("#graphPopupDiv").html(html)
+
 
     }
 
@@ -471,7 +531,7 @@ var rdfTripleSkosProxy = (function () {
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
                 /*  if (data.results.bindings.length == 0)
-                      return callback({data.results.bindings:},[])*/
+    return callback({data.results.bindings:},[])*/
                 callback(null, data)
 
             }
@@ -490,8 +550,121 @@ var rdfTripleSkosProxy = (function () {
         });
     }
 
+    self.addWikiPagesToTree = function (subject) {
+        var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>  prefix foaf: <http://xmlns.com/foaf/0.1/>" +
+            "SELECT  * WHERE {" +
+            "  ?category foaf:page ?page. ?category foaf:topic ?subject  " +
+            "  filter(?subject=<" + subject.id + ">)" +
+            "} limit 1000"
+        self.querySPARQL_proxy(query, self.sparqlServerUrl, {}, {}, function (err, result) {
 
-    return self;
+            if (err) {
+                return console.log(err);
+            }
+            var nodes = []
+            result.results.bindings.forEach(function (item) {
+                var page = item.page.value;
+                // var prefLabel = item.conceptLabel.value;
+                var pageLabel = page.substring(page.lastIndexOf("/") + 1)
+                var node = {
+                    data: {
+                        type: "wikiPage",
+                    },
+                    treeDivId: "treeDiv1",
+                    icon: "concept-icon.png",
+                    id: page,
+                    parent: subject.id,
+                    text: pageLabel,
+                }
+                nodes.push(node);
+
+            })
+
+            common.addNodesToJstree("treeDiv1", subject.id, nodes);
 
 
-})()
+        })
+    }
+
+    self.getWikiPagesWords = function (page) {
+        var query = {
+            "query": {
+                "match": {pageName: page.text}
+            },
+            "_source": ["content"],
+            "from": 0,
+            "size": 100
+        }
+        var payload = {
+            executeQuery: JSON.stringify(query),
+            indexes: JSON.stringify(["mediawiki-pages-*"]),
+            url: "http://vps254642.ovh.net:2009/"
+
+        }
+
+
+        $.ajax({
+            type: "POST",
+            url: "/elastic",
+            data: payload,
+            dataType: "json",
+
+            success: function (data, textStatus, jqXHR) {
+                var xx = data;
+
+                var content = data.hits.hits[0]._source.content;
+
+
+                var url = "http://vps254642.ovh.net:2009/_analyze";
+                var body = {
+                    headers: JSON.stringify({
+                        headers: {
+                           // 'content-type': 'application/json'
+                        }
+                    }),
+                    params: {
+                        "tokenizer": "standard",
+                        "filter": [
+                            "stop"
+                        ],
+                        "text": content
+                    }
+                }
+
+
+                var payload = {
+                    httpProxy: 1,
+                    POST: 1,
+                    url: url,
+                    body: body
+
+                }
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/elastic",
+                    data: payload,
+                    dataType: "json",
+                    success: function (data, textStatus, jqXHR) {
+                        var xx = data;
+
+
+                    }
+                    , error: function (err) {
+                        $("#messageDiv").html(err.responseText);
+
+
+                    }
+                })
+
+            }
+        })
+    }
+
+
+            return self;
+
+
+    })
+        ()

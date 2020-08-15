@@ -138,29 +138,25 @@
             }
         }
 
-        $(function () {
 
 
-            config = {loginMode: "none", appName: "CTG"};
-            authentication.init()
-            skosEditor.initThesaurusSelects()
-            // var to = false;
-            $('#treeSearchInput1').keyup(function (e) {
-                if (e.keyCode == 13) {
-                    $('#treeDiv1').jstree(true).clear_search();
-                    /*  $('#treeDiv1').jstree(true).refresh();
-                      $('#treeDiv1').jstree(true).open_node("#");*/
+            $(function () {
+                $("#sliderCountPagesMax").slider(function () {
+                    min: 1;
+                    max:20;
 
-                    var v = $('#treeSearchInput1').val();
-                    if (v == "") {
 
-                        //   var data= $('#treeDiv1').jstree(true).settings.core.data;
-                    } else
-                        $('#treeDiv1').jstree(true).search(v);
-                }
 
+                }).on("slidechange", function (event, ui) {
+                   $("#countPagesMax").val(ui.value)
+                    rdfTripleSkosProxy.showNodeConceptsGraph()
+                }).slider( "option", "max", 30 );
             });
-        });
+
+
+            // var to = false;
+
+
     </script>
 </head>
 <body>
@@ -195,16 +191,15 @@
 
             <div id="graphDiv" style="width: 1000px;height: 1000px"></div>
             <div id="graphPopupDiv" style="position: absolute;display: none;background-color:#b3b6c2">
-                <table>
-                    <tr>
-                        <td><span onclick="rdfTripleSkosProxy.graphActions.showConceptChildren()">show children Nodes</span></td>
-                    </tr>
-                </table>
+
             </div>
         </div>
     </div>
     <div style='max-width: 200px;'>
-      max countPages  <input id="countPagesMax" value="10">
+        max countPages <input id="countPagesMax" size="3" value="10" onchange="  rdfTripleSkosProxy.showNodeConceptsGraph() ">
+        <div id="sliderCountPagesMax" style="width:150px"></div>
+        <br> all pages<input id="countAllPages" checked="checked" type="checkbox">
+        min<span id="minPages"></span> &nbsp;max<span id="maxPages"></span>
     </div>
 </div>
 
