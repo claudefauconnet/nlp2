@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/OntologyEP/Stephanie..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/OntologyEP/Stephanie..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/index2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index2.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
@@ -37,24 +41,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/others/mediawiki" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/semantEP" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
-      <recent name="D:\GitHub\nlp2\public\js" />
-      <recent name="D:\GitHub\nlp2\bin" />
-      <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\semantEP" />
       <recent name="D:\GitHub\nlp2\bin\others\mediawiki" />
       <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
       <recent name="D:\GitHub\nlp2\public\skosEditor" />
       <recent name="D:\GitHub\nlp2\bin\backoffice" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\GitHub\nlp2\public\semantEP" />
+      <recent name="D:\GitHub\nlp2\public\ontograph\js" />
+      <recent name="D:\GitHub\nlp2\public\js" />
+      <recent name="D:\GitHub\nlp2\bin" />
+      <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -69,10 +73,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.bin\www">
-    <configuration name="AAPG..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="AAPG..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Node.js.spacyServer..js">
     <configuration name="Stephanie..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="Stephanie..js" working-dir="$PROJECT_DIR$/bin/others/OntologyEP">
       <method v="2" />
     </configuration>
@@ -85,13 +86,16 @@
     <configuration name="onTheFlyTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="onTheFlyTagger..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
+    <configuration name="spacyServer..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="spacyServer..js" working-dir="$PROJECT_DIR$/bin/others">
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.mediawikiTagger..js" />
+        <item itemvalue="Node.js.spacyServer..js" />
         <item itemvalue="Node.js.Stephanie..js" />
+        <item itemvalue="Node.js.mediawikiTagger..js" />
         <item itemvalue="Node.js.mediawikiStats..js" />
         <item itemvalue="Node.js.onTheFlyTagger..js" />
-        <item itemvalue="Node.js.AAPG..js" />
       </list>
     </recent_temporary>
   </component>
@@ -157,7 +161,8 @@
       <workItem from="1596561486565" duration="114788000" />
       <workItem from="1597217102788" duration="2616000" />
       <workItem from="1597226069279" duration="18051000" />
-      <workItem from="1597288529473" duration="54836000" />
+      <workItem from="1597288529473" duration="69069000" />
+      <workItem from="1597638229204" duration="16766000" />
     </task>
     <servers />
   </component>
@@ -283,38 +288,27 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
           <line>609</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="584" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
           <line>275</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="591" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
           <line>255</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="612" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
           <line>156</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="614" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
           <line>264</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="619" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/OntologyEP/Stephanie..js</url>
-          <line>53</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="628" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

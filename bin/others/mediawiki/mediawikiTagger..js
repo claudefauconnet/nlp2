@@ -716,7 +716,7 @@ var mediaWikiTagger = {
             })
         })
     }
-    , getCategoriesPagesRdf: function (elasticUrl, indexName,wikiUrl) {
+    , getCategoriesPagesRdf: function (elasticUrl, indexName, wikiUrl) {
         var query = {
             "query": {
                 "match_all": {}
@@ -732,7 +732,7 @@ var mediaWikiTagger = {
                 'content-type': 'application/json'
             },
 
-            url: elasticUrl +indexName+ "/_search"
+            url: elasticUrl + indexName + "/_search"
         };
 
 
@@ -740,18 +740,153 @@ var mediaWikiTagger = {
             if (error)
                 return callbackSeries(error);
 
-            var str=""
+            var str = ""
             body.hits.hits.forEach(function (hit) {
-                var pageName=hit._source.pageName;
-                var categories=hit._source.categories
-                categories.forEach(function(category){
-               str+=" <"+wikiUrl+"Category:"+category+"> <http://xmlns.com/foaf/0.1/page> <"+wikiUrl+pageName+">.\n"
+                var pageName = hit._source.pageName;
+                var categories = hit._source.categories
+                categories.forEach(function (category) {
+                    str += " <" + wikiUrl + "Category:" + category + "> <http://xmlns.com/foaf/0.1/page> <" + wikiUrl + pageName + ">.\n"
                 })
 
 
             })
             console.log(str)
         })
+    }
+
+    ,
+    getWikimediaPageNonThesaurusWords: function (elasticUrl, indexNames, pageName, graph,pageCategoryThesaurusWords, callback) {
+
+        var pageAllwords = [];
+        var wikiStopWords = [];
+        var pageThesaurusWords = []
+        var pageSpecificWords = [];
+        var pageNonThesaurusWords = []
+
+
+        async.series([
+
+            //get Page allwords
+            function (callbackSeries) {
+                var query = {
+                    "query": {
+                        "match": {pageName: pageName}
+                    },
+                    "_source": ["content",],
+                    "from": 0,
+                    "size": 1
+                }
+
+                var options = {
+                    method: 'POST',
+                    json: query,
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+
+                    url: elasticUrl + indexNames + "/_search"
+                };
+
+
+                request(options, function (error, response, body) {
+                    if (error)
+                        return callbackSeries(error);
+                    var content = body.hits.hits[0]._source.content;
+                    content = content.replace(/<[^>]*>/gm, "");
+                    var analyzeQuery = {
+                        "analyzer": "stop",
+                        "text": content
+                    }
+                    var analyzeOptions = {
+                        method: 'POST',
+                        json: analyzeQuery,
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+
+                        url: elasticUrl + "_analyze"
+                    };
+
+
+                    request(analyzeOptions, function (error, response, body) {
+                        if (error)
+                            return callbackSeries(error);
+                        body.tokens.forEach(function (item) {
+                            if (item.token.length < 4)
+                                return;
+                            if (pageAllwords.indexOf(item.token) < 0)
+                                pageAllwords.push(item.token)
+                        })
+
+
+                        callbackSeries()
+
+                    })
+                })
+            },
+
+
+            /*  get words not in thesaurus*/
+            function (callbackSeries) {
+
+                var wordsFilter = "";
+                pageAllwords.forEach(function (word, index) {
+                    if (index > 0)
+                        wordsFilter += "|"
+                    wordsFilter += "^" + word + "$";
+                })
+
+                var graphFilter="";
+                if(graph){
+                    graphFilter="  from <"+graph+"> "
+                }
+
+
+                var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
+                    "select distinct ?prefLabel "+graphFilter+"" +
+                    " where {?concept skos:prefLabel|skos:altLabel ?prefLabel  " +
+                    "filter (lang(?prefLabel)=\"en\" && regex(?prefLabel,\" " + wordsFilter + "\", \"i\"))" +
+                    "} limit 10000"
+
+                var params = {query: query}
+
+                httpProxy.post(mediaWikiTagger.sparqlUrl, null, params, function (err, result) {
+                    if (err) {
+                        console.log(params.query)
+                        return callbackSeries(err);
+                    }
+
+                    result.results.bindings.forEach(function (item) {
+                        pageThesaurusWords.push(item.prefLabel.value.toLowerCase());
+                    })
+
+                    callbackSeries()
+                })
+
+            },
+
+
+//intersect with  pageCategoryThesaurusWord
+            function (callbackSeries) {
+
+
+
+                pageAllwords.forEach(function(word){
+                    if(pageThesaurusWords.indexOf(word)<0  && pageCategoryThesaurusWords.indexOf(word)<0){
+
+                           pageNonThesaurusWords.push(word);
+                       }
+                   })
+
+
+                callbackSeries()
+            }
+
+        ], function (err) {
+            return callback(err, pageNonThesaurusWords)
+        })
+
+
     }
 }
 
@@ -835,10 +970,10 @@ if (false) {
     mediaWikiTagger.listIndexCategories(elasticUrl, indexName)
 
 }
-if(true){
+if (false) {
     var elasticUrl = "http://vps254642.ovh.net:2009/"
-    var indexName="mediawiki-pages-aapg"
-    var wikiUrl="https://wiki.aapg.org/"
-    mediaWikiTagger.getCategoriesPagesRdf (elasticUrl, indexName,wikiUrl)
+    var indexName = "mediawiki-pages-aapg"
+    var wikiUrl = "https://wiki.aapg.org/"
+    mediaWikiTagger.getCategoriesPagesRdf(elasticUrl, indexName, wikiUrl)
 }
 //mediaWikiTagger.createMediawikiIndex(elasticUrl,"mediawiki");

@@ -1,0 +1,3414 @@
+{
+  "name": "EsearchDocs",
+  "shortName": "EsearchDocs",
+  "children": [
+    {
+      "name": "GEOLOGIE _0",
+      "shortName": "GEOLOGIE ",
+      "children": [
+        {
+          "name": " GEOLOGIE _1",
+          "shortName": " GEOLOGIE ",
+          "children": [
+            {
+              "name": " DONNEE PUITS_2",
+              "shortName": " DONNEE PUITS",
+              "children": [],
+              "size": 17
+            },
+            {
+              "name": " GEOLOGIE_2",
+              "shortName": " GEOLOGIE",
+              "children": [],
+              "size": 46
+            },
+            {
+              "name": " PHOTOGRAPHIE_2",
+              "shortName": " PHOTOGRAPHIE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " GEOCHIMIE_2",
+              "shortName": " GEOCHIMIE",
+              "children": [],
+              "size": 11
+            },
+            {
+              "name": " CALIBRATION_2",
+              "shortName": " CALIBRATION",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " FLUIDE_2",
+              "shortName": " FLUIDE",
+              "children": [],
+              "size": 34
+            },
+            {
+              "name": " GEOLOGIE REGIONALE_2",
+              "shortName": " GEOLOGIE REGIONALE",
+              "children": [],
+              "size": 15
+            },
+            {
+              "name": " CORRELATION_2",
+              "shortName": " CORRELATION",
+              "children": [],
+              "size": 17
+            },
+            {
+              "name": " SONDAGE GEOLOGIQUE_2",
+              "shortName": " SONDAGE GEOLOGIQUE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " PRESSION_2",
+              "shortName": " PRESSION",
+              "children": [],
+              "size": 69
+            },
+            {
+              "name": " SALINITE_2",
+              "shortName": " SALINITE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " HISTOIRE GEOLOGIQUE_2",
+              "shortName": " HISTOIRE GEOLOGIQUE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " DONNEES_2",
+              "shortName": " DONNEES",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PROSPECT_2",
+              "shortName": " PROSPECT",
+              "children": [],
+              "size": 49
+            },
+            {
+              "name": " SUBSURFACE_2",
+              "shortName": " SUBSURFACE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " EVALUATION PROSPECT_2",
+              "shortName": " EVALUATION PROSPECT",
+              "children": [],
+              "size": 78
+            },
+            {
+              "name": " ACCUMULATION_2",
+              "shortName": " ACCUMULATION",
+              "children": [],
+              "size": 28
+            },
+            {
+              "name": " CLASSIFICATION_2",
+              "shortName": " CLASSIFICATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " BATHYMETRIE_2",
+              "shortName": " BATHYMETRIE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CALAGE_2",
+              "shortName": " CALAGE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " TERRAIN_2",
+              "shortName": " TERRAIN",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " GEOLOGIE MARINE_2",
+              "shortName": " GEOLOGIE MARINE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " MARQUEUR_2",
+              "shortName": " MARQUEUR",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " EAU PEU PROFONDE_2",
+              "shortName": " EAU PEU PROFONDE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " DEGRADATION_2",
+              "shortName": " DEGRADATION",
+              "children": [],
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": " SEDIMENTOLOGIE _1",
+          "shortName": " SEDIMENTOLOGIE ",
+          "children": [
+            {
+              "name": " SEDIMENTATION_2",
+              "shortName": " SEDIMENTATION",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " FACIES SEDIMENTAIRE_2",
+              "shortName": " FACIES SEDIMENTAIRE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " TURBIDITE_2",
+              "shortName": " TURBIDITE",
+              "children": [],
+              "size": 13
+            },
+            {
+              "name": " SEDIMENTOLOGIE_2",
+              "shortName": " SEDIMENTOLOGIE",
+              "children": [],
+              "size": 84
+            },
+            {
+              "name": " GRANULOMETRIE_2",
+              "shortName": " GRANULOMETRIE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " MILIEU SEDIMENTATION_2",
+              "shortName": " MILIEU SEDIMENTATION",
+              "children": [],
+              "size": 11
+            },
+            {
+              "name": " STRATIGRAPHIE SEQUENTIELLE_2",
+              "shortName": " STRATIGRAPHIE SEQUENTIELLE",
+              "children": [],
+              "size": 10
+            },
+            {
+              "name": " PALEOGEOGRAPHIE_2",
+              "shortName": " PALEOGEOGRAPHIE",
+              "children": [],
+              "size": 20
+            },
+            {
+              "name": " LITHOLOGIE_2",
+              "shortName": " LITHOLOGIE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " CARBONATE_2",
+              "shortName": " CARBONATE",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " ROCHE SEDIMENTAIRE_2",
+              "shortName": " ROCHE SEDIMENTAIRE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " ARGILE_2",
+              "shortName": " ARGILE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " GRES_2",
+              "shortName": " GRES",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " STRUCTURE SEDIMENTAIRE_2",
+              "shortName": " STRUCTURE SEDIMENTAIRE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " FORMATION SALIFERE_2",
+              "shortName": " FORMATION SALIFERE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " PALEOCLIMAT_2",
+              "shortName": " PALEOCLIMAT",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " EVAPORITE_2",
+              "shortName": " EVAPORITE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " BASSIN SEDIMENTAIRE_2",
+              "shortName": " BASSIN SEDIMENTAIRE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " EROSION_2",
+              "shortName": " EROSION",
+              "children": [],
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": " PETROPHYSIQUE _1",
+          "shortName": " PETROPHYSIQUE ",
+          "children": [
+            {
+              "name": " THERMODYNAMIQUE_2",
+              "shortName": " THERMODYNAMIQUE",
+              "children": [],
+              "size": 14
+            },
+            {
+              "name": " CARACTERISTIQUE ROCHE_2",
+              "shortName": " CARACTERISTIQUE ROCHE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PERMEABILITE_2",
+              "shortName": " PERMEABILITE",
+              "children": [],
+              "size": 22
+            },
+            {
+              "name": " PETROPHYSIQUE_2",
+              "shortName": " PETROPHYSIQUE",
+              "children": [],
+              "size": 55
+            },
+            {
+              "name": " POROSITE_2",
+              "shortName": " POROSITE",
+              "children": [],
+              "size": 15
+            },
+            {
+              "name": " CARACTERISTIQUE PHYSIQUE ROCHE_2",
+              "shortName": " CARACTERISTIQUE PHYSIQUE ROCHE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " PROPRIETE THERMODYNAMIQUE_2",
+              "shortName": " PROPRIETE THERMODYNAMIQUE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " MODELE RESERVOIR_2",
+              "shortName": " MODELE RESERVOIR",
+              "children": [],
+              "size": 13
+            }
+          ]
+        },
+        {
+          "name": " STRATIGRAPHIE _1",
+          "shortName": " STRATIGRAPHIE ",
+          "children": [
+            {
+              "name": " BIOSTRATIGRAPHIE_2",
+              "shortName": " BIOSTRATIGRAPHIE",
+              "children": [],
+              "size": 41
+            },
+            {
+              "name": " STRATIGRAPHIE_2",
+              "shortName": " STRATIGRAPHIE",
+              "children": [],
+              "size": 70
+            }
+          ]
+        },
+        {
+          "name": " GEOLOGIE PETROLIERE _1",
+          "shortName": " GEOLOGIE PETROLIERE ",
+          "children": [
+            {
+              "name": " EVALUATION PROSPECT_2",
+              "shortName": " EVALUATION PROSPECT",
+              "children": [],
+              "size": 78
+            },
+            {
+              "name": " EXPLORATION_2",
+              "shortName": " EXPLORATION",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " EXPLOITATION_2",
+              "shortName": " EXPLOITATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " POTENTIEL PETROLIER_2",
+              "shortName": " POTENTIEL PETROLIER",
+              "children": [],
+              "size": 29
+            },
+            {
+              "name": " PROSPECT_2",
+              "shortName": " PROSPECT",
+              "children": [],
+              "size": 49
+            },
+            {
+              "name": " ROCHE MERE PETROLE_2",
+              "shortName": " ROCHE MERE PETROLE",
+              "children": [],
+              "size": 30
+            },
+            {
+              "name": " SONDAGE PETROLIER_2",
+              "shortName": " SONDAGE PETROLIER",
+              "children": [],
+              "size": 10
+            },
+            {
+              "name": " LEAD EVALUATION_2",
+              "shortName": " LEAD EVALUATION",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " MIGRATION PETROLE_2",
+              "shortName": " MIGRATION PETROLE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " GEOLOGIE PETROLIERE_2",
+              "shortName": " GEOLOGIE PETROLIERE",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " INTERET PETROLIER_2",
+              "shortName": " INTERET PETROLIER",
+              "children": [],
+              "size": 9
+            },
+            {
+              "name": " STRUCTURE PETROLIERE_2",
+              "shortName": " STRUCTURE PETROLIERE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " RESERVE RESSOURCE_2",
+              "shortName": " RESERVE RESSOURCE",
+              "children": [],
+              "size": 33
+            },
+            {
+              "name": " PIEGEAGE_2",
+              "shortName": " PIEGEAGE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " HYDROCARBURE_2",
+              "shortName": " HYDROCARBURE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " STRUCTURE SEDIMENTAIRE_2",
+              "shortName": " STRUCTURE SEDIMENTAIRE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " ROCHE BITUMINEUSE_2",
+              "shortName": " ROCHE BITUMINEUSE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " HETEROGENEITE_2",
+              "shortName": " HETEROGENEITE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " EVALUATION STRUCTURE_2",
+              "shortName": " EVALUATION STRUCTURE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " GENESE HYDROCARBURE_2",
+              "shortName": " GENESE HYDROCARBURE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " ROCHE COUVERTURE_2",
+              "shortName": " ROCHE COUVERTURE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " ANALYSE LOG _1",
+          "shortName": " ANALYSE LOG ",
+          "children": [
+            {
+              "name": " INTERPRETATION LOG_2",
+              "shortName": " INTERPRETATION LOG",
+              "children": [],
+              "size": 6
+            }
+          ]
+        },
+        {
+          "name": " GEOCHIMIE ORGANIQUE _1",
+          "shortName": " GEOCHIMIE ORGANIQUE ",
+          "children": [
+            {
+              "name": " EVALUATION ROCHE MERE_2",
+              "shortName": " EVALUATION ROCHE MERE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " MATURATION_2",
+              "shortName": " MATURATION",
+              "children": [],
+              "size": 29
+            },
+            {
+              "name": " REFLECTION VITRINITE_2",
+              "shortName": " REFLECTION VITRINITE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " GEOCHIMIE ORGANIQUE_2",
+              "shortName": " GEOCHIMIE ORGANIQUE",
+              "children": [],
+              "size": 20
+            },
+            {
+              "name": " ANALYSE HUILE_2",
+              "shortName": " ANALYSE HUILE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " INDEX HYDROCARBURE_2",
+              "shortName": " INDEX HYDROCARBURE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PETROLE BRUT_2",
+              "shortName": " PETROLE BRUT",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " ANALYSE GEOCHIMIQUE_2",
+              "shortName": " ANALYSE GEOCHIMIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " BIODEGRADATION_2",
+              "shortName": " BIODEGRADATION",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " MATIERE ORGANIQUE_2",
+              "shortName": " MATIERE ORGANIQUE",
+              "children": [],
+              "size": 4
+            }
+          ]
+        },
+        {
+          "name": " PETROLOGIE _1",
+          "shortName": " PETROLOGIE ",
+          "children": [
+            {
+              "name": " SCHISTE_2",
+              "shortName": " SCHISTE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " ROCK TYPE_2",
+              "shortName": " ROCK TYPE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " MINERALOGIE_2",
+              "shortName": " MINERALOGIE",
+              "children": [],
+              "size": 11
+            },
+            {
+              "name": " ROCHE_2",
+              "shortName": " ROCHE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " FACIES GEOLOGIQUE_2",
+              "shortName": " FACIES GEOLOGIQUE",
+              "children": [],
+              "size": 15
+            },
+            {
+              "name": " FORMATION GEOLOGIQUE_2",
+              "shortName": " FORMATION GEOLOGIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " MICROFACIES_2",
+              "shortName": " MICROFACIES",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CHARBON_2",
+              "shortName": " CHARBON",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " CARBONATE_2",
+              "shortName": " CARBONATE",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " DOLOMIE_2",
+              "shortName": " DOLOMIE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PETROLOGIE_2",
+              "shortName": " PETROLOGIE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " MODELE GEOLOGIQUE _1",
+          "shortName": " MODELE GEOLOGIQUE ",
+          "children": [
+            {
+              "name": " MODELE GEOLOGIQUE_2",
+              "shortName": " MODELE GEOLOGIQUE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " THERMODYNAMIQUE_2",
+              "shortName": " THERMODYNAMIQUE",
+              "children": [],
+              "size": 14
+            }
+          ]
+        },
+        {
+          "name": " GEOCHIMIE MINERALE _1",
+          "shortName": " GEOCHIMIE MINERALE ",
+          "children": [
+            {
+              "name": " INCLUSIONS FLUIDE_2",
+              "shortName": " INCLUSIONS FLUIDE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " GEOCHIMIE MINERALE_2",
+              "shortName": " GEOCHIMIE MINERALE",
+              "children": [],
+              "size": 20
+            },
+            {
+              "name": " PALEOSALINITE_2",
+              "shortName": " PALEOSALINITE",
+              "children": [],
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": " PETROGRAPHIE _1",
+          "shortName": " PETROGRAPHIE ",
+          "children": [
+            {
+              "name": " PETROGRAPHIE_2",
+              "shortName": " PETROGRAPHIE",
+              "children": [],
+              "size": 34
+            }
+          ]
+        },
+        {
+          "name": " DIAGRAPHIE _1",
+          "shortName": " DIAGRAPHIE ",
+          "children": [
+            {
+              "name": " CARACTERISTIQUE RESERVOIR_2",
+              "shortName": " CARACTERISTIQUE RESERVOIR",
+              "children": [],
+              "size": 24
+            },
+            {
+              "name": " PENDAGEMETRIE_2",
+              "shortName": " PENDAGEMETRIE",
+              "children": [],
+              "size": 9
+            },
+            {
+              "name": " DIAGRAPHIE_2",
+              "shortName": " DIAGRAPHIE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " FMI_2",
+              "shortName": " FMI",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " ETUDE CAROTTES _1",
+          "shortName": " ETUDE CAROTTES ",
+          "children": [
+            {
+              "name": " ANALYSE CAROTTE_2",
+              "shortName": " ANALYSE CAROTTE",
+              "children": [],
+              "size": 24
+            },
+            {
+              "name": " DESCRIPTION CAROTTE_2",
+              "shortName": " DESCRIPTION CAROTTE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " SCAL (SPECIAL CORE ANALYSIS)_2",
+              "shortName": " SCAL (SPECIAL CORE ANALYSIS)",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " GEOCHRONOLOGIE _1",
+          "shortName": " GEOCHRONOLOGIE ",
+          "children": [
+            {
+              "name": " DATATION_2",
+              "shortName": " DATATION",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " STRUCTURALE TECTONIQUE _1",
+          "shortName": " STRUCTURALE TECTONIQUE ",
+          "children": [
+            {
+              "name": " ANALYSE STRUCTURALE (GEOLOGIE)_2",
+              "shortName": " ANALYSE STRUCTURALE (GEOLOGIE)",
+              "children": [],
+              "size": 10
+            },
+            {
+              "name": " STRUCTURE GEOLOGIQUE_2",
+              "shortName": " STRUCTURE GEOLOGIQUE",
+              "children": [],
+              "size": 14
+            },
+            {
+              "name": " STRUCTURE TECTONIQUE_2",
+              "shortName": " STRUCTURE TECTONIQUE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " FRACTURATION_2",
+              "shortName": " FRACTURATION",
+              "children": [],
+              "size": 7
+            },
+            {
+              "name": " GEOLOGIE STRUCTURALE_2",
+              "shortName": " GEOLOGIE STRUCTURALE",
+              "children": [],
+              "size": 11
+            },
+            {
+              "name": " TECTONIQUE_2",
+              "shortName": " TECTONIQUE",
+              "children": [],
+              "size": 21
+            },
+            {
+              "name": " FRACTURATION NATURELLE_2",
+              "shortName": " FRACTURATION NATURELLE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " DISCORDANCE_2",
+              "shortName": " DISCORDANCE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " FAILLE_2",
+              "shortName": " FAILLE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " RIFT_2",
+              "shortName": " RIFT",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ANTICLINAL_2",
+              "shortName": " ANTICLINAL",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CHEVAUCHEMENT_2",
+              "shortName": " CHEVAUCHEMENT",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " EROSION_2",
+              "shortName": " EROSION",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " TECTONIQUE PLAQUE_2",
+              "shortName": " TECTONIQUE PLAQUE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " PALEONTOLOGIE _1",
+          "shortName": " PALEONTOLOGIE ",
+          "children": [
+            {
+              "name": " BIOSTRATIGRAPHIE_2",
+              "shortName": " BIOSTRATIGRAPHIE",
+              "children": [],
+              "size": 41
+            },
+            {
+              "name": " MICROPALEONTOLOGIE_2",
+              "shortName": " MICROPALEONTOLOGIE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " PALYNOLOGIE_2",
+              "shortName": " PALYNOLOGIE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " PALEONTOLOGIE_2",
+              "shortName": " PALEONTOLOGIE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " MAGMATISME VOLCANISME _1",
+          "shortName": " MAGMATISME VOLCANISME ",
+          "children": [
+            {
+              "name": " SOCLE GEOLOGIQUE_2",
+              "shortName": " SOCLE GEOLOGIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ROCHE IGNEE_2",
+              "shortName": " ROCHE IGNEE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ROCHE VOLCANIQUE_2",
+              "shortName": " ROCHE VOLCANIQUE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " DIAGENESE _1",
+          "shortName": " DIAGENESE ",
+          "children": [
+            {
+              "name": " DIAGENESE_2",
+              "shortName": " DIAGENESE",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " SOUS COMPACTION_2",
+              "shortName": " SOUS COMPACTION",
+              "children": [],
+              "size": 6
+            }
+          ]
+        },
+        {
+          "name": " METAMORPHISME _1",
+          "shortName": " METAMORPHISME ",
+          "children": [
+            {
+              "name": " ROCHE METAMORPHIQUE_2",
+              "shortName": " ROCHE METAMORPHIQUE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " ANALYSE LABORATOIRE _1",
+          "shortName": " ANALYSE LABORATOIRE ",
+          "children": [
+            {
+              "name": " ECHANTILLONNAGE_2",
+              "shortName": " ECHANTILLONNAGE",
+              "children": [],
+              "size": 11
+            },
+            {
+              "name": " MINERALOGIE_2",
+              "shortName": " MINERALOGIE",
+              "children": [],
+              "size": 11
+            }
+          ]
+        },
+        {
+          "name": " ETUDE DEBLAIS _1",
+          "shortName": " ETUDE DEBLAIS ",
+          "children": [
+            {
+              "name": " DEBLAIS FORAGE_2",
+              "shortName": " DEBLAIS FORAGE",
+              "children": [],
+              "size": 3
+            }
+          ]
+        },
+        {
+          "name": " MINERALOGIE _1",
+          "shortName": " MINERALOGIE ",
+          "children": [
+            {
+              "name": " MINERALOGIE_2",
+              "shortName": " MINERALOGIE",
+              "children": [],
+              "size": 11
+            }
+          ]
+        },
+        {
+          "name": " GEOTHERMIE _1",
+          "shortName": " GEOTHERMIE ",
+          "children": [
+            {
+              "name": " PALEOTEMPERATURE_2",
+              "shortName": " PALEOTEMPERATURE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " GEOTHERMIE_2",
+              "shortName": " GEOTHERMIE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " MESURE GEOTHERMIQUE_2",
+              "shortName": " MESURE GEOTHERMIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " GRADIENT GEOTHERMIQUE_2",
+              "shortName": " GRADIENT GEOTHERMIQUE",
+              "children": [],
+              "size": 3
+            }
+          ]
+        },
+        {
+          "name": " TELEDETECTION _1",
+          "shortName": " TELEDETECTION ",
+          "children": [
+            {
+              "name": " TRAITEMENT IMAGE_2",
+              "shortName": " TRAITEMENT IMAGE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TYPOLOGIE EP _0",
+      "shortName": "TYPOLOGIE EP ",
+      "children": [
+        {
+          "name": " TYPOLOGIE : SOUS-TYPES _1",
+          "shortName": " TYPOLOGIE : SOUS-TYPES ",
+          "children": [
+            {
+              "name": " RAPPORT DE SYNTHESE-GEOLOGIE_2",
+              "shortName": " RAPPORT DE SYNTHESE-GEOLOGIE",
+              "children": [],
+              "size": 306
+            },
+            {
+              "name": " RAPPORT DE SYNTHESE-DOMAINE MINIER_2",
+              "shortName": " RAPPORT DE SYNTHESE-DOMAINE MINIER",
+              "children": [],
+              "size": 194
+            },
+            {
+              "name": " ETUDE GEOLOGIE-GEOCHIMIE MINERALE_2",
+              "shortName": " ETUDE GEOLOGIE-GEOCHIMIE MINERALE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " ETUDE GEOLOGIE-PETROPHYSIQUE_2",
+              "shortName": " ETUDE GEOLOGIE-PETROPHYSIQUE",
+              "children": [],
+              "size": 19
+            },
+            {
+              "name": " CONTRACTUEL-SERVICE/PROSPECTION_2",
+              "shortName": " CONTRACTUEL-SERVICE/PROSPECTION",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " GEOPHYSIQUE SISMIQUE-TRAITEMENT_2",
+              "shortName": " GEOPHYSIQUE SISMIQUE-TRAITEMENT",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " PROJET DEVELOPPEMENT-AVANT PROJET_2",
+              "shortName": " PROJET DEVELOPPEMENT-AVANT PROJET",
+              "children": [],
+              "size": 9
+            },
+            {
+              "name": " RAPPORT DE SYNTHESE-GEOPHYSIQUE_2",
+              "shortName": " RAPPORT DE SYNTHESE-GEOPHYSIQUE",
+              "children": [],
+              "size": 50
+            },
+            {
+              "name": " CONTRACTUEL-APPEL OFFRE_2",
+              "shortName": " CONTRACTUEL-APPEL OFFRE",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " RAPPORT PUITS-GEOLOGIE-INTERPRETATION PETROPHYSIQUE_2",
+              "shortName": " RAPPORT PUITS-GEOLOGIE-INTERPRETATION PETROPHYSIQUE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " ETUDE GISEMENT-GEOLOGIQUE_2",
+              "shortName": " ETUDE GISEMENT-GEOLOGIQUE",
+              "children": [],
+              "size": 24
+            },
+            {
+              "name": " RAPPORT PUITS-GEOLOGIE-ANALYSE_2",
+              "shortName": " RAPPORT PUITS-GEOLOGIE-ANALYSE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " ETUDE GISEMENT-GEOCHIMIE ORGANIQUE_2",
+              "shortName": " ETUDE GISEMENT-GEOCHIMIE ORGANIQUE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " RAPPORT PUITS-GEOLOGIE-GEOCHIMIE ORGANIQUE_2",
+              "shortName": " RAPPORT PUITS-GEOLOGIE-GEOCHIMIE ORGANIQUE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " RAPPORT PUITS-GEOLOGIE-MESURE PETROPHYSIQUE_2",
+              "shortName": " RAPPORT PUITS-GEOLOGIE-MESURE PETROPHYSIQUE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " ETUDE GEOLOGIE-SEDIMENTOLOGIE_2",
+              "shortName": " ETUDE GEOLOGIE-SEDIMENTOLOGIE",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " RAPPORT PUITS-GEOLOGIE-GEOCHIMIE MINERALE_2",
+              "shortName": " RAPPORT PUITS-GEOLOGIE-GEOCHIMIE MINERALE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " RAPPORT PUITS-GEOLOGIE-SEDIMENTOLOGIE_2",
+              "shortName": " RAPPORT PUITS-GEOLOGIE-SEDIMENTOLOGIE",
+              "children": [],
+              "size": 9
+            },
+            {
+              "name": " ETUDE GEOLOGIE-GEOCHIMIE ORGANIQUE_2",
+              "shortName": " ETUDE GEOLOGIE-GEOCHIMIE ORGANIQUE",
+              "children": [],
+              "size": 10
+            },
+            {
+              "name": " ETUDE GISEMENT-RESERVOIR_2",
+              "shortName": " ETUDE GISEMENT-RESERVOIR",
+              "children": [],
+              "size": 24
+            },
+            {
+              "name": " ETUDE GEOLOGIE-PETROPHYSIQUE INTERPRETATION_2",
+              "shortName": " ETUDE GEOLOGIE-PETROPHYSIQUE INTERPRETATION",
+              "children": [],
+              "size": 32
+            },
+            {
+              "name": " METHODES ET PROCEDES-RECHERCHE ET DEVELOPPEMENT_2",
+              "shortName": " METHODES ET PROCEDES-RECHERCHE ET DEVELOPPEMENT",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " ETUDE GEOLOGIE-STRATIGRAPHIE_2",
+              "shortName": " ETUDE GEOLOGIE-STRATIGRAPHIE",
+              "children": [],
+              "size": 19
+            },
+            {
+              "name": " SISMIQUE PUITS-INTERPRETATION_2",
+              "shortName": " SISMIQUE PUITS-INTERPRETATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " RAPPORT PUITS-AUTRE RAPPORT DE FIN DE SONDAGE-RFS_2",
+              "shortName": " RAPPORT PUITS-AUTRE RAPPORT DE FIN DE SONDAGE-RFS",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " GEOPHYSIQUE SISMIQUE-INTERPRETATION_2",
+              "shortName": " GEOPHYSIQUE SISMIQUE-INTERPRETATION",
+              "children": [],
+              "size": 20
+            },
+            {
+              "name": " PROJET DEVELOPPEMENT-PROJET_2",
+              "shortName": " PROJET DEVELOPPEMENT-PROJET",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " NOTE TECHNIQUE-GEOLOGIE_2",
+              "shortName": " NOTE TECHNIQUE-GEOLOGIE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " GEOPHYSIQUE SISMIQUE-RETRAITEMENT_2",
+              "shortName": " GEOPHYSIQUE SISMIQUE-RETRAITEMENT",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " CONTRACTUEL-ECHANGE DONNEE_2",
+              "shortName": " CONTRACTUEL-ECHANGE DONNEE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " COMPTE-RENDU-REUNION TECHNIQUE COMITE_2",
+              "shortName": " COMPTE-RENDU-REUNION TECHNIQUE COMITE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " COMPTE-RENDU-REUNION TECHNIQUE HORS COMITE_2",
+              "shortName": " COMPTE-RENDU-REUNION TECHNIQUE HORS COMITE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " COMPTE-RENDU-OPERATIONNEL-RETOUR EXPERIENCE VISITE_2",
+              "shortName": " COMPTE-RENDU-OPERATIONNEL-RETOUR EXPERIENCE VISITE",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " ETUDE GEOLOGIE-STRUCTURALE ET TECTONIQUE_2",
+              "shortName": " ETUDE GEOLOGIE-STRUCTURALE ET TECTONIQUE",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " COMPTE-RENDU-OPERATIONNEL-RETOUR EXPERIENCE MISSION_2",
+              "shortName": " COMPTE-RENDU-OPERATIONNEL-RETOUR EXPERIENCE MISSION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " METHODES ET PROCEDES-MANUEL OPERATOIRE_2",
+              "shortName": " METHODES ET PROCEDES-MANUEL OPERATOIRE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " COMPTE-RENDU-OPERATIONNEL-CONFERENCE_2",
+              "shortName": " COMPTE-RENDU-OPERATIONNEL-CONFERENCE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " GEOPHYSIQUE SISMIQUE-MICROSISMIQUE_2",
+              "shortName": " GEOPHYSIQUE SISMIQUE-MICROSISMIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " GEOPHYSIQUE SISMIQUE-ACQUISITION_2",
+              "shortName": " GEOPHYSIQUE SISMIQUE-ACQUISITION",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " NOTE TECHNIQUE-EXPLORATION_2",
+              "shortName": " NOTE TECHNIQUE-EXPLORATION",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " ETUDE GISEMENT-GEOPHYSIQUE_2",
+              "shortName": " ETUDE GISEMENT-GEOPHYSIQUE",
+              "children": [],
+              "size": 7
+            },
+            {
+              "name": " AUDIT/REVUE TECHNIQUE-EXPLORATION_2",
+              "shortName": " AUDIT/REVUE TECHNIQUE-EXPLORATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " NOTE TECHNIQUE-HSE_2",
+              "shortName": " NOTE TECHNIQUE-HSE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " COMPTE-RENDU-OPERATIONNEL-ATELIER_2",
+              "shortName": " COMPTE-RENDU-OPERATIONNEL-ATELIER",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " CONTRACTUEL-DATA ROOM_2",
+              "shortName": " CONTRACTUEL-DATA ROOM",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " BILAN ACTIVITE-EXPLORATION_2",
+              "shortName": " BILAN ACTIVITE-EXPLORATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " NOTE TECHNIQUE-GEOPHYSIQUE_2",
+              "shortName": " NOTE TECHNIQUE-GEOPHYSIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " METHODE ELECTROMAGNETIQUE_2",
+              "shortName": " METHODE ELECTROMAGNETIQUE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " METHODE GRAVIMETRIQUE_2",
+              "shortName": " METHODE GRAVIMETRIQUE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " BILAN ACTIVITE-GISEMENT_2",
+              "shortName": " BILAN ACTIVITE-GISEMENT",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GISEMENT _0",
+      "shortName": "GISEMENT ",
+      "children": [
+        {
+          "name": " CARACTERISTIQUE RESERVOIR _1",
+          "shortName": " CARACTERISTIQUE RESERVOIR ",
+          "children": [
+            {
+              "name": " PRESSION CAPILLAIRE_2",
+              "shortName": " PRESSION CAPILLAIRE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " CORRELATION PUITS_2",
+              "shortName": " CORRELATION PUITS",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " CARACTERISTIQUE RESERVOIR_2",
+              "shortName": " CARACTERISTIQUE RESERVOIR",
+              "children": [],
+              "size": 24
+            },
+            {
+              "name": " PERMEABILITE_2",
+              "shortName": " PERMEABILITE",
+              "children": [],
+              "size": 22
+            },
+            {
+              "name": " RESERVOIR FRACTURE_2",
+              "shortName": " RESERVOIR FRACTURE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " MIGRATION_2",
+              "shortName": " MIGRATION",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " MIGRATION HYDROCARBURE_2",
+              "shortName": " MIGRATION HYDROCARBURE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " CARACTERISTIQUE FLUIDE _1",
+          "shortName": " CARACTERISTIQUE FLUIDE ",
+          "children": [
+            {
+              "name": " PVT_2",
+              "shortName": " PVT",
+              "children": [],
+              "size": 25
+            },
+            {
+              "name": " CARACTERISTIQUE FLUIDE_2",
+              "shortName": " CARACTERISTIQUE FLUIDE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " SATURATION EAU_2",
+              "shortName": " SATURATION EAU",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " SATURATION_2",
+              "shortName": " SATURATION",
+              "children": [],
+              "size": 6
+            }
+          ]
+        },
+        {
+          "name": " VOLUMETRIE _1",
+          "shortName": " VOLUMETRIE ",
+          "children": [
+            {
+              "name": " GOR_2",
+              "shortName": " GOR",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " RESERVE RESSOURCE_2",
+              "shortName": " RESERVE RESSOURCE",
+              "children": [],
+              "size": 33
+            },
+            {
+              "name": " VOLUMETRIE_2",
+              "shortName": " VOLUMETRIE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " RESERVE EN PLACE_2",
+              "shortName": " RESERVE EN PLACE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " CONTACT GAZ EAU_2",
+              "shortName": " CONTACT GAZ EAU",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " GAS IN PLACE_2",
+              "shortName": " GAS IN PLACE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " CONDITION GISEMENT _1",
+          "shortName": " CONDITION GISEMENT ",
+          "children": [
+            {
+              "name": " PRESSION_2",
+              "shortName": " PRESSION",
+              "children": [],
+              "size": 69
+            }
+          ]
+        },
+        {
+          "name": " FLUIDE _1",
+          "shortName": " FLUIDE ",
+          "children": [
+            {
+              "name": " GAZ_2",
+              "shortName": " GAZ",
+              "children": [],
+              "size": 17
+            },
+            {
+              "name": " FLUIDE_2",
+              "shortName": " FLUIDE",
+              "children": [],
+              "size": 34
+            },
+            {
+              "name": " EAU FORMATION_2",
+              "shortName": " EAU FORMATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " HUILE BRUTE_2",
+              "shortName": " HUILE BRUTE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " HYDROCARBURE_2",
+              "shortName": " HYDROCARBURE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " HUILE_2",
+              "shortName": " HUILE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " HUILE LOURDE_2",
+              "shortName": " HUILE LOURDE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " GISEMENT _1",
+          "shortName": " GISEMENT ",
+          "children": [
+            {
+              "name": " EVALUATION PROSPECT_2",
+              "shortName": " EVALUATION PROSPECT",
+              "children": [],
+              "size": 78
+            },
+            {
+              "name": " EVALUATION RESERVOIR_2",
+              "shortName": " EVALUATION RESERVOIR",
+              "children": [],
+              "size": 23
+            },
+            {
+              "name": " PROSPECT_2",
+              "shortName": " PROSPECT",
+              "children": [],
+              "size": 49
+            },
+            {
+              "name": " RESERVOIR_2",
+              "shortName": " RESERVOIR",
+              "children": [],
+              "size": 46
+            },
+            {
+              "name": " GEOLOGIE RESERVOIR_2",
+              "shortName": " GEOLOGIE RESERVOIR",
+              "children": [],
+              "size": 46
+            },
+            {
+              "name": " ESTIMATION RESERVES_2",
+              "shortName": " ESTIMATION RESERVES",
+              "children": [],
+              "size": 28
+            },
+            {
+              "name": " ETUDE RESERVOIR_2",
+              "shortName": " ETUDE RESERVOIR",
+              "children": [],
+              "size": 7
+            },
+            {
+              "name": " SYSTEME PETROLIER_2",
+              "shortName": " SYSTEME PETROLIER",
+              "children": [],
+              "size": 20
+            },
+            {
+              "name": " PRESSION_2",
+              "shortName": " PRESSION",
+              "children": [],
+              "size": 69
+            },
+            {
+              "name": " ROCHE MERE_2",
+              "shortName": " ROCHE MERE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " INGENIERIE RESERVOIR_2",
+              "shortName": " INGENIERIE RESERVOIR",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " ECHANTILLONNAGE_2",
+              "shortName": " ECHANTILLONNAGE",
+              "children": [],
+              "size": 11
+            },
+            {
+              "name": " HISTORIQUE GISEMENT_2",
+              "shortName": " HISTORIQUE GISEMENT",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " DEVELOPPEMENT CHAMP_2",
+              "shortName": " DEVELOPPEMENT CHAMP",
+              "children": [],
+              "size": 28
+            },
+            {
+              "name": " PRODUCTIVITE_2",
+              "shortName": " PRODUCTIVITE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " DEPLETION_2",
+              "shortName": " DEPLETION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " GISEMENT_2",
+              "shortName": " GISEMENT",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " EVALUATION STRUCTURE_2",
+              "shortName": " EVALUATION STRUCTURE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " DYNAMIQUE_2",
+              "shortName": " DYNAMIQUE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " HISTORIQUE PETROLIER_2",
+              "shortName": " HISTORIQUE PETROLIER",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " EXPLORATION RESERVOIR_2",
+              "shortName": " EXPLORATION RESERVOIR",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " HYDRODYNAMISME_2",
+              "shortName": " HYDRODYNAMISME",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " ACCUMULATION_2",
+              "shortName": " ACCUMULATION",
+              "children": [],
+              "size": 28
+            },
+            {
+              "name": " CALAGE_2",
+              "shortName": " CALAGE",
+              "children": [],
+              "size": 3
+            }
+          ]
+        },
+        {
+          "name": " PRODUCTION _1",
+          "shortName": " PRODUCTION ",
+          "children": [
+            {
+              "name": " PRODUCTION_2",
+              "shortName": " PRODUCTION",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " POTENTIEL PETROLIER_2",
+              "shortName": " POTENTIEL PETROLIER",
+              "children": [],
+              "size": 29
+            },
+            {
+              "name": " STATISTIQUE PRODUCTION_2",
+              "shortName": " STATISTIQUE PRODUCTION",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " PREVISION PRODUCTION_2",
+              "shortName": " PREVISION PRODUCTION",
+              "children": [],
+              "size": 4
+            }
+          ]
+        },
+        {
+          "name": " MODELISATION _1",
+          "shortName": " MODELISATION ",
+          "children": [
+            {
+              "name": " MODELE RESERVOIR_2",
+              "shortName": " MODELE RESERVOIR",
+              "children": [],
+              "size": 13
+            },
+            {
+              "name": " SIMULATION RESERVOIR_2",
+              "shortName": " SIMULATION RESERVOIR",
+              "children": [],
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": " ESSAIS PUITS _1",
+          "shortName": " ESSAIS PUITS ",
+          "children": [
+            {
+              "name": " TEST DE PRODUCTION_2",
+              "shortName": " TEST DE PRODUCTION",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " RECUPERATION ASSISTEE _1",
+          "shortName": " RECUPERATION ASSISTEE ",
+          "children": [
+            {
+              "name": " INJECTION EAU_2",
+              "shortName": " INJECTION EAU",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " INJECTION FLUIDE_2",
+              "shortName": " INJECTION FLUIDE",
+              "children": [],
+              "size": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GEOPHYSIQUE _0",
+      "shortName": "GEOPHYSIQUE ",
+      "children": [
+        {
+          "name": " SISMIQUE _1",
+          "shortName": " SISMIQUE ",
+          "children": [
+            {
+              "name": " CALIBRATION_2",
+              "shortName": " CALIBRATION",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " SISMIQUE_2",
+              "shortName": " SISMIQUE",
+              "children": [],
+              "size": 47
+            },
+            {
+              "name": " SISMIQUE 3D_2",
+              "shortName": " SISMIQUE 3D",
+              "children": [],
+              "size": 21
+            },
+            {
+              "name": " SISMIQUE 2D_2",
+              "shortName": " SISMIQUE 2D",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " INTERPRETATION_2",
+              "shortName": " INTERPRETATION",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " SISMIQUE REFLEXION_2",
+              "shortName": " SISMIQUE REFLEXION",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " PROSPECTION SISMIQUE_2",
+              "shortName": " PROSPECTION SISMIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " SISMIQUE HAUTE RESOLUTION_2",
+              "shortName": " SISMIQUE HAUTE RESOLUTION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " SISMIQUE MARINE_2",
+              "shortName": " SISMIQUE MARINE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CAMPAGNE SISMIQUE_2",
+              "shortName": " CAMPAGNE SISMIQUE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " SISMIQUE / INTERPRETATION _1",
+          "shortName": " SISMIQUE / INTERPRETATION ",
+          "children": [
+            {
+              "name": " INTERPRETATION SISMIQUE_2",
+              "shortName": " INTERPRETATION SISMIQUE",
+              "children": [],
+              "size": 16
+            },
+            {
+              "name": " MARQUEUR GEOPHYSIQUE_2",
+              "shortName": " MARQUEUR GEOPHYSIQUE",
+              "children": [],
+              "size": 7
+            },
+            {
+              "name": " STRATIGRAPHIE SISMIQUE_2",
+              "shortName": " STRATIGRAPHIE SISMIQUE",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " VITESSE SISMIQUE_2",
+              "shortName": " VITESSE SISMIQUE",
+              "children": [],
+              "size": 13
+            },
+            {
+              "name": " FACIES SISMIQUE_2",
+              "shortName": " FACIES SISMIQUE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " INTERPRETATION 2D_2",
+              "shortName": " INTERPRETATION 2D",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " SISMIQUE / DIAGRAPHIE _1",
+          "shortName": " SISMIQUE / DIAGRAPHIE ",
+          "children": [
+            {
+              "name": " SONIQUE_2",
+              "shortName": " SONIQUE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " SISMIQUE / TRAITEMENT SISMIQUE _1",
+          "shortName": " SISMIQUE / TRAITEMENT SISMIQUE ",
+          "children": [
+            {
+              "name": " MODELISATION_2",
+              "shortName": " MODELISATION",
+              "children": [],
+              "size": 10
+            },
+            {
+              "name": " TRAITEMENT SISMIQUE_2",
+              "shortName": " TRAITEMENT SISMIQUE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " VITESSE SISMIQUE_2",
+              "shortName": " VITESSE SISMIQUE",
+              "children": [],
+              "size": 13
+            },
+            {
+              "name": " AVO_2",
+              "shortName": " AVO",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " SEQUENCE TRAITEMENT_2",
+              "shortName": " SEQUENCE TRAITEMENT",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " MIGRATION SISMIQUE_2",
+              "shortName": " MIGRATION SISMIQUE",
+              "children": [],
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": " SISMIQUE / ACQUISITION _1",
+          "shortName": " SISMIQUE / ACQUISITION ",
+          "children": [
+            {
+              "name": " DONNEE SISMIQUE_2",
+              "shortName": " DONNEE SISMIQUE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " VITESSE SISMIQUE_2",
+              "shortName": " VITESSE SISMIQUE",
+              "children": [],
+              "size": 13
+            },
+            {
+              "name": " ACQUISITION 3D_2",
+              "shortName": " ACQUISITION 3D",
+              "children": [],
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": " GEOPHYSIQUE _1",
+          "shortName": " GEOPHYSIQUE ",
+          "children": [
+            {
+              "name": " GEOPHYSIQUE_2",
+              "shortName": " GEOPHYSIQUE",
+              "children": [],
+              "size": 21
+            },
+            {
+              "name": " MODELISATION_2",
+              "shortName": " MODELISATION",
+              "children": [],
+              "size": 10
+            },
+            {
+              "name": " ANOMALIE GEOPHYSIQUE_2",
+              "shortName": " ANOMALIE GEOPHYSIQUE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " LOGICIEL_2",
+              "shortName": " LOGICIEL",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " CALAGE_2",
+              "shortName": " CALAGE",
+              "children": [],
+              "size": 3
+            }
+          ]
+        },
+        {
+          "name": " SISMIQUE / SISMIQUE PUITS _1",
+          "shortName": " SISMIQUE / SISMIQUE PUITS ",
+          "children": [
+            {
+              "name": " FILM SYNTHETIQUE_2",
+              "shortName": " FILM SYNTHETIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PSV_2",
+              "shortName": " PSV",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " SISMIQUE PUITS_2",
+              "shortName": " SISMIQUE PUITS",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " SISMIQUE / EQUIPEMENT SISMIQUE _1",
+          "shortName": " SISMIQUE / EQUIPEMENT SISMIQUE ",
+          "children": [
+            {
+              "name": " SIMULATION ACQUISITION_2",
+              "shortName": " SIMULATION ACQUISITION",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " METHODES POTENTIELLES / GRAVIMETRIE _1",
+          "shortName": " METHODES POTENTIELLES / GRAVIMETRIE ",
+          "children": [
+            {
+              "name": " GRAVIMETRIE_2",
+              "shortName": " GRAVIMETRIE",
+              "children": [],
+              "size": 7
+            }
+          ]
+        },
+        {
+          "name": " METHODES POTENTIELLES / MAGNETISME _1",
+          "shortName": " METHODES POTENTIELLES / MAGNETISME ",
+          "children": [
+            {
+              "name": " MAGNETISME_2",
+              "shortName": " MAGNETISME",
+              "children": [],
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": " METHODES POTENTIELLES _1",
+          "shortName": " METHODES POTENTIELLES ",
+          "children": [
+            {
+              "name": " METHODE POTENTIELLE_2",
+              "shortName": " METHODE POTENTIELLE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FORAGE _0",
+      "shortName": "FORAGE ",
+      "children": [
+        {
+          "name": " COMPLETION _1",
+          "shortName": " COMPLETION ",
+          "children": [
+            {
+              "name": " DONNEE PUITS_2",
+              "shortName": " DONNEE PUITS",
+              "children": [],
+              "size": 17
+            },
+            {
+              "name": " PUITS_2",
+              "shortName": " PUITS",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " PUITS DEVELOPPEMENT_2",
+              "shortName": " PUITS DEVELOPPEMENT",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PUITS DEVIE_2",
+              "shortName": " PUITS DEVIE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PUITS EXPLORATION_2",
+              "shortName": " PUITS EXPLORATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ESSAI PUITS_2",
+              "shortName": " ESSAI PUITS",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " TETE PUITS_2",
+              "shortName": " TETE PUITS",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " INJECTION GAZ_2",
+              "shortName": " INJECTION GAZ",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " PRODUCTIVITE ou performance forage ?_2",
+              "shortName": " PRODUCTIVITE ou performance forage ?",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " INJECTION EAU_2",
+              "shortName": " INJECTION EAU",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " PUITS HORIZONTAL_2",
+              "shortName": " PUITS HORIZONTAL",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " COMPLETION_2",
+              "shortName": " COMPLETION",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " FORAGE _1",
+          "shortName": " FORAGE ",
+          "children": [
+            {
+              "name": " TEMPERATURE_2",
+              "shortName": " TEMPERATURE",
+              "children": [],
+              "size": 15
+            },
+            {
+              "name": " FLUIDE FORAGE_2",
+              "shortName": " FLUIDE FORAGE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PARAMETRE FORAGE_2",
+              "shortName": " PARAMETRE FORAGE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " FORAGE_2",
+              "shortName": " FORAGE",
+              "children": [],
+              "size": 10
+            },
+            {
+              "name": " PRESSION_2",
+              "shortName": " PRESSION",
+              "children": [],
+              "size": 69
+            },
+            {
+              "name": " ETUDE LABORATOIRE_2",
+              "shortName": " ETUDE LABORATOIRE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PERFORMANCE FORAGE_2",
+              "shortName": " PERFORMANCE FORAGE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ESSAI LABORATOIRE_2",
+              "shortName": " ESSAI LABORATOIRE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PRESSION HAUTE_2",
+              "shortName": " PRESSION HAUTE",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " TEMPERATURE HAUTE_2",
+              "shortName": " TEMPERATURE HAUTE",
+              "children": [],
+              "size": 6
+            }
+          ]
+        },
+        {
+          "name": " STIMULATION _1",
+          "shortName": " STIMULATION ",
+          "children": [
+            {
+              "name": " FRACTURATION INDUITE_2",
+              "shortName": " FRACTURATION INDUITE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " FRACTURATION HYDRAULIQUE_2",
+              "shortName": " FRACTURATION HYDRAULIQUE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " TECHNIQUE FORAGE _1",
+          "shortName": " TECHNIQUE FORAGE ",
+          "children": [
+            {
+              "name": " CAROTTAGE_2",
+              "shortName": " CAROTTAGE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " DRAINAGE_2",
+              "shortName": " DRAINAGE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " BOUE _1",
+          "shortName": " BOUE ",
+          "children": [
+            {
+              "name": " DEBLAIS FORAGE_2",
+              "shortName": " DEBLAIS FORAGE",
+              "children": [],
+              "size": 3
+            }
+          ]
+        },
+        {
+          "name": " FORMATION _1",
+          "shortName": " FORMATION ",
+          "children": [
+            {
+              "name": " SEL_2",
+              "shortName": " SEL",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " GRADIENT GEOTHERMIQUE_2",
+              "shortName": " GRADIENT GEOTHERMIQUE",
+              "children": [],
+              "size": 3
+            }
+          ]
+        },
+        {
+          "name": " RIG _1",
+          "shortName": " RIG ",
+          "children": [
+            {
+              "name": " PLATE FORME_2",
+              "shortName": " PLATE FORME",
+              "children": [],
+              "size": 3
+            }
+          ]
+        },
+        {
+          "name": " EQUIPEMENT _1",
+          "shortName": " EQUIPEMENT ",
+          "children": [
+            {
+              "name": " EQUIPEMENT PUITS_2",
+              "shortName": " EQUIPEMENT PUITS",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " CIMENTATION _1",
+          "shortName": " CIMENTATION ",
+          "children": [
+            {
+              "name": " CIMENT_2",
+              "shortName": " CIMENT",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MATHEMATIQUES-PHYSIQUE _0",
+      "shortName": "MATHEMATIQUES-PHYSIQUE ",
+      "children": [
+        {
+          "name": " PHYSIQUE _1",
+          "shortName": " PHYSIQUE ",
+          "children": [
+            {
+              "name": " TEMPERATURE_2",
+              "shortName": " TEMPERATURE",
+              "children": [],
+              "size": 15
+            },
+            {
+              "name": " DENSITE_2",
+              "shortName": " DENSITE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PETROPHYSIQUE_2",
+              "shortName": " PETROPHYSIQUE",
+              "children": [],
+              "size": 55
+            },
+            {
+              "name": " ANALYSE PHYSICO CHIMIQUE_2",
+              "shortName": " ANALYSE PHYSICO CHIMIQUE",
+              "children": [],
+              "size": 14
+            },
+            {
+              "name": " PVT_2",
+              "shortName": " PVT",
+              "children": [],
+              "size": 25
+            },
+            {
+              "name": " THERMODYNAMIQUE_2",
+              "shortName": " THERMODYNAMIQUE",
+              "children": [],
+              "size": 14
+            },
+            {
+              "name": " CARACTERISTIQUE PHYSIQUE ROCHE_2",
+              "shortName": " CARACTERISTIQUE PHYSIQUE ROCHE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " FRACTURATION_2",
+              "shortName": " FRACTURATION",
+              "children": [],
+              "size": 7
+            },
+            {
+              "name": " PERMEABILITE_2",
+              "shortName": " PERMEABILITE",
+              "children": [],
+              "size": 22
+            },
+            {
+              "name": " PRESSION_2",
+              "shortName": " PRESSION",
+              "children": [],
+              "size": 69
+            },
+            {
+              "name": " SATURATION_2",
+              "shortName": " SATURATION",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " POUVOIR REFLECTEUR_2",
+              "shortName": " POUVOIR REFLECTEUR",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PROPRIETE PHYSIQUE_2",
+              "shortName": " PROPRIETE PHYSIQUE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " VISCOSITE_2",
+              "shortName": " VISCOSITE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " POROSITE_2",
+              "shortName": " POROSITE",
+              "children": [],
+              "size": 15
+            },
+            {
+              "name": " PROPRIETE THERMODYNAMIQUE_2",
+              "shortName": " PROPRIETE THERMODYNAMIQUE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " SATURATION EAU_2",
+              "shortName": " SATURATION EAU",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " PRESSION PORE_2",
+              "shortName": " PRESSION PORE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CARACTERISTIQUE FLUIDE_2",
+              "shortName": " CARACTERISTIQUE FLUIDE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " PROPRIETE MECANIQUE_2",
+              "shortName": " PROPRIETE MECANIQUE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PRESSION HAUTE_2",
+              "shortName": " PRESSION HAUTE",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " TEMPERATURE HAUTE_2",
+              "shortName": " TEMPERATURE HAUTE",
+              "children": [],
+              "size": 6
+            }
+          ]
+        },
+        {
+          "name": " MATHEMATIQUES _1",
+          "shortName": " MATHEMATIQUES ",
+          "children": [
+            {
+              "name": " STATISTIQUE_2",
+              "shortName": " STATISTIQUE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " CALCUL_2",
+              "shortName": " CALCUL",
+              "children": [],
+              "size": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EXPLOITATION PETROLIERE _0",
+      "shortName": "EXPLOITATION PETROLIERE ",
+      "children": [
+        {
+          "name": " EXPLOITATION PETROLIERE _1",
+          "shortName": " EXPLOITATION PETROLIERE ",
+          "children": [
+            {
+              "name": " ETUDE PROSPECT_2",
+              "shortName": " ETUDE PROSPECT",
+              "children": [],
+              "size": 15
+            },
+            {
+              "name": " FLUIDE_2",
+              "shortName": " FLUIDE",
+              "children": [],
+              "size": 34
+            },
+            {
+              "name": " PROSPECT_2",
+              "shortName": " PROSPECT",
+              "children": [],
+              "size": 49
+            },
+            {
+              "name": " ESTIMATION RESERVES_2",
+              "shortName": " ESTIMATION RESERVES",
+              "children": [],
+              "size": 28
+            },
+            {
+              "name": " PRODUCTION_2",
+              "shortName": " PRODUCTION",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " CONNEXION_2",
+              "shortName": " CONNEXION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " RISQUE_2",
+              "shortName": " RISQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CONTACT GAZ EAU_2",
+              "shortName": " CONTACT GAZ EAU",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " ESSAI PRODUCTION_2",
+              "shortName": " ESSAI PRODUCTION",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PRESSION_2",
+              "shortName": " PRESSION",
+              "children": [],
+              "size": 69
+            },
+            {
+              "name": " CARACTERISTIQUE FLUIDE_2",
+              "shortName": " CARACTERISTIQUE FLUIDE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " PETROLE BRUT_2",
+              "shortName": " PETROLE BRUT",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " ECHANTILLONNAGE_2",
+              "shortName": " ECHANTILLONNAGE",
+              "children": [],
+              "size": 11
+            },
+            {
+              "name": " EAU SALEE_2",
+              "shortName": " EAU SALEE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ANALYSE RISQUE_2",
+              "shortName": " ANALYSE RISQUE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " HYDROCARBURE_2",
+              "shortName": " HYDROCARBURE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " RESERVE RESSOURCE_2",
+              "shortName": " RESERVE RESSOURCE",
+              "children": [],
+              "size": 33
+            },
+            {
+              "name": " CHAMP PETROLIER_2",
+              "shortName": " CHAMP PETROLIER",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " DONNEE PRODUCTION_2",
+              "shortName": " DONNEE PRODUCTION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " DEVELOPPEMENT CHAMP_2",
+              "shortName": " DEVELOPPEMENT CHAMP",
+              "children": [],
+              "size": 28
+            },
+            {
+              "name": " RETOUR EXPERIENCE_2",
+              "shortName": " RETOUR EXPERIENCE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PROCESS_2",
+              "shortName": " PROCESS",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " GAZ NATUREL LIQUEFIE (GNL)_2",
+              "shortName": " GAZ NATUREL LIQUEFIE (GNL)",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " DYNAMIQUE_2",
+              "shortName": " DYNAMIQUE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " INJECTION GAZ_2",
+              "shortName": " INJECTION GAZ",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " BITUME_2",
+              "shortName": " BITUME",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " ECOULEMENT_2",
+              "shortName": " ECOULEMENT",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " EXPLOITATION PETROLIERE_2",
+              "shortName": " EXPLOITATION PETROLIERE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PRODUCTIVITE_2",
+              "shortName": " PRODUCTIVITE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " PLATE FORME_2",
+              "shortName": " PLATE FORME",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " INJECTION EAU_2",
+              "shortName": " INJECTION EAU",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " ACCUMULATION_2",
+              "shortName": " ACCUMULATION",
+              "children": [],
+              "size": 28
+            },
+            {
+              "name": " INSTALLATION MARINE_2",
+              "shortName": " INSTALLATION MARINE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " ETUDE FAISABILITE_2",
+              "shortName": " ETUDE FAISABILITE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ETUDE CONCEPTUELLE_2",
+              "shortName": " ETUDE CONCEPTUELLE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " SCALE_2",
+              "shortName": " SCALE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " DEGRADATION_2",
+              "shortName": " DEGRADATION",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PRESSION HAUTE_2",
+              "shortName": " PRESSION HAUTE",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " SYSTEME EXPLOITATION_2",
+              "shortName": " SYSTEME EXPLOITATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CONDENSAT_2",
+              "shortName": " CONDENSAT",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " TEMPERATURE HAUTE_2",
+              "shortName": " TEMPERATURE HAUTE",
+              "children": [],
+              "size": 6
+            },
+            {
+              "name": " GOR_2",
+              "shortName": " GOR",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " PREVISION PRODUCTION_2",
+              "shortName": " PREVISION PRODUCTION",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " ETUDE AVANT PROJET_2",
+              "shortName": " ETUDE AVANT PROJET",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SANS DOMAINE _0",
+      "shortName": "SANS DOMAINE ",
+      "children": [
+        {
+          "name": " SANS DOMAINE _1",
+          "shortName": " SANS DOMAINE ",
+          "children": [
+            {
+              "name": " GAZ_2",
+              "shortName": " GAZ",
+              "children": [],
+              "size": 17
+            },
+            {
+              "name": " GAZ NATUREL_2",
+              "shortName": " GAZ NATUREL",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " PETROLE BRUT_2",
+              "shortName": " PETROLE BRUT",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " RECOMMANDATION_2",
+              "shortName": " RECOMMANDATION",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " BILAN_2",
+              "shortName": " BILAN",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " HUILE_2",
+              "shortName": " HUILE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " EAU_2",
+              "shortName": " EAU",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " TECHNOLOGIE_2",
+              "shortName": " TECHNOLOGIE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CONTROLE QUALITE_2",
+              "shortName": " CONTROLE QUALITE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GEOLOGIE_0",
+      "shortName": "GEOLOGIE",
+      "children": [],
+      "size": 17
+    },
+    {
+      "name": "GISEMENT_0",
+      "shortName": "GISEMENT",
+      "children": [],
+      "size": 8
+    },
+    {
+      "name": "GEOTECHNIQUE _0",
+      "shortName": "GEOTECHNIQUE ",
+      "children": [
+        {
+          "name": " GEOTECHNIQUE _1",
+          "shortName": " GEOTECHNIQUE ",
+          "children": [
+            {
+              "name": " CAROTTE_2",
+              "shortName": " CAROTTE",
+              "children": [],
+              "size": 18
+            },
+            {
+              "name": " ANALYSE SOL_2",
+              "shortName": " ANALYSE SOL",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CHIMIE _0",
+      "shortName": "CHIMIE ",
+      "children": [
+        {
+          "name": " CHIMIE _1",
+          "shortName": " CHIMIE ",
+          "children": [
+            {
+              "name": " ANALYSE PHYSICO CHIMIQUE_2",
+              "shortName": " ANALYSE PHYSICO CHIMIQUE",
+              "children": [],
+              "size": 14
+            }
+          ]
+        },
+        {
+          "name": " CHIMIE ANALYTIQUE _1",
+          "shortName": " CHIMIE ANALYTIQUE ",
+          "children": [
+            {
+              "name": " THERMODYNAMIQUE_2",
+              "shortName": " THERMODYNAMIQUE",
+              "children": [],
+              "size": 14
+            },
+            {
+              "name": " ANALYSE FLUIDE_2",
+              "shortName": " ANALYSE FLUIDE",
+              "children": [],
+              "size": 4
+            }
+          ]
+        },
+        {
+          "name": " CHIMIE MINERALE _1",
+          "shortName": " CHIMIE MINERALE ",
+          "children": [
+            {
+              "name": " CHIMIE MINERALE_2",
+              "shortName": " CHIMIE MINERALE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " CHIMIE ORGANIQUE _1",
+          "shortName": " CHIMIE ORGANIQUE ",
+          "children": [
+            {
+              "name": " DIOXYDE CARBONE_2",
+              "shortName": " DIOXYDE CARBONE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " METHANE_2",
+              "shortName": " METHANE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " HUILE_2",
+              "shortName": " HUILE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " MATIERE ORGANIQUE_2",
+              "shortName": " MATIERE ORGANIQUE",
+              "children": [],
+              "size": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FORAGE_0",
+      "shortName": "FORAGE",
+      "children": [],
+      "size": 2
+    },
+    {
+      "name": "ADMINISTRATIF _0",
+      "shortName": "ADMINISTRATIF ",
+      "children": [
+        {
+          "name": " GESTION FINANCE _1",
+          "shortName": " GESTION FINANCE ",
+          "children": [
+            {
+              "name": " COUT_2",
+              "shortName": " COUT",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " INVESTISSEMENT_2",
+              "shortName": " INVESTISSEMENT",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ESTIMATION COUT_2",
+              "shortName": " ESTIMATION COUT",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " VENTE_2",
+              "shortName": " VENTE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " DROIT _1",
+          "shortName": " DROIT ",
+          "children": [
+            {
+              "name": " ACCORD_2",
+              "shortName": " ACCORD",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " CONTRACTEUR_2",
+              "shortName": " CONTRACTEUR",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PERMIS + EVALUATION_2",
+              "shortName": " PERMIS + EVALUATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " APPEL OFFRE_2",
+              "shortName": " APPEL OFFRE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " PERMIS_2",
+              "shortName": " PERMIS",
+              "children": [],
+              "size": 3
+            }
+          ]
+        },
+        {
+          "name": " RH _1",
+          "shortName": " RH ",
+          "children": [
+            {
+              "name": " FORMATION PERSONNEL_2",
+              "shortName": " FORMATION PERSONNEL",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " PERSONNEL_2",
+              "shortName": " PERSONNEL",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " ECONOMIE _1",
+          "shortName": " ECONOMIE ",
+          "children": [
+            {
+              "name": " FARMOUT_2",
+              "shortName": " FARMOUT",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ECONOMIE PETROLIERE_2",
+              "shortName": " ECONOMIE PETROLIERE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " ETUDE ECONOMIQUE_2",
+              "shortName": " ETUDE ECONOMIQUE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GEOPHYSIQUE_0",
+      "shortName": "GEOPHYSIQUE",
+      "children": [],
+      "size": 2
+    },
+    {
+      "name": "OCEANO / HYDRO / METEO _0",
+      "shortName": "OCEANO / HYDRO / METEO ",
+      "children": [
+        {
+          "name": " OCEANO / HYDRO / METEO _1",
+          "shortName": " OCEANO / HYDRO / METEO ",
+          "children": [
+            {
+              "name": " ECHANTILLONNAGE_2",
+              "shortName": " ECHANTILLONNAGE",
+              "children": [],
+              "size": 11
+            },
+            {
+              "name": " EAU MER_2",
+              "shortName": " EAU MER",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "HSE _0",
+      "shortName": "HSE ",
+      "children": [
+        {
+          "name": " ENVIRONNEMENT _1",
+          "shortName": " ENVIRONNEMENT ",
+          "children": [
+            {
+              "name": " DEBLAIS FORAGE_2",
+              "shortName": " DEBLAIS FORAGE",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " BIODEGRADATION_2",
+              "shortName": " BIODEGRADATION",
+              "children": [],
+              "size": 4
+            }
+          ]
+        },
+        {
+          "name": " HSE _1",
+          "shortName": " HSE ",
+          "children": [
+            {
+              "name": " ANALYSE RISQUE_2",
+              "shortName": " ANALYSE RISQUE",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " PROCEDURE_2",
+              "shortName": " PROCEDURE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " HYGIENE SECURITE ENVIRONNEMENT (HSE)_2",
+              "shortName": " HYGIENE SECURITE ENVIRONNEMENT (HSE)",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " EAU_2",
+              "shortName": " EAU",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " APPEL OFFRE_2",
+              "shortName": " APPEL OFFRE",
+              "children": [],
+              "size": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SYSTEME INFORMATION _0",
+      "shortName": "SYSTEME INFORMATION ",
+      "children": [
+        {
+          "name": " SYSTEME INFORMATION _1",
+          "shortName": " SYSTEME INFORMATION ",
+          "children": [
+            {
+              "name": " MODELE NUMERIQUE_2",
+              "shortName": " MODELE NUMERIQUE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " MODELE_2",
+              "shortName": " MODELE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " DOCUMENTATION_2",
+              "shortName": " DOCUMENTATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " MODELISATION_2",
+              "shortName": " MODELISATION",
+              "children": [],
+              "size": 10
+            },
+            {
+              "name": " PROGRAMME INFORMATIQUE_2",
+              "shortName": " PROGRAMME INFORMATIQUE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " TRAITEMENT INFORMATIQUE_2",
+              "shortName": " TRAITEMENT INFORMATIQUE",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " LOGICIEL_2",
+              "shortName": " LOGICIEL",
+              "children": [],
+              "size": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EXPLORATION _0",
+      "shortName": "EXPLORATION ",
+      "children": [
+        {
+          "name": " EXPLORATION _1",
+          "shortName": " EXPLORATION ",
+          "children": [
+            {
+              "name": " EXPLORATION PETROLIERE_2",
+              "shortName": " EXPLORATION PETROLIERE",
+              "children": [],
+              "size": 41
+            },
+            {
+              "name": " HISTORIQUE EXPLORATION_2",
+              "shortName": " HISTORIQUE EXPLORATION",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " ROUND_2",
+              "shortName": " ROUND",
+              "children": [],
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": " ECONOMIE _1",
+          "shortName": " ECONOMIE ",
+          "children": [
+            {
+              "name": " FARMOUT_2",
+              "shortName": " FARMOUT",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ECONOMIE PETROLIERE_2",
+              "shortName": " ECONOMIE PETROLIERE",
+              "children": [],
+              "size": 5
+            },
+            {
+              "name": " ETUDE ECONOMIQUE_2",
+              "shortName": " ETUDE ECONOMIQUE",
+              "children": [],
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": " DOMAINE MINIER _1",
+          "shortName": " DOMAINE MINIER ",
+          "children": [
+            {
+              "name": " DOMAINE MINIER_2",
+              "shortName": " DOMAINE MINIER",
+              "children": [],
+              "size": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TOPO / CARTO _0",
+      "shortName": "TOPO / CARTO ",
+      "children": [
+        {
+          "name": " TOPO / CARTO _1",
+          "shortName": " TOPO / CARTO ",
+          "children": [
+            {
+              "name": " CARTOGRAPHIE_2",
+              "shortName": " CARTOGRAPHIE",
+              "children": [],
+              "size": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "FORAGE / EXPLOITATION ? _0",
+      "shortName": "FORAGE / EXPLOITATION ? ",
+      "children": [
+        {
+          "name": " COMPLETION _1",
+          "shortName": " COMPLETION ",
+          "children": [
+            {
+              "name": " DONNEE PUITS_2",
+              "shortName": " DONNEE PUITS",
+              "children": [],
+              "size": 17
+            },
+            {
+              "name": " PUITS_2",
+              "shortName": " PUITS",
+              "children": [],
+              "size": 12
+            },
+            {
+              "name": " PUITS DEVELOPPEMENT_2",
+              "shortName": " PUITS DEVELOPPEMENT",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PUITS DEVIE_2",
+              "shortName": " PUITS DEVIE",
+              "children": [],
+              "size": 2
+            },
+            {
+              "name": " PUITS EXPLORATION_2",
+              "shortName": " PUITS EXPLORATION",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " ESSAI PUITS_2",
+              "shortName": " ESSAI PUITS",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " TETE PUITS_2",
+              "shortName": " TETE PUITS",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " INJECTION GAZ_2",
+              "shortName": " INJECTION GAZ",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " PRODUCTIVITE ou performance forage ?_2",
+              "shortName": " PRODUCTIVITE ou performance forage ?",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " INJECTION EAU_2",
+              "shortName": " INJECTION EAU",
+              "children": [],
+              "size": 4
+            },
+            {
+              "name": " PUITS HORIZONTAL_2",
+              "shortName": " PUITS HORIZONTAL",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " COMPLETION_2",
+              "shortName": " COMPLETION",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EXPLOITATION PETROLIERE_0",
+      "shortName": "EXPLOITATION PETROLIERE",
+      "children": [],
+      "size": 5
+    },
+    {
+      "name": "LOGISTIQUE _0",
+      "shortName": "LOGISTIQUE ",
+      "children": [
+        {
+          "name": " LOGISTIQUE _1",
+          "shortName": " LOGISTIQUE ",
+          "children": [
+            {
+              "name": " STOCKAGE SOUTERRAIN_2",
+              "shortName": " STOCKAGE SOUTERRAIN",
+              "children": [],
+              "size": 1
+            },
+            {
+              "name": " TRANSPORT_2",
+              "shortName": " TRANSPORT",
+              "children": [],
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CONSTRUCTION _0",
+      "shortName": "CONSTRUCTION ",
+      "children": [
+        {
+          "name": " CONSTRUCTION _1",
+          "shortName": " CONSTRUCTION ",
+          "children": [
+            {
+              "name": " DEVELOPPEMENT CHAMP_2",
+              "shortName": " DEVELOPPEMENT CHAMP",
+              "children": [],
+              "size": 28
+            },
+            {
+              "name": " PLATE FORME_2",
+              "shortName": " PLATE FORME",
+              "children": [],
+              "size": 3
+            },
+            {
+              "name": " DYNAMIQUE_2",
+              "shortName": " DYNAMIQUE",
+              "children": [],
+              "size": 8
+            },
+            {
+              "name": " INSTALLATION MARINE_2",
+              "shortName": " INSTALLATION MARINE",
+              "children": [],
+              "size": 6
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

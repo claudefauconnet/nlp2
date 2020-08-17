@@ -14,7 +14,7 @@ var statistics = require("../bin/backoffice/statistics.")
 var questionAnswering = require("../bin/questionAnswering.");
 var annotator_skos = require("../bin/backoffice/annotator_skos.");
 var skosReader = require("../bin/backoffice/skosReader..js");
-var httpProxy=require("../bin/httpProxy.")
+var httpProxy = require("../bin/httpProxy.")
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('index', {title: 'Express'});
@@ -26,7 +26,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         if (req.body.executeQuery) {
             var queryObj = JSON.parse(req.body.executeQuery);
             var indexesStr = "";
-            if(req.body.indexes) {
+            if (req.body.indexes) {
                 var indexes = JSON.parse(req.body.indexes);
                 if (Array.isArray(indexes)) {
                     indexes.forEach(function (index, p) {
@@ -37,11 +37,11 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
                 } else
                     indexesStr = indexes
             }
-            var url="";
-            if(req.body.url)
-              url=req.body.url
+            var url = "";
+            if (req.body.url)
+                url = req.body.url
 
-            elasticRestProxy.executePostQuery(  url+indexesStr + "/_search", queryObj, function (error, result) {
+            elasticRestProxy.executePostQuery(url + indexesStr + "/_search", queryObj, function (error, result) {
                 //   logger.info("QUERY :" + JSON.stringify(queryObj.query.bool) + "\n indexes :" + req.body.indexes)
                 processResponse(response, error, result);
 
@@ -232,16 +232,16 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         }
         if (req.body.httpProxy) {
             if (req.body.POST) {
-                httpProxy.post(req.body.url,req.body.body.headers,req.body.body.params, function (err, result) {
+                httpProxy.post(req.body.url, req.body.body.headers, req.body.body.params, function (err, result) {
                     processResponse(response, err, result)
                 })
-            }else{
-                var options={};
-                if(req.body.options){
-                    if(typeof req.body.options=="string")
-                        options=JSON.parse(req.body.options);
+            } else {
+                var options = {};
+                if (req.body.options) {
+                    if (typeof req.body.options == "string")
+                        options = JSON.parse(req.body.options);
                     else
-                        options=req.body.options
+                        options = req.body.options
 
                 }
                 httpProxy.get(req.body.url, options, function (err, result) {
@@ -250,15 +250,19 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
             }
         }
 
-    if (req.body.analyzeSentence) {
+        if (req.body.analyzeSentence) {
 
-        elasticRestProxy.analyzeSentence(req.body.analyzeSentence, function (err, result) {
-            processResponse(response, err, result)
-        })
-    }
+            elasticRestProxy.analyzeSentence(req.body.analyzeSentence, function (err, result) {
+                processResponse(response, err, result)
+            })
+        }
+        if (req.body.getWikimediaPageNonThesaurusWords) {
+            var mediawikiTaggger=require("../bin/others/mediawiki/mediawikiTagger.")
+            mediawikiTaggger.getWikimediaPageNonThesaurusWords(req.body.elasticUrl,req.body.indexName,req.body.pageName,req.body.graph,req.body.pageCategoryThesaurusWords,function (err, result) {
+                processResponse(response, err, result)
 
-
-
+            })
+        }
     },
     router.get('/heatMap', function (req, res, next) {
         var elasticQuery = JSON.parse(req.query.query);

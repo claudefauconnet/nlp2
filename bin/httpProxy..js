@@ -19,8 +19,8 @@ var httpProxy = {
         request.end((err, res) => {
             if (err)
                 return callback(err);
-            if(res.text)
-                return  callback(null, res.text);
+            if (res.text)
+                return callback(null, res.text);
             callback(null, res.body)
         })
 
@@ -39,33 +39,43 @@ var httpProxy = {
 
         var options = {
             method: 'POST',
-            form: params,
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded',
-                'accept': 'application/json'
-            },
+
+
             url: url,
         };
+        if (headers) {
+           options.headers = headers;
+
+            if(headers["content-type"] && headers["content-type"].indexOf("json")>-1)
+                options.json= params;
+            else
+                options.form= params;
+        }
+        else {
+         options.headers = {
+                'content-type': 'application/x-www-form-urlencoded',
+                'accept': 'application/json'
+            };
+            options.form = params;
+        }
 
         request(options, function (error, response, body) {
             if (error) {
-                console.log(JSON.stringify(params,null,2))
+                console.log(JSON.stringify(params, null, 2))
                 return callback(error);
             }
 
             try {
 
-             if(body.indexOf("{")<10) {
-                 var obj = JSON.parse(body);
-                 return callback(null, obj)
-             }
-             else{
-                 return callback(null, body)
-             }
-            }
-            catch(e){
+                if (typeof body=="string") {
+                    var obj = JSON.parse(body);
+                    return callback(null, obj)
+                } else {
+                    return callback(null, body)
+                }
+            } catch (e) {
                 console.log(body)
-               return callback(e)
+                return callback(e)
             }
 
             return;

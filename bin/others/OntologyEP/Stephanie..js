@@ -1,6 +1,6 @@
-var fs=require ('fs');
+var fs = require('fs');
 
-var  csvToJson= function (filePath) {
+var csvToJson = function (filePath) {
     var str = "" + fs.readFileSync(filePath);
     str = str.replace(/[\u{0080}-\u{FFFF}]/gu, "");//charactrese vides
     var lines = str.split("\r");
@@ -26,39 +26,87 @@ var  csvToJson= function (filePath) {
     return pagesJson;
 }
 
-var json=csvToJson("D:\\Total\\2020\\Stephanie\\Rapports_eSearch.csv")
+var json = csvToJson("D:\\Total\\2020\\Stephanie\\Rapports_eSearch.csv")
 
-var levels=[];
-for(var i=0;i<5;i++){
+var levels = [];
+
+for (var i = 0; i < 5; i++) {
     levels.push({})
 }
-json.forEach(function(item){
-    if(!item.MOTSCLES)
+var motsClesMap = {}
+json.forEach(function (item) {
+    if (!item.MOTSCLES)
         return
- var array=item.MOTSCLES.split("|");
- array.forEach(function(item2){
-     var array2=item2.split(">")
-     array2.forEach(function(item3,index) {
-         if(!levels[index][item3])
-             levels[index][item3]={docs:[],};
-         var obj={titre:item.TITRE,id:item.DOC_ID}
-         if(index==0)
-             obj.parent="#"
-         else
-             obj.parent=
-         levels[index][item3].push(obj)
-     })
- })
+    var array = item.MOTSCLES.split("|");
+    array.forEach(function (item2) {
+        var array2 = item2.split(">")
+
+
+        for (var i = 0; i < array2.length; i++) {
+            var mot = array2[i];
+            var id = mot + "_" + i
+            if (!motsClesMap[id]) {
+                var parent = ""
+
+                if (i == 0)
+                    parent = "#"
+                else
+                    parent = array2[i - 1] + "_" + (i - 1)
+
+                motsClesMap[id] = {text: mot, id: id, parent: parent, children: [], data: {docs: []}}
+            }
+            motsClesMap[id].data.docs.push({docId: item.DOC_ID.substring(1), Title: item.TITRE});
+            if(i<array2.length-1 &&  motsClesMap[id].children.indexOf( array2[i+1] + "_" + (i+ 1))<0)
+                motsClesMap[id].children.push( array2[i+1] + "_" + (i+ 1))
+
+        }
+
+
+        /*    array2.forEach(function(item3,index) {
+                var
+                if(i==0){
+                    var mot0=item
+                if(motsClesMap[item3]
+                    }
+                if(!levels[index][item3])
+                    levels[index][item3]=[];
+                levels[index][item3].push({titre:item.TITRE,id:item.DOC_ID})
+            })*/
+    })
+
 })
+var xx = motsClesMap
 
-var x=levels
+var array=[]
 
-var map={};
-levels.forEach(function(level){
-    for
-    map[lec]
+function recurse(id){
+    var item=motsClesMap[id]
+    var obj={name:item.id,shortName:item.text,children:[]};
+    if(item.children.length>0  ) {
+        item.children.forEach(function (item2) {
+
+            obj.children.push(recurse(item2))
+        })
+    }else{
+        obj.size=item.data.docs.length
+    }
+    return obj;
+
+}
+var uniqueTopMots=[]
+var root={name:"EsearchDocs",shortName:"EsearchDocs",children:[]}
+for(var key in motsClesMap){
+   if (motsClesMap[key].parent=="#"){
+       if(uniqueTopMots.indexOf(motsClesMap[key].text)<0) {
+           uniqueTopMots.push(motsClesMap[key].text)
+
+           root.children.push(recurse(key))
+       }
+   }
 
 
+}
 
-
-})
+var xx=root
+//console.log(JSON.stringify(root,null,2))
+fs.writeFileSync("D:\\GitHub\\nlp2\\public\\semantEP\\eseachTreemap.json",JSON.stringify(root,null,2))

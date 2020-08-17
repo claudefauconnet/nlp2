@@ -587,18 +587,24 @@ var rdfTripleSkosProxy = (function () {
     }
 
     self.getWikiPagesWords = function (page) {
-        var query = {
-            "query": {
-                "match": {pageName: page.text}
-            },
-            "_source": ["content"],
-            "from": 0,
-            "size": 100
-        }
+
+        // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
+
+        var pageCategoryThesaurusWords = [];
+        visjsGraph.data.nodes.get().forEach(function (node) {
+            if (node.data && (node.data.type == "leafConcept" || node.data.type == "broaderConcept")) {
+                pageCategoryThesaurusWords.push(node.label)
+            }
+        })
+
         var payload = {
-            executeQuery: JSON.stringify(query),
-            indexes: JSON.stringify(["mediawiki-pages-*"]),
-            url: "http://vps254642.ovh.net:2009/"
+
+            getWikimediaPageNonThesaurusWords: 1,
+            elasticUrl: "http://vps254642.ovh.net:2009/",
+            indexName: "mediawiki-pages-*",
+            pageName: page.text,
+            graph: "http://souslesens.org/oil-gas/upstream/",
+            pageCategoryThesaurusWords:pageCategoryThesaurusWords
 
         }
 
@@ -611,60 +617,23 @@ var rdfTripleSkosProxy = (function () {
 
             success: function (data, textStatus, jqXHR) {
                 var xx = data;
-
-                var content = data.hits.hits[0]._source.content;
-
-
-                var url = "http://vps254642.ovh.net:2009/_analyze";
-                var body = {
-                    headers: JSON.stringify({
-                        headers: {
-                           // 'content-type': 'application/json'
-                        }
-                    }),
-                    params: {
-                        "tokenizer": "standard",
-                        "filter": [
-                            "stop"
-                        ],
-                        "text": content
-                    }
-                }
-
-
-                var payload = {
-                    httpProxy: 1,
-                    POST: 1,
-                    url: url,
-                    body: body
-
-                }
-
-
-                $.ajax({
-                    type: "POST",
-                    url: "/elastic",
-                    data: payload,
-                    dataType: "json",
-                    success: function (data, textStatus, jqXHR) {
-                        var xx = data;
-
-
-                    }
-                    , error: function (err) {
-                        $("#messageDiv").html(err.responseText);
-
-
-                    }
+                var html = " words not in thesaurus:<br>";
+                data.forEach(function (word) {
+                    html += word + ", ";
                 })
+                $("#commentDiv").html(html)
 
+
+            }
+            , error: function (err) {
+                $("#messageDiv").html(err.responseText);
             }
         })
     }
 
 
-            return self;
+    return self;
 
 
-    })
-        ()
+})
+()
