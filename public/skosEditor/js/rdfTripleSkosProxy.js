@@ -2,8 +2,9 @@ var rdfTripleSkosProxy = (function () {
 
     var self = {}
     self.sparqlServerUrl = 'http://51.178.139.80:8890/sparql/';
+    self.currentConceptsLabels = []
     var graphsMap = {
-        "http://PetroleumAbstractsThesaurus/": {color: "#a6f1ff", label: "Tulsa"},
+        "http://PetroleumAbstractsThesaurus/": {color: '#ffc107', label: "Tulsa"},
         "http://www.eionet.europa.eu/gemet/": {color: '#FF7D07', label: "Gemet"},
         "http://data.total.com/resource/vocabulary/": {color: "#7fef11", label: "CTG"},
         "https://www2.usgs.gov/science/USGSThesaurus/": {color: '#FFD900', label: "USGS"}
@@ -49,6 +50,7 @@ var rdfTripleSkosProxy = (function () {
                         relateds: [],
                     },
                     treeDivId: "treeDiv1",
+                    type: "TopConcept",
                     icon: "concept-icon.png",
                     id: id,
                     parent: "#",
@@ -58,7 +60,30 @@ var rdfTripleSkosProxy = (function () {
 
             })
 
-            common.loadJsTree("treeDiv1", nodes, {selectNodeFn: rdfTripleSkosProxy.onTreeClikNode});
+            var types = {
+
+                "default": {
+                    "icon": "glyphicon glyphicon-flash"
+                },
+                "TopConcept": {
+                    "icon": 'icons/wiki.png'
+
+
+                },
+                "Concept": {
+                    "icon": 'icons/concept.png'
+
+
+                },
+                "Page": {
+                    "icon": 'icons/page.png'
+
+
+                }
+            }
+
+
+            common.loadJsTree("treeDiv1", nodes, {selectNodeFn: rdfTripleSkosProxy.onTreeClikNode, types: types});
 
         })
 
@@ -71,19 +96,18 @@ var rdfTripleSkosProxy = (function () {
         self.currentTreeNode = obj.node
 
 
-        if (obj.event.ctrlKey)
-            self.showNodeConceptsGraph(obj.node)
-        if (obj.event.altKey) {
-            if (obj.node.data && obj.node.data.type == "wikiPage")
-                return self.getWikiPagesWords(obj.node)
-            else
-                return self.addWikiPagesToTree(obj.node)
-        }
-
-        if (obj.node.children.length > 0)
-            return;
-
+        if (obj.node.data && obj.node.data.type == "wikiPage")
+            return self.getWikiPagesWords(obj.node)
+        // if (true || obj.event.ctrlKey)
         self.addTreeChildrenNodes(obj.node.id);
+       if (obj.node.parents.length >3 || obj.event.altKey) {
+            self.showNodeConceptsGraph(obj.node)
+           self.addWikiPagesToTree(obj.node)
+        }
+        /* else if (obj.node.children.length > 0)
+             return;*/
+
+
 
 
     }
@@ -128,7 +152,7 @@ var rdfTripleSkosProxy = (function () {
                         relateds: [],
                     },
                     treeDivId: "treeDiv1",
-                    icon: "concept-icon.png",
+                    type: "Concept",
                     id: id,
                     parent: broaderId,
                     text: prefLabel,
@@ -230,14 +254,23 @@ var rdfTripleSkosProxy = (function () {
 
             var maxPages = 0;
             var minPages = 1000000;
+            self.currentConceptsLabels = []
 
             if (result.results.bindings.length == 0)
                 return $("#messageDiv").html("no concepts matching");
 
-            if (result.results.bindings.length > 200)
+            if (result.results.bindings.length > 200) {
+                self.tooManyNodes = true;
+                result.results.bindings.forEach(function (item) {
+                    var conceptLabel = item.conceptLabelLower.value;
+                    if (self.currentConceptsLabels.indexOf(conceptLabel) < 0)
+                        self.currentConceptsLabels.push(conceptLabel);
+                })
+
                 return $("#messageDiv").html("too many concepts to show :" + result.results.bindings.length);
 
-
+            }
+            self.tooManyNodes = false;
             result.results.bindings.forEach(function (item) {
                 $("#messageDiv").html(node.text + " concepts :" + result.results.bindings.length);
 
@@ -263,6 +296,8 @@ var rdfTripleSkosProxy = (function () {
 
 
                 var conceptLabel = item.conceptLabelLower.value;
+                if (self.currentConceptsLabels.indexOf(conceptLabel) < 0)
+                    self.currentConceptsLabels.push(conceptLabel);
 
                 if (!similarNodes[conceptLabel])
                     similarNodes[conceptLabel] = [];
@@ -290,7 +325,7 @@ var rdfTripleSkosProxy = (function () {
                         if (allnodes.indexOf(broaderId) < 0) {
                             allnodes.push(broaderId)
                             var broaderLabel = item["broader" + i + "Label"].value
-                            visjsData.nodes.push({id: broaderId, label: broaderLabel, color: color, data: {type: "broaderConcept"}})
+                            visjsData.nodes.push({id: broaderId, label: broaderLabel,shape:"box", color: color, data: {type: "broaderConcept"}})
                         }
                         if (i == 1) {
                             var edgeId = conceptId + "_" + broaderId
@@ -565,13 +600,13 @@ var rdfTripleSkosProxy = (function () {
             result.results.bindings.forEach(function (item) {
                 var page = item.page.value;
                 // var prefLabel = item.conceptLabel.value;
-                var pageLabel = page.substring(page.lastIndexOf("/") + 1)
+                var pageLabel = "Page :" + page.substring(page.lastIndexOf("/") + 1)
                 var node = {
                     data: {
                         type: "wikiPage",
                     },
                     treeDivId: "treeDiv1",
-                    icon: "concept-icon.png",
+                    type: "Page",
                     id: page,
                     parent: subject.id,
                     text: pageLabel,
@@ -587,24 +622,21 @@ var rdfTripleSkosProxy = (function () {
     }
 
     self.getWikiPagesWords = function (page) {
-
+        $("#waitImg").css("display", "block")
+        $("#commentDiv").html("searching new concepts in selected wiki page")
         // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
 
-        var pageCategoryThesaurusWords = [];
-        visjsGraph.data.nodes.get().forEach(function (node) {
-            if (node.data && (node.data.type == "leafConcept" || node.data.type == "broaderConcept")) {
-                pageCategoryThesaurusWords.push(node.label)
-            }
-        })
-
+        if (!self.currentConceptsLabels)
+            self.currentConceptsLabels = []
         var payload = {
+
 
             getWikimediaPageNonThesaurusWords: 1,
             elasticUrl: "http://vps254642.ovh.net:2009/",
             indexName: "mediawiki-pages-*",
             pageName: page.text,
             graph: "http://souslesens.org/oil-gas/upstream/",
-            pageCategoryThesaurusWords:pageCategoryThesaurusWords
+            pageCategoryThesaurusWords: self.currentConceptsLabels
 
         }
 
@@ -617,19 +649,69 @@ var rdfTripleSkosProxy = (function () {
 
             success: function (data, textStatus, jqXHR) {
                 var xx = data;
-                var html = " words not in thesaurus:<br>";
+                var html = "";
+                /*  if(self.tooManyNodes)
+                      html="<b>All words in page:</b><br><ul>";
+                  else*/
+                html = "<b>Page words not in thesaurus:</b><br><div style='display: flex;flex-wrap: wrap;'>";
                 data.forEach(function (word) {
-                    html += word + ", ";
+                    html += "<div draggable='true' class='newWord' id='newWord_" + word + "'>" + word + "</div>";
                 })
-                $("#commentDiv").html(html)
+                html += "</div>";
+                html += "<script>" +
+                    "$('.newWord').bind('click',rdfTripleSkosProxy.onNewPageWordClick);" +
 
+                    "" +
+                    "</script>"
+                $("#commentDiv").html(html)
+                $("#waitImg").css("display", "none")
 
             }
             , error: function (err) {
                 $("#messageDiv").html(err.responseText);
+                $("#waitImg").css("display", "none")
             }
         })
     }
+
+    self.onNewPageWordClick = function (event) {
+        var word = event.currentTarget.id.substring(8)
+        var id = event.currentTarget.id;
+        self.currentSelectedPageNewWord = word;
+        var classes = $('#' + id).attr('class').split(/\s+/);
+        var text=$("#copiedWords").val()
+        if (classes.indexOf('selectedNewWord') > -1) {
+            $('#' + id).removeClass('selectedNewWord')
+
+            text=text.replace(word,"")
+            text=text.replace(",,","")
+
+        }
+        else {
+            $('#' + id).addClass('selectedNewWord')
+          text=text+","+word;
+        }
+        $("#copiedWords").val(text)
+
+    }
+
+    self.copySelectedWordsToClipboard = function () {
+
+        var text = ""
+        $('.selectedNewWord').each(function (item) {
+            if (text !="")
+                text += ", ";
+            text += $(this).html()
+        })
+        $("#copiedWords").val(text)
+      /*  $("#copiedWords").focus()
+        document.execCommand('copy');*/
+
+    }
+       /* var copyText = document.querySelector("#copiedWords");
+        copyText.select();
+        document.execCommand("copy");*/
+
 
 
     return self;

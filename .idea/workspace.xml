@@ -3,14 +3,21 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/httpProxy..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/httpProxy..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/OntologyEP/Stephanie..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/OntologyEP/Stephanie..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/spacyServer..js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/index2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/index2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/search.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/searchFrontOffice/authentification.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/searchFrontOffice/authentification.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/semantEP/eseachTreemap.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/eseachTreemap.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/semantEP/esearchDocs2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/esearchDocs2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/semantEP/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/semantEP/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/index2.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/evaluator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/common.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_GEMET.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_GEMET.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,8 +32,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
-        <option value="HTML File" />
         <option value="JS module" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -41,24 +48,24 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/semantEP" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/skosEditor" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\skosEditor" />
+      <recent name="D:\GitHub\nlp2\public\icons" />
+      <recent name="D:\GitHub\nlp2\bin\others\spacy" />
       <recent name="D:\GitHub\nlp2\public\semantEP" />
       <recent name="D:\GitHub\nlp2\bin\others\mediawiki" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor\js" />
-      <recent name="D:\GitHub\nlp2\public\skosEditor" />
-      <recent name="D:\GitHub\nlp2\bin\backoffice" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GitHub\nlp2\public\icons" />
       <recent name="D:\GitHub\nlp2\public\semantEP" />
       <recent name="D:\GitHub\nlp2\public\ontograph\js" />
       <recent name="D:\GitHub\nlp2\public\js" />
       <recent name="D:\GitHub\nlp2\bin" />
-      <recent name="D:\GitHub\nlp2\public\js\searchFrontOffice" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -73,7 +80,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.spacyServer..js">
+  <component name="RunManager" selected="Node.js.bin\www">
     <configuration name="Stephanie..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="Stephanie..js" working-dir="$PROJECT_DIR$/bin/others/OntologyEP">
       <method v="2" />
     </configuration>
@@ -83,7 +90,7 @@
     <configuration name="mediawikiTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="mediawikiTagger..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
       <method v="2" />
     </configuration>
-    <configuration name="onTheFlyTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="onTheFlyTagger..js" working-dir="$PROJECT_DIR$/bin/others">
+    <configuration name="nlpServer..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="nlpServer..js" working-dir="$PROJECT_DIR$/bin/others/spacy">
       <method v="2" />
     </configuration>
     <configuration name="spacyServer..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="spacyServer..js" working-dir="$PROJECT_DIR$/bin/others">
@@ -91,11 +98,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Node.js.spacyServer..js" />
         <item itemvalue="Node.js.Stephanie..js" />
+        <item itemvalue="Node.js.nlpServer..js" />
         <item itemvalue="Node.js.mediawikiTagger..js" />
+        <item itemvalue="Node.js.spacyServer..js" />
         <item itemvalue="Node.js.mediawikiStats..js" />
-        <item itemvalue="Node.js.onTheFlyTagger..js" />
       </list>
     </recent_temporary>
   </component>
@@ -162,7 +169,7 @@
       <workItem from="1597217102788" duration="2616000" />
       <workItem from="1597226069279" duration="18051000" />
       <workItem from="1597288529473" duration="69069000" />
-      <workItem from="1597638229204" duration="16766000" />
+      <workItem from="1597638229204" duration="132257000" />
     </task>
     <servers />
   </component>
@@ -282,7 +289,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js</url>
-          <line>229</line>
+          <line>253</line>
           <option name="timeStamp" value="519" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -309,6 +316,12 @@
           <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
           <line>264</line>
           <option name="timeStamp" value="619" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
+          <line>928</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="674" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

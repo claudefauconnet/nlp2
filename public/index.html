@@ -2,281 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Souslesens search</title>
+    <title>souslesensNLP</title>
+    <link rel="icon" href="icons/souslesensIconSmall.png">
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/jquery/jquery-ui.min.js"></script>
+    <script src="js/others/async.js"></script>
+    <script src="js/searchFrontOffice/authentification.js"></script>
+
+    <script>
+
+
+        $(function () {
+
+            config = {loginMode: "json", appName: "CTG"};
+            authentication.init(function (err) {
+
+            })
+        })
+    </script>
+    <style>
+        .appDiv {
+            background-color: #d6d9d8;
+            border-radius: 5px;
+            border: solid blue 2px;
+            margin: 5px;
+            padding: 5px;
+        }
+
+
+    </style>
 </head>
-<!--<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
--->
+<body>
+<div id="main">
 
-<link rel="stylesheet" href="css/entities.css" />
-<link rel="stylesheet" media="screen" type="text/css" title="Design" href="js/jquery/jquery-ui.min.css"/>
-<link rel="stylesheet" type="text/css"  href="css/default.css">
-<script src="js/jquery/jquery.min.js"></script>
-<script src="js/jquery/jquery-ui.min.js"></script>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-<script src="js/others/async.js"></script>
-
-<script src="js/searchFrontOffice/config.js"></script>
-<script src="js/searchFrontOffice/context.js"></script>
-<script src="js/searchFrontOffice/mainController.js"></script>
-<script src="js/searchFrontOffice/indexes.js"></script>
-<script src="js/searchFrontOffice/_search.js"></script>
-<script src="js/searchFrontOffice/ui.js"></script>
-<script src="js/searchFrontOffice/entities.js"></script>
-<script src="js/searchFrontOffice/authentification.js"></script>
-<script src="data/stopwords-fr..js"></script>
-
-
-<script type="text/javascript" src="https://unpkg.com/vis-network@latest/dist/vis-network.js"></script>
-<link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
-<script src="js/graph/visjsGraph2.js"></script>
-<script src="js/graph/graphController.js"></script>
-<script src="js/statistics.js"></script>
-
-
-
-<script>
-    $(function () {
-            authentication.init(true)
-    })
-</script>
-<style>
-    .container {
-        display: flex;
-        flex-direction: row;
-        font-family: Verdana;
-    }
-
-    .leftDiv {
-        display: flex;
-        flex-direction: column;
-        min-width: 250px;
-        max-width: 250px;
-        background: #e0dddd;
-    }
-
-    .rightDiv {
-        display: flex;
-        flex-direction: column;
-        min-width: 250px;
-        max-width: 250px;
-        background: #e0dddd;
-    }
-
-    .centerDiv {
-        flex-direction: column;
-        background: whitesmoke;
-        display: flex;
-        align-items: center;
-        min-width: 500px;
-       // justify-content: center;
-    }
-
-    .searchDiv {
-        width: 100%;
-        padding: 10px;
-        display: flex;
-        justify-content: center;
-    }
-
-    #thumbnailsDiv{
-        display: flex;
-        flex-direction: row;
-        align-items: start;
-        display: none;
-
-    }
-
-
-    .resultDiv {
-
-        padding: 5px;
-        overflow: auto;
-
-    }
-
-    #questionInput {
-        width: 400px;
-    }
-
-    .usageDiv{
-        font-size: 12px;
-        background: #e0dddd;
-
-    }
-    .usageDiv td {
-        padding: 2px;
-    }
-    table {
-       border: 1px;
-    }
-
-
-    .hlt1 {
-        background-color: #FFFF00
-    }
-
-    .hit{
-        background-color: white;
-        border: darkgray 1px solid;
-        border-radius: 3px;
-        margin:5px;
-        padding: 3px;
-    }
-    .excerpt {
-        font-size: 10px;
-        font-style: italic;
-    }
-
-    .ui_title{
-        font-size: 14px;
-        font-style: normal;
-        font-weight: bold;
-        text-align: justify;
-        margin: 0 auto;
-        width:250px;
-
-    }
-    .currentPage{
-      background: #6a7179;
-
-        border-radius: 3px;
-    }
-.selectedEntity{
-    font-size: 12px;
-    font-style: normal;
-    font-weight: normal;
-    text-align: justify;
-    margin: 2px;
-    padding:2px;
-    border-radius: 5px;
-    background-color: #d9bb73;
-  border: #3f3731 solid 2px;
-
-}
-    #jstreeDiv{
-        width:400px;height: 600px;overflow: auto
-    }
-    #indexesDiv{
-        width:250px;min-height: 300px;overflow: auto;
-        font-size: 12px;
-    }
-    .indexDocCount{
-        font-style: italic;
-        font-weight: bold;
-    }
-    #paginationDiv{
-        color:#2b2b2b;
-        font-weight: bold;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-       margin:5px
-
-    }
-    .icon{
-        opacity: 50%;
-        width:20px
-    }
-
-    ul {
-        list-style-type: none;
-    }
-
-
-
-
-</style>
-<body style='overflow:hidden'>
-
-<div class="container">
-    <div class="leftDiv">
-
-
-        <div id="indexesDiv"></div>
-
-        <div id="associatedWordsDiv" style="width:90%;padding:3px; font-size:12px"></div>
-        <div id="associatedWordsEntitiesDiv" style="width:90%;padding:3px"></div>
-    </div>
-    <div class="centerDiv">
-        <div class="searchDiv">
-            <img src="icons/clear.png" title="effacer" class="icon" onclick="mainController.resetQuestion()">
-            <input id="questionInput"  title="saisissez les mots cherchés  puis tapez entrée"  placeholder="saisissez les mots cherchés  puis tapez entrée ">
-
+      <div style="display: flex;flex-direction: row;margin: 10px;padding: 10px">
+        <div>
+        <img src="icons/souslesensIconMedium.png"/>
+        <div style="font: bold 24px Verdana">Souslesens NLP Demos</div>
         </div>
-        <div class="usageDiv" onclick="mainController.hideUsageDiv()">
-            <table border="1px">
-                <tr style="font-weight: bold">
-                    <td>syntaxe</td>
-                    <td>recherche les documents qui contiennent :</td>
-                </tr>
-                <tr>
-                    <td>mot1 mot2 mot3</td>
-                    <td>les 3 mots (quelque soit l'écart)</td>
-                </tr>
-                <tr>
-                    <td>"mot1 mot2 mot3"</td>
-                    <td> la phrase exacte</td>
-                </tr>
-                <tr>
-                    <td>"mot1 mot2 mot3"X</td>
-                    <td>les 3 mots au plus distants de X</td>
-                </tr>
+        <div>
+            <div style="font: italic 18px Verdana ">Open source apps for search, thesaurus and ontology manipulation and corpus annotation</div>
+            <div style="font: italic 18px Verdana "> based on elasticSearch search engine, Spacy NLP library , Virtuoso RDF datbase, Visj graph vis library , Node js</div>
+            <div style="font: italic 12px Verdana">License : MIT</div>
+            <div style="font: italic 12px Verdana">contact : claude.fauconnet@gmail.com</div>
 
-
-                <tr>
-                    <td>mot1/mot2 mot3</td>
-                    <td> (mot1 ou mot2) et le mot 3</td>
-                </tr>
-
-                <tr>
-                    <td>mot1* mot3</td>
-                    <td> les mots qui commencent par mot1 et le mot 3</td>
-                </tr>
-                <tr>
-                    <td>*mot1 mot3</td>
-                    <td> les mots qui finisent par mot1 et le mot 3</td>
-                </tr>
-
-            </table>
-
-
-        </div>
-        <div id="paginationDiv"></div>
-     <!--   <div id="thumbnailsDiv" >
-            <button onclick='mainController.onThumbnails("list")'>List</button>
-            <button onclick='mainController.onThumbnails("graph")'>Graph...</button>
-            <button onclick='mainController.onThumbnails("stats")'>Stats...</button>
-            <button onclick='mainController.onThumbnails("entities")'>Entities</button>
-        </div>-->
-        <div class="resultDiv" id="resultDiv">
-         <!--   <textarea id="queryTA" row="20" cols="40"></textarea>-->
         </div>
     </div>
-    <div class="rightDiv">
-     <!--   <p align="center" > centre Joseph Wrésinski  moteur de recherche fédéree </p>
-        <div style="display:table-cell; vertical-align:middle; text-align:center">
-            <img src="images/logoATD.png" width="100px">
-        </div>-->
-        <br>
-
-        <div  id="entitiesWrapperDiv">
-
-        <div id="selectedEntitiesDiv"></div>
-        <div id="jstreeDiv"></div>
-        </div>
+    <div style="display: flex;flex-direction: column">
 
     </div>
+    <div style="display:flex;flex-direction:column ;margin:10px;padding: 10px; font: normal 18px blue">
+        <div class="appDiv">
+            <div style="font-weight: bold"><a href="skosEditor/multiSkosGraph3.html" target="_blank">thesaurusConceptComparator </a></div>
+            cherche et visualise les concepts dans différents thesaurus et ontologies
+        </div>
+        <!-- <tr>
+             <a href="skosEditor/editor.html" target="_blank">thesaurusEditor</a>
+              Edite un thesaurus
+         </tr>-->
+        <div class="appDiv">
+            <div style="font-weight: bold"><a href="skosEditor/evaluator.html" target="_blank">thesaurusEvaluator</a></div>
+            Permet l'evaluation/curation d'un thesaurus par partitionnement des concepts selon les catégories d'un corpus métier( Wiki)
+        </div>
+        <div class="appDiv">
+            <div style="font-weight: bold"><a href="ontograph/index.html" target="_blank">Ontograph</a></div>
+            navigation dans un corpus annoté par un thesaurus
+        </div>
+        <div class="appDiv">
+            <div style="font-weight: bold"><a href="ontograph/comparator.html" target="_blank">Comparator</a></div>
+            navigation dans un corpus annoté par un thesaurus
+        </div>
 
+        <div class="appDiv">
+            <div style="font-weight: bold"><a href="semantEP/index.html" target="_blank">Ontology based information portal</a></div>
+            A partir d'une ontologie métier (NPD) un portail d'accès aux données
+        </div>
+
+
+        </table>
+    </div>
 
 </div>
-
-<div id="dialogDiv">
-
-</div>
-
 <div id="loginDiv"
      style="position: absolute;visibility: hidden;display: flex;justify-content:center;align-items: center">
     <div> login<input id="loginInput">
@@ -285,9 +91,8 @@
         <button id="loginButton" onclick="authentication.doLogin()">OK</button>
         <!--   <button id="xxx" onclick="Tablette.updateCotesParTabletteZeros()">TEST boites</button>-->
 
-        <div id="loginMessage"></div>
+        <div id="loginMessage" style="width:300px;height: 30px;color:red"></div>
     </div>
 </div>
-
 </body>
 </html>

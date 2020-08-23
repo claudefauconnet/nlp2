@@ -755,136 +755,193 @@ var mediaWikiTagger = {
     }
 
     ,
-    getWikimediaPageNonThesaurusWords: function (elasticUrl, indexNames, pageName, graph,pageCategoryThesaurusWords, callback) {
+    getWikimediaPageNonThesaurusWords: function (elasticUrl, indexNames, pageName, graph, pageCategoryThesaurusWords, callback) {
 
         var pageAllwords = [];
-        var wikiStopWords = [];
+        var pageAllwordsMap = {};
+        var wikiStopWords = ["navigation", "search", "reference", "chapter", "author", "web", "page", "choice", "type", "plan", "use", "figure", "majority", "today", "2b", "b", "3a", "ft", "3048160m", "need", "series", "div", "classprintfoote"];
         var pageThesaurusWords = []
         var pageSpecificWords = [];
         var pageNonThesaurusWords = []
 
+        var rawPageContent = "";
+
 
         async.series([
 
-            //get Page allwords
-            function (callbackSeries) {
-                var query = {
-                    "query": {
-                        "match": {pageName: pageName}
-                    },
-                    "_source": ["content",],
-                    "from": 0,
-                    "size": 1
-                }
-
-                var options = {
-                    method: 'POST',
-                    json: query,
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-
-                    url: elasticUrl + indexNames + "/_search"
-                };
-
-
-                request(options, function (error, response, body) {
-                    if (error)
-                        return callbackSeries(error);
-                    var content = body.hits.hits[0]._source.content;
-                    content = content.replace(/<[^>]*>/gm, "");
-                    var analyzeQuery = {
-                        "analyzer": "stop",
-                        "text": content
+                //get Page allwords
+                function (callbackSeries) {
+                    var query = {
+                        "query": {
+                            "match": {pageName: pageName}
+                        },
+                        "_source": ["content",],
+                        "from": 0,
+                        "size": 1
                     }
-                    var analyzeOptions = {
+
+                    var options = {
                         method: 'POST',
-                        json: analyzeQuery,
+                        json: query,
                         headers: {
                             'content-type': 'application/json'
                         },
 
-                        url: elasticUrl + "_analyze"
+                        url: elasticUrl + indexNames + "/_search"
                     };
 
 
-                    request(analyzeOptions, function (error, response, body) {
+                    request(options, function (error, response, body) {
                         if (error)
                             return callbackSeries(error);
-                        body.tokens.forEach(function (item) {
-                            if (item.token.length < 4)
-                                return;
-                            if (pageAllwords.indexOf(item.token) < 0)
-                                pageAllwords.push(item.token)
-                        })
+                        var content = body.hits.hits[0]._source.content;
 
+                        rawPageContent = content.replace(/<[^>]*>/gm, " ");
+                        rawPageContent = rawPageContent.replace(/[^A-Za-z0-9 -]/gm, "");
 
-                        callbackSeries()
+                        callbackSeries();
 
                     })
-                })
-            },
+                },
 
 
-            /*  get words not in thesaurus*/
-            function (callbackSeries) {
+                /* query spacy to get nouns in page
+                 */
 
-                var wordsFilter = "";
-                pageAllwords.forEach(function (word, index) {
-                    if (index > 0)
-                        wordsFilter += "|"
-                    wordsFilter += "^" + word + "$";
-                })
-
-                var graphFilter="";
-                if(graph){
-                    graphFilter="  from <"+graph+"> "
-                }
+                function (callbackSeries) {
 
 
-                var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
-                    "select distinct ?prefLabel "+graphFilter+"" +
-                    " where {?concept skos:prefLabel|skos:altLabel ?prefLabel  " +
-                    "filter (lang(?prefLabel)=\"en\" && regex(?prefLabel,\" " + wordsFilter + "\", \"i\"))" +
-                    "} limit 10000"
+                    /*  var spacyServerUrl= "http://vps475829.ovh.net:3020/nlp"
+                       var json={"parse":1,
+                           "text":rawPageContent
+                       }*/
+                    var nlpServer = require('../spacy/nlpServer.')
+                    nlpServer.parse(rawPageContent, function (err, result) {
 
-                var params = {query: query}
+                        //  httpProxy.post(spacyServerUrl, {  'content-type': 'application/json'}, json, function (err, result) {
+                        if (err) {
+                            console.log(err)
+                            return callbackSeries(err);
+                        }
 
-                httpProxy.post(mediaWikiTagger.sparqlUrl, null, params, function (err, result) {
-                    if (err) {
-                        console.log(params.query)
-                        return callbackSeries(err);
+                        result.forEach(function (word) {
+                            if (!pageAllwordsMap[word])
+                                pageAllwordsMap[word] = 0;
+                            pageAllwordsMap[word] += 1;
+                        })
+                        callbackSeries()
+                    })
+
+                },
+
+
+                /*  get words not in thesaurus*/
+                function (callbackSeries) {
+                    var wordsFilter = "";
+                    for (var key in pageAllwordsMap) {
+                        pageAllwords.push(key)
+                    }
+                    pageAllwords.forEach(function (word, index) {
+                        if (index > 0)
+                            wordsFilter += "|"
+                        wordsFilter += "^" + word + "$";
+                    })
+
+                    var graphFilter = "";
+                    if (graph) {
+                        graphFilter = "  from <" + graph + "> "
                     }
 
-                    result.results.bindings.forEach(function (item) {
-                        pageThesaurusWords.push(item.prefLabel.value.toLowerCase());
+
+                    var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
+                        "select distinct ?prefLabel " + graphFilter + "" +
+                        " where {?concept skos:prefLabel|skos:altLabel ?prefLabel  " +
+                        "filter (lang(?prefLabel)=\"en\" && regex(?prefLabel,\" " + wordsFilter + "\", \"i\"))" +
+                        "} limit 10000"
+
+                    var params = {query: query}
+
+                    httpProxy.post(mediaWikiTagger.sparqlUrl, null, params, function (err, result) {
+                        if (err) {
+                            console.log(params.query)
+                            return callbackSeries(err);
+                        }
+
+                        result.results.bindings.forEach(function (item) {
+                            pageThesaurusWords.push(item.prefLabel.value.toLowerCase());
+                        })
+
+                        callbackSeries()
                     })
 
+                },
+
+
+//filter words
+                function (callbackSeries) {
+
+
+                    pageAllwords.forEach(function (word) {
+                        if (pageThesaurusWords.indexOf(word) < 0 && pageCategoryThesaurusWords.indexOf(word) < 0 && wikiStopWords.indexOf(word) < 0) {
+                            if (word.length > 3)
+                                pageNonThesaurusWords.push(word);
+                        }
+                    })
+                    pageNonThesaurusWords.sort();
+                    /*   pageNonThesaurusWords.forEach(function(word,index){
+                           pageNonThesaurusWords[index]=word+" ("+pageAllwordsMap[word]+")"
+
+                       })*/
+
+
                     callbackSeries()
-                })
+                }
+                //check altLabels in Virtuoso thesaurus
+                , function (callbackSeries) {
+                    var wordsFilter = "";
+                    pageNonThesaurusWords.forEach(function (word, index) {
+                        if (index > 0)
+                            wordsFilter += "|"
+                        wordsFilter += "^" + word + "$";
+                    })
 
-            },
-
-
-//intersect with  pageCategoryThesaurusWord
-            function (callbackSeries) {
-
-
-
-                pageAllwords.forEach(function(word){
-                    if(pageThesaurusWords.indexOf(word)<0  && pageCategoryThesaurusWords.indexOf(word)<0){
-
-                           pageNonThesaurusWords.push(word);
-                       }
-                   })
+                    var graphFilter = "";
+                    if (graph) {
+                        graphFilter = "  from <" + graph + "> "
+                    }
 
 
-                callbackSeries()
+                    var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
+                        "select distinct ?altLabel " + graphFilter + "" +
+                        " where {?concept skos:altLabel ?altLabel  " +
+                        "filter (lang(?altLabel)=\"en\" && regex(?altLabel,\" " + wordsFilter + "\", \"i\"))" +
+                        "} limit 1000"
+
+                    var params = {query: query}
+
+
+                    httpProxy.post(mediaWikiTagger.sparqlUrl, null, params, function (err, result) {
+                        if (err) {
+                            console.log(params.query)
+                            return callback(err);
+                        }
+                            result.results.bindings.forEach(function(item){
+console.log ("!!!!!!!! altLabel word")
+                            })
+                            callbackSeries()
+
+
+
+
+                    })
+                }
+
+            ],
+
+            function (err) {
+                return callback(err, pageNonThesaurusWords)
             }
-
-        ], function (err) {
-            return callback(err, pageNonThesaurusWords)
-        })
+        )
 
 
     }
@@ -974,6 +1031,10 @@ if (false) {
     var elasticUrl = "http://vps254642.ovh.net:2009/"
     var indexName = "mediawiki-pages-aapg"
     var wikiUrl = "https://wiki.aapg.org/"
+
+    var wikiUrl = "https://petrowiki.spe.org/"
+    var indexName = "mediawiki-pages-spe"
+
     mediaWikiTagger.getCategoriesPagesRdf(elasticUrl, indexName, wikiUrl)
 }
 //mediaWikiTagger.createMediawikiIndex(elasticUrl,"mediawiki");

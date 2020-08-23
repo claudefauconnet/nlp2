@@ -96,6 +96,7 @@ var sparql_GEMET = (function () {
             if (err) {
                 return callback(err);
             }
+
             result.results.bindings.forEach(function (item) {
 
               /*  for (var i = 1; i <= depth; i++) {

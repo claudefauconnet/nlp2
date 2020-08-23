@@ -21,7 +21,15 @@ WHERE {
 
 var sparql_abstract = (function () {
     var self = {};
+
+    var cc = window.location;
     self.rdfsMap = {}
+
+   //gestion des url de routage node (index.js) avec nginx
+    var elasticUrl = "/elastic";
+    if (window.location.href.indexOf("https") > -1)
+        elasticUrl = "../elastic";
+
     self.initSources = function (all) {
 
 
@@ -145,7 +153,6 @@ var sparql_abstract = (function () {
             return sparql_skos_generic.getDetails(source, id, options, callback)
 
 
-
         if (sparqlBuilder == "sparql_microsoft-accademic")
             return sparql_microsoft_accademic.getDetails(source, id, options, callback)
         if (sparqlBuilder == "sparql_babelNet")
@@ -249,6 +256,7 @@ var sparql_abstract = (function () {
 
         $("#waitImg").css("display", "block");
 
+
         var payload = {
             httpProxy: 1,
             url: url,
@@ -256,7 +264,7 @@ var sparql_abstract = (function () {
         }
         $.ajax({
             type: "POST",
-            url: "/elastic",
+            url: elasticUrl,
             data: payload,
             dataType: "json",
             /* beforeSend: function(request) {
@@ -264,7 +272,9 @@ var sparql_abstract = (function () {
              },*/
 
             success: function (data, textStatus, jqXHR) {
-                var xx = data;
+                if (data.result && typeof data.result != "object")//cas GEMET
+                    data = JSON.parse(data.result)
+
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
                 callback(null, data)

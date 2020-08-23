@@ -58,6 +58,8 @@ var common = (function () {
             plugins.push("checkbox")
         if (options.searchPlugin)
             plugins.push("search")
+        if (options.types)
+            plugins.push("types")
         if(options.contextMenu)
             plugins.push("contextmenu")
         if ($('#' + jstreeDiv).jstree)
@@ -79,6 +81,7 @@ var common = (function () {
                 tie_selection:false,
                 three_state:false,
               },
+            types: options.types,
 
              contextmenu: {items: options.contextMenu}
 

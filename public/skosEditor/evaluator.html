@@ -108,6 +108,20 @@
             height: 100px;
         }
 
+        .newWord {
+            background-color: #bdbdbd;
+            border-radius: 5px;
+            padding: 2px;
+            margin: 2px;
+        }
+
+        .selectedNewWord {
+            background-color: #95a4bd !important;
+        }
+        .jstree-node{
+            font-weight: bold;
+        }
+
     </style>
     <script>
         function dragOverHandler(ev) {
@@ -139,22 +153,27 @@
         }
 
 
+        $(function () {
 
-            $(function () {
-                $("#sliderCountPagesMax").slider(function () {
-                    min: 1;
-                    max:20;
-
-
-
-                }).on("slidechange", function (event, ui) {
-                   $("#countPagesMax").val(ui.value)
-                    rdfTripleSkosProxy.showNodeConceptsGraph()
-                }).slider( "option", "max", 30 );
-            });
+            var w = $(document).width();
+            var h = $(document).height;
+            $("#graphDiv").width(w - 600)
+            $("#graphDiv").height(w - 100)
 
 
-            // var to = false;
+            rdfTripleSkosProxy.loadThesaurus()
+            $("#sliderCountPagesMax").slider(function () {
+                min: 1;
+                max:20;
+
+
+            }).on("slidechange", function (event, ui) {
+                $("#countPagesMax").val(ui.value)
+                rdfTripleSkosProxy.showNodeConceptsGraph()
+            }).slider("option", "max", 30);
+        });
+
+        // var to = false;
 
 
     </script>
@@ -166,36 +185,23 @@
 <div style="display: flex;flex-direction: row;justify-content:left">
 
     <div style='max-width: 400px;'>
-        thesaurus (rdf)<br>
-
-        <!--   <select id="thesaurusSelect1" onclick="$('#skosInput1').val($(this).val())"></select>
-           <input id="skosInput1" value="" size="40"><br>-->
-        <input type="button" onclick="rdfTripleSkosProxy.loadThesaurus()" value="New">
-        <!--  <input type="button" onclick="skosEditor.loadThesaurus($('#skosInput1').val(),'editorDivId',1)" value="Edit">
-          <input id="outputLangInput1" value="en" size="3"><select id="broaderTypeInput1"><option>first</option><option>last</option>
-
-          <input type="button" onclick="skosEditor.saveThesaurus(1)" value="Save">
-          concepts:<span id="countConcepts1"></span><br> Search <input size='10' class="treeSearchInput" id="treeSearchInput1">
-         </select><button onclick="skosEditor.openAllTree(1)">Expand</button>-->
-
+        thesaurus<br>
         <div id="treeDiv1" style="height:500px;overflow: auto"></div>
-        <div id="commentDiv"></div>
+        <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px">
+        <div id="commentDiv" style="height: 350px;overflow: auto"></div>
+        <!--   <button onclick="rdfTripleSkosProxy.copySelectedWordsToClipboard()">Copy Selected Words</button>-->
+        <textarea type="text" style="width:300px" id="copiedWords"></textarea>
     </div>
 
 
-    <div style=' max-width: 1000px; width: 1000px;'>
-        <div><img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px"> <span id="messageDiv"></span></div>
-        <div class='medium-12-columns'>
-            <span id='valid_indicator' class='label'></span>
-        </div>
+    <div>
+        <div><span id="messageDiv"></span></div>
         <div id='editorDivId'>
-
             <div id="graphDiv" style="width: 1000px;height: 1000px"></div>
-            <div id="graphPopupDiv" style="position: absolute;display: none;background-color:#b3b6c2">
-
-            </div>
+            <div id="graphPopupDiv" style="position: absolute;display: none;background-color:#b3b6c2"></div>
         </div>
     </div>
+
     <div style='max-width: 200px;'>
         max countPages <input id="countPagesMax" size="3" value="10" onchange="  rdfTripleSkosProxy.showNodeConceptsGraph() ">
         <div id="sliderCountPagesMax" style="width:150px"></div>
@@ -215,7 +221,6 @@
         <div id="loginMessage"></div>
     </div>
 </div>
-
 
 
 </body>

@@ -2,10 +2,19 @@ var authentication = (function () {
 
     var self = {}
 
+
+
+    var appConfig = {
+        appName: "search",
+        loginMode: "none",  //json database or none
+        contentField: "attachment.content",
+        locale: "Fr",
+        elasticUrl: "./elastic",
+
+    }
+
     self.authenticationDBUrl =appConfig.elasticUrl
     self.userIndexes = [];
-   
-
 
     self.init = function (activate,callback) {
         context = appConfig;
@@ -14,7 +23,7 @@ var authentication = (function () {
 
 
             $("#loginDiv").css("visibility", "visible");
-            $("#panels").css("visibility", "hidden");
+            $("#main").css("visibility", "hidden");
             var width = $(window).width()
             var height = $(window).height()
             $("#loginDiv").width(width).height(height).css("background-color", "#e5ebea").css("top", "0px").css("left", "0");
@@ -27,11 +36,12 @@ var authentication = (function () {
                 login: "none",
                 groups: ["ADMIN","search"]
             }
+            callback();
             mainController.init0();
         }
     }
 
-    self.doLogin = function () {
+    self.doLogin = function (callback) {
         var login = $("#loginInput").val();
         var password = $("#passwordInput").val();
         $("#main").css("visibility", "hidden");
@@ -73,6 +83,7 @@ var authentication = (function () {
 
 
         ], function (err) {
+            $("#loginMessage").css("visibility", "visible");
             if (err && err.responseJSON) {
                 if (err.responseJSON.ERROR == "changePassword") {
                     //    $("#loginMessage").html("le mot de passe doit être changé (<a href='htmlSnippets/changerMotDePasse.html'>cliquer ici</a>)");
@@ -86,24 +97,26 @@ var authentication = (function () {
 
 
                 } else {
-                    return $("#loginMessage").html(err.responseText);
+                    return $("#loginMessage").html(err);
                 }
 
 
             }else if(err){
-                return $("#loginMessage").html(err.responseText);
+                return $("#loginMessage").html(err);
             }
             if (!user)
                 return $("#loginMessage").html("invalid  login or password");
 
+            if(!Array.isArray(user.groups))
             var userGroups = user.groups.split(",");
-            if (userGroups.indexOf("admin") < 0 && userGroups.indexOf(appConfig.appName) < 0)
+            if (user.groups.indexOf("admin") < 0 && user.groups.indexOf(appConfig.appName) < 0)
                 return $("#loginMessage").html("user not allowed on this application  : " + appConfig.appName);
 
             $("#loginDiv").css("visibility", "hidden");
             $("#main").css("visibility", "visible");
             context.currentUser = user;
-            mainController.init0();
+            if(callback)
+         return callback()
 
         })
 
@@ -156,23 +169,23 @@ var authentication = (function () {
 
 
         var payload = {
-            authentify: 1,
+            tryLoginJSON: 1,
             login: login,
             password: password
 
         }
         $.ajax({
             type: "POST",
-            url: self.authenticationUrl,
+            url: appConfig.elasticUrl,
             data: payload,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
 
                 if (!$.isArray(data))
-                    return callback(err);
+                    return callback("bad login or password");
 
                 else if (data.length == 0) {
-                    return callback();
+                    return callback("bad login or password");
 
                 }
                 var user = {
