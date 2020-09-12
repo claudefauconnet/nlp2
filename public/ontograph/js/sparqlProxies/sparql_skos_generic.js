@@ -3,11 +3,11 @@ var sparql_skos_generic = (function () {
 
 
         self.getTopConcepts = function (conceptsGraphUri, callback) {
-            var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+            var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                "PREFIX elements:<http://purl.org/dc/elements/1.1/>"+
                 "select distinct * " +
                 "where{" +
-                "?scheme rdfsyn:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"+
+                "?scheme rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"+
                 "?scheme skos:prefLabel|rdfs:label|elements:title ?schemeLabel." +
                 "?concept skos:broader|skos:topConceptOf|rdfs:isDefinedBy|^terms:subject ?scheme." +
                 "?concept skos:prefLabel|rdfs:label ?conceptLabel."
@@ -30,7 +30,7 @@ var sparql_skos_generic = (function () {
 
         self.getNodeChildren = function (conceptId, options, callback) {
 
-            var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+            var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
                 "select distinct *" +
                 "where{ ?child1 skos:broader ?concept."

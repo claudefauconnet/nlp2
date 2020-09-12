@@ -35,8 +35,11 @@ var sparql_abstract = (function () {
 
         var userGroups = authentication.currentUser.groupes;
         if (all || userGroups.indexOf("admin") > -1 || userGroups.indexOf("CTG") > -1) {
-            self.rdfsMap['Total-CTG'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://data.total.com/resource/thesaurus/ctg/', sparqlBuilder: "sparql_skos_generic"};
-            self.rdfsMap['Oil&Gas-Upstream'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"};
+
+          //  self.rdfsMap['Total-CTG'] = {sparql_url: 'vps475829.ovh.net:8890/sparql/', graphIRI: 'http://data.total.com/resource/thesaurus/ctg/', sparqlBuilder: "sparql_skos_generic"};
+
+          self.rdfsMap['Total-CTG'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://data.total.com/resource/thesaurus/ctg/', sparqlBuilder: "sparql_skos_generic"};
+             self.rdfsMap['Oil&Gas-Upstream'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"};
         }
 
 
@@ -46,11 +49,11 @@ var sparql_abstract = (function () {
         self.rdfsMap['Dbpedia'] = {sparql_url: 'http://dbpedia.org/sparql', graphIRI: 'http://dbpedia.org', sparqlBuilder: "sparql_skos_generic", ancestorsDepth: 4};
 
         self.rdfsMap['USGS'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'https://www2.usgs.gov/science/USGSThesaurus/', sparqlBuilder: "sparql_skos_generic"};
-        //    'Oil&Gas-Upstream': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
-        self.rdfsMap['TermSciences'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"};
-        self.rdfsMap['ThesaurusIngenieur'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.souslesens.org/thesaurusIngenieur/', sparqlBuilder: "sparql_skos_generic"};
-        self.rdfsMap['Unesco'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_skos_generic"};
-        self.rdfsMap['LibraryOfCongress'] = {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.loc.gov/', sparqlBuilder: "sparql_skos_generic"};
+        //    'Oil&Gas-Upstream': {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
+        self.rdfsMap['TermSciences'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"};
+        self.rdfsMap['ThesaurusIngenieur'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://www.souslesens.org/thesaurusIngenieur/', sparqlBuilder: "sparql_skos_generic"};
+        self.rdfsMap['Unesco'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_skos_generic"};
+        self.rdfsMap['LibraryOfCongress'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://www.loc.gov/', sparqlBuilder: "sparql_skos_generic"};
 
         self.rdfsMap['Wikidata'] = {sparql_url: 'https://query.wikidata.org/', graphIRI: 'http://skos.um.es/unesco6/', sparqlBuilder: "sparql_Wikidata"};
         self.rdfsMap['Microsoft-accademic'] = {sparql_url: 'http://ma-graph.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_microsoft-accademic"};
@@ -62,9 +65,9 @@ var sparql_abstract = (function () {
 
     /*   self.rdfsMap = {
               //  'Microsoft-accademic': {sparql_url: 'http://ma-graph.org/sparql/', graphIRI: '', sparqlBuilder: "sparql_microsoft-accademic"},
-              'LibraryOfCongress': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://www.loc.gov/', sparqlBuilder: "sparql_skos_generic"},
-          // 'TermSciences': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"},
-         //  'Oil&Gas-Upstream': {sparql_url: 'http://vps475829.ovh.net:8890/sparql', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
+              'LibraryOfCongress': {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://www.loc.gov/', sparqlBuilder: "sparql_skos_generic"},
+          // 'TermSciences': {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"},
+         //  'Oil&Gas-Upstream': {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
           }*/
 
 

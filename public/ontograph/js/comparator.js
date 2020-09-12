@@ -94,21 +94,20 @@ var Comparator = (function () {
                         var sourceConceptsSlices = common.sliceArray(allSourceConcepts, sliceSize)
                         async.eachSeries(sourceConceptsSlices, function (sourceConcepts, callbackEach) {
 
-                            var regexStr = "("
+                            var regexStr = ""
                             sourceConcepts.forEach(function (concept, index) {
                                 if (index > 0)
                                     regexStr += "|";
-                                regexStr += concept.label;
+                                regexStr +=  "^" +concept.label.replace(/[-"]/g,"")+ "$";
                             })
                             regexStr += ")"
 
 
-                            var filter = "  regex(?prefLabel, \"^" + regexStr + "$\", \"i\")";
-                            if (false) {
-                                filter = "  regex(?prefLabel, \"" + regexStr + "\", \"i\")";
-                            }
+                            var filter = "  regex(?prefLabel, \"" + regexStr + "\", \"i\")";
+
                             var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
                                 "SELECT count(*) " +
+                                "FROM <"+ self.targetThesaurusGraphURI+"> "+
                                 "WHERE {" +
                                 "?id skos:prefLabel ?prefLabel ." +
                                 "FILTER (lang(?prefLabel) = '" + lang + "')" +
@@ -148,17 +147,16 @@ var Comparator = (function () {
                             sourceConcepts.forEach(function (concept, index) {
                                 if (index > 0)
                                     regexStr += "|";
-                                regexStr += concept.label;
+                                regexStr +=  "^" +concept.label.replace(/[-"]/g,"")+ "$";
                             })
                             regexStr += ")"
 
 
-                            var filter = "  regex(?prefLabel, \"^" + regexStr + "$\", \"i\")";
-                            if (false) {
-                                filter = "  regex(?prefLabel, \"" + regexStr + "\", \"i\")";
-                            }
+                            var filter = "  regex(?prefLabel, \"" + regexStr + "\", \"i\")";
+
                             var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
                                 "SELECT DISTINCT * " +
+                                "FROM <"+ self.targetThesaurusGraphURI+"> "+
                                 "WHERE {" +
                                 "?id skos:prefLabel ?prefLabel ." +
                                 "FILTER (lang(?prefLabel) = '" + lang + "')" +
@@ -590,7 +588,7 @@ var Comparator = (function () {
                             sourceConcepts.forEach(function (concept, index) {
                                 if (index > 0)
                                     regexStr += "|";
-                                regexStr += concept;
+                                regexStr += +concept.label.replace(/[-"]/g,"")+ "$";
                             })
                             regexStr += ")"
 
@@ -601,6 +599,7 @@ var Comparator = (function () {
                             }
                             var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
                                 "SELECT ?id ?prefLabel  count(?id as ?count) " +
+                                "FROM <"+ self.targetThesaurusGraphURI+"> "+
                                 "WHERE {" +
                                 "?id skos:prefLabel ?prefLabel ." +
                                 "FILTER (lang(?prefLabel) = '" + lang + "')" +

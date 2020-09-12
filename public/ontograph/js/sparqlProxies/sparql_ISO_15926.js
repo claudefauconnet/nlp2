@@ -1,6 +1,10 @@
 var sparql_ISO_15926 = (function () {
         var self = {};
 
+        var elasticUrl = "/elastic";
+        if (window.location.href.indexOf("https") > -1)
+            elasticUrl = "../elastic";
+
         self.getTopConcepts = function (callback) {
             var query = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
             query += "select * where{?concept rdfs:subClassOf <http://data.15926.org/dm/Thing>."
@@ -130,7 +134,7 @@ var sparql_ISO_15926 = (function () {
 
             $.ajax({
                 type: "POST",
-                url: "/elastic",
+                url: elasticUrl,
                 data: payload,
                 dataType: "json",
                 /* beforeSend: function(request) {
@@ -138,8 +142,8 @@ var sparql_ISO_15926 = (function () {
                  },*/
 
                 success: function (data, textStatus, jqXHR) {
-
-                    var xx = data;
+                    if (data.result && typeof data.result != "object")//cas GEMET
+                        data = JSON.parse(data.result)
                     //  $("#messageDiv").html("found : " + data.results.bindings.length);
                     $("#waitImg").css("display", "none");
                     /*  if (data.results.bindings.length == 0)

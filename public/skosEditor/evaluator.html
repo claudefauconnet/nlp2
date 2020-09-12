@@ -154,7 +154,7 @@
 
 
         $(function () {
-
+            rdfTripleSkosProxy.initGraphs()
             var w = $(document).width();
             var h = $(document).height;
             $("#graphDiv").width(w - 600)
@@ -173,6 +173,7 @@
             }).slider("option", "max", 30);
         });
 
+
         // var to = false;
 
 
@@ -188,6 +189,7 @@
         thesaurus<br>
         <div id="treeDiv1" style="height:500px;overflow: auto"></div>
         <img src="waitAnimated.gif" id="waitImg" style="display: none;width: 15px">
+        <select id="graphUriToCheckMissingConcepts"></select>
         <div id="commentDiv" style="height: 350px;overflow: auto"></div>
         <!--   <button onclick="rdfTripleSkosProxy.copySelectedWordsToClipboard()">Copy Selected Words</button>-->
         <textarea type="text" style="width:300px" id="copiedWords"></textarea>

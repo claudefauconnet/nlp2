@@ -1,5 +1,8 @@
 var sparql_facade = (function () {
     var self = {};
+    var elasticUrl = "/elastic";
+    if (window.location.href.indexOf("https") > -1)
+        elasticUrl = "../elastic";
 
 
     self.getTopConcepts = function (callback) {

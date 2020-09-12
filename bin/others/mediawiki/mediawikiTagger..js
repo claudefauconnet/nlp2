@@ -33,7 +33,7 @@ var mediaWikiTagger = {
                     var startIndex = rawPageText.indexOf(strartMark) + 10;
                     var endIndex = rawPageText.indexOf(endMark) + 10;
                     pageText = rawPageText.substring(startIndex, endIndex);
-                    pageText = pageText.replace(/[\t\n]/g, "")
+                    pageText = pageText.replace(/[\t]/g, "")
                     return callbackSeries()
 
 
@@ -81,8 +81,8 @@ var mediaWikiTagger = {
                 function (callbackSeries) {
                     var doc = {content: pageText, url: wikiUri + pageName, pageName: pageName.replace("/", ""), categories: pageCategories}
                     var bulkStr = "";
-                    bulkStr += JSON.stringify({index: {_index: indexName, _type: "mediawiki-page", _id: doc.uri}}) + "\r\n"
-                    bulkStr += JSON.stringify(doc) + "\r\n";
+                    bulkStr += JSON.stringify({index: {_index: indexName, _type: "mediawiki-page", _id: doc.uri}}) + "\r"
+                    bulkStr += JSON.stringify(doc) + "\r";
 
 
                     var options = {
@@ -161,6 +161,8 @@ var mediaWikiTagger = {
                     //  thesauriiConcepts["test"].conceptsWords.forEach(function (conceptWord) {
                     async.eachSeries(thesaurusGraphUris, function (graphUri, callbackEach) {
                         bulkStr = "";
+                        var thesaurusPagesMatchCount = []
+                        var conceptsFound = 0
                         thesauriiConcepts[graphUri].concepts.forEach(function (concept) {
 
                             var queryString = "";
@@ -179,36 +181,20 @@ var mediaWikiTagger = {
                                 "query": {
                                     "query_string": {
                                         "query": queryString,
-                                        // "fields": ["content"],
+
 
                                     }
                                 }
 
-                                /*    var queryLine = {
-                                        "query": {
-                                        "match": {
-                                            "content": {
-                                                "query": concept.synonyms[0]
-                                            }
-                                        }
-                                    }*/
 
                                 ,
                                 "from": 0,
                                 "size": 10000,
-                                "_source": ["uri", "categories"],
-                                /*  "highlight": {
-                                      "number_of_fragments": 0,
-                                      "fragment_size": 0,
-                                    //  "fields": ["content"],
-                                      "pre_tags": ["|"],
-                                      "post_tags": ["|"]
+                                "_source": ["pageName", "categories"],
 
-
-                                  }*/
                             }
-                            bulkStr += JSON.stringify(({index: indexName})) + "\r\n"
-                            bulkStr += JSON.stringify(queryLine) + "\r\n"
+                            bulkStr += JSON.stringify(({index: indexName})) + "\r"
+                            bulkStr += JSON.stringify(queryLine) + "\r"
 
 
                         })
@@ -221,13 +207,6 @@ var mediaWikiTagger = {
 
                             url: elasticUrl + "_msearch"
                         };
-                        /*  const superagent = require('superagent');
-                          superagent
-                              .post(options.url)
-                              .send(bulkStr) // sends a JSON post body
-                              .set('content-type', 'application/x-ndjson')
-                              .set('accept', 'json')
-                              .end((error, json) => {*/
 
 
                         request(options, function (error, response, body) {
@@ -246,17 +225,18 @@ var mediaWikiTagger = {
                             responses.forEach(function (response, responseIndex) {
 
 
-                                if (response.hits.hits.length > 0) {
-
-                                    var page = response.hits.hits[0]._id
+                                if (response && response.hits && response.hits.hits.length > 0) {
+                                    conceptsFound += 1;
+                                    var page = response.hits.hits[0]._source.pageName;
+                                    if (thesaurusPagesMatchCount.indexOf(page) < 0)
+                                        thesaurusPagesMatchCount.push(page);
                                     var concept = thesauriiConcepts[graphUri].concepts[responseIndex];
                                     var categories = response.hits.hits[0]._source.categories
                                     categories.forEach(function (category) {
-                                        if (category.indexOf("3.2.6") > -1)
-                                            var x = -1
+
                                         if (category == "")
                                             return;
-                                        var categoryUri = category.replace(/[\r\n ]/g, "_")
+                                        var categoryUri = category.replace(/[\r ]/g, "_")
                                         triples.push("<" + concept.id + "> <http://souslesens.org/vocab#wikimedia-category> <" + wikiUri + "Category:" + categoryUri + "> . ");
                                     })
                                     //  triples.push("<" + concept.id + "> <http://souslesens.org/vocab#wikimedia-page> <" + page + "> . ");
@@ -273,8 +253,10 @@ var mediaWikiTagger = {
                             splittedtTriples.push(triples);
 
 
+                            console.log(graphUri + "pages " + thesaurusPagesMatchCount.length + " concepts" + conceptsFound)
+
                             async.eachSeries(splittedtTriples, function (triples, callbackResponse) {
-                                return callbackEach();
+                                return callbackSeries();
                                 mediaWikiTagger.storeTriples(graphUri, triples, function (err, result) {
                                     callbackResponse(err);
 
@@ -569,7 +551,7 @@ var mediaWikiTagger = {
                             str += ","
                         str += occurence
                     })
-                    str += "\n"
+                    str += ""
                 }
                 fs.writeFileSync("D:\\Total\\2020\\Stephanie\\catWordsMatrix.csv", str)
 
@@ -745,7 +727,7 @@ var mediaWikiTagger = {
                 var pageName = hit._source.pageName;
                 var categories = hit._source.categories
                 categories.forEach(function (category) {
-                    str += " <" + wikiUrl + "Category:" + category + "> <http://xmlns.com/foaf/0.1/page> <" + wikiUrl + pageName + ">.\n"
+                    str += " <" + wikiUrl + "Category:" + category + "> <http://xmlns.com/foaf/0.1/page> <" + wikiUrl + pageName + ">."
                 })
 
 
@@ -811,23 +793,30 @@ var mediaWikiTagger = {
                 function (callbackSeries) {
 
 
-                    /*  var spacyServerUrl= "http://vps475829.ovh.net:3020/nlp"
-                       var json={"parse":1,
-                           "text":rawPageContent
-                       }*/
-                    var nlpServer = require('../spacy/nlpServer.')
-                    nlpServer.parse(rawPageContent, function (err, result) {
+                    var spacyServerUrl = "http://vps475829.ovh.net:3020/nlp"
+                    var json = {
+                        "parse": 1,
+                        "text": rawPageContent
+                    }
+                    /*     var nlpServer = require('../spacy/nlpServer.')
+                         nlpServer.parse(rawPageContent, function (err, result) {*/
 
-                        //  httpProxy.post(spacyServerUrl, {  'content-type': 'application/json'}, json, function (err, result) {
+                    httpProxy.post(spacyServerUrl, {'content-type': 'application/json'}, json, function (err, result) {
                         if (err) {
                             console.log(err)
                             return callbackSeries(err);
                         }
 
-                        result.forEach(function (word) {
-                            if (!pageAllwordsMap[word])
-                                pageAllwordsMap[word] = 0;
-                            pageAllwordsMap[word] += 1;
+                        result.forEach(function (item) {
+                            if (item.tag == "NN") {//item.tag.indexOf("NN")>-1) {
+                                item.text = item.text.toLowerCase();
+                                //  console.log(item.text)
+                                //  item.text= item.text.replace(/[^A-Za-z0-9]/g, '');
+                                item.text = item.text.replace(/-/g, '').trim();
+                                if (!pageAllwordsMap[item.text])
+                                    pageAllwordsMap[item.text] = 0;
+                                pageAllwordsMap[item.text] += 1;
+                            }
                         })
                         callbackSeries()
                     })
@@ -896,8 +885,11 @@ var mediaWikiTagger = {
 
                     callbackSeries()
                 }
-                //check altLabels in Virtuoso thesaurus
+                //check altLabels in Virtuoso thesaurus NOT NECESSARY !!!
                 , function (callbackSeries) {
+                    return callbackSeries()
+
+
                     var wordsFilter = "";
                     pageNonThesaurusWords.forEach(function (word, index) {
                         if (index > 0)
@@ -925,12 +917,10 @@ var mediaWikiTagger = {
                             console.log(params.query)
                             return callback(err);
                         }
-                            result.results.bindings.forEach(function(item){
-console.log ("!!!!!!!! altLabel word")
-                            })
-                            callbackSeries()
-
-
+                        result.results.bindings.forEach(function (item) {
+                            console.log("!!!!!!!! altLabel word")
+                        })
+                        callbackSeries()
 
 
                     })
@@ -944,6 +934,147 @@ console.log ("!!!!!!!! altLabel word")
         )
 
 
+    },
+    setTulsaSchemes: function (graphUri) {
+        var schemes = [];
+        var str = "";
+        async.series([
+            function (callbackSeries) {
+                var query = "PREFIX terms:<http://purl.org/dc/terms/>" +
+                    "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
+                    "PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                    "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
+                    "PREFIX elements:<http://purl.org/dc/elements/1.1/>" +
+                    "select distinct ?scheme ?schemeLabel " +
+                    "from <" + graphUri + ">" +
+                    "where{?scheme rdfsyn:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))?scheme skos:prefLabel|rdfs:label|elements:title ?schemeLabel.?concept skos:broader|skos:topConceptOf|rdfs:isDefinedBy|^terms:subject ?scheme.?concept skos:prefLabel|rdfs:label ?conceptLabel.  }ORDER BY ?conceptLabel limit 10000 "
+
+                var params = {query: query}
+
+
+                httpProxy.post(mediaWikiTagger.sparqlUrl, null, params, function (err, result) {
+                    if (err) {
+                        console.log(params.query)
+                        console.log(err);
+                    }
+                    schemes = [];
+                    result.results.bindings.forEach(function (item) {
+                        schemes.push({id: item.scheme.value, label: item.schemeLabel.value})
+                    })
+                    callbackSeries();
+                })
+
+
+            },
+            function (callbackSeries) {
+                var iterator = []
+                for (var i = 1; i < 2; i++) {
+                    iterator.push(i)
+                }
+                async.eachSeries(iterator, function (i, callbackEachIterator) {
+                    async.eachSeries(schemes, function (scheme, callbackEach) {
+
+                            console.log("!!!!!!" + scheme.id)
+                            var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>prefix foaf: <http://xmlns.com/foaf/0.1/>prefix schema: <http://schema.org/>" +
+                                "with <http://souslesens.org/oil-gas/upstream/>" +
+                                "insert {" +
+                                "  ?concept" + i + " <http://www.w3.org/2004/02/skos/core#inScheme> <" + scheme.id + "> " +
+                                "  " +
+                                "}" +
+                                ""
+                            if (true) {
+                                query += "WHERE{  ?concept1  skos:broader <" + scheme.id + ">.  " +
+                                    "  optional {?concept2 skos:broader ?concept1. " +
+                                    "optional {?concept2 ^skos:broader ?concept3. " +
+                                    "optional {?concept3 ^skos:broader ?concept4. " +
+                                    "optional {?concept4 ^skos:broader ?concept5.  " +
+                                    "optional {?concept5 ^skos:broader ?concept6. " +
+                                    "optional {?concept6 ^skos:broader ?concept7. " +
+                                    "optional {?concept7 ^skos:broader ?concept8.  " +
+                                    "}}}}}}}" +
+                                    "  " +
+                                    "       } "
+                            } else if (false) {
+                                query += "WHERE{  ?concept1 ^skos:narrower <" + scheme.id + ">.  " +
+                                    "  optional {?concept2 ^skos:narrower ?concept1. " +
+                                    "optional {?concept2 skos:narrower ?concept3. " +
+                                    "optional {?concept3 skos:narrower ?concept4. " +
+                                    "optional {?concept4 skos:narrower ?concept5.  " +
+                                    "optional {?concept5 skos:narrower ?concept6. " +
+                                    "optional {?concept6 skos:narrower ?concept7. " +
+                                    "optional {?concept7 skos:narrower ?concept8.  " +
+                                    "}}}}}}}" +
+                                    "  " +
+                                    "       } "
+                            } else {
+                                query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                                    "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                                    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                                    "SELECT (count(distinct ?concept) as ?Level1) (count(distinct ?concept2)as ?Level2) " +
+                                    "(count(distinct ?concept3) as ?Level3) " +
+                                    "(count( distinct ?concept4) as ?Level4) " +
+                                    "(count(distinct ?concept5) as ?Level5) " +
+                                    "(count(distinct ?concept6) as ?Level6) " +
+                                    "(count(distinct ?concept7)  as ?Level7)" +
+                                    /*   "(count(distinct ?concept9) as ?Level8) " +
+                                       "  (count(distinct ?concept9)  as ?Leve9)" +*/
+
+                                    "" +
+                                    "WHERE{  ?concept  skos:broader <" + scheme.id + ">.  " +
+                                    "  optional {?concept2 skos:broader|^skos:narrower ?concept. " +
+                                    "optional {?concept2 ^skos:broader|skos:narrower ?concept3. " +
+                                    "optional {?concept3 ^skos:broader|skos:narrower ?concept4. " +
+                                    "optional {?concept4 ^skos:broader|skos:narrower ?concept5.  " +
+                                    "optional {?concept5 ^skos:broader|skos:narrower ?concept6. " +
+                                    "optional {?concept6 ^skos:broader|skos:narrower ?concept7. " +
+                                    /* "optional {?concept7 ^skos:broader|skos:narrower ?concept8.  " +
+                                     "optional {?concept8 ^skos:broader|skos:narrower ?concept9. " +
+                                     "                }}" +*/
+                                    "}}}}}}" +
+                                    "  " +
+                                    "       } "
+
+
+                            }
+
+
+
+
+
+                            var params = {query: query}
+
+
+                            httpProxy.post(mediaWikiTagger.sparqlUrl, null, params, function (err, result) {
+                                if (err) {
+                                    console.log(params.query)
+                                    return callbackEach(err);
+                                }
+
+                                var obj = result.results.bindings[0];
+
+                                for (var i = 1; i < 8; i++) {
+                                  ;//  str += scheme.label + "," + i + "," + obj["Level" + i].value + "\n"
+                                }
+
+                                // console.log(scheme.id+","+i+","+result.results.bindings[0]["callret-0"].value)
+                                return callbackEach();
+                            })
+                        }
+                        , function (err) {
+
+                            return callbackEachIterator(err);
+                        })
+
+                }, function (err) {
+
+                    return callbackSeries(err);
+                })
+            }
+
+        ], function (err) {
+            console.log(str)
+            console.log(err);
+        })
     }
 }
 
@@ -995,14 +1126,29 @@ if (false) {
     var wikiUrl = "https://wiki.aapg.org/"
     var indexName = "mediawiki-pages-aapg"
 
+
+    var wikiUrl = "https://wiki.aapg.org/"
+    var indexName = "mediawiki-pages-aapg"
+
+
     var wikiUrl = "https://petrowiki.spe.org/"
     var indexName = "mediawiki-pages-spe"
 
+    var wikiUrl = "https://wiki.aapg.org/"
+    var indexName = "mediawiki-pages-aapg"
+
     var elasticUrl = "http://vps254642.ovh.net:2009/"
+    thesaurusGraphUris = ["http://souslesens.org/oil-gas/upstream/"]//, "http://www.eionet.europa.eu/gemet/", "http://data.total.com/resource/thesaurus/ctg/", "https://www2.usgs.gov/science/USGSThesaurus/"]
+
+    //  thesaurusGraphUris = ["http://data.total.com/resource/dictionary/gaia/"];
+    thesaurusGraphUris = ["http://www.eionet.europa.eu/gemet/", "http://data.total.com/resource/thesaurus/ctg/", "https://www2.usgs.gov/science/USGSThesaurus/"]
+    thesaurusGraphUris = ["https://www2.usgs.gov/science/USGSThesaurus/"]
+
     mediaWikiTagger.tagPages(thesaurusGraphUris, elasticUrl, indexName, wikiUrl, function (err, result) {
         if (err)
             console.log(err);
         console.log("Done ");
+
 
     })
 }
@@ -1038,3 +1184,9 @@ if (false) {
     mediaWikiTagger.getCategoriesPagesRdf(elasticUrl, indexName, wikiUrl)
 }
 //mediaWikiTagger.createMediawikiIndex(elasticUrl,"mediawiki");
+if (true) {
+    var graphUri = "http://data.total.com/resource/thesaurus/ctg/"
+    var graphUri = "http://www.eionet.europa.eu/gemet/"
+    var graphUri = "http://souslesens.org/oil-gas/upstream/"
+    mediaWikiTagger.setTulsaSchemes(graphUri);
+}

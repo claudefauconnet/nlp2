@@ -6,6 +6,10 @@
 var Sparql_facade = (function () {
         var self = {};
 
+        //gestion des url de routage node (index.js) avec nginx
+        var elasticUrl = "/elastic";
+        if (window.location.href.indexOf("https") > -1)
+            elasticUrl = "../elastic";
 
         self.proxyUrl = "http://51.178.139.80:8890/sparql"
 
@@ -280,7 +284,7 @@ var Sparql_facade = (function () {
 
             $.ajax({
                 type: "POST",
-                url: "/elastic",
+                url: elasticUrl,
                 data: payload,
                 dataType: "json",
                 /* beforeSend: function(request) {

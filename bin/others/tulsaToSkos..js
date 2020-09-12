@@ -1,5 +1,6 @@
 var fs = require('fs');
 var async = require('async')
+var common=require('../backoffice/common.')
 
 var tulsaToSkos = {
 
@@ -25,12 +26,12 @@ var tulsaToSkos = {
         var rootConcepts = [];
         var jsonArray = [];
 
-        var filePath = "D:\\NLP\\drafts\\Tulsa.txt";
+        var filePath = "D:\\NLP\\importedResources\\Tulsa.txt";
 
         var str = "" + fs.readFileSync(filePath);
         var lines = str.split("\n");
         var isPreviousBT = false
-        var types={}
+        var types = {}
         lines.forEach(function (line, index) {
             var offset1 = 32;
             var offset2 = 41;
@@ -43,9 +44,11 @@ var tulsaToSkos = {
                 return;
             var obj
             var type = line.substring(0, 6).trim();
-if(!types[type])
-    types[type]=0;
-types[type]+=1
+            if(type.indexOf("SN")!=0) {
+                if (!types[type])
+                    types[type] = 0;
+                types[type] += 1
+            }
             if (type == "DS") {
                 obj = {
                     type: type,
@@ -66,7 +69,8 @@ types[type]+=1
 
             jsonArray.push(obj);
         })
-        console.log(JSON.stringify(types,null,2))
+        console.log(JSON.stringify(types, null, 2))
+        console.log(JSON.stringify(jsonArray.slice(0,1000), null, 2))
         return jsonArray;
     },
 
@@ -99,6 +103,7 @@ types[type]+=1
     setEntitiesByBroaders: function (jsonArray) {
         var entity = null
         var entitiesMap = {};
+       var  orphanEntities=[]
 
         function padWithLeadingZeros(string) {
             return new Array(5 - string.length).join("0") + string;
@@ -119,8 +124,8 @@ types[type]+=1
 
         jsonArray.forEach(function (item, indexItem) {
 
-         /*   if (item.term && item.term.indexOf("ADDED") > -1)
-                return;*/
+            /*   if (item.term && item.term.indexOf("ADDED") > -1)
+                   return;*/
             item.term = unicodeEscape(item.term).replace(/&/g, " ").replace(/'/g, " ")
             // remove dates and annotations  see Format of PA Thesauri USE...
             item.term = item.term.replace(/.*\(\d+\-*\d*\)\s*/g, "");
@@ -156,29 +161,46 @@ types[type]+=1
             } else if (item.type == "SA") {
                 if (entity.relateds.indexOf(item.term) < 0)
                     entity.relateds.push(item.term)
-            } else if (item.type.indexOf("US") == 0) {
-                /*  var p;
-                  if ((p = item.term.indexOf(")")) > -1)
-                      item.term = item.term.substring(p + 2)*/
+            }
+            /*else if (false && item.type.indexOf("US") == 0) {
                 if (entity.altLabels.indexOf(item.term) < 0)
                     entity.altLabels.push(item.term)
 
 
-            } else if (item.type == "UF") {
+            }*/
+            else if (item.type == "UF") {
                 if (entity.altLabels.indexOf(item.term) < 0)
                     entity.altLabels.push(item.term)
 
             } else if (item.type == "NT") {
-                if (entity.altLabels.indexOf(item.term) < 0)
+                if (entity.narrowers.indexOf(item.term) < 0)
                     entity.narrowers.push(item.term)
 
-            }
+            } /*else if (item.type.indexOf("SN") == 0) {
+                if (item.term.indexOf("NT ")<0 && item.term.indexOf("BT ") < 0 && item.term.indexOf("USED ") <0 && item.term.indexOf("ADDED ") <0) {
+                    if (entity.altLabels.indexOf(item.term) < 0)
+                        entity.altLabels.push(item.term)
+                }
 
+            }*/
 
+          /*  if( entity.broaders.length==0 && entity.narrowers.length==0) {
+                if( orphanEntities.indexOf(entity.prefLabel)<0)
+                orphanEntities.push(entity.prefLabel)
+            }*/
         })
+        var x=orphanEntities;
+        if( entity.broaders)
         return entitiesMap;
     }
     ,
+
+
+    setDSMap:function(jsonArray){
+
+
+
+    },
 
 
     setEntitiesNarrowersScheme: function (entitiesMap) {
@@ -213,7 +235,7 @@ types[type]+=1
 
             else {
                 if (node.broader) {
-                   return recurseParent(entitiesMap[node.broader])
+                    return recurseParent(entitiesMap[node.broader])
                 } else
                     return null;
             }
@@ -262,10 +284,10 @@ types[type]+=1
         for (var key in entitiesMap) {
             entitiesArray.push(entitiesMap[key])
         }
-console.log(entitiesArray.length);
-        var stats={}
+        console.log(entitiesArray.length);
+        var stats = {}
         async.eachSeries(["all"], function (scheme, callbackSeries) {
-         //   async.eachSeries(tulsaToSkos.topConcepts, function (scheme, callbackSeries) {
+            //   async.eachSeries(tulsaToSkos.topConcepts, function (scheme, callbackSeries) {
 
 
             //  var scheme = "all"
@@ -273,7 +295,7 @@ console.log(entitiesArray.length);
             str += "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<rdf:RDF xmlns:skos=\"http://www.w3.org/2004/02/skos/core#\"  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">"
 
-            str += "<skos:ConceptScheme rdf:about='http://PetroleumAbstractsThesaurus/" + scheme.replace(/ /g,'_')  + "'>"
+            str += "<skos:ConceptScheme rdf:about='http://PetroleumAbstractsThesaurus/" + scheme.replace(/ /g, '_') + "'>"
             str += "  <skos:prefLabel xml:lang='en'>" + scheme + "</skos:prefLabel>"
             str += "</skos:ConceptScheme>";
 
@@ -281,29 +303,29 @@ console.log(entitiesArray.length);
             entitiesArray.forEach(function (entity, index) {
 
 
-              if(!entity.inScheme){
-                  if(!stats["noScheme"])
-                      stats["noScheme"]=0
-                  stats["noScheme"]+=1
-              }else{
-                  if(!stats[entity.inScheme])
-                      stats[entity.inScheme]=0
-                  stats[entity.inScheme]+=1
-              }
+                if (!entity.inScheme) {
+                    if (!stats["noScheme"])
+                        stats["noScheme"] = 0
+                    stats["noScheme"] += 1
+                } else {
+                    if (!stats[entity.inScheme])
+                        stats[entity.inScheme] = 0
+                    stats[entity.inScheme] += 1
+                }
 
 
-                if (scheme == "all") {
+             /*   if (scheme == "all") {
                     if (!entity.inScheme)
                         return;
                 } else {
 
                     if (entity.inScheme != scheme)
                         return;
-                }
+                }*/
 
 
-                str += "<skos:Concept rdf:about='http://PetroleumAbstractsThesaurus/" + entity.prefLabel.replace(/ /g,'_') + "'>\n"
-                str += "  <skos:inScheme rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.inScheme.replace(/ /g,'_') + "'/>\n"
+                str += "<skos:Concept rdf:about='http://PetroleumAbstractsThesaurus/" + entity.prefLabel.replace(/ /g, '_') + "'>\n"
+             //   str += "  <skos:inScheme rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.inScheme.replace(/ /g, '_') + "'/>\n"
 
                 str += "  <skos:prefLabel xml:lang='en'>" + entity.prefLabel + "</skos:prefLabel>\n"
 
@@ -311,12 +333,14 @@ console.log(entitiesArray.length);
                     str += "  <skos:altLabel xml:lang='en'>" + altLabel.replace(/&/g, " ") + "</skos:altLabel>\n"
                 })
 
-                if (entity.broader)
-                    str += "  <skos:broader rdf:resource='http://PetroleumAbstractsThesaurus/" + entity.broader.replace(/ /g,'_') + "'/>\n"
-
-
+                entity.broaders.forEach(function (broader) {
+                    str += "  <skos:broader rdf:resource='http://PetroleumAbstractsThesaurus/" + broader.replace(/ /g, '_') + "'/>\n"
+                })
+                entity.narrowers.forEach(function (narrower) {
+                    str += "  <skos:narrower rdf:resource='http://PetroleumAbstractsThesaurus/" + narrower.replace(/ /g, '_') + "'/>\n"
+                })
                 entity.relateds.forEach(function (related) {
-                    str += "  <skos:related rdf:resource='http://PetroleumAbstractsThesaurus/" + related.replace(/ /g,'_') + "'/>\n"
+                    str += "  <skos:related rdf:resource='http://PetroleumAbstractsThesaurus/" + related.replace(/ /g, '_') + "'/>\n"
                 })
                 str += "</skos:Concept>\n"
 
@@ -330,30 +354,110 @@ console.log(entitiesArray.length);
         }, function (err) {
             console.log("done")
 
-            console.log(JSON.stringify(stats,null,2))
+            console.log(JSON.stringify(stats, null, 2))
         })
 
 
+    },
+
+    generateSNtriples: function (entitiesMap) {
+        var entitiesArray = []
+        for (var key in entitiesMap) {
+            entitiesArray.push(entitiesMap[key])
+        }
+        var str = "";
+        entitiesArray.forEach(function (entity) {
+            var conceptUri = "<http://PetroleumAbstractsThesaurus/" + entity.prefLabel.replace(/ /g, '_') + ">"
+
+       //     str += conceptUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + entity.prefLabel.replace(/&/g, " ") + "'@en.\n"
+
+            entity.altLabels.forEach(function (altLabel) {
+
+                str += conceptUri + " <http://www.w3.org/2004/02/skos/core#altLabel> '" + altLabel.replace(/&/g, " ") + "'@en.\n"
+            })
+       /*     entity.narrowers.forEach(function (narrower) {
+                var narrowerUri = "<http://PetroleumAbstractsThesaurus/" +narrower.replace(/ /g, '_') + ">"
+                str += conceptUri + " <http://www.w3.org/2004/02/skos/core#narrower> " + narrowerUri+".\n"
+            })
+
+            entity.broaders.forEach(function (broader) {
+                var broaderUri = "<http://PetroleumAbstractsThesaurus/" +broader.replace(/ /g, '_') + ">"
+                str += conceptUri + " <http://www.w3.org/2004/02/skos/core#broader> " + broaderUri+".\n"
+            })
+
+            entity.relateds.forEach(function (related) {
+                var relatedUri = "<http://PetroleumAbstractsThesaurus/" +related.replace(/ /g, '_') + ">"
+                str += conceptUri + " <http//://www.w3.org/2004/02/skos/core#related> " + relatedUri+".\n"
+            })*/
+        })
+     //  console.log(str)
+        fs.writeFileSync("D:\\NLP\\Tulsa_08_20.rdf.nt", str);
+    },
+
+    checkOrphans: function(){
+
+        
     }
 
 
 }
 
 module.exports = tulsaToSkos
+if (false) {
+    var jsonArray = tulsaToSkos.parseTxt();
 
-var jsonArray = tulsaToSkos.parseTxt();
+    var entitiesMap = tulsaToSkos.setEntitiesByBroaders(jsonArray)
 
-var entitiesMap = tulsaToSkos.setEntitiesByBroaders(jsonArray)
+   tulsaToSkos.generateSNtriples(entitiesMap)
 
-var entitiesMap = tulsaToSkos.setEntitiesNarrowersScheme(entitiesMap);
+  //  var entitiesMap = tulsaToSkos.setEntitiesNarrowersScheme(entitiesMap);
 
-var entitiesMap = tulsaToSkos.setEntitiesBoadersScheme(entitiesMap);
+  //  var entitiesMap = tulsaToSkos.setEntitiesBoadersScheme(entitiesMap);
+}
 
 
-tulsaToSkos.generateRdf(entitiesMap)
+//tulsaToSkos.generateRdf(entitiesMap)
 //!!!!!!!!!  ATTENTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 /*Post import
     insert into <http://souslesens.org/oil-gas/upstream/>
 {?c  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>}
 
     where {?a skos:broader ?c filter( NOT EXISTS{ ?c skos:broader ?d.})}*/
+
+if (false) {
+    var filePath = "D:\\NLP\\importedResources\\Tulsa.txt";
+
+    var str = "" + fs.readFileSync(filePath);
+    var lines = str.split("\n")
+    var str2 = "";
+    var sns = []
+    lines.forEach(function (line, index) {
+        var prefix = line.substring(0, 5);
+        if (prefix.indexOf("SN") == 0) {
+            if (sns.indexOf(prefix) < 0)
+                sns.push(prefix)
+            var str3 = line.substring(6, 26).trim() + "\t" + index + "\n";
+            if (str3.indexOf("NT ") != 0 && str3.indexOf("BT ") != 0 && str3.indexOf("USED ") != 0 && str3.indexOf("ADDED ") != 0)
+                str2 += str3
+        }
+
+    })
+    console.log(sns.toString())
+    fs.writeFileSync("D:\\NLP\\importedResources\\TulsaSN.txt", str2)
+
+}
+if(false){
+    var filePath="D:\\NLP\\importedResources\\TulsaSelection.txt"
+ var json=   common.csvToJson(filePath)
+    var str=""
+    json.forEach(function(item){
+        if(item.term)
+       str+="<http://PetroleumAbstractsThesaurus/" + item.term.replace(/ /g, '_')+"> <http://www.w3.org/2004/02/skos/core#member> <http://souslesens.org/data/total/ep/collection/"+item.domain+">. \n"
+
+    })
+    fs.writeFileSync(filePath.replace(".txt","rdf.nt"),str)
+
+
+
+
+}

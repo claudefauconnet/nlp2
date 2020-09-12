@@ -298,7 +298,7 @@ var MainController = (function () {
                 html += "</div> "
                 html += "<div id='popupFilter_" + idDiv + "'></div>"
             }
-            html += "<button onclick='  $(\"#graphPopupDiv\").css(\"display\", \"none\")'>OK</button>"
+            html += "<button onclick='  $(\"#graphPopupDiv\").css(\"display\", \"none\"); MainController.showQuery()'>OK</button>"
             html += "<button onclick='MainController.execDataQuery()'>EXEC</button>"
             $("#graphPopupDiv").html(html)
 
@@ -396,7 +396,7 @@ var MainController = (function () {
           //  $("#graphPopupDiv").css("display", "none")
             if (!node)
                 node = self.currentGraphNode;
-            self.queryNodes[node.id] = node.data;
+            self.queryNodes[node.data.propId].filter = node.data.filter;
             self.setVisjsInitialNodeProperties(node);
 
 
@@ -413,7 +413,7 @@ var MainController = (function () {
 
             visjsGraph.data.edges.update({id: node.id, color: "green", width: 3})
 
-            var parentNode = visjsGraph.data.nodes.get(node.data.objectId);
+       /*     var parentNode = visjsGraph.data.nodes.get(node.data.objectId);
             if (parentNode && !self.queryNodes[parentNode.data.propId]) {
                 self.queryNodes[parentNode.data.propId] = parentNode.data;
                 self.setVisjsInitialNodeProperties(parentNode.data.propId);
@@ -428,7 +428,7 @@ var MainController = (function () {
                 visjsGraph.data.nodes.update({id: grandParentNode.id, borderWidth: 5, color: {border: "green"}})
                 visjsGraph.data.edges.update({id: grandParentNode.data.propId, color: "green", width: 3})
                 visjsGraph.network.stopSimulation();
-            }
+            }*/
 
 
             var html = "";
@@ -449,17 +449,19 @@ var MainController = (function () {
 
         self.addGraphPropertyFilterToQuery = function (id) {
 
-            var id = $("#_Node_prop_" + id).html();
+            var property = $("#_Node_prop_" + id).html();
             var operator = $("#_Node_operator_" + id).val();
             var value = $("#_Node_value_" + id).val();
+
             var node = self.currentGraphNode;
             var data = node.data
             if (value != "") {
-                node.data.filter = {property: node.id, operator: operator, value: value}
+                node.data.filter = {property: property, operator: operator, value: value}
 
             }
 
             self.addGraphPropertyToQuery(node);
+            self.showQuery()
             $("#dialogDiv").dialog("close");
 
         }
@@ -496,6 +498,31 @@ var MainController = (function () {
             visjsGraph.data.nodes.update(newNodes)
             self.queryNodes = {};
             $("#queryDiv").html("");
+            $("#graphPopupDiv").css("display","none");
+
+
+
+        }
+        self.showQuery=function(){
+
+            var str="<div style='display:flex;flex-direction: column'>";
+            for (var key in self.queryNodes) {
+                var queryNodeData = self.queryNodes[key];
+
+                var subjectLabel = queryNodeData.objectId.substring(queryNodeData.objectId.lastIndexOf("#") + 1)
+                var propLabel = queryNodeData.propLabel;
+                var filterStr = "";
+                if (queryNodeData.filter) {
+                   str+= "<div class='queryElt'>" +subjectLabel+": "+ queryNodeData.filter.property + "" + queryNodeData.filter.operator + " " + queryNodeData.filter.value + "</div>"
+
+                }
+                else{
+
+                }
+                str += "<div class='queryElt'>" +subjectLabel+": "+ propLabel + " " + filterStr + "</div>"
+
+            }
+            $("#queryDiv").html(str);
 
 
         }
@@ -517,10 +544,13 @@ var MainController = (function () {
                 var predicateLabel = queryNodeData.propId;
 
 
+                if (queryNodeData.filter) {
+                    var xx=3
+                }
                 if (!nodesMap[key]) {
                     nodesMap[key] = subjectLabel
 
-                    if (queryNodeData.type == "Litteral") {
+                    if (true || queryNodeData.type == "Litteral") {
                         var valueLabel = predicateLabel.substring(predicateLabel.lastIndexOf("#") + 1)
                         querySelection += " ?" + subjectLabel + " <" + predicateLabel + ">  ?" + valueLabel + "_value. "
                         querySelection += "optional  {?" + subjectLabel + "<http://sws.ifi.uio.no/vocab/npd-v2#name>  ?" + subjectLabel + "_name.} "

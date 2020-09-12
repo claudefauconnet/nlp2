@@ -5,6 +5,10 @@ var sparql = (function () {
         // graphIRI: 'http://onto.ctg.total.com/'
         graphIRI: "http://data.total.com/resource/ontology/ctg/"
     }
+    //gestion des url de routage node (index.js) avec nginx
+    var elasticUrl = "/elastic";
+    if (window.location.href.indexOf("https") > -1)
+        elasticUrl = "../elastic";
 
     self.listEntities = function (words, options, callback) {
         var url = self.source.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.source.graphIRI) + "&query=";// + query + queryOptions
@@ -368,7 +372,7 @@ var sparql = (function () {
                 }
                 $.ajax({
                     type: "POST",
-                    url: "/elastic",
+                    url: elasticUrl,
                     data: payload,
                     dataType: "json",
                     /* beforeSend: function(request) {
@@ -446,7 +450,7 @@ var sparql = (function () {
 
         $.ajax({
             type: "POST",
-            url: "/elastic",
+            url: elasticUrl,
             data: payload,
             dataType: "json",
             /* beforeSend: function(request) {

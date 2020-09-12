@@ -7,7 +7,26 @@ var rdfTripleSkosProxy = (function () {
         "http://PetroleumAbstractsThesaurus/": {color: '#ffc107', label: "Tulsa"},
         "http://www.eionet.europa.eu/gemet/": {color: '#FF7D07', label: "Gemet"},
         "http://data.total.com/resource/vocabulary/": {color: "#7fef11", label: "CTG"},
-        "https://www2.usgs.gov/science/USGSThesaurus/": {color: '#FFD900', label: "USGS"}
+        "https://www2.usgs.gov/science/USGSThesaurus/": {color: '#FFD900', label: "USGS"},
+        "http://data.total.com/resource/dictionary/gaia/": {color: "#0072d5", label: "GAIA"},
+        "http://PetroleumAbstractsThesaurusSelection/": {color: "#cd4850", label: "TulsaSelectiob"}
+    }
+
+    //gestion des url de routage node (index.js) avec nginx
+    var elasticUrl = "/elastic";
+    if (window.location.href.indexOf("https") > -1)
+        elasticUrl = "../elastic";
+
+
+
+    self.initGraphs=function(){
+
+        var objs=[]
+        for(var key in graphsMap){
+            objs.push({value:key,label:graphsMap[key].label})
+        }
+        common.fillSelectOptions("graphUriToCheckMissingConcepts", objs,false, "label","value")
+
     }
 
     self.loadThesaurus = function (graphUri) {
@@ -97,7 +116,7 @@ var rdfTripleSkosProxy = (function () {
 
 
         if (obj.node.data && obj.node.data.type == "wikiPage")
-            return self.getWikiPagesWords(obj.node)
+            return self.getWikipageMissingWords(obj.node)
         // if (true || obj.event.ctrlKey)
         self.addTreeChildrenNodes(obj.node.id);
        if (obj.node.parents.length >3 || obj.event.altKey) {
@@ -238,6 +257,7 @@ var rdfTripleSkosProxy = (function () {
             "  " +
             "  ?concept skos:prefLabel ?conceptLabel. filter(lang(?conceptLabel)='en')    " +
             "  BIND (LCASE(?conceptLabel) as ?conceptLabelLower)  " +
+            " optional {?concept skos:member ?member }"+
             "  optional{ ?concept skos:broader ?broader1. ?broader1 skos:prefLabel ?broader1Label  filter(lang(?broader1Label)='en')      optional{ ?broader1 skos:broader ?broader2. ?broader2 skos:prefLabel ?broader2Label  filter(lang(?broader2Label)='en')      optional{ ?broader2 skos:broader ?broader3. ?broader3 skos:prefLabel ?broader3Label  filter(lang(?broader3Label)='en')         optional{ ?broader3 skos:broader ?broader4. ?broader4 skos:prefLabel ?broader4Label  filter(lang(?broader4Label)='en') }    }    }  }     } order by ?concept limit 1000"
         self.querySPARQL_proxy(query, self.sparqlServerUrl, {}, {}, function (err, result) {
 
@@ -277,6 +297,9 @@ var rdfTripleSkosProxy = (function () {
                 var subject = item.subject.value;
                 var conceptId = item.concept.value;
                 var countPages = parseInt(item.countPages.value);
+                var member=null;
+                if(item.member)
+                    member=item.member.value;
 
                 maxPages = Math.max(maxPages, countPages)
                 minPages = Math.min(minPages, countPages)
@@ -312,6 +335,8 @@ var rdfTripleSkosProxy = (function () {
                 }
                 if (allnodes.indexOf(conceptId) < 0) {
                     allnodes.push(conceptId)
+                  if(member)
+                      color="#dac"
                     // visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "text", color: color,size:Math.round(20/countPages), fixed: {x: true, y: true}, x: -500, y: offsetY})
                     visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "box", color: color, fixed: {x: true, y: true}, x: -500, y: offsetY, data: {type: "leafConcept"}})
 
@@ -554,7 +579,7 @@ var rdfTripleSkosProxy = (function () {
 
         $.ajax({
             type: "POST",
-            url: "/elastic",
+            url: elasticUrl,
             data: payload,
             dataType: "json",
             /* beforeSend: function(request) {
@@ -621,21 +646,26 @@ var rdfTripleSkosProxy = (function () {
         })
     }
 
-    self.getWikiPagesWords = function (page) {
+    self.getWikipageMissingWords = function (page) {
         $("#waitImg").css("display", "block")
+        var graphUri=$("#graphUriToCheckMissingConcepts").val()
         $("#commentDiv").html("searching new concepts in selected wiki page")
         // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
 
         if (!self.currentConceptsLabels)
             self.currentConceptsLabels = []
+        var pageName=page.text
+       var p=pageName.indexOf(":")
+        if(p>-1)
+            pageName=pageName.substring(p)
         var payload = {
 
 
             getWikimediaPageNonThesaurusWords: 1,
             elasticUrl: "http://vps254642.ovh.net:2009/",
             indexName: "mediawiki-pages-*",
-            pageName: page.text,
-            graph: "http://souslesens.org/oil-gas/upstream/",
+            pageName: pageName,
+            graph: graphUri,
             pageCategoryThesaurusWords: self.currentConceptsLabels
 
         }
@@ -643,7 +673,7 @@ var rdfTripleSkosProxy = (function () {
 
         $.ajax({
             type: "POST",
-            url: "/elastic",
+            url: elasticUrl,
             data: payload,
             dataType: "json",
 

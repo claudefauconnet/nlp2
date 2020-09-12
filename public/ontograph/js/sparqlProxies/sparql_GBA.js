@@ -1,5 +1,8 @@
 var sparql_GBA = (function () {
         var self = {};
+        var elasticUrl = "/elastic";
+        if (window.location.href.indexOf("https") > -1)
+            elasticUrl = "../elastic";
 
 
         self.getTopConcepts = function (callback) {
@@ -127,7 +130,7 @@ var sparql_GBA = (function () {
 
             $.ajax({
                 type: "POST",
-                url: "/elastic",
+                url: elasticUrl,
                 data: payload,
                 dataType: "json",
                 /* beforeSend: function(request) {

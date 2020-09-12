@@ -128,11 +128,11 @@ var common = {
             archiveProcessor.consoleToFile(e);
         }
     },
-    roundToMO:function(octets){
-       return  Math.round(octets/1000000 * 100) / 100
+    roundToMO: function (octets) {
+        return Math.round(octets / 1000000 * 100) / 100
     },
-    roundToKO:function(octets){
-        return  Math.round(octets/1000 * 10) / 10
+    roundToKO: function (octets) {
+        return Math.round(octets / 1000 * 10) / 10
     },
 
 
@@ -146,6 +146,32 @@ var common = {
     },
 
 
+    csvToJson: function (filePath) {
+        var fs=require('fs')
+        var str = "" + fs.readFileSync(filePath);
+        str = str.replace(/[\u{0080}-\u{FFFF}]/gu, "");//charactrese vides
+        var lines = str.split("\n");
+        var objs = [];
+        var cols = [];
+
+        lines[0].trim().split("\t").forEach(function (cell) {
+            cols.push(cell)
+        })
+
+        lines.forEach(function (line, lineIndex) {
+            var cells = line.trim().split("\t");
+            var obj = {}
+            cells.forEach(function (cell, index) {
+                if (lineIndex == 0)
+                    cols.push(cell)
+                else {
+                    obj[cols[index]] = cell;
+                }
+            })
+            objs.push(obj)
+        })
+        return objs;
+    }
 }
 
 module.exports = common;

@@ -117,6 +117,48 @@ currentOntology: "Energistics",
 
         },
 
+        "Gaia": {
+            corpusGraphUri: "http://data.total.com/resource/dictionary/gaia/",
+            corpusScheme: "http://data.total.com/resource/dictionary/gaia/",
+            resourceLevels: [
+
+
+
+            ],
+            resourceDefaultLevel: "",
+
+            conceptsGraphUri: "http://data.total.com/resource/dictionary/gaia/",
+
+        },
+        "Acronyms": {
+            corpusGraphUri: "http://data.total.com/resource/acronyms/",
+            corpusScheme: "http://data.total.com/resource/acronyms/",
+            resourceLevels: [
+
+
+
+            ],
+            resourceDefaultLevel: "",
+
+            conceptsGraphUri: "http://data.total.com/resource/reportsRC/",
+
+        },
+        "RcReports": {
+            corpusGraphUri: "http://data.total.com/resource/reportsRC/",
+            corpusScheme: "http://data.total.com/resource/reportsRC/",
+            resourceLevels: [
+
+
+
+            ],
+            resourceDefaultLevel: "",
+
+            conceptsGraphUri: "http://data.total.com/resource/reportsRC/",
+
+        },
+
+
+
 
 
         ISO_15926:{
