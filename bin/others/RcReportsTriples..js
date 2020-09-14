@@ -57,13 +57,15 @@ var RcReportsTriples = {
     csvToTriples: function (filePath) {
         var json = RcReportsTriples.csvToJson(filePath, ",");
         var graphUri = "http://data.total.com/resource/reportsRC/"
-        var str = ""
+        var strConcepts = ""
+        var strCorpus=""
 
 
-        str += "<" + graphUri + "SAP_report" + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n";
-        str += "<" + graphUri + "SAP_report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'SAP_report'@en .\n";
-        str += "<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + "SAP_report" + "> .\n";
-        str += "<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'Report'@en .\n";
+      strCorpus += "<" + graphUri + "SAP_report" + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n";
+        strCorpus += "<http://data.total.com/resource/reportsRC/Report>  <http://www.w3.org/2004/02/skos/core#topConceptOf> <http://data.total.com/resource/reportsRC/corpus/>.\n";
+      strCorpus += "<" + graphUri + "SAP_report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'SAP_report'@en .\n";
+        strCorpus += "<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + "SAP_report" + "> .\n";
+        strCorpus += "<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'Report'@en .\n";
 
         var map = {
 
@@ -79,17 +81,18 @@ var RcReportsTriples = {
 
             if (!item.report_id)
                 return;
+
+            var date=item["notif_date"]
+            var site=item["location_site"]
             var reportUri = "<" + graphUri + item.report_id + ">";
-            if (types.indexOf(item.report_id) < 0) {
-                types.push(item.report_id)
-                str += reportUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + graphUri + "Report" + ">.\n";
-            }
+            if(!date || !site)
+                return;
 
             for (var key in map) {
                 if (types.indexOf(key) < 0) {
                     types.push(key)
-                    str += "<" + graphUri + key + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n";
-                    str += "<" + graphUri + key + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> '"+key+" .\n";
+                    strConcepts += "<" + graphUri + key + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n";
+                    strConcepts += "<" + graphUri + key + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> '"+key+"' .\n";
                 }
                 var fields = map[key];
                 fields.forEach(function (field, index) {
@@ -97,22 +100,22 @@ var RcReportsTriples = {
                         return
 
 
+
+
                     var fieldUri="<" + graphUri + RcReportsTriples.formatString(field, true) + ">";
                     if (types.indexOf(field) < 0) {
                         types.push(field)
-
-
                         if (index == 0)
-                            str += fieldUri + " <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + key + ">.\n";
+                            strConcepts += fieldUri + " <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + key + ">.\n";
                         else {
-                            var uriBroader = "<" + graphUri + item[fields[index - 1]] + ">";
-                            str += fieldUri + " <http://www.w3.org/2004/02/skos/core#broader> " + uriBroader + ".\n";
+                            var uriBroader = "<" + graphUri + fields[index - 1] + ">";
+                            strConcepts += fieldUri + " <http://www.w3.org/2004/02/skos/core#broader> " + uriBroader + ".\n";
                         }
                         if(field=="equipment_id" && item["equipment_3_label"]){
-                            str += fieldUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(item["equipment_3_label"]) + "'@en.\n";
+                            strConcepts += fieldUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(item["equipment_3_label"]) + "'@en.\n";
                         }
                         else{
-                            str += fieldUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(field) + "'@en.\n";
+                            strConcepts += fieldUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(field) + "'@en.\n";
                         }
                     }
                     //on rattache le report au plus bas niveau de la herarchie des concepts
@@ -120,13 +123,47 @@ var RcReportsTriples = {
                         var uri = "<" + graphUri + RcReportsTriples.formatString(item[field], true) + ">";
                         if (types.indexOf(item[field]) < 0) {
                             types.push(item[field])
-                            str += uri + " <http://www.w3.org/2004/02/skos/core#broader> " + fieldUri + ".\n";
-                            str +=  uri +" <http://www.w3.org/2004/02/skos/core#prefLabel> '" +RcReportsTriples.formatString(item[field]) + "'@en.\n";
+
+                            if (index > 0) {
+                            var broaderFieldValueUri = "<" + graphUri + RcReportsTriples.formatString(fields[index - 1], true) + ">";
+                                strConcepts += uri + " <http://www.w3.org/2004/02/skos/core#related> " + broaderFieldValueUri + ".\n";
                         }
-                        str += reportUri + " <http://purl.org/dc/terms/subject> " + uri + ".\n";
+                            strConcepts += uri + " <http://www.w3.org/2004/02/skos/core#broader> " + fieldUri + ".\n";
+                            strConcepts += uri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " + fieldUri + ".\n";
+                            strConcepts +=  uri +" <http://www.w3.org/2004/02/skos/core#prefLabel> '" +RcReportsTriples.formatString(item[field]) + "'@en.\n";
+                        }
+                        strCorpus += reportUri + " <http://purl.org/dc/terms/subject> " + uri + ".\n";
                     }
 
                 })
+
+
+                // corpus
+
+                if (types.indexOf(item.report_id) < 0) {
+                    types.push(item.report_id)
+                    strCorpus += reportUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + graphUri + "Report" + ">.\n";
+                    strCorpus += reportUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '"+RcReportsTriples.formatString(item.report_id)+"'.\n";
+
+
+
+                    var year=date.substring(0,4);
+                    if(types.indexOf(site)<0){
+                        types.push(site)
+                        strCorpus += "<" + graphUri + site + ">  <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + "Report" + ">.\n";
+                        strCorpus += "<" + graphUri + site + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> '" + site + "'@en.\n";
+                    }
+                    var siteYear=site+"_"+year
+                    if(types.indexOf(siteYear)<0){
+                        types.push(siteYear)
+                        strCorpus += "<" + graphUri + siteYear + ">  <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + site +">.\n";
+                        strCorpus += "<" + graphUri + siteYear + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> '" + year + "'@en.\n";
+                    }
+
+
+                    strCorpus += reportUri + " <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + siteYear + ">.\n";
+                }
+
 
             }
 
@@ -134,7 +171,9 @@ var RcReportsTriples = {
             // var label = gaiaToSkos.formatString(item.Term);
 
         })
-        fs.writeFileSync(filePath.replace(".txt", ".rdf.nt"), str)
+
+        fs.writeFileSync(filePath.replace(".txt", "_corpus.rdf.nt"), strCorpus)
+        fs.writeFileSync(filePath.replace(".txt", "_concept.rdf.nt"), strConcepts)
 
     }
 

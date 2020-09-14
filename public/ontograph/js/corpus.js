@@ -113,7 +113,7 @@ var Corpus = (function () {
                 "" +
                 "?resource skos:prefLabel ?resourceLabel ."
             if (scheme) {
-                query += "?resource <http://www.w3.org/2004/02/skos/core#inScheme> <" + scheme + ">"
+                query += "?resource skos:inScheme|skos:topConceptOf <" + scheme + ">"
             }
             if (word) {
                 query += " FILTER contains(lcase(str(?resourceLabel )),\"" + word.toLowerCase() + "\") "

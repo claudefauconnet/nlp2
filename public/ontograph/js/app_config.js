@@ -6,6 +6,7 @@ currentOntology: "Energistics",
     currentOntology: "Geosciml",
   currentOntology: "PLM",
     currentOntology: "CTG",
+    currentOntology: "RcReports",
 
 
 
@@ -144,16 +145,22 @@ currentOntology: "Energistics",
 
         },
         "RcReports": {
-            corpusGraphUri: "http://data.total.com/resource/reportsRC/",
-            corpusScheme: "http://data.total.com/resource/reportsRC/",
+            corpusGraphUri: "http://data.total.com/resource/reportsRC/corpus/",
+            corpusScheme: "http://data.total.com/resource/reportsRC/corpus/",
             resourceLevels: [
+              
+                {value: "/Report/", label: "Report"},
+
 
 
 
             ],
+
+
+
             resourceDefaultLevel: "",
 
-            conceptsGraphUri: "http://data.total.com/resource/reportsRC/",
+            conceptsGraphUri: "http://data.total.com/resource/reportsRC/thesaurus/",
 
         },
 
