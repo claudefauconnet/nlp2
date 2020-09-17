@@ -3,16 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/comparator.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/app_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/app_config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/comparator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/filterGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/filterGraph.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/infos.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/infos.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_skos_generic.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/evaluator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/evaluator.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_ISO_15926.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_ISO_15926.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -170,7 +164,7 @@
       <workItem from="1599719076108" duration="4558000" />
       <workItem from="1599731750864" duration="10295000" />
       <workItem from="1599895044908" duration="33487000" />
-      <workItem from="1600232452726" duration="10667000" />
+      <workItem from="1600232452726" duration="23116000" />
     </task>
     <servers />
   </component>

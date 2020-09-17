@@ -14,6 +14,8 @@ var Infos = (function () {
             self.resources.showDocumentInfos(id)
         } else if (id.indexOf("/resource/vocabulary/") > -1) {
             self.concepts.showConceptInfos(id)
+        } else {
+            self.resources.showLambdaParagraphInfos(id);
         }
     }
 
@@ -28,7 +30,7 @@ var Infos = (function () {
                     return common.message(err)
 
                 var html = "<table>"
-                html += "<tr><td>UUID</td><td><a target='_blank' href='"+conceptId+"'> " +conceptId+ "</a></td></tr>"
+                html += "<tr><td>UUID</td><td><a target='_blank' href='" + conceptId + "'> " + conceptId + "</a></td></tr>"
                 result.forEach(function (item) {
 
                     html += "<tr><td>" + item.prop.value + "</td><td> " + item.value.value + "</td></tr>"
@@ -309,6 +311,81 @@ var Infos = (function () {
                     })
                     self.currentGraphInfos[infos.paragraph.value] = infos;
                     display(infos)
+                    self.setInfosDivHeight(300)
+
+
+                })
+
+            }
+        }
+        ,
+
+        showLambdaParagraphInfos: function (id, callback) {
+
+            function display(infos) {
+                $("#messageDiv").html("");
+                var html = "<table>"
+                html+="<tr><td colspan='2'></td> "+ infos.id+"</td></tr>";
+               for(var key in infos.properties){
+                   var item=infos.properties[key]
+                    html+="<tr><td>"+ item.name+"</td> <td>"+ item.value+"</td></tr>";
+                }
+                html+="</table>"
+
+                    $("#infosDiv").html(html);
+
+            }
+
+            var infos = self.currentGraphInfos[id];
+            if (infos)
+                display(infos)
+            else {
+                var url = app_config.sparql_url + "?query=";// + query + queryOptions
+
+                var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
+                    "" +
+                    "select distinct *" +
+                    " from <" + app_config.ontologies[app_config.currentOntology].corpusGraphUri + "> " +
+                    " from <" + app_config.ontologies[app_config.currentOntology].conceptsGraphUri + "> " +
+                    "where {" +
+                    "?id ?prop ?value . filter(?id= <" + id + ">)" +
+                    "" +
+
+                    "\n" +
+                    "}"
+                "" +
+                "}" +
+                "limit 100"
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+
+                sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    var bindings = []
+                    var obj = {label: options.label, id: id, properties: {}};
+                    result.results.bindings.forEach(function (item) {
+                        var propName = item.prop.value
+                        var p = propName.lastIndexOf("#")
+                        if (p == -1)
+                            var p = propName.lastIndexOf("/")
+                        if (p > -1)
+                            var propName = item.prop.value.substring(p + 1)
+                        var value = item.value.value;
+                        /*   if (item.valueLabel)
+                               value = item.valueLabel.value;*/
+
+                        if (!obj.properties[item.prop.value])
+                            obj.properties[item.prop.value] = {name: propName, langValues: {}}
+
+                        if (item.value && item.value["xml:lang"])
+                            obj.properties[item.prop.value].langValues[item.value["xml:lang"]] = value;
+                        else
+                            obj.properties[item.prop.value].value = value;
+
+                    })
+                    self.currentGraphInfos[obj.id] = obj;
+                    display(obj)
                     self.setInfosDivHeight(300)
 
 

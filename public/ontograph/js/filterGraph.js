@@ -153,15 +153,18 @@ var filterGraph = (function () {
 
                             var okDistinctSelect = true;
 
-                            if (corpusAggrLevel == corpusLevels[0].label)
-                                query += linkedResourceVar + " skos:broader ?xx . ?resource skos:broader ?xx .  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
+                            if (corpusAggrLevel == corpusLevels[corpusLevels.length-1].label) {
+                                //  query += linkedResourceVar + " skos:broader ?xx . ?resource skos:broader ?xx .  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
+                                // query +=   linkedResourceVar + " skos:broader  ?resource.  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
+                                query += "bind (" + linkedResourceVar + " as ?resource) filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
+                            }
                             else {
                                 corpusLevels.forEach(function (item, index) {
                                     if (index > 0 && okDistinctSelect) {
                                         if (corpusAggrLevel != item.label) {
-                                            query += " ?" + corpusLevels[index - 1].label + " skos:broader ?" + item.label + ".";
+                                            query += " ?" + corpusLevels[index - 1].label + " ^skos:broader ?" + item.label + ".";
                                         } else {
-                                            query += " ?" + corpusLevels[index - 1].label + " skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
+                                            query += " ?" + corpusLevels[index - 1].label + " ^skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
                                             okDistinctSelect = false;
                                         }
                                     }

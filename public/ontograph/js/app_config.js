@@ -5,9 +5,10 @@ var app_config = {
 currentOntology: "Energistics",
     currentOntology: "Geosciml",
   currentOntology: "PLM",
+
+
     currentOntology: "CTG",
     currentOntology: "RcReports",
-
 
 
 
@@ -148,17 +149,17 @@ currentOntology: "Energistics",
             corpusGraphUri: "http://data.total.com/resource/reportsRC/corpus/",
             corpusScheme: "http://data.total.com/resource/reportsRC/corpus/",
             resourceLevels: [
-
-                {value: "/Report/", label: "Report"},
-
-
+                {value: "/Report/", label: "report"},
+                {value: "/Site/", label: "site"},
+                {value: "/Year/", label: "year"},
+                {value: "/Paragraph/", label: "paragraph"},
 
 
             ],
 
 
 
-            resourceDefaultLevel: "",
+            resourceDefaultLevel: "paragraph",
 
             conceptsGraphUri: "http://data.total.com/resource/reportsRC/thesaurus/",
 

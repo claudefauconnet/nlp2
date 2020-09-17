@@ -420,13 +420,15 @@ var paragraphs = (function () {
         var okSelectAncestors = false;
         var parent;
         corpusLevels.forEach(function (item, index) {
-            parent = "?" + item.label;
+            child = "?" + item.label;
             if (index > 0) {
-                var child = "?" + corpusLevels[index - 1].label;
+                var parent = "?" + corpusLevels[index - 1].label;
 
                 whereCorpusQuery += child + "  skos:broader " + parent + "."
-                whereCorpusQuery += child + "  skos:prefLabel " + child + "Label.";
+                whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
                // whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
+            }else{
+
             }
 
             if (item.label == options.corpusLevelAggr || okSelectAncestors) {
@@ -436,54 +438,31 @@ var paragraphs = (function () {
 
 
         })
-        whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
+        whereCorpusQuery += child + "  skos:prefLabel " + child + "Label.";
 
 
-        /*
-                whereCorpusQuery += "?paragraph  skos:broader ?chapter ."
-                whereCorpusQuery += "?chapter  skos:prefLabel ?chapterLabel.";
-                whereCorpusQuery += "?chapter  skos:broader ?document ."
-                whereCorpusQuery += "?document skos:prefLabel ?documentLabel.";
-                whereCorpusQuery += "?document  skos:broader ?documentType ."
-                whereCorpusQuery += "?documentType  skos:prefLabel ?documentTypeLabel.";
-                whereCorpusQuery += "?documentType  skos:broader ?branch."
-                whereCorpusQuery += "?branch  skos:prefLabel ?branchLabel.";
-                whereCorpusQuery += "?documentType  skos:broader ?domain. "
-                whereCorpusQuery += "?domain  skos:prefLabel ?domainLabel.";*/
-
-        /*      if (options.corpusLevelAggr == "domain") {//(idCorpus[0].indexOf("/Domain/") > -1) {
-                  distinctSelectStr += "?domain ?domainLabel"
-              }
-              if (options.corpusLevelAggr == "branch") {//(idCorpus[0].indexOf("/Domain/") > -1) {
-                  distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel"
-              } else if (options.corpusLevelAggr == "documentType") {//(idCorpus[0].indexOf("/Branch/") > -1) {
-                  distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel"
-              } else if (options.corpusLevelAggr == "document") {//(idCorpus[0].indexOf("/Document-type/") > -1) {
-                  distinctSelectStr += " ?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel"
-              } else if (options.corpusLevelAggr == "chapter") {//(idCorpus[0].indexOf("/Document/") > -1) {
-
-                  distinctSelectStr += "?domain ?domainLabel" + "?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel" + " ?chapter ?chapterLabel"
-              } else if (options.corpusLevelAggr == "paragraph") {//(idCorpus[0].indexOf("/Paragraph/") > -1 || idCorpus[0].indexOf("/Paragraph/") > -1) {
-                  distinctSelectStr += "?domain ?domainLabel" + " ?branch ?branchLabel" + " ?documentType ?documentTypeLabel" + " ?document ?documentLabel" + " ?chapter ?chapterLabel" + " ?paragraph "
-              }*/
 
 
         if (idCorpus) {
+
+            var idCorpusTreelevel
             var corpusIdsStr = "";
             if (!Array.isArray(idCorpus))
                 idCorpus = [idCorpus]
             var corpusIdsStr = "";
             var resourceName = ""
             idCorpus.forEach(function (id, index) {
+                var jstreeNode=$("#jstreeCorpusDiv").jstree(true).get_node(id)
+                 idCorpusTreelevel=jstreeNode.parents.length-1
                 if (index == 0) {
                     corpusLevels.forEach(function (item) {
                         if (id.indexOf(item.value) > -1)
                             resourceName = item.label
                     })
-                    /*  for (var key in corpusLevelMap) {
-                          if (id.indexOf(key) > -1)
-                              resourceName = corpusLevelMap[key]
-                      }*/
+
+
+                    resourceName = corpusLevels[idCorpusTreelevel].label
+
 
                 } else
                     corpusIdsStr += ","
@@ -491,21 +470,6 @@ var paragraphs = (function () {
             })
             whereCorpusQuery += "filter (?" + resourceName + " in(" + corpusIdsStr + ")) "
         }
-
-
-        /*  var whereQuery = "{?paragraph terms:subject ?entity. ?entity rdfs:label ?entityLabel . " +
-              "  FILTER (lang(?entityLabel)=\"en\") " +
-              "  ?entity rdfsyn:type ?entityType .  " +*/
-        /*  var whereQuery = "{?paragraph  skos:broader ?chapter." +
-
-              "?chapter  skos:broader ?document." +
-              "?document  skos:prefLabel ?documentLabel." +
-              "?document  skos:broader ?documentType." +
-              "?documentType  skos:prefLabel ?documentTypeLabel." +
-              "?documentType skos:broader ?branch." +
-              "?branch  skos:prefLabel ?branchLabel." +
-              "?branch skos:broader ?domain." +
-              "?domain  skos:prefLabel ?domainLabel."*/
 
 
         var whereConceptQuery = ""
@@ -521,7 +485,7 @@ var paragraphs = (function () {
                     entityIdsStr += "<" + id + ">"
                 })
 
-                var linkedResourceName = corpusLevels[0].label;
+                var linkedResourceName = corpusLevels[corpusLevels.length-1].label;
                 if (isQuantumConceptsQuery) {
                     whereConceptQuery += "  ?" + linkedResourceName + " terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type . " + "?entity" + indexSet + " skos:exactMatch ?quantumConcept" + indexSet + ""
                     if (entityIdsStr.length > 0)
@@ -534,23 +498,22 @@ var paragraphs = (function () {
 
 
                 distinctSelectStr += " ?entity" + indexSet + " ?entity" + indexSet + "Type\ ";
-                /*   var i;
-                   for(var i=indexSet;i<=options.conceptLevelAggr;i++){
-
-                       whereConceptQuery += " ?entity"+i+" skos:broader ?entity"+(i+1)+". "
-                   }
-                   distinctSelectStr += "?entity" + i + " ?entity" + i + "Type "*/
 
 
             })
 
 
-            //  distinctSelectStr = " * "
+
 
 
             self.previousWhereConceptQuery = whereConceptQuery
         }
 
+
+
+        var fromStr="from <"+ app_config.ontologies[app_config.currentOntology].corpusGraphUri+"> ";
+        if(app_config.ontologies[app_config.currentOntology].corpusGraphUri!=app_config.ontologies[app_config.currentOntology].conceptsGraphUri)
+            fromStr+="from <"+ app_config.ontologies[app_config.currentOntology].conceptsGraphUri+"> ";
         var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
         var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
             "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
@@ -558,7 +521,7 @@ var paragraphs = (function () {
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
 
-            "        select distinct " + distinctSelectStr + " where {" + whereCorpusQuery + whereConceptQuery + "}"
+            "        select distinct " + distinctSelectStr +fromStr +" where {" + whereCorpusQuery + whereConceptQuery + "}"
     //    query += "GROUP BY " + distinctSelectStr;
 
         query += " limit " + self.sparql_limit
