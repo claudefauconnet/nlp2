@@ -141,14 +141,14 @@ currentOntology: "Energistics",
             ],
             resourceDefaultLevel: "",
 
-            conceptsGraphUri: "http://data.total.com/resource/reportsRC/",
+            conceptsGraphUri: "http://data.total.com/resource/acronyms/",
 
         },
         "RcReports": {
             corpusGraphUri: "http://data.total.com/resource/reportsRC/corpus/",
             corpusScheme: "http://data.total.com/resource/reportsRC/corpus/",
             resourceLevels: [
-              
+
                 {value: "/Report/", label: "Report"},
 
 
@@ -171,6 +171,9 @@ currentOntology: "Energistics",
         ISO_15926:{
             isExternal:true,
 
+            conceptsGraphUri: "http://data.15926.org/rdl",
+
+
 
 
 
@@ -178,10 +181,13 @@ currentOntology: "Energistics",
         },
         "GEMET":{
             isExternal:true,
+            conceptsGraphUri: "http://www.eionet.europa.eu/gemet/",
 
         },
         "GBA":{
             isExternal:true,
+
+
         }
         ,
         "USGS": {

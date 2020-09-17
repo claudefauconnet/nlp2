@@ -420,9 +420,10 @@ var paragraphs = (function () {
         var okSelectAncestors = false;
         var parent;
         corpusLevels.forEach(function (item, index) {
+            parent = "?" + item.label;
             if (index > 0) {
                 var child = "?" + corpusLevels[index - 1].label;
-                 parent = "?" + item.label;
+
                 whereCorpusQuery += child + "  skos:broader " + parent + "."
                 whereCorpusQuery += child + "  skos:prefLabel " + child + "Label.";
                // whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";

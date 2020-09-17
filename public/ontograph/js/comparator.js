@@ -8,8 +8,9 @@ var Comparator = (function () {
             var graphsUrisOptions = "";
             for (var key in app_config.ontologies) {
                 var selected = ""
-                if (key != app_config.currentOntology)
+                if (key != app_config.currentOntology) {
                     graphsUrisOptions += "<option " + selected + "value='" + app_config.ontologies[key].conceptsGraphUri + "'>" + key + "</option>";
+                }
 
             }
             var html = "<table>"
@@ -32,15 +33,24 @@ var Comparator = (function () {
         self.compareConcepts = function () {
 
 
-            self.targetThesaurusGraphURI = $("#comparator_targetGraphUriSelect").val()
+            self.targetThesaurusGraphURI = $("#comparator_targetGraphUriSelect").val();
+            if (!self.targetThesaurusGraphURI)
+                return;
+
+            var targetGraphLabel = $("#comparator_targetGraphUriSelect option:selected").text();
+            if(Object.keys(sparql_abstract.rdfsMap).length==0)
+                sparql_abstract.initSources("all")
+            if(sparql_abstract.rdfsMap[targetGraphLabel])
+            self.targetSparql_url=sparql_abstract.rdfsMap[targetGraphLabel].sparql_url
+            else
+                self.targetSparql_url=app_config.sparql_url
 
             var output = $("#comparator_outputTypeSelect").val();
             var showAllSourceNodes=$("#showAllSourceNodesCBX").prop("checked");
             var showOlderAncestorsOnly=$("#showOlderAncestorsOnlyCBX").prop("checked");
 
             var lang = "en"
-            if (!self.targetThesaurusGraphURI)
-                return;
+
 
             var sourceConceptAggrDepth = 6;
             var targetConceptAggrDepth = 6;
@@ -114,7 +124,7 @@ var Comparator = (function () {
                                 " filter " + filter + "} limit 10000";
 
 
-                            var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
+                            var url = self.targetSparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
                             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                                 if (err) {
@@ -166,19 +176,22 @@ var Comparator = (function () {
                             for (var i = 1; i < targetConceptAggrDepth; i++) {
                                 if (i == 1) {
                                     query += " OPTIONAL{ ?id" + " skos:broader ?broader" + i + ". ";
+                                    query += "?broader" + i + " skos:prefLabel ?broaderLabel" + (i) + ". " +
+                                        "FILTER (lang(?broaderLabel" + i + ") = '" + lang + "')"
+
+                                }else {
+
+                                    query += " OPTIONAL{ ?broader" + (i-1) + " skos:broader ?broader" + (i) + ". ";
+
+                                    query += "?broader" + i + " skos:prefLabel ?broaderLabel" + (i) + ". " +
+                                        "FILTER (lang(?broaderLabel" + i + ") = '" + lang + "')"
                                 }
 
-                                query += " OPTIONAL{ ?broader" + i + " skos:broader ?broader" + (i + 1) + ". ";
-
-                                query += "?broader" + i + " skos:prefLabel ?broaderLabel" + (i) + ". " +
-                                    "FILTER (lang(?broaderLabel" + i + ") = '" + lang + "')"
-
-
                             }
-                            query += "?broader" + i + " skos:prefLabel ?broaderLabel" + (i) + ". " +
-                                "FILTER (lang(?broaderLabel" + i + ") = '" + lang + "')"
+                           /* query += "?broader" + i + " skos:prefLabel ?broaderLabel" + (i) + ". " +
+                                "FILTER (lang(?broaderLabel" + i + ") = '" + lang + "')"*/
 
-                            for (var i = 0; i < targetConceptAggrDepth; i++) {
+                            for (var i = 1; i < targetConceptAggrDepth; i++) {
                                 query += "}"
                             }
 
@@ -186,7 +199,7 @@ var Comparator = (function () {
                             query += "}" +
                                 "LIMIT 10000";
 
-                            var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
+                            var url = self.targetSparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
                             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                                 if (err) {
@@ -606,7 +619,7 @@ var Comparator = (function () {
                                 " filter " + filter + "  } GROUP by ?id ?prefLabel   limit 10000"
 
 
-                            var url = app_config.sparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
+                            var url = self.targetSparql_url + "?default-graph-uri=" + encodeURIComponent(self.targetThesaurusGraphURI) + "&query=";// + query + queryOptions
                             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
                             sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                                 if (err) {

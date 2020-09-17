@@ -9,7 +9,8 @@ var rdfTripleSkosProxy = (function () {
         "http://data.total.com/resource/vocabulary/": {color: "#7fef11", label: "CTG"},
         "https://www2.usgs.gov/science/USGSThesaurus/": {color: '#FFD900', label: "USGS"},
         "http://data.total.com/resource/dictionary/gaia/": {color: "#0072d5", label: "GAIA"},
-        "http://PetroleumAbstractsThesaurusSelection/": {color: "#cd4850", label: "TulsaSelectiob"}
+        "http://PetroleumAbstractsThesaurusSelection/": {color: "#cd4850", label: "TulsaSelection"},
+        "http://data.total.com/resource/acronyms/": {color: "#cd4850", label: "acronyms"}
     }
 
     //gestion des url de routage node (index.js) avec nginx
@@ -18,14 +19,13 @@ var rdfTripleSkosProxy = (function () {
         elasticUrl = "../elastic";
 
 
+    self.initGraphs = function () {
 
-    self.initGraphs=function(){
-
-        var objs=[]
-        for(var key in graphsMap){
-            objs.push({value:key,label:graphsMap[key].label})
+        var objs = []
+        for (var key in graphsMap) {
+            objs.push({value: key, label: graphsMap[key].label})
         }
-        common.fillSelectOptions("graphUriToCheckMissingConcepts", objs,false, "label","value")
+        common.fillSelectOptions("graphUrisSelect", objs, false, "label", "value")
 
     }
 
@@ -119,14 +119,12 @@ var rdfTripleSkosProxy = (function () {
             return self.getWikipageMissingWords(obj.node)
         // if (true || obj.event.ctrlKey)
         self.addTreeChildrenNodes(obj.node.id);
-       if (obj.node.parents.length >3 || obj.event.altKey) {
+        if (obj.node.parents.length > 3 || obj.event.altKey) {
             self.showNodeConceptsGraph(obj.node)
-           self.addWikiPagesToTree(obj.node)
+            self.addWikiPagesToTree(obj.node)
         }
         /* else if (obj.node.children.length > 0)
              return;*/
-
-
 
 
     }
@@ -257,7 +255,7 @@ var rdfTripleSkosProxy = (function () {
             "  " +
             "  ?concept skos:prefLabel ?conceptLabel. filter(lang(?conceptLabel)='en')    " +
             "  BIND (LCASE(?conceptLabel) as ?conceptLabelLower)  " +
-            " optional {?concept skos:member ?member }"+
+            " optional {?concept skos:member ?member }" +
             "  optional{ ?concept skos:broader ?broader1. ?broader1 skos:prefLabel ?broader1Label  filter(lang(?broader1Label)='en')      optional{ ?broader1 skos:broader ?broader2. ?broader2 skos:prefLabel ?broader2Label  filter(lang(?broader2Label)='en')      optional{ ?broader2 skos:broader ?broader3. ?broader3 skos:prefLabel ?broader3Label  filter(lang(?broader3Label)='en')         optional{ ?broader3 skos:broader ?broader4. ?broader4 skos:prefLabel ?broader4Label  filter(lang(?broader4Label)='en') }    }    }  }     } order by ?concept limit 1000"
         self.querySPARQL_proxy(query, self.sparqlServerUrl, {}, {}, function (err, result) {
 
@@ -297,9 +295,9 @@ var rdfTripleSkosProxy = (function () {
                 var subject = item.subject.value;
                 var conceptId = item.concept.value;
                 var countPages = parseInt(item.countPages.value);
-                var member=null;
-                if(item.member)
-                    member=item.member.value;
+                var member = null;
+                if (item.member)
+                    member = item.member.value;
 
                 maxPages = Math.max(maxPages, countPages)
                 minPages = Math.min(minPages, countPages)
@@ -335,8 +333,8 @@ var rdfTripleSkosProxy = (function () {
                 }
                 if (allnodes.indexOf(conceptId) < 0) {
                     allnodes.push(conceptId)
-                  if(member)
-                      color="#dac"
+                    if (member)
+                        color = "#dac"
                     // visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "text", color: color,size:Math.round(20/countPages), fixed: {x: true, y: true}, x: -500, y: offsetY})
                     visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "box", color: color, fixed: {x: true, y: true}, x: -500, y: offsetY, data: {type: "leafConcept"}})
 
@@ -350,7 +348,7 @@ var rdfTripleSkosProxy = (function () {
                         if (allnodes.indexOf(broaderId) < 0) {
                             allnodes.push(broaderId)
                             var broaderLabel = item["broader" + i + "Label"].value
-                            visjsData.nodes.push({id: broaderId, label: broaderLabel,shape:"box", color: color, data: {type: "broaderConcept"}})
+                            visjsData.nodes.push({id: broaderId, label: broaderLabel, shape: "box", color: color, data: {type: "broaderConcept"}})
                         }
                         if (i == 1) {
                             var edgeId = conceptId + "_" + broaderId
@@ -409,7 +407,68 @@ var rdfTripleSkosProxy = (function () {
             //  $( "#sliderCountPagesMax" ).slider( "option", "value", maxPages );
         })
     }
+    self.filterGraphCategories = function () {
+        var graphUri = $("#graphUrisSelect").val()
+        var query =
+            "SELECT distinct * " +
+            "from <" + graphUri + ">" +
+            "from <http://souslesens.org/data/total/ep/>" +
+            "WHERE {" +
+            "  ?concept <http://souslesens.org/vocab#wikimedia-category> ?cat ." +
+            "  ?concept <http://souslesens.org/vocab#wikimedia-category> ?cat ." +
+            "  ?concept skos:prefLabel ?conceptLabel." +
+            "  ?cat   foaf:topic ?subject. " +
+            "      optional{" +
+            "      ?subject skos:broader ?subjectBroader1" +
+            "       optional{" +
+            "      ?subjectBroader1 skos:broader ?subjectBroader2" +
+            "       optional{" +
+            "      ?subjectBroader2 skos:broader ?subjectBroader3" +
+            "          optional{" +
+            "      ?subjectBroader3 skos:broader ?subjectBroader4" +
+            "        }}}}" +
 
+        "} order by ?conceptLabel LIMIT 1000"
+
+        self.querySPARQL_proxy(query, self.sparqlServerUrl, {}, {}, function (err, result) {
+
+            if (err) {
+                return console.log(err);
+            }
+           var treeData=[];
+            var nodes={};
+            result.results.bindings.forEach(function (item) {
+                var conceptId=item.concept.value
+                var conceptLabel=item.conceptLabel.value;
+                var subject=item.subject.value;
+                var subjectLabel=subject.substring(subject.lastIndexOf("/"));
+
+                for (var i = 1; i < 4; i++) {
+                    if (!nodes[conceptId]) {
+                        nodes[conceptId] = {id: item.concept.value, text: item.conceptLabel.value, parent: "#"};
+                        if (typeof (item["subjectBroader" + i]) != "undefined") {
+                            var broaderId = item["subjectBroader" + i].value
+                            if (i == 1) {
+                                nodes[conceptId].parent = broaderId;
+                            }
+
+                            if (!nodes[broaderId]) {
+                                var broaderLabel = broaderId.substring(broaderLabel.lastIndexOf("/"));
+                                nodes[broaderId] = {id: broaderId, text: broaderLabel, parent: "#"};
+
+                            }
+                        }
+                    }
+                }
+
+
+            })
+
+
+        })
+
+
+    }
     self.onGraphNodeClick = function (node, point, options) {
         self.currentGraphNode = node;
         if (!node || !node.id)
@@ -648,16 +707,16 @@ var rdfTripleSkosProxy = (function () {
 
     self.getWikipageMissingWords = function (page) {
         $("#waitImg").css("display", "block")
-        var graphUri=$("#graphUriToCheckMissingConcepts").val()
+        var graphUri = $("#graphUrisSelect").val()
         $("#commentDiv").html("searching new concepts in selected wiki page")
         // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
 
         if (!self.currentConceptsLabels)
             self.currentConceptsLabels = []
-        var pageName=page.text
-       var p=pageName.indexOf(":")
-        if(p>-1)
-            pageName=pageName.substring(p)
+        var pageName = page.text
+        var p = pageName.indexOf(":")
+        if (p > -1)
+            pageName = pageName.substring(p)
         var payload = {
 
 
@@ -709,17 +768,16 @@ var rdfTripleSkosProxy = (function () {
         var id = event.currentTarget.id;
         self.currentSelectedPageNewWord = word;
         var classes = $('#' + id).attr('class').split(/\s+/);
-        var text=$("#copiedWords").val()
+        var text = $("#copiedWords").val()
         if (classes.indexOf('selectedNewWord') > -1) {
             $('#' + id).removeClass('selectedNewWord')
 
-            text=text.replace(word,"")
-            text=text.replace(",,","")
+            text = text.replace(word, "")
+            text = text.replace(",,", "")
 
-        }
-        else {
+        } else {
             $('#' + id).addClass('selectedNewWord')
-          text=text+","+word;
+            text = text + "," + word;
         }
         $("#copiedWords").val(text)
 
@@ -729,19 +787,18 @@ var rdfTripleSkosProxy = (function () {
 
         var text = ""
         $('.selectedNewWord').each(function (item) {
-            if (text !="")
+            if (text != "")
                 text += ", ";
             text += $(this).html()
         })
         $("#copiedWords").val(text)
-      /*  $("#copiedWords").focus()
-        document.execCommand('copy');*/
+        /*  $("#copiedWords").focus()
+          document.execCommand('copy');*/
 
     }
-       /* var copyText = document.querySelector("#copiedWords");
-        copyText.select();
-        document.execCommand("copy");*/
-
+    /* var copyText = document.querySelector("#copiedWords");
+     copyText.select();
+     document.execCommand("copy");*/
 
 
     return self;

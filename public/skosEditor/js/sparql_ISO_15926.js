@@ -3,6 +3,7 @@ var sparql_ISO_15926 = (function () {
 
     var self = {};
 
+
     self.list = function (source, word, options, callback) {
 
         /*  var filter = " (lcase(str(?prefLabel)) = \"" + word.toLowerCase() + "\")";

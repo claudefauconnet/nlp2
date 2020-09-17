@@ -31,9 +31,10 @@ var sparql_abstract = (function () {
         elasticUrl = "../elastic";
 
     self.initSources = function (all) {
+        var userGroups="admin";
+if(authentication && authentication.currentUser)
+    userGroups = authentication.currentUser.groupes;
 
-
-        var userGroups = authentication.currentUser.groupes;
         if (all || userGroups.indexOf("admin") > -1 || userGroups.indexOf("CTG") > -1) {
 
           //  self.rdfsMap['Total-CTG'] = {sparql_url: 'vps475829.ovh.net:8890/sparql/', graphIRI: 'http://data.total.com/resource/thesaurus/ctg/', sparqlBuilder: "sparql_skos_generic"};

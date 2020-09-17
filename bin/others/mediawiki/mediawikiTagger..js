@@ -193,8 +193,8 @@ var mediaWikiTagger = {
                                 "_source": ["pageName", "categories"],
 
                             }
-                            bulkStr += JSON.stringify(({index: indexName})) + "\r"
-                            bulkStr += JSON.stringify(queryLine) + "\r"
+                            bulkStr += JSON.stringify(({index: indexName})) + "\r\n"
+                            bulkStr += JSON.stringify(queryLine) + "\r\n"
 
 
                         })
@@ -256,7 +256,7 @@ var mediaWikiTagger = {
                             console.log(graphUri + "pages " + thesaurusPagesMatchCount.length + " concepts" + conceptsFound)
 
                             async.eachSeries(splittedtTriples, function (triples, callbackResponse) {
-                                return callbackSeries();
+
                                 mediaWikiTagger.storeTriples(graphUri, triples, function (err, result) {
                                     callbackResponse(err);
 
@@ -294,7 +294,7 @@ var mediaWikiTagger = {
         var query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
             "select distinct * from <" + thesaurusGraphUri + "> where{" +
             "  " +
-            "  ?concept  rdf:type skos:Concept." +
+         //   "  ?concept  rdf:type skos:Concept." +
             "  ?concept skos:prefLabel ?conceptLabel filter(lang(?conceptLabel)='en') " +
             "  " +
             "}limit " + limit;
@@ -1118,7 +1118,7 @@ if (false) {
 }
 
 
-if (false) {
+if (true) {
 
     var wikiUrl = "https://wiki.seg.org/wiki/"
     var indexName = "mediawiki-pages-seg"
@@ -1131,18 +1131,28 @@ if (false) {
     var indexName = "mediawiki-pages-aapg"
 
 
-    var wikiUrl = "https://petrowiki.spe.org/"
-    var indexName = "mediawiki-pages-spe"
 
     var wikiUrl = "https://wiki.aapg.org/"
     var indexName = "mediawiki-pages-aapg"
 
+
+    var wikiUrl = "https://petrowiki.spe.org/"
+    var indexName = "mediawiki-pages-spe"
+
+
+
     var elasticUrl = "http://vps254642.ovh.net:2009/"
     thesaurusGraphUris = ["http://souslesens.org/oil-gas/upstream/"]//, "http://www.eionet.europa.eu/gemet/", "http://data.total.com/resource/thesaurus/ctg/", "https://www2.usgs.gov/science/USGSThesaurus/"]
+
+
+
+
 
     //  thesaurusGraphUris = ["http://data.total.com/resource/dictionary/gaia/"];
     thesaurusGraphUris = ["http://www.eionet.europa.eu/gemet/", "http://data.total.com/resource/thesaurus/ctg/", "https://www2.usgs.gov/science/USGSThesaurus/"]
     thesaurusGraphUris = ["https://www2.usgs.gov/science/USGSThesaurus/"]
+
+    thesaurusGraphUris = ["http://data.total.com/resource/acronyms/"]
 
     mediaWikiTagger.tagPages(thesaurusGraphUris, elasticUrl, indexName, wikiUrl, function (err, result) {
         if (err)
@@ -1184,7 +1194,7 @@ if (false) {
     mediaWikiTagger.getCategoriesPagesRdf(elasticUrl, indexName, wikiUrl)
 }
 //mediaWikiTagger.createMediawikiIndex(elasticUrl,"mediawiki");
-if (true) {
+if (false) {
     var graphUri = "http://data.total.com/resource/thesaurus/ctg/"
     var graphUri = "http://www.eionet.europa.eu/gemet/"
     var graphUri = "http://souslesens.org/oil-gas/upstream/"

@@ -3,9 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/others/RcReportsTriples..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/RcReportsTriples..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/comparator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/comparator.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/ontograph/js/app_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/app_config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/ontograph/js/corpus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/corpus.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/comparator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/comparator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/paragraphs.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_skos_generic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/evaluator.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/evaluator.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_ISO_15926.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_ISO_15926.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/skosEditor/js/sparql_abstract.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -68,7 +75,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Node.js.RcReportsTriples..js">
+  <component name="RunManager" selected="Node.js.bin\www">
     <configuration name="RcReportsTriples..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="RcReportsTriples..js" working-dir="$PROJECT_DIR$/bin/others">
       <method v="2" />
     </configuration>
@@ -86,10 +93,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.mediawikiTagger..js" />
         <item itemvalue="Node.js.RcReportsTriples..js" />
         <item itemvalue="Node.js.tulsaToSkos..js" />
         <item itemvalue="Node.js.gaiaToSkos..js" />
-        <item itemvalue="Node.js.mediawikiTagger..js" />
         <item itemvalue="Node.js.Stephanie..js" />
       </list>
     </recent_temporary>
@@ -162,7 +169,8 @@
       <workItem from="1599117976619" duration="12136000" />
       <workItem from="1599719076108" duration="4558000" />
       <workItem from="1599731750864" duration="10295000" />
-      <workItem from="1599895044908" duration="24677000" />
+      <workItem from="1599895044908" duration="33487000" />
+      <workItem from="1600232452726" duration="10667000" />
     </task>
     <servers />
   </component>
@@ -186,114 +194,10 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/telanthropia/ontologyKoha2..js</url>
-          <line>311</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/ontograph/js/sparqlProxies/sparql_ISO_15926.js</url>
-          <line>41</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/AAPG..js</url>
-          <line>55</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>147</line>
-          <option name="timeStamp" value="74" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>195</line>
-          <option name="timeStamp" value="234" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>320</line>
-          <option name="timeStamp" value="253" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>428</line>
-          <option name="timeStamp" value="260" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>412</line>
-          <option name="timeStamp" value="261" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>767</line>
-          <option name="timeStamp" value="304" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>766</line>
-          <option name="timeStamp" value="305" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>793</line>
-          <option name="timeStamp" value="326" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/onTheFlyTagger..js</url>
-          <line>690</line>
-          <option name="timeStamp" value="351" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>462</line>
-          <option name="timeStamp" value="360" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>466</line>
-          <option name="timeStamp" value="362" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>465</line>
-          <option name="timeStamp" value="363" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>454</line>
-          <option name="timeStamp" value="461" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiStats..js</url>
-          <line>88</line>
-          <option name="timeStamp" value="504" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiStats..js</url>
-          <line>56</line>
-          <option name="timeStamp" value="505" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiStats..js</url>
-          <line>32</line>
-          <option name="timeStamp" value="514" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js</url>
-          <line>273</line>
-          <option name="timeStamp" value="519" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js</url>
-          <line>609</line>
-          <option name="timeStamp" value="584" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/node_modules/spacy-nlp/src/nlp.js</url>
-          <line>15</line>
-          <option name="timeStamp" value="681" />
+          <url>file://$PROJECT_DIR$/public/ontograph/js/comparator.js</url>
+          <line>203</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="709" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
