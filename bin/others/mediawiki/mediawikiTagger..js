@@ -1076,6 +1076,36 @@ var mediaWikiTagger = {
             console.log(err);
         })
     }
+    ,listWikiPages:function(elasticUrl, indexName, callback) {
+
+        var query = {
+            "_source": ["url"],
+            "from": 0,
+            "size": 10000
+        }
+        var options = {
+            method: 'POST',
+            json: query,
+            headers: {
+                'content-type': 'application/json'
+            },
+
+            url: elasticUrl + indexName + "/_search?q=*"
+        };
+
+        request(options, function (error, response, body) {
+            if (error)
+                return callback(error);
+
+            var hits = body.hits.hits;
+            var str = "";
+            hits.forEach(function (hit) {
+                str += hit._source.url + "\n";
+            })
+            fs.writeFileSync("D:\\Total\\2020\\Stephanie\\" + indexName + ".csv", str)
+        })
+    }
+
 }
 
 
@@ -1118,7 +1148,7 @@ if (false) {
 }
 
 
-if (true) {
+if (false) {
 
     var wikiUrl = "https://wiki.seg.org/wiki/"
     var indexName = "mediawiki-pages-seg"
@@ -1199,4 +1229,12 @@ if (false) {
     var graphUri = "http://www.eionet.europa.eu/gemet/"
     var graphUri = "http://souslesens.org/oil-gas/upstream/"
     mediaWikiTagger.setTulsaSchemes(graphUri);
+}
+if(false){
+    var elasticUrl = "http://vps254642.ovh.net:2009/"
+    var indexName = "mediawiki-pages-aapg"
+    var indexName = "mediawiki-pages-spe"
+    var indexName = "mediawiki-pages-seg"
+mediaWikiTagger.listWikiPages(elasticUrl, indexName)
+
 }

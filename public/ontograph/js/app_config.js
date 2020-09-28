@@ -12,6 +12,7 @@ currentOntology: "Energistics",
 
 
 
+
     ontologies: {
 
         "CTG": {
@@ -19,13 +20,22 @@ currentOntology: "Energistics",
             corpusGraphUri: "http://data.total.com/resource/corpus-description/ctg/",
             corpusScheme: "http://data.total.com/resource/ontology/ctg/Domain",
 
-            resourceLevels: [ //order broader ascending (bottom up)
+        /*    resourceLevels: [ //order broader ascending (bottom up)
                 {value: "/Paragraph/", label: "paragraph"},
                 {value: "/Chapter/", label: "chapter"},
                 {value: "/Document/", label: "document"},
                 {value: "/Document-type/", label: "documentType"},
                 {value: "/Branch/", label: "branch"},
                 {value: "/Domain/", label: "domain"},
+            ],*/
+            resourceLevels: [ //order broader descnding
+                {value: "/Domain/", label: "domain"},
+                {value: "/Branch/", label: "branch"},
+                {value: "/Document-type/", label: "documentType"},
+                {value: "/Document/", label: "document"},
+                {value: "/Chapter/", label: "chapter"},
+                {value: "/Paragraph/", label: "paragraph"},
+
             ],
             resourceDefaultLevel: "document",
 
@@ -149,17 +159,18 @@ currentOntology: "Energistics",
             corpusGraphUri: "http://data.total.com/resource/reportsRC/corpus/",
             corpusScheme: "http://data.total.com/resource/reportsRC/corpus/",
             resourceLevels: [
-                {value: "/Report/", label: "report"},
-                {value: "/Site/", label: "site"},
-                {value: "/Year/", label: "year"},
-                {value: "/Paragraph/", label: "paragraph"},
+                {value: "/Report/", label: "Report"},
+                {value: "/equipment_category/", label: "equipment_category"},
+                {value: "/equipment_manufacturer/", label: "equipment_manufacturer"},
+                {value: "/location_site/", label: "location_site"},
+                {value: "/paragraph/", label: "paragraph"},
 
 
             ],
 
 
 
-            resourceDefaultLevel: "paragraph",
+            resourceDefaultLevel: "location_site",
 
             conceptsGraphUri: "http://data.total.com/resource/reportsRC/thesaurus/",
 

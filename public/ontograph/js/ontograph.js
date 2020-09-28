@@ -35,6 +35,10 @@ var ontograph = (function () {
         "PRODUCT": "#F99393",
 
 
+
+        "Failure_Mechanism": "#FFD000",
+
+
         "clusteredEntities": "#a51544",
         "paragraph": "#ddd",
         "anyEntity":"#FFD000"

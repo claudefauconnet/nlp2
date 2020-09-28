@@ -5,7 +5,7 @@ var RcReportsTriples = {
         if (!sep)
             sep = "\t";
         var str = "" + fs.readFileSync(filePath);
-       //str = str.replace(/[\u{0080}-\u{FFFF}]/gu, "");//charactrese vides
+        //str = str.replace(/[\u{0080}-\u{FFFF}]/gu, "");//charactrese vides
         var lines = str.split("\n");
         var objs = [];
         var cols = [];
@@ -15,8 +15,8 @@ var RcReportsTriples = {
         })
 
         lines.forEach(function (line, lineIndex) {
-            if(line.indexOf("é")>-1)
-                line= line.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            if (line.indexOf("é") > -1)
+                line = line.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             var cells = line.trim().split(sep);
             var obj = {}
             cells.forEach(function (cell, index) {
@@ -54,127 +54,210 @@ var RcReportsTriples = {
         return str;
     },
 
+
+    //A	report_id	location_id	equipment_id	E	F	concept_Niv1	concept_Niv2	concept_Niv3	concept_Niv4	concept_Niv5	concept_Niv6		location_site	O	P	equipment_manufactuter	equipment_modelNumber	equipment_3_label	location_plant_section	location_plant unit
     csvToTriples: function (filePath) {
-        var json = RcReportsTriples.csvToJson(filePath, ",");
+    var json = RcReportsTriples.csvToJson(filePath, ",");
         var graphUri = "http://data.total.com/resource/reportsRC/"
         var strConcepts = ""
-        var strCorpus=""
-
-
-      strCorpus += "<" + graphUri + "SAP_report" + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n";
-        strCorpus += "<http://data.total.com/resource/reportsRC/Report>  <http://www.w3.org/2004/02/skos/core#topConceptOf> <http://data.total.com/resource/reportsRC/corpus/>.\n";
-      strCorpus += "<" + graphUri + "SAP_report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'SAP_report'@en .\n";
-        strCorpus += "<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + "SAP_report" + "> .\n";
-        strCorpus += "<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'Report'@en .\n";
-
-        var map = {
-
-            "concept": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
-            "equipment": ["equipment_manufactuter", "equipment_modelNumber", "equipment_id"]
-
-        }
+        var strCorpus = ""
         var types = [];
 
-        //A	report_id	location_id	equipment_id	E	F	concept_Niv1	concept_Niv2	concept_Niv3	concept_Niv4	concept_Niv5	concept_Niv6		location_site	O	P	equipment_manufactuter	equipment_modelNumber	equipment_3_label	location_plant_section	location_plant unit
+        var corpusHierarchy = ["equipment_category", "equipment_manufacturer", "location_id", "report_id"]
 
+        var conceptsMap = {
+            "Failure Mechanism": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
+            "Retained Action": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
+            //  "equipment": ["equipment_manufactuter", "equipment_modelNumber", "equipment_id"]
+        }
+      //  var filtersConcept_Niv1 = ["Failure Mechanism", "Retained Action"]
+
+
+      var  conceptsFilePath= filePath.replace(".csv", "_thesaurus.rdf.nt");
+        var  corpusFilePath= filePath.replace(".csv", "_corpus.rdf.nt");
+        
+        
+        var corpusStream= fs.createWriteStream(conceptsFilePath );
+        var conceptsStream = fs.createWriteStream(corpusFilePath );
+
+        
+        
+        
+        
+        
+        corpusStream.write( "<http://data.total.com/resource/reportsRC/Report>  <http://www.w3.org/2004/02/skos/core#topConceptOf> <http://data.total.com/resource/reportsRC/corpus/>.\n");
+        corpusStream.write( "<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'Report'@en .\n");
+
+
+//*************************** init top concepts****************************************
+        for (var key in conceptsMap) {
+            var conceptTypeUri = "<" + graphUri + RcReportsTriples.formatString(key, true) + "> ";
+            types.push(key)
+            conceptsStream.write( conceptTypeUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n");
+            conceptsStream.write( conceptTypeUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + key + "' .\n");
+        }
+
+
+        //*************************** each line key****************************************
         json.forEach(function (item, index) {
+            if(index%100==0)
+                console.log(index)
+            if (item.report_id == "G10680640")
+                var x = 3
+
+            var conceptNiveau1 = item["concept_Niv1"]
 
             if (!item.report_id)
                 return;
 
-            var date=item["notif_date"]
-            var site=item["location_site"]
-            var reportUri = "<" + graphUri + item.report_id + ">";
-            if(!date || !site)
+            var date = item["notif_date"]
+            var site = item["location_site"]
+
+            if (!date || !site)
                 return;
 
-            for (var key in map) {
-                if (types.indexOf(key) < 0) {
-                    types.push(key)
-                    strConcepts += "<" + graphUri + key + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n";
-                    strConcepts += "<" + graphUri + key + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> '"+key+"' .\n";
-                }
-                var fields = map[key];
-                fields.forEach(function (field, index) {
+
+            var reportUri = "<" + graphUri + item.report_id + ">";
+
+            //*************************** each concepts Type****************************************
+        //    for (var conceptType in conceptsMap) {
+            var conceptType=item["concept_Niv1"]
+                var conceptTypeUri = "<" + graphUri + RcReportsTriples.formatString(conceptType, true) + "> ";
+
+
+                var fields = conceptsMap[conceptType];
+                if(!fields)
+                    return;
+
+
+
+                //*************************** each conceptType field****************************************
+                fields.forEach(function (field, indexFields) {
                     if (!item[field])
-                        return
+                        return;
 
 
+                    var conceptUri = "<" + graphUri+RcReportsTriples.formatString(item[field], true) + ">";
 
 
-                    var fieldUri="<" + graphUri + RcReportsTriples.formatString(field, true) + ">";
-                    if (types.indexOf(field) < 0) {
-                        types.push(field)
-                        if (index == 0)
-                            strConcepts += fieldUri + " <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + key + ">.\n";
-                        else {
-                            var uriBroader = "<" + graphUri + fields[index - 1] + ">";
-                            strConcepts += fieldUri + " <http://www.w3.org/2004/02/skos/core#broader> " + uriBroader + ".\n";
+                    //*************************** concepts Hierarchy unique****************************************
+                    if (types.indexOf(item[field]) < 0) {
+                        types.push(item[field])
+                        var broaderFieldValueUri
+                        if (indexFields > 0) {
+                            broaderFieldValueUri = "<" + graphUri + RcReportsTriples.formatString(item[fields[indexFields - 1]], true) + ">";
+                        } else {
+                            broaderFieldValueUri = conceptTypeUri;
                         }
-                        if(field=="equipment_id" && item["equipment_3_label"]){
-                            strConcepts += fieldUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(item["equipment_3_label"]) + "'@en.\n";
-                        }
-                        else{
-                            strConcepts += fieldUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(field) + "'@en.\n";
-                        }
+                        conceptsStream.write( conceptUri + " <http://www.w3.org/2004/02/skos/core#broader> " + broaderFieldValueUri + ".\n");
+                        conceptsStream.write( conceptUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " + conceptTypeUri + ".\n");
+                        conceptsStream.write( conceptUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(item[field]) + "'@en.\n");
                     }
-                    //on rattache le report au plus bas niveau de la herarchie des concepts
-                    if (index < fields.length - 1 && item[fields[index + 1]] == "") {
-                        var uri = "<" + graphUri + RcReportsTriples.formatString(item[field], true) + ">";
-                        if (types.indexOf(item[field]) < 0) {
-                            types.push(item[field])
+                    //*************************** end concepts Hierarchy unique****************************************
 
-                            if (index > 0) {
-                            var broaderFieldValueUri = "<" + graphUri + RcReportsTriples.formatString(fields[index - 1], true) + ">";
-                                strConcepts += uri + " <http://www.w3.org/2004/02/skos/core#related> " + broaderFieldValueUri + ".\n";
-                        }
-                            strConcepts += uri + " <http://www.w3.org/2004/02/skos/core#broader> " + fieldUri + ".\n";
-                            strConcepts += uri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " + fieldUri + ".\n";
-                            strConcepts +=  uri +" <http://www.w3.org/2004/02/skos/core#prefLabel> '" +RcReportsTriples.formatString(item[field]) + "'@en.\n";
-                        }
-                        strCorpus += reportUri + " <http://purl.org/dc/terms/subject> " + uri + ".\n";
+
+
+                    //*************************** corpus item subject concept****************************************
+                    //on rattache le report au plus bas niveau de la herarchie des concepts
+                    if (indexFields < fields.length - 1 && item[fields[indexFields + 1]] == "") {
+                        corpusStream.write( reportUri + " <http://purl.org/dc/terms/subject> " + conceptUri + ".\n");
                     }
 
                 })
 
 
-                // corpus
+            //*************************** corpus ****************************************
 
                 if (types.indexOf(item.report_id) < 0) {
                     types.push(item.report_id)
-                    strCorpus += reportUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + graphUri + "Report" + ">.\n";
-                    strCorpus += reportUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '"+RcReportsTriples.formatString(item.report_id)+"'.\n";
+
+                    corpusHierarchy.forEach(function (colName, index) {
+                        var colUri = "<" + graphUri + colName + ">";
+
+                        var value = item[colName];
+                        if (!value)
+                            value = colName + "_unknown"
 
 
+                        if (types.indexOf(value) < 0 || colName == "report_id") {
+                            types.push(value)
 
-                    var year=date.substring(0,4);
-                    if(types.indexOf(site)<0){
-                        types.push(site)
-                        strCorpus += "<" + graphUri + site + ">  <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + "Report" + ">.\n";
-                        strCorpus += "<" + graphUri + site + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> '" + site + "'@en.\n";
-                    }
-                    var siteYear=site+"_"+year
-                    if(types.indexOf(siteYear)<0){
-                        types.push(siteYear)
-                        strCorpus += "<" + graphUri + siteYear + ">  <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + site +">.\n";
-                        strCorpus += "<" + graphUri + siteYear + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> '" + year + "'@en.\n";
-                    }
+                            var uri = "<" + graphUri + RcReportsTriples.formatString(value, true) + ">";
+                            var parentUri;
+                            if (index == 0)
+                                parentUri = "<" + graphUri + "Report>"
+                            else {
+                                var parentValue = item[corpusHierarchy[index - 1]]
+                                if (!parentValue)
+                                    parentValue = corpusHierarchy[index - 1] + "_unknown"
+                                parentUri = "<" + graphUri + RcReportsTriples.formatString(parentValue, true) + ">";
+                            }
+
+                            corpusStream.write( uri + " <http://www.w3.org/2004/02/skos/core#broader> " + parentUri + ".\n");
+                            corpusStream.write( uri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(value) + "'@en.\n");
+
+                            // if(index<corpusHierarchy.length-1)
+                            corpusStream.write( uri + "  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " + colUri + ".\n");
+                            //  corpusStream.write( reportUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(item.report_id) + "'.\n";
+                        }
 
 
-                    strCorpus += reportUri + " <http://www.w3.org/2004/02/skos/core#broader> <" + graphUri + siteYear + ">.\n";
+                    })
                 }
 
 
-            }
+          //  }
 
 
             // var label = gaiaToSkos.formatString(item.Term);
 
         })
+        conceptsStream.close();
+        corpusStream.close();
+      //  fs.writeFileSync(filePath.replace(".txt", "_corpus.rdf.nt"), strCorpus)
+       // fs.writeFileSync(filePath.replace(".txt", "_thesaurus.rdf.nt"), strConcepts)
 
-        fs.writeFileSync(filePath.replace(".txt", "_corpus.rdf.nt"), strCorpus)
-        fs.writeFileSync(filePath.replace(".txt", "_concept.rdf.nt"), strConcepts)
+    },
 
+    extractLines: function(filePath){
+
+var tag='Failure Mechanism';
+    // var tag='Retained Action';
+
+var outputFilePath= filePath.replace(".","_"+tag.replace(/ /g,"_")+".");
+        var outputStream = fs.createWriteStream(outputFilePath, {
+         //   flags: 'a' // 'a' means appending (old data will be preserved)
+        })
+
+        var header="A,report_id,location_id,equipment_id,notif_date,F,concept_Niv1,concept_Niv2,concept_Niv3,concept_Niv4,concept_Niv5,concept_Niv6,,location_site,O,P,equipment_manufacturer,equipment_modelNumber,equipment_category,location_plant_section,location_plant unit\n"
+        outputStream.write( header )
+
+        var readline=require('readline');
+        const readInterface = readline.createInterface({
+            input: fs.createReadStream(filePath),
+            output: process.stdout,
+            console: false
+        });
+
+
+
+        var countLines=0
+        var countAll=0
+        readInterface.on('line', function(line) {
+            if (line.indexOf(tag)>-1 ) {
+                outputStream.write( line + "\n")
+                countLines += 1
+            }
+            countAll+=1
+
+        });
+
+        readInterface.on('close', function(x) {
+        var y=countLines;
+            outputStream.close()
+
+
+        });
     }
 
 
@@ -182,4 +265,9 @@ var RcReportsTriples = {
 module.exports = RcReportsTriples
 
 
-RcReportsTriples.csvToTriples("D:\\Total\\2020\\Pierre\\RcReportsExtracts.txt")
+//RcReportsTriples.csvToTriples("D:\\Total\\2020\\Pierre\\RcReportsExtracts.txt")
+
+RcReportsTriples.csvToTriples("D:\\Total\\2020\\Pierre\\report_notification_Failure_Mechanism.csv")
+//RcReportsTriples.csvToTriples("D:\\Total\\2020\\Pierre\\report_notification_Retained_Action.csv")
+
+//RcReportsTriples.extractLines("D:\\Total\\2020\\Pierre\\report_notification.csv")

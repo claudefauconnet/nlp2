@@ -126,12 +126,14 @@ var filterGraph = (function () {
                         common.message("<br>Searching AssociatedConcepts  ", true)
 
                         var corpusLevels = app_config.ontologies[app_config.currentOntology].resourceLevels;
-                        var linkedResourceVar = "?" + corpusLevels[0].label
+                        var linkedResourceVar = "?" + corpusLevels[corpusLevels.length-1].label
+                        var fromStr="from <"+app_config.ontologies[app_config.currentOntology].corpusGraphUri+"> "
+                        fromStr+="from <"+app_config.ontologies[app_config.currentOntology].conceptsGraphUri+"> "
                         async.eachSeries(slicedResourceIds, function (resourceIds, callbackEach) {
 
 
                             var query = "    PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX mime:<http://purl.org/dc/dcmitype/> PREFIX mime:<http://www.w3.org/2004/02/skos/core#>   " +
-                                "      SELECT  DISTINCT ?entity ?entityLabel ?entityType ?resource  (count(?entity) AS ?countEntities)     where {" + linkedResourceVar + " terms:subject ?entity. ?entity skos:prefLabel ?entityLabel. ?entity rdfsyn:type ?entityType.";
+                                "      SELECT  DISTINCT ?entity ?entityLabel ?entityType ?resource  (count(?entity) AS ?countEntities)   "+fromStr+"  where {" + linkedResourceVar + " terms:subject ?entity. ?entity skos:prefLabel ?entityLabel. ?entity rdfsyn:type ?entityType.";
                             if (!Array.isArray(resourceIds))
                                 resourceIds = [resourceIds]
 
@@ -152,40 +154,31 @@ var filterGraph = (function () {
 
 
                             var okDistinctSelect = true;
+                            var pathOperator="+"
+                            if (corpusAggrLevel == corpusLevels[corpusLevels.length-1].label)
+                                pathOperator="*"
 
-                            if (corpusAggrLevel == corpusLevels[corpusLevels.length-1].label) {
-                                //  query += linkedResourceVar + " skos:broader ?xx . ?resource skos:broader ?xx .  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
-                                // query +=   linkedResourceVar + " skos:broader  ?resource.  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
-                                query += "bind (" + linkedResourceVar + " as ?resource) filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
-                            }
-                            else {
-                                corpusLevels.forEach(function (item, index) {
-                                    if (index > 0 && okDistinctSelect) {
-                                        if (corpusAggrLevel != item.label) {
-                                            query += " ?" + corpusLevels[index - 1].label + " ^skos:broader ?" + item.label + ".";
-                                        } else {
-                                            query += " ?" + corpusLevels[index - 1].label + " ^skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
-                                            okDistinctSelect = false;
-                                        }
-                                    }
-                                })
-                            }
+                                query +=  linkedResourceVar + " skos:broader"+pathOperator+" ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
+
+                            /*     if (corpusAggrLevel == corpusLevels[corpusLevels.length-1].label) {
+                                     //  query += linkedResourceVar + " skos:broader ?xx . ?resource skos:broader ?xx .  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
+                                     // query +=   linkedResourceVar + " skos:broader  ?resource.  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
+                                     query += "bind (" + linkedResourceVar + " as ?resource) filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
+                                 }
+                                 else {
+                                     corpusLevels.forEach(function (item, index) {
+                                         if (index > 0 && okDistinctSelect) {
+                                             if (corpusAggrLevel != item.label) {
+                                                 query += " ?" + corpusLevels[index - 1].label + " ^skos:broader ?" + item.label + ".";
+                                             } else {
+                                                 query += " ?" + corpusLevels[index - 1].label + " ^skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
+                                                 okDistinctSelect = false;
+                                             }
+                                         }
+                                     })
+                                 }*/
 
 
-                            /*     if (corpusAggrLevel == "paragraph") {
-                                     query += "?paragraph skos:broader ?xx . ?resource skos:broader ?xx . filter (?paragraph in (" + resourceIdStr + ")) "
-                                 } else if (corpusAggrLevel == "chapter") {
-                                     query += " ?paragraph skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
-                                 } else if (corpusAggrLevel == "document") {
-                                     query += " ?paragraph skos:broader ?chapter . ?chapter skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
-                                 } else if (corpusAggrLevel == "documentType") {
-                                     query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document . ?document skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
-                                 } else if (corpusAggrLevel == "branch") {
-                                     query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document .?document skos:broader ?documentType . ?documentType skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
-                                 } else if (corpusAggrLevel == "domain") {
-                                     query += " ?paragraph skos:broader ?chapter .?chapter skos:broader ?document .?document skos:broader ?documentType . ?documentType skos:broader ?branch . ?branch skos:broader ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
-                                 } else
-                                     return callbackSeries("No corpus level aggr");*/
 
                             query += "}" +
                                 " GROUP BY    ?entity ?entityLabel ?entityType ?resource" +
