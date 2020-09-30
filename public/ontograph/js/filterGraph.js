@@ -466,6 +466,31 @@ var filterGraph = (function () {
             var uniqueNodes = []
             var uniqueEdgeIds = []
 
+            Corpus.getCurrentResourcesParents(function(err,result) {
+                result.forEach(function (item) {
+                    if(existingNodeIds.indexOf(item.broader.value)<0 && uniqueNodes.indexOf(item.broader.value)<0){
+                        uniqueNodes.push(item.broader.value);
+                        Corpus.currentResourceIds.push(item.broader.value)
+                        visjsData.nodes.push( {
+                            id:item.broader.value,
+                            label:item.broaderLabel.value,
+                            data:{type:"resource"}
+                        })
+                    }
+                    var edgeId=item.concept.value+"_"+item.broader.value
+                    if(existingEdgeIds.indexOf(edgeId)<0 && uniqueEdgeIds.indexOf(edgeId)<0){
+                        uniqueEdgeIds.push(edgeId);
+                        visjsData.edges.push( {
+                            id:edgeId,
+                           from:item.concept.value,
+                            to:item.broader.value,
+                        })
+                    }
+
+                })
+                ontograph.drawGraph(visjsData, {addToGraph: 1})
+            })
+return;
             existingNodes.forEach(function (node) {
 
                 if (!selectedResourceId || (selectedResourceId == node.id)) {
@@ -607,6 +632,115 @@ var filterGraph = (function () {
             Infos.showInfos(resourceId);
 
         },
+
+
+        skipRessources:function(){
+            var existingNodes = visjsGraph.data.nodes.get();
+            var nodesMap={}
+            existingNodes.forEach(function(node){
+                nodesMap[node.id]=node
+            })
+         //   var existingEdges = visjsGraph.data.edges.get();
+            var newNodes = [];
+            var newEdges = [];
+
+            var visjsData={nodes:[],edges:[]}
+            var nodesToRemove=[]
+            existingNodes.forEach(function(node){
+                if(node.data.type=="resource"){
+                    nodesToRemove.push(node.id)
+
+                }else{
+                    visjsData.nodes.push(node)
+                }
+            })
+
+            nodesToRemove.forEach(function(node){
+                var edges=visjsGraph.network.getConnectedEdges(node);
+                var newEdgesNodes=[]
+                edges.forEach(function(edgeId){
+                    var edge=visjsGraph.data.edges.get(edgeId)
+                    if(edge.from==node){
+                        newEdgesNodes.push(edge.to)
+                    }
+                    if(edge.to==node){
+                        newEdgesNodes.push(edge.to)
+                    }
+                })
+
+                //connect all entities nodes common to resource
+                    newEdgesNodes.forEach(function(node1) {
+                        newEdgesNodes.forEach(function (node2) {
+                            if(node1==node2)
+                                return;
+                            var edgeId=node1+"_"+node2
+                            var inverseEdgeId=node2+"_"+node1
+                            var p,q;
+                            if((p=newEdges.indexOf(edgeId))<0 && (q =newEdges.indexOf(inverseEdgeId))<0){
+
+                                newEdges.push(edgeId)
+                                visjsData.edges.push({
+                                    id:edgeId,
+                                    from:node1,
+                                    to: node2,
+                                    value:1,
+                                    fromLabel:nodesMap[node1].label,
+                                    toLabel:nodesMap[node2].label
+
+                                })
+
+                            }else{
+                                var j=Math.max(p,q);
+                                if(j>-1)
+                                visjsData.edges[j].value+=1
+                            }
+                        })
+
+                    })
+            })
+
+    //   ontograph.drawGraph(visjsData,)
+
+            var w=600;
+            var h=600;
+            var heatMapData=Heatmap.bindCanvasHeatMapData(visjsData.edges,"from","to","value",nodesMap,h,w)
+            var html="<div style='display: flex;flex-direction: column'>" +
+                "<div id='chart' style='width:"+h+"px;height: "+w+"px'></div>" +
+                "<div id='heatMapParagraphsDiv'></div>" +
+                "</div>"
+
+            $("#dialogDiv").html(html);
+            $("#dialogDiv").dialog("open");
+            var options={
+                graphDiv:"chart",
+            onclickFn:Heatmap.onCellClick}
+            drawCanvas.drawData  (heatMapData, options, function(err,result){
+
+            })
+
+
+/*
+            var html="<div id=\"chart\"></div>"
+         //   $("#dialogDiv").width(800);
+          //  $("#dialogDiv").height(800);
+            $("#dialogDiv").html(html);
+            $("#dialogDiv").dialog("open")
+
+            var chart = c3.generate({
+                data: {
+                    columns: [
+                        ['data1', 30, 200, 100, 400, 150, 250],
+                        ['data2', 50, 20, 10, 40, 15, 25]
+                    ]
+                }
+            });
+
+*/
+
+
+
+        },
+
 
         ShowCooccurrences: function () {
             var existingNodes = visjsGraph.data.nodes.get();

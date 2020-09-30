@@ -68,6 +68,7 @@ var RcReportsTriples = {
         var conceptsMap = {
             "Failure Mechanism": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
             "Retained Action": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
+            "equipment_manufacturer":"equipment_manufacturer",
             //  "equipment": ["equipment_manufactuter", "equipment_modelNumber", "equipment_id"]
         }
       //  var filtersConcept_Niv1 = ["Failure Mechanism", "Retained Action"]
@@ -121,7 +122,7 @@ var RcReportsTriples = {
 
             //*************************** each concepts Type****************************************
         //    for (var conceptType in conceptsMap) {
-            var conceptType=item["concept_Niv1"]
+            var conceptType=item["conceptsMap"]
                 var conceptTypeUri = "<" + graphUri + RcReportsTriples.formatString(conceptType, true) + "> ";
 
 

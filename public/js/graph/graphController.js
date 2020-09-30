@@ -28,6 +28,10 @@ var graphController = (function () {
     ],
         self.sliderIndexMin = 10;
     self.sliderIndexMax = 200;
+
+
+
+
     self.drawEntitiesGraph = function (data) {
 
 
@@ -68,12 +72,12 @@ var graphController = (function () {
                     color: color,
                     label: "" + data.labels[edge.from],
                     size: edge.width / 2,
-                    font:{
-                        color:color,
-                        bold:true,
-                        size:14,
+                    font: {
+                        color: color,
+                        bold: true,
+                        size: 14,
                     },
-                     shape:"square"
+                    shape: "square"
                 }
             } else {
                 nodeMap[edge.from].size += edge.width / 2
@@ -187,11 +191,11 @@ var graphController = (function () {
             },
             value: hit._source.documents.length,
             color: color,
-            shape:"square",
-            font:{
-                color:color,
-                bold:true,
-                size:14,
+            shape: "square",
+            font: {
+                color: color,
+                bold: true,
+                size: 14,
             },
 
 

@@ -1,5 +1,6 @@
 var Corpus = (function () {
         var self = {};
+        self.currentResourceIds = []
 
         self.searchResources = function (word) {
             self.showJstreeResources(word, null, null, 6);
@@ -100,6 +101,42 @@ var Corpus = (function () {
 
                         })
                 }
+            })
+        }
+
+
+        self.getCurrentResourcesParents = function (callback) {
+            var slicedResourceIds = common.sliceArray(Corpus.currentResourceIds, 500);
+            var resourceBroaders = []
+            async.eachSeries(slicedResourceIds, function (resourceIds, callbackEach) {
+
+                var resourceIdStr = "";
+
+                resourceIds.forEach(function (resourceId, index) {
+                    // resourceIds.forEach(function (node, index) {
+                    if (index > 0)
+                        resourceIdStr += ","
+                    resourceIdStr += "<" + resourceId + ">";
+
+                })
+                var fromStr = "from <" + app_config.ontologies[app_config.currentOntology].corpusGraphUri + "> "
+                var query = "    PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX mime:<http://purl.org/dc/dcmitype/> PREFIX mime:<http://www.w3.org/2004/02/skos/core#>   " +
+                    "      SELECT  DISTINCT ?concept ?broader ?broaderLabel    " + fromStr + "  where {" +
+                    " ?concept skos:broader|^skos:narrower ?broader. filter(?concept in(" + resourceIdStr + ")) ?broader skos:prefLabel ?broaderLabel filter (lang(?broaderLabel)='en')" +
+                    "}"
+                var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+                var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+                sparql.querySPARQL_GET_proxy_cursor(url, query, queryOptions, null, function (err, result) {
+                    if (err) {
+                        return callbackEach(err);
+                    }
+                    resourceBroaders = resourceBroaders.concat(result.results.bindings);
+                    callbackEach();
+
+                })
+
+            }, function (err) {
+                callback(err,resourceBroaders);
             })
         }
 

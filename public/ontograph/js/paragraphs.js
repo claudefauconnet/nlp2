@@ -3,6 +3,8 @@ var paragraphs = (function () {
     var self = {};
     self.currentGraphInfos = {}
     self.sparql_limit = 10000
+
+
     self.drawParagraphsEntitiesGraphAggr = function (data, conceptsInfosMap, options) {
         if (!options) {
             options = {
@@ -186,7 +188,7 @@ var paragraphs = (function () {
         var uniqueNodeIds = []
         var uniqueEdgeIds = []
         var visjsData = {nodes: [], edges: []}
-
+        Corpus.currentResourceIds = []
         data.forEach(function (item, indexLine) {
                 var corpusId;
                 var corpusLabel;
@@ -194,6 +196,7 @@ var paragraphs = (function () {
                 if (!item[options.corpusLevelAggr])
                     return;
                 corpusId = item[options.corpusLevelAggr].value;
+                Corpus.currentResourceIds.push(corpusId);
                 if (corpusId.indexOf("Paragraph") > -1)
                     corpusLabel = corpusId.substring(corpusId.lastIndexOf("/") + 1)
                 else
@@ -211,7 +214,7 @@ var paragraphs = (function () {
 
                 allCorpusIds.push(corpusId)
 
-
+                item.type = "resource";
                 if (uniqueNodeIds.indexOf(corpusId) < 0) {
                     uniqueNodeIds.push(corpusId)
 
@@ -426,8 +429,8 @@ var paragraphs = (function () {
 
                 whereCorpusQuery += child + "  skos:broader " + parent + "."
                 whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
-               // whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
-            }else{
+                // whereCorpusQuery += parent + "  skos:prefLabel " + parent + "Label.";
+            } else {
 
             }
 
@@ -441,8 +444,6 @@ var paragraphs = (function () {
         whereCorpusQuery += child + "  skos:prefLabel " + child + "Label.";
 
 
-
-
         if (idCorpus) {
 
             var idCorpusTreelevel
@@ -452,8 +453,8 @@ var paragraphs = (function () {
             var corpusIdsStr = "";
             var resourceName = ""
             idCorpus.forEach(function (id, index) {
-                var jstreeNode=$("#jstreeCorpusDiv").jstree(true).get_node(id)
-                 idCorpusTreelevel=jstreeNode.parents.length-1
+                var jstreeNode = $("#jstreeCorpusDiv").jstree(true).get_node(id)
+                idCorpusTreelevel = jstreeNode.parents.length - 1
                 if (index == 0) {
                     corpusLevels.forEach(function (item) {
                         if (id.indexOf(item.value) > -1)
@@ -477,6 +478,9 @@ var paragraphs = (function () {
 
             conceptSets.forEach(function (conceptSet, indexSet) {
 
+                if (indexSet > 0)
+                    whereConceptQuery += " MINUS "
+
                 var entityIdsStr = "";
 
                 conceptSet.ids.forEach(function (id, index) {
@@ -484,8 +488,8 @@ var paragraphs = (function () {
                         entityIdsStr += ","
                     entityIdsStr += "<" + id + ">"
                 })
-
-                var linkedResourceName = corpusLevels[corpusLevels.length-1].label;
+                whereConceptQuery += "{"
+                var linkedResourceName = corpusLevels[corpusLevels.length - 1].label;
                 if (isQuantumConceptsQuery) {
                     whereConceptQuery += "  ?" + linkedResourceName + " terms:subject ?entity" + indexSet + " . ?entity" + indexSet + " rdfsyn:type  ?entity" + indexSet + "Type . " + "?entity" + indexSet + " skos:exactMatch ?quantumConcept" + indexSet + ""
                     if (entityIdsStr.length > 0)
@@ -498,22 +502,18 @@ var paragraphs = (function () {
 
 
                 distinctSelectStr += " ?entity" + indexSet + " ?entity" + indexSet + "Type\ ";
-
+                whereConceptQuery += "}"
 
             })
-
-
-
 
 
             self.previousWhereConceptQuery = whereConceptQuery
         }
 
 
-
-        var fromStr="from <"+ app_config.ontologies[app_config.currentOntology].corpusGraphUri+"> ";
-        if(app_config.ontologies[app_config.currentOntology].corpusGraphUri!=app_config.ontologies[app_config.currentOntology].conceptsGraphUri)
-            fromStr+="from <"+ app_config.ontologies[app_config.currentOntology].conceptsGraphUri+"> ";
+        var fromStr = "from <" + app_config.ontologies[app_config.currentOntology].corpusGraphUri + "> ";
+        if (app_config.ontologies[app_config.currentOntology].corpusGraphUri != app_config.ontologies[app_config.currentOntology].conceptsGraphUri)
+            fromStr += "from <" + app_config.ontologies[app_config.currentOntology].conceptsGraphUri + "> ";
         var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
         var query = "   PREFIX terms:<http://purl.org/dc/terms/>" +
             "        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
@@ -521,10 +521,14 @@ var paragraphs = (function () {
             "PREFIX mime:<http://purl.org/dc/dcmitype/> " +
             "PREFIX mime:<http://www.w3.org/2004/02/skos/core#> " +
 
-            "        select distinct " + distinctSelectStr +fromStr +" where {" + whereCorpusQuery + whereConceptQuery + "}"
-    //    query += "GROUP BY " + distinctSelectStr;
+            "        select distinct " + distinctSelectStr + fromStr + " where {" + whereCorpusQuery + whereConceptQuery + "}"
+        //    query += "GROUP BY " + distinctSelectStr;
 
         query += " limit " + self.sparql_limit
+        Selection.currentSelectionQuery.select = distinctSelectStr;
+        Selection.currentSelectionQuery.from = fromStr;
+        Selection.currentSelectionQuery.whereConcepts = whereConceptQuery;
+        Selection.currentSelectionQuery.whereCorpus = whereCorpusQuery
 
 
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
@@ -540,6 +544,44 @@ var paragraphs = (function () {
 
         })
 
+
+    }
+
+    self.getResourcesCooccurences = function (concepts, options, callback) {
+        if (!options)
+            options = {};
+        var fromStr = "from <" + app_config.ontologies[app_config.currentOntology].corpusGraphUri + "> ";
+        if (app_config.ontologies[app_config.currentOntology].corpusGraphUri != app_config.ontologies[app_config.currentOntology].conceptsGraphUri)
+            fromStr += "from <" + app_config.ontologies[app_config.currentOntology].conceptsGraphUri + "> ";
+
+
+        var query = "  PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX mime:<http://purl.org/dc/dcmitype/> PREFIX mime:<http://www.w3.org/2004/02/skos/core#>  " +
+            "       select distinct * " +
+            fromStr +
+            " where {  "
+        concepts.forEach(function (conceptId, conceptIndex) {
+            query += "?paragraph terms:subject ?conceptX" + conceptIndex + ".?conceptX" + conceptIndex + " skos:broader* ?concept" + conceptIndex + ". filter(?concept" + conceptIndex + "=<" + conceptId + ">) ?concept" + conceptIndex + "  skos:prefLabel ?conceptLabel" + conceptIndex + " filter (lang(?conceptLabel" + conceptIndex + ")='en') "
+
+        })
+
+        var whereCorpus = Selection.currentSelectionQuery.whereCorpus
+        if (whereCorpus && whereCorpus != "")
+            query += " " + whereCorpus
+        query += "} order by ?paragraph limit 10000"
+        var url = app_config.sparql_url + "?default-graph-uri=&query=";// + query + queryOptions
+        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+        console.log(query)
+
+        sparql.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                console.log(query)
+                return callback(err);
+            }
+
+            return callback(null, result.results.bindings);
+
+
+        })
 
     }
 

@@ -4,6 +4,7 @@ var Selection = (function () {
 
     var uniqueNodes = [];
     self.sliceZize = 500;
+    self.currentSelectionQuery={select:"", whereCorpus:"",whereConcepts:""}
 
 
     self.initConceptsGraphUriSelect = function () {
@@ -100,7 +101,7 @@ var Selection = (function () {
 
                 },
 
-                //getAncestors
+                //get Concepts Ancestors
                 function (callbackSeries) {
                     if (allResource.length == 0)
                         return callbackSeries();
@@ -141,7 +142,7 @@ var Selection = (function () {
                     })
 
                 },
-                //getParagraphs
+                //draw graph
                 function (callbackSeries) {
                     common.message("Drawing graph : " + allResource.length + "relations")
                     //  paragraphs.drawParagraphsEntitiesGraph(allResource, paragraphsInfos, {
