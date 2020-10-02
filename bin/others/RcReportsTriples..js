@@ -57,56 +57,54 @@ var RcReportsTriples = {
 
     //A	report_id	location_id	equipment_id	E	F	concept_Niv1	concept_Niv2	concept_Niv3	concept_Niv4	concept_Niv5	concept_Niv6		location_site	O	P	equipment_manufactuter	equipment_modelNumber	equipment_3_label	location_plant_section	location_plant unit
     csvToTriples: function (filePath) {
-    var json = RcReportsTriples.csvToJson(filePath, ",");
+        var json = RcReportsTriples.csvToJson(filePath, ",");
         var graphUri = "http://data.total.com/resource/reportsRC/"
         var strConcepts = ""
         var strCorpus = ""
         var types = [];
+        var typesCorpus = [];
+        var typesConcept = [];
+        var typesConceptReport={}
+
+        var dontProcessCorpus = true
 
         var corpusHierarchy = ["equipment_category", "equipment_manufacturer", "location_id", "report_id"]
 
         var conceptsMap = {
-            "Failure Mechanism": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
-            "Retained Action": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
-            "equipment_manufacturer":"equipment_manufacturer",
+            //    "Failure Mechanism": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
+            //    "Retained Action": ["concept_Niv1", "concept_Niv2", "concept_Niv3", "concept_Niv4", "concept_Niv5", "concept_Niv6"],
+            "equipment_manufacturer": ["equipment_manufacturer"],
+            "equipment_category": ["equipment_category"],
             //  "equipment": ["equipment_manufactuter", "equipment_modelNumber", "equipment_id"]
         }
-      //  var filtersConcept_Niv1 = ["Failure Mechanism", "Retained Action"]
+        //  var filtersConcept_Niv1 = ["Failure Mechanism", "Retained Action"]
 
 
-      var  conceptsFilePath= filePath.replace(".csv", "_thesaurus.rdf.nt");
-        var  corpusFilePath= filePath.replace(".csv", "_corpus.rdf.nt");
-        
-        
-        var corpusStream= fs.createWriteStream(conceptsFilePath );
-        var conceptsStream = fs.createWriteStream(corpusFilePath );
+        var conceptsFilePath = filePath.replace(".csv", "_thesaurus.rdf.nt");
+        var corpusFilePath = filePath.replace(".csv", "_corpus.rdf.nt");
 
-        
-        
-        
-        
-        
-        corpusStream.write( "<http://data.total.com/resource/reportsRC/Report>  <http://www.w3.org/2004/02/skos/core#topConceptOf> <http://data.total.com/resource/reportsRC/corpus/>.\n");
-        corpusStream.write( "<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'Report'@en .\n");
+
+        var corpusStream = fs.createWriteStream(corpusFilePath);
+        var conceptsStream = fs.createWriteStream(conceptsFilePath);
+
+
+        corpusStream.write("<http://data.total.com/resource/reportsRC/Report>  <http://www.w3.org/2004/02/skos/core#topConceptOf> <http://data.total.com/resource/reportsRC/corpus/>.\n");
+        corpusStream.write("<" + graphUri + "Report" + ">  <http://www.w3.org/2004/02/skos/core#prefLabel> 'Report'@en .\n");
 
 
 //*************************** init top concepts****************************************
         for (var key in conceptsMap) {
             var conceptTypeUri = "<" + graphUri + RcReportsTriples.formatString(key, true) + "> ";
-            types.push(key)
-            conceptsStream.write( conceptTypeUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n");
-            conceptsStream.write( conceptTypeUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + key + "' .\n");
+            typesConcept.push(key)
+            conceptsStream.write(conceptTypeUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#ConceptScheme>.\n");
+            conceptsStream.write(conceptTypeUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + key + "' .\n");
         }
 
 
         //*************************** each line key****************************************
         json.forEach(function (item, index) {
-            if(index%100==0)
+            if (index % 500 == 0)
                 console.log(index)
-            if (item.report_id == "G10680640")
-                var x = 3
-
-            var conceptNiveau1 = item["concept_Niv1"]
 
             if (!item.report_id)
                 return;
@@ -121,15 +119,14 @@ var RcReportsTriples = {
             var reportUri = "<" + graphUri + item.report_id + ">";
 
             //*************************** each concepts Type****************************************
-        //    for (var conceptType in conceptsMap) {
-            var conceptType=item["conceptsMap"]
+            for (var conceptType in conceptsMap) {
+                //     var conceptType=item["conceptsMap"]
                 var conceptTypeUri = "<" + graphUri + RcReportsTriples.formatString(conceptType, true) + "> ";
 
 
                 var fields = conceptsMap[conceptType];
-                if(!fields)
+                if (!fields)
                     return;
-
 
 
                 //*************************** each conceptType field****************************************
@@ -138,39 +135,46 @@ var RcReportsTriples = {
                         return;
 
 
-                    var conceptUri = "<" + graphUri+RcReportsTriples.formatString(item[field], true) + ">";
+                    var conceptUri = "<" + graphUri + RcReportsTriples.formatString(item[field], true) + ">";
 
 
                     //*************************** concepts Hierarchy unique****************************************
-                    if (types.indexOf(item[field]) < 0) {
-                        types.push(item[field])
+                    if (typesConcept.indexOf(item[field]) < 0) {
+                        typesConcept.push(item[field])
                         var broaderFieldValueUri
                         if (indexFields > 0) {
                             broaderFieldValueUri = "<" + graphUri + RcReportsTriples.formatString(item[fields[indexFields - 1]], true) + ">";
                         } else {
                             broaderFieldValueUri = conceptTypeUri;
                         }
-                        conceptsStream.write( conceptUri + " <http://www.w3.org/2004/02/skos/core#broader> " + broaderFieldValueUri + ".\n");
-                        conceptsStream.write( conceptUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " + conceptTypeUri + ".\n");
-                        conceptsStream.write( conceptUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(item[field]) + "'@en.\n");
+                        conceptsStream.write(conceptUri + " <http://www.w3.org/2004/02/skos/core#broader> " + broaderFieldValueUri + ".\n");
+                        conceptsStream.write(conceptUri + " <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " + conceptTypeUri + ".\n");
+                        conceptsStream.write(conceptUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(item[field]) + "'@en.\n");
                     }
                     //*************************** end concepts Hierarchy unique****************************************
 
 
-
                     //*************************** corpus item subject concept****************************************
                     //on rattache le report au plus bas niveau de la herarchie des concepts
-                    if (indexFields < fields.length - 1 && item[fields[indexFields + 1]] == "") {
-                        corpusStream.write( reportUri + " <http://purl.org/dc/terms/subject> " + conceptUri + ".\n");
+
+                    var conceptReport=reportUri+"_"+conceptUri
+                    if(!typesConceptReport[conceptReport] ) {
+                        typesConceptReport[conceptReport]="x"
+                        if (indexFields < fields.length - 1 && item[fields[indexFields + 1]] == "") {
+                            corpusStream.write(reportUri + " <http://purl.org/dc/terms/subject> " + conceptUri + ".\n");
+                        } else if (fields.length == 1) {
+                            corpusStream.write(reportUri + " <http://purl.org/dc/terms/subject> " + conceptUri + ".\n");
+                        }
                     }
 
                 })
-
+            }
 
             //*************************** corpus ****************************************
+            if (!dontProcessCorpus) {
 
-                if (types.indexOf(item.report_id) < 0) {
-                    types.push(item.report_id)
+                if (typesCorpus.indexOf(item.report_id) < 0) {
+                    typesCorpus.push(item.report_id)
 
                     corpusHierarchy.forEach(function (colName, index) {
                         var colUri = "<" + graphUri + colName + ">";
@@ -194,20 +198,21 @@ var RcReportsTriples = {
                                 parentUri = "<" + graphUri + RcReportsTriples.formatString(parentValue, true) + ">";
                             }
 
-                            corpusStream.write( uri + " <http://www.w3.org/2004/02/skos/core#broader> " + parentUri + ".\n");
-                            corpusStream.write( uri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(value) + "'@en.\n");
+                            corpusStream.write(uri + " <http://www.w3.org/2004/02/skos/core#broader> " + parentUri + ".\n");
+                            corpusStream.write(uri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(value) + "'@en.\n");
 
                             // if(index<corpusHierarchy.length-1)
-                            corpusStream.write( uri + "  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " + colUri + ".\n");
+                            corpusStream.write(uri + "  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> " + colUri + ".\n");
                             //  corpusStream.write( reportUri + " <http://www.w3.org/2004/02/skos/core#prefLabel> '" + RcReportsTriples.formatString(item.report_id) + "'.\n";
                         }
 
 
                     })
                 }
+            }
 
 
-          //  }
+            //  }
 
 
             // var label = gaiaToSkos.formatString(item.Term);
@@ -215,25 +220,25 @@ var RcReportsTriples = {
         })
         conceptsStream.close();
         corpusStream.close();
-      //  fs.writeFileSync(filePath.replace(".txt", "_corpus.rdf.nt"), strCorpus)
-       // fs.writeFileSync(filePath.replace(".txt", "_thesaurus.rdf.nt"), strConcepts)
+        //  fs.writeFileSync(filePath.replace(".txt", "_corpus.rdf.nt"), strCorpus)
+        // fs.writeFileSync(filePath.replace(".txt", "_thesaurus.rdf.nt"), strConcepts)
 
     },
 
-    extractLines: function(filePath){
+    extractLines: function (filePath) {
 
-var tag='Failure Mechanism';
-    // var tag='Retained Action';
+        var tag = 'Failure Mechanism';
+        // var tag='Retained Action';
 
-var outputFilePath= filePath.replace(".","_"+tag.replace(/ /g,"_")+".");
+        var outputFilePath = filePath.replace(".", "_" + tag.replace(/ /g, "_") + ".");
         var outputStream = fs.createWriteStream(outputFilePath, {
-         //   flags: 'a' // 'a' means appending (old data will be preserved)
+            //   flags: 'a' // 'a' means appending (old data will be preserved)
         })
 
-        var header="A,report_id,location_id,equipment_id,notif_date,F,concept_Niv1,concept_Niv2,concept_Niv3,concept_Niv4,concept_Niv5,concept_Niv6,,location_site,O,P,equipment_manufacturer,equipment_modelNumber,equipment_category,location_plant_section,location_plant unit\n"
-        outputStream.write( header )
+        var header = "A,report_id,location_id,equipment_id,notif_date,F,concept_Niv1,concept_Niv2,concept_Niv3,concept_Niv4,concept_Niv5,concept_Niv6,,location_site,O,P,equipment_manufacturer,equipment_modelNumber,equipment_category,location_plant_section,location_plant unit\n"
+        outputStream.write(header)
 
-        var readline=require('readline');
+        var readline = require('readline');
         const readInterface = readline.createInterface({
             input: fs.createReadStream(filePath),
             output: process.stdout,
@@ -241,20 +246,19 @@ var outputFilePath= filePath.replace(".","_"+tag.replace(/ /g,"_")+".");
         });
 
 
-
-        var countLines=0
-        var countAll=0
-        readInterface.on('line', function(line) {
-            if (line.indexOf(tag)>-1 ) {
-                outputStream.write( line + "\n")
+        var countLines = 0
+        var countAll = 0
+        readInterface.on('line', function (line) {
+            if (line.indexOf(tag) > -1) {
+                outputStream.write(line + "\n")
                 countLines += 1
             }
-            countAll+=1
+            countAll += 1
 
         });
 
-        readInterface.on('close', function(x) {
-        var y=countLines;
+        readInterface.on('close', function (x) {
+            var y = countLines;
             outputStream.close()
 
 

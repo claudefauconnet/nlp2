@@ -3,14 +3,14 @@ var Heatmap = (function () {
     var self = {};
 
 
-    self.bindCanvasHeatMapData = function (data, xField, yField, valueField, idLabelMap, mapWidth, mapHeight) {
+    self.bindCanvasSquareHeatMapData = function (data, xField, yField, valueField, idLabelMap, mapWidth, mapHeight) {
 
         if (!xField || !yField || !valueField)
             return null
         var maxValue = 0;
         var distinctValues = [];
         var coocValues = {}
-        var dataMap={}
+        var dataMap = {}
         data.forEach(function (item) {
             var xValue = item[xField];
             var yValue = item[yField];
@@ -25,10 +25,10 @@ var Heatmap = (function () {
             if (distinctValues.indexOf(yValue) < 0) {
                 distinctValues.push(yValue)
             }
-            var obj={
-                value:valueValue,
-                xId:xValue,
-                yId:yValue
+            var obj = {
+                value: valueValue,
+                xId: xValue,
+                yId: yValue
             }
             coocValues[xValue + "_" + yValue] = obj;
 
@@ -51,29 +51,50 @@ var Heatmap = (function () {
         })
 
 
+    }
+
+
+    self.getHeatMapData = function (X, xLabels, yLabels,mapWidth,mapHeight) {
+
+        function getMaxValue() {
+            var maxValue = 0
+            X.forEach(function (line) {
+                line.forEach(function (cell) {
+                    maxValue = Math.max(maxValue, cell)
+                })
+            })
+            return maxValue;
+        }
+
+        var margin = 100;
+        var w = Math.round((mapWidth - margin - 30) / X[0].length)
+        var h = Math.round((mapHeight - margin - 30) /X.length)
+
+        var maxValue = getMaxValue(X)
         var interpolateColorFn = d3.scaleSequential(d3.interpolateYlOrRd).domain([1, maxValue]);
 
         var canvasData = [];
         self.commonIntersections = {}
-        var margin = 100;
+
         var x = margin;
         var y = margin;
         var y2 = y;
         var bgColor;
-        var w = Math.round((mapWidth - margin - 30) / distinctValues.length)
-        var h = Math.round((mapHeight - margin - 30) / distinctValues.length)
+
+      //  console.log(JSON.stringify(X, null, 2))
         X.forEach(function (line, lineIndex) {
             x = margin;
-         var lineData = idLabelMap[distinctValues[lineIndex]]
-            var lineLabel =lineData.label;
+
+            var lineLabel = xLabels[lineIndex].label;
             line.forEach(function (row, rowIndex) {
 
-                if (!row.value|| row.value == 0)
+                if (!row || row== 0)
                     bgColor = "ddd"
                 else
-                    bgColor = interpolateColorFn(row.value)
+                    bgColor = interpolateColorFn(X[lineIndex][rowIndex])
+                var data= {xId:xLabels[lineIndex].id,yId:yLabels[rowIndex].id};
 // cell with value color
-                if (rowIndex < lineIndex) {
+                if (true || rowIndex < lineIndex) {
                     var rect = {
                         type: "rect",
                         x: x,
@@ -83,7 +104,7 @@ var Heatmap = (function () {
                         bgColor: bgColor,
                         lineWidth: 1,
                         color: "#aaa",
-                       data:row
+                        data: data
                         //  id: {h: conceptH.data.id, v: conceptV.data.id, ancestors: []}
                     }
 
@@ -114,8 +135,8 @@ var Heatmap = (function () {
                 }
 
                 if (lineIndex == 0) {
-                    var data = idLabelMap[distinctValues[rowIndex]]
-                    var rowLabel = data.label;
+
+                    var rowLabel =  yLabels[rowIndex].label;
                     var bgColor = "#aaa";
                     canvasData.push({
                         type: "text",
@@ -124,18 +145,18 @@ var Heatmap = (function () {
                         font: "12px  normal",
                         color: "black",
                         x: x + (w / 2),
-                        y: y2 - 20,
+                        y: y - 20,
                         vertical: true
                     })
                     canvasData.push({
                         type: "rect",
                         x: x + (w / 2) - 10,
-                        y: y2 - 18,
+                        y: y - 18,
                         w: 10,
                         h: 10,
                         bgColor: bgColor,
                         lineWidth: 1,
-                        data: data,
+                        data: {},
 
                     })
                     y2 += h
@@ -154,20 +175,27 @@ var Heatmap = (function () {
 
     }
 
+
+    self.bindCanvasConceptTypeHeatMapData = function (data, xConceptType, yConceptType) {
+
+
+    }
+
+
     self.onCellClick = function (point, cell, event) {
-      /*  var conceptSets=[{ids:[cell.data.xId]},{ids:[cell.data.yId]}]
-        paragraphs.sparql_getEntitiesParagraphs ( null,conceptSets, {}, function(err,result){
+        /*  var conceptSets=[{ids:[cell.data.xId]},{ids:[cell.data.yId]}]
+          paragraphs.sparql_getEntitiesParagraphs ( null,conceptSets, {}, function(err,result){
 
-        })*/
+          })*/
 
-        var conceptSets=[cell.data.xId,cell.data.yId]
-        paragraphs.getResourcesCooccurences(conceptSets, {}, function(err,result){
+        var conceptSets = [cell.data.xId, cell.data.yId]
+        paragraphs.getResourcesCooccurences(conceptSets, {}, function (err, result) {
             $("#heatMapParagraphsDiv").html("")
-            var html="<ul>"
-            result.forEach(function(item){
-                html+="<li>"+item.paragraph.value+"</li>"
+            var html = "<ul>"
+            result.forEach(function (item) {
+                html += "<li>" + item.paragraph.value + "</li>"
             })
-            html+="</ul>"
+            html += "</ul>"
             $("#heatMapParagraphsDiv").html(html)
         })
     }

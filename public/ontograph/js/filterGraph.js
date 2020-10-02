@@ -1,7 +1,7 @@
 var filterGraph = (function () {
     var self = {};
     self.selectedGraphNode = null;
-
+        self.conceptTypeColors={}
     self.onShowHideScope = function (value) {
         if (!value || value == "")
             return
@@ -87,7 +87,7 @@ var filterGraph = (function () {
 
 
     self.onAggregateCorpusSelectChange = function (type) {
-      //  Selection.resetSelection();
+        //  Selection.resetSelection();
         Infos.setInfosDivHeight(5)
         Selection.displayParagraphsGraph();
 
@@ -126,14 +126,14 @@ var filterGraph = (function () {
                         common.message("<br>Searching AssociatedConcepts  ", true)
 
                         var corpusLevels = app_config.ontologies[app_config.currentOntology].resourceLevels;
-                        var linkedResourceVar = "?" + corpusLevels[corpusLevels.length-1].label
-                        var fromStr="from <"+app_config.ontologies[app_config.currentOntology].corpusGraphUri+"> "
-                        fromStr+="from <"+app_config.ontologies[app_config.currentOntology].conceptsGraphUri+"> "
+                        var linkedResourceVar = "?" + corpusLevels[corpusLevels.length - 1].label
+                        var fromStr = "from <" + app_config.ontologies[app_config.currentOntology].corpusGraphUri + "> "
+                        fromStr += "from <" + app_config.ontologies[app_config.currentOntology].conceptsGraphUri + "> "
                         async.eachSeries(slicedResourceIds, function (resourceIds, callbackEach) {
 
 
                             var query = "    PREFIX terms:<http://purl.org/dc/terms/>        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>        PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX mime:<http://purl.org/dc/dcmitype/> PREFIX mime:<http://www.w3.org/2004/02/skos/core#>   " +
-                                "      SELECT  DISTINCT ?entity ?entityLabel ?entityType ?resource  (count(?entity) AS ?countEntities)   "+fromStr+"  where {" + linkedResourceVar + " terms:subject ?entity. ?entity skos:prefLabel ?entityLabel. ?entity rdfsyn:type ?entityType.";
+                                "      SELECT  DISTINCT ?entity ?entityLabel ?entityType ?resource  (count(?entity) AS ?countEntities)   " + fromStr + "  where {" + linkedResourceVar + " terms:subject ?entity. ?entity skos:prefLabel ?entityLabel. ?entity rdfsyn:type ?entityType.";
                             if (!Array.isArray(resourceIds))
                                 resourceIds = [resourceIds]
 
@@ -154,11 +154,11 @@ var filterGraph = (function () {
 
 
                             var okDistinctSelect = true;
-                            var pathOperator="+"
-                            if (corpusAggrLevel == corpusLevels[corpusLevels.length-1].label)
-                                pathOperator="*"
+                            var pathOperator = "+"
+                            if (corpusAggrLevel == corpusLevels[corpusLevels.length - 1].label)
+                                pathOperator = "*"
 
-                                query +=  linkedResourceVar + " skos:broader"+pathOperator+" ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
+                            query += linkedResourceVar + " skos:broader" + pathOperator + " ?resource ." + "filter (?resource in (" + resourceIdStr + ")) "
 
                             /*     if (corpusAggrLevel == corpusLevels[corpusLevels.length-1].label) {
                                      //  query += linkedResourceVar + " skos:broader ?xx . ?resource skos:broader ?xx .  filter (" + linkedResourceVar + " in (" + resourceIdStr + ")) ";
@@ -177,7 +177,6 @@ var filterGraph = (function () {
                                          }
                                      })
                                  }*/
-
 
 
                             query += "}" +
@@ -286,7 +285,12 @@ var filterGraph = (function () {
 
                         for (var key in conceptsMapWithParents) {
                             var item = conceptsMapWithParents[key]
-                            var color = ontograph.entityTypeColors[item.data.type]
+                         //  var color = ontograph.entityTypeColors[item.data.type];
+                            var color = self.conceptTypeColors[item.data.type]
+                            if( !color){
+                                self.conceptTypeColors[item.data.type]=graphController.palette[Object.keys(self.conceptTypeColors).length]
+                            }
+
                             item.text = "<span style='background-color:" + color + "'>" + item.text + " (" + item.data.countEntities + ")</span>"
                             jstreeData.push(conceptsMapWithParents[key])
                         }
@@ -356,11 +360,14 @@ var filterGraph = (function () {
                 if (existingNodes.indexOf(conceptId) < 0 && uniqueNodes.indexOf(conceptId) < 0) {
                     uniqueNodes.push(conceptId)
                     //  var type = item.entityType.value.substring(item.entityType.value.lastIndexOf("/") + 1);
+                 //   var color=ontograph.entityTypeColors[conceptType]
+                    var color=self.conceptTypeColors[conceptType]
+
                     visjsData.nodes.push({
                         id: conceptId,
                         label: conceptLabel,
                         shape: "box",
-                        color: ontograph.entityTypeColors[conceptType],
+                        color: color,
                         data: {ancestors: []},
 
 
@@ -466,108 +473,33 @@ var filterGraph = (function () {
             var uniqueNodes = []
             var uniqueEdgeIds = []
 
-            Corpus.getCurrentResourcesParents(function(err,result) {
+            Corpus.getCurrentResourcesParents(function (err, result) {
                 result.forEach(function (item) {
-                    if(existingNodeIds.indexOf(item.broader.value)<0 && uniqueNodes.indexOf(item.broader.value)<0){
+                    if (existingNodeIds.indexOf(item.broader.value) < 0 && uniqueNodes.indexOf(item.broader.value) < 0) {
                         uniqueNodes.push(item.broader.value);
                         Corpus.currentResourceIds.push(item.broader.value)
-                        visjsData.nodes.push( {
-                            id:item.broader.value,
-                            label:item.broaderLabel.value,
-                            data:{type:"resource"}
+                        visjsData.nodes.push({
+                            id: item.broader.value,
+                            label: item.broaderLabel.value,
+                            data: {type: "resource"}
                         })
                     }
-                    var edgeId=item.concept.value+"_"+item.broader.value
-                    if(existingEdgeIds.indexOf(edgeId)<0 && uniqueEdgeIds.indexOf(edgeId)<0){
+                    var edgeId = item.concept.value + "_" + item.broader.value
+                    if (existingEdgeIds.indexOf(edgeId) < 0 && uniqueEdgeIds.indexOf(edgeId) < 0) {
                         uniqueEdgeIds.push(edgeId);
-                        visjsData.edges.push( {
-                            id:edgeId,
-                           from:item.concept.value,
-                            to:item.broader.value,
+                        visjsData.edges.push({
+                            id: edgeId,
+                            from: item.concept.value,
+                            to: item.broader.value,
                         })
                     }
 
                 })
                 ontograph.drawGraph(visjsData, {addToGraph: 1})
             })
-return;
-            existingNodes.forEach(function (node) {
-
-                if (!selectedResourceId || (selectedResourceId == node.id)) {
-                    var size = 15
-                    var shape = "triangle"
-                    var newNodeName = null;
-                    if (node.id.indexOf("/Paragraph/") > -1) {
-                        newNodeName = "chapter"
-                        size = 8
-                        color = "#ccd2dd"
-                        shape = "ellipse"
-                    } else if (node.id.indexOf("/Chapter/") > -1) {
-                        newNodeName = "document"
-                        size = 10
-                        color = "#8c94dd"
-                        shape = "triangle"
-                    } else if (node.id.indexOf("/Document/") > -1) {
-                        size = 15
-                        color = "#4977dd"
-                        newNodeName = "documentType"
-                        shape = "square"
-                    } else if (node.id.indexOf("/Document-type/") > -1) {
-                        size = 20
-                        color = "#4345dd"
-                        newNodeName = "branch"
-                        shape = "hexagon"
-                    } else if (node.id.indexOf("/Branch/") > -1) {
-                        size = 25
-                        color = "#0f2edd"
-                        shape = "star"
-                        newNodeName = "domain";
-                    }
 
 
-                    if (newNodeName && node.data[newNodeName]) {
-                        var newNodeId = node.data[newNodeName].value;
 
-                        //  var newNodeId =  node.data[newNodeName + "Label"].value;
-                        if (existingNodeIds.indexOf(newNodeId) < 0 && uniqueNodes.indexOf(newNodeId) < 0) {
-                            uniqueNodes.push(newNodeId);
-                            var label = node.data[newNodeName + "Label"].value;
-                            if (label.length > app_config.visjsGraph.maxLabelLength)
-                                label = label.substring(0, app_config.visjsGraph.maxLabelLength) + "..."
-                            visjsData.nodes.push({
-                                id: newNodeId,
-                                label: label,
-                                color: color,
-                                size: size,
-                                font: {strokeWidth: color, size: 18},
-                                shape: shape,
-                                data: node.data
-
-                            })
-
-
-                        }
-                        var edgeId = node.id + "_" + newNodeId
-                        if (existingEdgeIds.indexOf(edgeId) < 0 && uniqueEdgeIds.indexOf(edgeId) < 0) {
-                            uniqueEdgeIds.push(edgeId)
-                            var edge = {
-                                from: node.id,
-                                to: newNodeId,
-                                id: edgeId,
-                                arrows: "to",
-
-                            }
-                            visjsData.edges.push(edge)
-                        }
-
-
-                    }
-
-
-                }
-            })
-
-            ontograph.drawGraph(visjsData, {addToGraph: 1})
 
         }
         ,
@@ -630,114 +562,6 @@ return;
 
         resourceInfos: function (resourceId) {
             Infos.showInfos(resourceId);
-
-        },
-
-
-        skipRessources:function(){
-            var existingNodes = visjsGraph.data.nodes.get();
-            var nodesMap={}
-            existingNodes.forEach(function(node){
-                nodesMap[node.id]=node
-            })
-         //   var existingEdges = visjsGraph.data.edges.get();
-            var newNodes = [];
-            var newEdges = [];
-
-            var visjsData={nodes:[],edges:[]}
-            var nodesToRemove=[]
-            existingNodes.forEach(function(node){
-                if(node.data.type=="resource"){
-                    nodesToRemove.push(node.id)
-
-                }else{
-                    visjsData.nodes.push(node)
-                }
-            })
-
-            nodesToRemove.forEach(function(node){
-                var edges=visjsGraph.network.getConnectedEdges(node);
-                var newEdgesNodes=[]
-                edges.forEach(function(edgeId){
-                    var edge=visjsGraph.data.edges.get(edgeId)
-                    if(edge.from==node){
-                        newEdgesNodes.push(edge.to)
-                    }
-                    if(edge.to==node){
-                        newEdgesNodes.push(edge.to)
-                    }
-                })
-
-                //connect all entities nodes common to resource
-                    newEdgesNodes.forEach(function(node1) {
-                        newEdgesNodes.forEach(function (node2) {
-                            if(node1==node2)
-                                return;
-                            var edgeId=node1+"_"+node2
-                            var inverseEdgeId=node2+"_"+node1
-                            var p,q;
-                            if((p=newEdges.indexOf(edgeId))<0 && (q =newEdges.indexOf(inverseEdgeId))<0){
-
-                                newEdges.push(edgeId)
-                                visjsData.edges.push({
-                                    id:edgeId,
-                                    from:node1,
-                                    to: node2,
-                                    value:1,
-                                    fromLabel:nodesMap[node1].label,
-                                    toLabel:nodesMap[node2].label
-
-                                })
-
-                            }else{
-                                var j=Math.max(p,q);
-                                if(j>-1)
-                                visjsData.edges[j].value+=1
-                            }
-                        })
-
-                    })
-            })
-
-    //   ontograph.drawGraph(visjsData,)
-
-            var w=600;
-            var h=600;
-            var heatMapData=Heatmap.bindCanvasHeatMapData(visjsData.edges,"from","to","value",nodesMap,h,w)
-            var html="<div style='display: flex;flex-direction: column'>" +
-                "<div id='chart' style='width:"+h+"px;height: "+w+"px'></div>" +
-                "<div id='heatMapParagraphsDiv'></div>" +
-                "</div>"
-
-            $("#dialogDiv").html(html);
-            $("#dialogDiv").dialog("open");
-            var options={
-                graphDiv:"chart",
-            onclickFn:Heatmap.onCellClick}
-            drawCanvas.drawData  (heatMapData, options, function(err,result){
-
-            })
-
-
-/*
-            var html="<div id=\"chart\"></div>"
-         //   $("#dialogDiv").width(800);
-          //  $("#dialogDiv").height(800);
-            $("#dialogDiv").html(html);
-            $("#dialogDiv").dialog("open")
-
-            var chart = c3.generate({
-                data: {
-                    columns: [
-                        ['data1', 30, 200, 100, 400, 150, 250],
-                        ['data2', 50, 20, 10, 40, 15, 25]
-                    ]
-                }
-            });
-
-*/
-
-
 
         },
 
@@ -814,9 +638,229 @@ return;
 
         }
     }
+    self.getConceptsRootTypeMap = function () {
+        var map = {};
+        var xx = $("#jstreeFilterConceptsDiv").jstree(true).get_checked(true)
+        xx.forEach(function (node) {
+            var typeId;
+            var typeLabel;
+            if (node.parents.length > 1)
+                typeId = node.parents[node.parents.length - 2];
+            else
+                typeId = map[node.id];
+            var typeNode = $("#jstreeFilterConceptsDiv").jstree(true).get_node(typeId);
+            if (typeNode.data) {
+                typeLabel = $("#jstreeFilterConceptsDiv").jstree(true).get_node(typeId).data.label
+                map[node.id] = {id: typeId, label: typeLabel};
+            }
+
+        });
+        return map;
+    };
 
 
-    return self;
+    self.showConceptsHeatMap = function () {
 
-})
+        var conceptsRootTypeMap = filterGraph.getConceptsRootTypeMap()
+
+
+        var existingNodes = visjsGraph.data.nodes.get();
+        var nodesMap = {}
+        existingNodes.forEach(function (node) {
+            nodesMap[node.id] = node
+        })
+        //   var existingEdges = visjsGraph.data.edges.get();
+        var newNodes = [];
+        var newEdges = [];
+
+        var visjsData = {nodes: [], edges: []}
+        var nodesToRemove = []
+        existingNodes.forEach(function (node) {
+            if (node.data.type == "resource") {
+                nodesToRemove.push(node.id)
+
+            } else {
+                visjsData.nodes.push(node)
+            }
+        })
+
+        nodesToRemove.forEach(function (node) {
+            var edges = visjsGraph.network.getConnectedEdges(node);
+            var newEdgesNodes = []
+            edges.forEach(function (edgeId) {
+                var edge = visjsGraph.data.edges.get(edgeId)
+                if (edge.from == node) {
+                    newEdgesNodes.push(edge.to)
+                }
+                if (edge.to == node) {
+                    newEdgesNodes.push(edge.to)
+                }
+            })
+
+            //connect all entities nodes common to resource
+            newEdgesNodes.forEach(function (node1) {
+                newEdgesNodes.forEach(function (node2) {
+                    if (node1 == node2)
+                        return;
+                    var edgeId = node1 + "_" + node2
+                    var inverseEdgeId = node2 + "_" + node1
+                    var p, q;
+                    if ((p = newEdges.indexOf(edgeId)) < 0 && (q = newEdges.indexOf(inverseEdgeId)) < 0) {
+
+                        newEdges.push(edgeId)
+                        visjsData.edges.push({
+                            id: edgeId,
+                            from: node1,
+                            to: node2,
+                            value: 1,
+                            fromLabel: nodesMap[node1].label,
+                            toLabel: nodesMap[node2].label,
+                            fromType: conceptsRootTypeMap[node1],
+                            toType: conceptsRootTypeMap[node2]
+
+                        })
+
+                    } else {
+                        var j = Math.max(p, q);
+                        if (j > -1)
+                            visjsData.edges[j].value += 1
+                    }
+                })
+
+            })
+        })
+
+
+        //   ontograph.drawGraph(visjsData,)
+
+
+        //set conceptTypes
+
+        function getConceptsCoocMatrix(data, xType, yType) {
+            var xValues = {}
+            var yValues = {};
+
+            data.forEach(function (item, index) {
+                var xValue = item.from;
+                var yValue = item.to;
+                var valueValue = item.value;
+                if (item.fromType.label == xType) {
+                    if (!xValues[xValue])
+                        xValues[xValue] = {label: item.fromLabel, rels: []}
+                    if (xValues[xValue].rels.indexOf(index) < 0)
+                        xValues[xValue].rels.push(index)
+                }
+                if (item.toType.label == xType) {
+                    if (!xValues[yValue])
+                        xValues[yValue] = {label: item.toLabel, rels: []}
+                    if (xValues[yValue].rels.indexOf(index) < 0)
+                        xValues[yValue].rels.push(index)
+                }
+                if (item.fromType.label == yType) {
+                    if (!yValues[xValue])
+                        yValues[xValue] = {label: item.fromLabel, rels: []}
+                    if (yValues[xValue].rels.indexOf(index) < 0)
+                        yValues[xValue].rels.push(index)
+                }
+                if (item.toType.label == yType) {
+                    if (!yValues[yValue])
+                        yValues[yValue] = {label: item.toLabel, rels: []}
+                    if (yValues[yValue].rels.indexOf(index) < 0)
+                        yValues[yValue].rels.push(index)
+                }
+
+            })
+
+            var X = []
+//init with 0
+            for (var xKey in xValues) {
+                var line = []
+                for (var yKey in yValues) {
+                    line.push(0)
+                }
+                X.push(line)
+            }
+
+            var xIndex = 0;
+            var x = [];
+            var y = [];
+            for (var xKey in xValues) {
+                x.push({id: xKey, label: xValues[xKey].label})
+
+
+                var yIndex = 0;
+                for (var yKey in yValues) {//interscetion
+                    if (xIndex == 0)
+                        y.push({id: yKey, label: yValues[yKey].label})
+                    yValues[yKey].rels.forEach(function (dataIndex) {
+                        if (xValues[xKey].rels.indexOf(dataIndex) > -1)
+                            X[xIndex][yIndex] = data[dataIndex].value
+                    })
+                    yIndex += 1
+                }
+                xIndex += 1
+            }
+            return {X: X, x: x, y: y}
+        }
+
+
+            var w = 500;
+            var h = 500;
+
+            var types=[]
+        for (var key in conceptsRootTypeMap){
+            var type=conceptsRootTypeMap[key].label
+            if(types.indexOf(type)<0)
+            types.push(type)
+        }
+        if(types.length!=2){
+            return alert("heat map must concern only two different concept types")
+        }
+            var obj = getConceptsCoocMatrix(visjsData.edges, types[0], types[1])
+            var heatMapData = Heatmap.getHeatMapData(obj.X,obj.x,obj.y,h,w);
+
+         //   var heatMapData = Heatmap.bindCanvasSquareHeatMapData(visjsData.edges, "from", "to", "value", nodesMap, h, w)
+            //var heatMapData = Heatmap.bindCanvasConceptTypeHeatMapData(visjsData.edges, "Failure Mechanism", "Retained Action", "value", nodesMap, h, w)
+            var html = "<div style='display: flex;flex-direction: row'>" +
+                "<div id='chart' style='width:" + h + "px;height: " + w + "px'></div>" +
+                "<div id='heatMapParagraphsDiv'></div>" +
+                "</div>"
+
+            $("#dialogDiv").html(html);
+            $("#dialogDiv").dialog("open");
+            var options = {
+                graphDiv: "chart",
+                onclickFn: Heatmap.onCellClick
+            }
+            drawCanvas.drawData(heatMapData, options, function (err, result) {
+
+            })
+
+
+            /*
+                        var html="<div id=\"chart\"></div>"
+                     //   $("#dialogDiv").width(800);
+                      //  $("#dialogDiv").height(800);
+                        $("#dialogDiv").html(html);
+                        $("#dialogDiv").dialog("open")
+
+                        var chart = c3.generate({
+                            data: {
+                                columns: [
+                                    ['data1', 30, 200, 100, 400, 150, 250],
+                                    ['data2', 50, 20, 10, 40, 15, 25]
+                                ]
+                            }
+                        });
+
+            */
+
+
+        }
+
+
+        return self;
+
+    }
+)
 ()
