@@ -744,7 +744,9 @@ var filterGraph = (function () {
                 var xValue = item.from;
                 var yValue = item.to;
                 var valueValue = item.value;
-                if (item.fromType.label == xType) {
+                if(!item.fromType ||!item.fromType.label )
+                   return;
+                if ( item.fromType.label == xType) {
                     if (!xValues[xValue])
                         xValues[xValue] = {label: item.fromLabel, rels: []}
                     if (xValues[xValue].rels.indexOf(index) < 0)

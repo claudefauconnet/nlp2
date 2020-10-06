@@ -44,11 +44,12 @@ if(authentication && authentication.currentUser)
         }
 
 
-        self.rdfsMap['ISO_15926'] = {sparql_url: 'http://68.71.136.105/sparql/', graphIRI: '', sparqlBuilder: "sparql_ISO_15926"};
+      self.rdfsMap['ISO_15926'] = {sparql_url: 'http://68.71.136.105/sparql/', graphIRI: '', sparqlBuilder: "sparql_ISO_15926"};
         self.rdfsMap['GEMET'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://www.eionet.europa.eu/gemet/', sparqlBuilder: "sparql_GEMET"};
         self.rdfsMap['BNF'] = {sparql_url: 'https://data.bnf.fr/sparql', graphIRI: 'http://data.bnf.fr', sparqlBuilder: "sparql_skos_generic"};
         self.rdfsMap['Dbpedia'] = {sparql_url: 'http://dbpedia.org/sparql', graphIRI: 'http://dbpedia.org', sparqlBuilder: "sparql_skos_generic", ancestorsDepth: 4};
 
+     self.rdfsMap['WORDNET'] = {sparql_url: 'http://wordnet.rkbexplorer.com/sparql/', graphIRI: '', sparqlBuilder: "sparql_WORDNET"};
         self.rdfsMap['USGS'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'https://www2.usgs.gov/science/USGSThesaurus/', sparqlBuilder: "sparql_skos_generic"};
         //    'Oil&Gas-Upstream': {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
         self.rdfsMap['TermSciences'] = {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"};
@@ -70,6 +71,9 @@ if(authentication && authentication.currentUser)
           // 'TermSciences': {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://api.termsciences.fr/termsciences/', sparqlBuilder: "sparql_skos_generic"},
          //  'Oil&Gas-Upstream': {sparql_url: 'http://vps-c46025b8.vps.ovh.net:8890/sparql/', graphIRI: 'http://souslesens.org/oil-gas/upstream/', sparqlBuilder: "sparql_skos_generic"},
           }*/
+
+
+ // self.rdfsMap = {'WORDNET':{sparql_url: 'http://wordnet.rkbexplorer.com/sparql/', graphIRI: '', sparqlBuilder: "sparql_WORDNET"}};
 
 
     /**
@@ -101,6 +105,10 @@ if(authentication && authentication.currentUser)
             return sparql_ISO_15926.list(source, word, options, callback)
         if (sparqlBuilder == "sparql_GEMET")
             return sparql_GEMET.list(source, word, options, callback)
+
+        if (sparqlBuilder == "sparql_WORDNET")
+            return sparql_WORDNET.list(source, word, options, callback)
+
 
         /*   if (sparqlBuilder == "sparql_BGS")
                return sparql_BGS.list(source, word, options, callback)
@@ -135,6 +143,10 @@ if(authentication && authentication.currentUser)
         if (sparqlBuilder == "sparql_GEMET")
             return sparql_GEMET.getAncestors(source, id, options, callback)
 
+
+        if (sparqlBuilder == "sparql_WORDNET")
+            return sparql_WORDNET.getAncestors(source, id, options, callback)
+
         /*   if (sparqlBuilder == "sparql_BGS")
                return sparql_BGS.getAncestors(source, id, options, callback)
            if (sparqlBuilder == "sparql_GBA")
@@ -153,7 +165,7 @@ if(authentication && authentication.currentUser)
             return sparql_Wikidata.getDetails(source, id, options, callback)
 
 
-        if (true || sparqlBuilder == "sparql_skos_generic")
+        if ( sparqlBuilder == "sparql_skos_generic")
             return sparql_skos_generic.getDetails(source, id, options, callback)
 
 
@@ -166,6 +178,9 @@ if(authentication && authentication.currentUser)
 
         if (sparqlBuilder == "sparql_GEMET")
             return sparql_GEMET.getDetails(source, id, options, callback)
+
+        if (sparqlBuilder == "sparql_WORDNET")
+            return sparql_WORDNET.getDetails(source, id, options, callback)
 
         /*   if (sparqlBuilder == "sparql_BGS")
                return sparql_BGS.getDetails(source, id, options, callback)
@@ -197,6 +212,9 @@ if(authentication && authentication.currentUser)
 
         if (sparqlBuilder == "sparql_GEMET")
             return sparql_GEMET.getChildren(source, id, options, callback)
+
+        if (sparqlBuilder == "sparql_WORDNET")
+            return sparql_WORDNET.getChildren(source, id, options, callback)
 
         /* if (sparqlBuilder == "sparql_BGS")
              return sparql_BGS.getChildren(source, id, options, callback)
@@ -277,7 +295,14 @@ if(authentication && authentication.currentUser)
 
             success: function (data, textStatus, jqXHR) {
                 if (data.result && typeof data.result != "object")//cas GEMET
-                    data = JSON.parse(data.result)
+                    try {
+                        data = JSON.parse(data.result)
+                    }
+                catch(e){
+                    console.log(data.result)
+                    console.log(query)
+                    data=[]
+                }
 
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");

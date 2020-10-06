@@ -1,4 +1,4 @@
-var sparql_ISO_15926 = (function () {
+var sparql_WORDNET = (function () {
 
 
     var self = {};
@@ -18,14 +18,14 @@ var sparql_ISO_15926 = (function () {
 
         var url = source.sparql_url + "?default-graph-uri=" + encodeURIComponent(source.graphIRI) + "&query=";// + query + queryOptions
         word = word.charAt(0).toUpperCase() + word.slice(1);
-        var query = "PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#> " +
-            "select distinct * where {  ?id rdf:label ?prefLabel . filter(" + filter + ") ?id rdf:subClassOf ?broaderId ." +
+        var query = "PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#> PREFIX wordnet: <http://www.w3.org/2006/03/wn/wn20/schema/>" +
+            "select distinct * where {  ?id rdf:label ?prefLabel . filter(" + filter + ") ?id wordnet:hyponymOf ?broaderId ." +
             "  ?broaderId rdf:label ?broader." +
             "}" +
             "LIMIT 1000"
 
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=200000&debug=off"
+        var queryOptions = "&format=json"; //"&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=200000&debug=off"
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
@@ -52,30 +52,34 @@ var sparql_ISO_15926 = (function () {
         var url = source.sparql_url + "?default-graph-uri=" + encodeURIComponent(source.graphIRI) + "&query=";// + query + queryOptions
 
 
-        var query = "PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#> " +
+        var query = "PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#> PREFIX wordnet: <http://www.w3.org/2006/03/wn/wn20/schema/>" +
             "select distinct * where {";
 
         query += "  ?id rdf:label ?prefLabel . filter( ?id=<" + id + ">)";
 
-        var depth = 8
+        var depth = 4// erreur sparql si plus d'un optional
         for (var i = 1; i <= depth; i++) {
             if (i == 1) {
-                query += "  ?id" + " rdf:subClassOf ?broaderId" + i + "." +
+                query += "  ?id" + " wordnet:hyponymOf ?broaderId" + i + "." +
                     "?broaderId" + (i) + " rdf:label ?broader" + (i) + ".";
 
             } else {
-                query += "OPTIONAL { ?broaderId" + (i - 1) + " rdf:subClassOf ?broaderId" + i + "." +
-                    "?broaderId" + (i) + " rdf:label ?broader" + (i) + ".";
+                if (i == depth - 1)// erreur sparql si plus d'un optional
+                    query += "OPTIONAL { ?broaderId" + (i - 1) + "  wordnet:hyponymOf ?broaderId" + i + ".";
+                else
+                    query += "  ?broaderId" + (i - 1) + "  wordnet:hyponymOf ?broaderId" + i + ".";
+
+                query += "?broaderId" + (i) + " rdf:label ?broader" + (i) + ".";
 
             }
         }
-        for (var i = 1; i < depth; i++) {
+        for (var i = 1; i < 2; i++) {
             query += "}"
         }
         query += "} LIMIT 1000"
 
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+        var queryOptions = "&format=json";
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
@@ -102,36 +106,22 @@ var sparql_ISO_15926 = (function () {
     self.getChildren = function (source, id, options, callback) {
         var url = source.sparql_url + "?default-graph-uri=" + encodeURIComponent(source.graphIRI) + "&query=";// + query + queryOptions
 
-        /*  var query = " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
-              "SELECT DISTINCT *" +
-              "WHERE {" +
-              "<" + id + "> skos:narrower ?narrowerId ." +
-              "  ?narrowerId skos:prefLabel ?narrowerLabel ." +
-              "}" +
+        var query = "PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#> PREFIX wordnet: <http://www.w3.org/2006/03/wn/wn20/schema/>" +
+        "SELECT DISTINCT ?narrowerId ?narrowerLabel   WHERE {"
 
-              "LIMIT 1000"*/
-
-        var query = "PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#> " +
-            "SELECT DISTINCT ?narrowerId ?narrowerLabel  (count(?narrowerId2) as ?countNarrowers2) WHERE {" +
-            "OPTIONAL{" +
-            "?narrowerId rdf:subClassOf <" + id + "> ." +
-            "?narrowerId rdf:label ?narrowerLabel ." + "" +
-            "OPTIONAL{" +
-            "?narrowerId2 rdf:subClassOf ?narrowerId." +
-            "}" +
-            "}" +
-            "OPTIONAL{" +
-            "<" + id + ">  rdf:superClass ?narrowerId ." +
-            "?narrowerId rdf:label ?narrowerLabel ." +
-            "OPTIONAL{" +
-            "?narrowerId2 rdf:subClassOf ?narrowerId." +
-            "}" +
-            "}" +
-            "" +
-            "}LIMIT 1000"
+        query += "  ?id rdf:label ?prefLabel . filter( ?id=<" + id + ">)";
 
 
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
+        var i = 1
+        query += "  ?narrowerId wordnet:hyponymOf ?id ." +
+            "?narrowerId"  + " rdf:label ?narrowerLabel .";
+
+
+
+        query += "} LIMIT 1000"
+
+
+        var queryOptions = "&format=json";
 
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
@@ -141,9 +131,7 @@ var sparql_ISO_15926 = (function () {
             result.results.bindings.forEach(function (item) {
                 if (item.narrowerId) {
 
-                    var parts = item.narrowerId.value.split("/");
-                    var part = parts[parts.length - 2];
-                    item.narrowerLabel.value = part + "." + item.narrowerLabel.value
+
 
 
                     var countNarrowers2 = 10
@@ -182,8 +170,7 @@ var sparql_ISO_15926 = (function () {
         "" +
         "}" +
         "limit 100"
-        var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
-
+        var queryOptions = "&format=json";
         sparql_abstract.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
             if (err) {
                 return callback(err);
