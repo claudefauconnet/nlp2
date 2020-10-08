@@ -1,0 +1,33 @@
+
+
+docker run --rm --restart always -p 8000:8000 neelkamath/spacy-server:2-en_core_web_sm-sense2vec
+
+nginx
+
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+
+
+    location ^~/spacy/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection '';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+     }
+
+
+
+     request
+
+
+     http://vps475829.ovh.net/spacy/pos
+
+
+     {
+       "text": "Pastafarians are smarter than people with Coca Cola bottles."
+
+     }

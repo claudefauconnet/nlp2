@@ -793,9 +793,15 @@ var mediaWikiTagger = {
                 function (callbackSeries) {
 
 
-                    var spacyServerUrl = "http://vps475829.ovh.net:3020/nlp"
+                 /*   var spacyServerUrl = "http://vps475829.ovh.net:3020/nlp"
                     var json = {
                         "parse": 1,
+                        "text": rawPageContent
+                    }*/
+
+
+                    var spacyServerUrl = "http://vps475829.ovh.net/spacy/pos"
+                    var json = {
                         "text": rawPageContent
                     }
                     /*     var nlpServer = require('../spacy/nlpServer.')
@@ -807,16 +813,18 @@ var mediaWikiTagger = {
                             return callbackSeries(err);
                         }
 
-                        result.forEach(function (item) {
-                            if (item.tag == "NN") {//item.tag.indexOf("NN")>-1) {
-                                item.text = item.text.toLowerCase();
-                                //  console.log(item.text)
-                                //  item.text= item.text.replace(/[^A-Za-z0-9]/g, '');
-                                item.text = item.text.replace(/-/g, '').trim();
-                                if (!pageAllwordsMap[item.text])
-                                    pageAllwordsMap[item.text] = 0;
-                                pageAllwordsMap[item.text] += 1;
-                            }
+                        result.data.forEach(function (sentence) {
+                            sentence.tags.forEach(function(item) {
+                                if (item.tag == "NN") {//item.tag.indexOf("NN")>-1) {
+                                    item.text = item.text.toLowerCase();
+                                    //  console.log(item.text)
+                                    //  item.text= item.text.replace(/[^A-Za-z0-9]/g, '');
+                                    item.text = item.text.replace(/-/g, '').trim();
+                                    if (!pageAllwordsMap[item.text])
+                                        pageAllwordsMap[item.text] = 0;
+                                    pageAllwordsMap[item.text] += 1;
+                                }
+                            })
                         })
                         callbackSeries()
                     })

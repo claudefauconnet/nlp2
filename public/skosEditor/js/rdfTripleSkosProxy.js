@@ -4,7 +4,8 @@ var rdfTripleSkosProxy = (function () {
     self.sparqlServerUrl = 'http://51.178.139.80:8890/sparql/';
     self.currentConceptsLabels = []
     var graphsMap = {
-        "http://PetroleumAbstractsThesaurus/": {color: '#ffc107', label: "Tulsa"},
+       "http://PetroleumAbstractsThesaurus/": {color: '#ffc107', label: "Tulsa"},
+        "http://souslesens.org/oil-gas/upstream/": {color: '#ffc107', label: "Tulsa"},
         "http://www.eionet.europa.eu/gemet/": {color: '#FF7D07', label: "Gemet"},
         "http://data.total.com/resource/vocabulary/": {color: "#7fef11", label: "CTG"},
         "https://www2.usgs.gov/science/USGSThesaurus/": {color: '#FFD900', label: "USGS"},
@@ -120,8 +121,10 @@ var rdfTripleSkosProxy = (function () {
         // if (true || obj.event.ctrlKey)
         self.addTreeChildrenNodes(obj.node.id);
         if (obj.node.parents.length > 3 || obj.event.altKey) {
-            self.showNodeConceptsGraph(obj.node)
-            self.addWikiPagesToTree(obj.node)
+            self.showNodeConceptsGraph(obj.node,function(err,result){
+                self.addWikiPagesToTree(obj.node)
+            })
+
         }
         /* else if (obj.node.children.length > 0)
              return;*/
@@ -223,7 +226,7 @@ var rdfTripleSkosProxy = (function () {
         })
     }
 
-    self.showNodeConceptsGraph = function (node) {
+    self.showNodeConceptsGraph = function (node,callback) {
         if (!node)
             node = self.currentTreeNode;
         if (!node)
@@ -284,8 +287,9 @@ var rdfTripleSkosProxy = (function () {
                     if (self.currentConceptsLabels.indexOf(conceptLabel) < 0)
                         self.currentConceptsLabels.push(conceptLabel);
                 })
+                $("#messageDiv").html("too many concepts to show :" + result.results.bindings.length);
+                return callback(null)
 
-                return $("#messageDiv").html("too many concepts to show :" + result.results.bindings.length);
 
             }
             self.tooManyNodes = false;
@@ -399,6 +403,7 @@ var rdfTripleSkosProxy = (function () {
                     }
                 }
             }
+            return callback(null)
             visjsGraph.draw("graphDiv", visjsData, {onclickFn: rdfTripleSkosProxy.onGraphNodeClick})
             $("#sliderCountPagesMax").slider("option", "max", maxPages);
             $("#sliderCountPagesMax").slider("option", "mmin", minPages);
@@ -712,7 +717,7 @@ var rdfTripleSkosProxy = (function () {
         // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
 
         if (!self.currentConceptsLabels)
-            self.currentConceptsLabels = []
+            self.currentConceptsLabels = ["x"]
         var pageName = page.text
         var p = pageName.indexOf(":")
         if (p > -1)
@@ -725,7 +730,8 @@ var rdfTripleSkosProxy = (function () {
             indexName: "mediawiki-pages-*",
             pageName: pageName,
             graph: graphUri,
-            pageCategoryThesaurusWords: self.currentConceptsLabels
+            pageCategoryThesaurusWords: JSON.stringify(self.currentConceptsLabels)
+
 
         }
 

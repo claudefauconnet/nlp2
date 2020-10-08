@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Souslesens NLP</title>
+
+
+    <script src="../js/jquery/jquery.min.js"></script>
+    <script src="../js/jquery/jquery-ui.min.js"></script>
+    <link href="../js/jquery/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+    <script src="../js/others/async.js" charset="utf-8"></script>
+
+    <script src="../js/common.js" charset="utf-8"></script>
+
+
+
+    <script src="../js/others/jsTree/jstree.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+
+
+    <script type="text/javascript" src="../js/visjs/vis-network.min.js"></script>
+    <link href="../js/visjs/vis-network.css" rel="stylesheet" type="text/css"/>
+    <script src="../js/graph/visjsGraph2.js"></script>
+
+
+    <script src="js/app_config.js"></script>
+    <script src="js/mainController.js"></script>
+    <script src="js/navigateThesaurus.js.js"></script>
+
+    <!--  <script src="js/authentification.js"></script>-->
+
+
+
+
+    <script>
+
+
+        $(function () {
+            var w = $(document).width();
+            var h = $(document).height;
+            $("#graphDiv").width(w - 600)
+            $("#graphDiv").height(w - 100)
+
+
+
+            $("#accordion").accordion()
+            $("#accordion").accordion("option", {active: 0});
+
+            MainController.UI.loadToolsList("toolsTreeDiv")
+            MainController.UI.loadSources("sourcesTreeDiv")
+        });
+
+
+
+
+    </script>
+    <style>
+        body {
+            font-size: 16px;
+        }
+
+
+
+        .jstree {
+            height: 800px;
+            width: 400px;
+            overflow: auto;
+
+        }
+
+
+        .jstree-node{
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+<div class='row'>
+
+</div>
+
+
+
+<div style="display: flex;flex-direction: row;justify-content:left">
+
+    <div style='max-width: 400px;'>
+
+        <div id="accordion">
+
+            <h3><span class="title">Tool </span></h3>
+            <div style="margin:5px">
+                <div id="toolsTreeDiv" class="jstree"></div>
+            </div>
+
+
+            <h3><span class="title">Sources </span></h3>
+            <div style="margin:5px">
+                <div id="sourcesTreeDiv" class="jstree"></div>
+            </div>
+
+
+
+            <h3><span class="title">Output </span></h3>
+            <div style="margin:5px">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</body>
+</html>
