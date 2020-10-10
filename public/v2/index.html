@@ -13,7 +13,6 @@
     <script src="../js/common.js" charset="utf-8"></script>
 
 
-
     <script src="../js/others/jsTree/jstree.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
 
@@ -25,11 +24,22 @@
 
     <script src="js/app_config.js"></script>
     <script src="js/mainController.js"></script>
-    <script src="js/navigateThesaurus.js.js"></script>
+    <script src="js/graphController.js"></script>
+
+
+    <script src="js/sparqlProxies/sparql_facade.js"></script>
+    <script src="js/sparqlProxies/sparql_proxy.js"></script>
+    <script src="js/sparqlProxies/sparql_skos_generic.js"></script>
+
+    <script src="js/sparqlProxies/sparql_ISO_15926.js"></script>
+    <script src="js/sparqlProxies/sparql_GEMET.js"></script>
+    <script src="js/sparqlProxies/sparql_GBA.js"></script>
+    <script src="js/sparqlProxies/sparql_USGS.js"></script>
+
+
+    <script src="js/navigateThesaurus.js"></script>
 
     <!--  <script src="js/authentification.js"></script>-->
-
-
 
 
     <script>
@@ -38,9 +48,8 @@
         $(function () {
             var w = $(document).width();
             var h = $(document).height;
-            $("#graphDiv").width(w - 600)
-            $("#graphDiv").height(w - 100)
-
+            $("#graphDiv").width(w - 400)
+            $("#graphDiv").height(w - 400)
 
 
             $("#accordion").accordion()
@@ -51,14 +60,11 @@
         });
 
 
-
-
     </script>
     <style>
         body {
             font-size: 16px;
         }
-
 
 
         .jstree {
@@ -69,7 +75,7 @@
         }
 
 
-        .jstree-node{
+        .jstree-node {
             font-weight: bold;
         }
 
@@ -79,7 +85,6 @@
 <div class='row'>
 
 </div>
-
 
 
 <div style="display: flex;flex-direction: row;justify-content:left">
@@ -100,14 +105,13 @@
             </div>
 
 
-
             <h3><span class="title">Output </span></h3>
             <div style="margin:5px">
             </div>
         </div>
     </div>
+    <div id="graphDiv"></div>
 </div>
-
 
 
 
