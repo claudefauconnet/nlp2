@@ -20,10 +20,11 @@ var Sparql_facade = (function () {
     self.getNodeChildren = function (sourceLabel,conceptId, options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
+        var graphIri = source.graphIri
         if (source.isExternal) {
             return eval("sparql_"+sourceLabel + ".getNodeChildren('" + conceptId + "'," + JSON.stringify(options) + "," + callback + ")")
         } else {
-            Sparql_skos_generic.getNodeChildren(conceptId, options, callback);
+            Sparql_skos_generic.getNodeChildren(graphIri,conceptId, options, callback);
         }
     }
 
@@ -31,17 +32,19 @@ var Sparql_facade = (function () {
     self.searchConceptAndAncestors = function (sourceLabel,word, ancestorsDepth,options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
+        var graphIri = source.graphIri
         if (source.isExternal) {
             options.ancestorsDepth = ancestorsDepth;
             return eval("sparql_" + sourceLabel + ".searchConceptAndAncestors('" + word + "'," +ancestorsDepth+","+ JSON.stringify(options) + "," + callback + ")")
         } else {
-            Sparql_skos_generic.searchConceptAndAncestors(word, ancestorsDepth, {depth:ancestorsDepth}, callback);
+            Sparql_skos_generic.searchConceptAndAncestors(graphIri,word, ancestorsDepth, {depth:ancestorsDepth}, callback);
         }
     }
 
     self.getConceptAndAncestorsById = function (sourceLabel,conceptId, ancestorsDepth,options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel];
+        var graphIri = source.graphIri
 
         options.conceptId=conceptId;
         options.ancestorsDepth = ancestorsDepth;
@@ -49,17 +52,18 @@ var Sparql_facade = (function () {
 
             return eval("sparql_" + sourceLabel + ".searchConceptAndAncestors('" + null + "'," + JSON.stringify(options) + "," + callback + ")")
         } else {
-            Sparql_skos_generic.searchConceptAndAncestors(null, ancestorsDepth, options, callback);
+            Sparql_skos_generic.searchConceptAndAncestors(graphIri,null, ancestorsDepth, options, callback);
         }
     }
 
     self.getNodeInfos = function (sourceLabel,conceptId,options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
+        var graphIri = source.graphIri
         if (source.isExternal) {
             return eval("sparql_"+sourceLabel+ ".getNodeInfos('" + conceptId + "'," + JSON.stringify(options) + "," + callback + ")")
         } else {
-            Sparql_skos_generic.getNodeInfos(conceptId, options, callback);
+            Sparql_skos_generic.getNodeInfos(graphIri,conceptId, options, callback);
         }
     }
 

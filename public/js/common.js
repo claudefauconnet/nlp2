@@ -27,6 +27,17 @@ var common = (function () {
         $("#messageDiv").html(str);
 
     }
+self.getjsTreeNodes=function(jstreeDiv,IdsOnly) {
+    var idList = [];
+    var jsonNodes = $('#' + jstreeDiv).jstree(true).get_json('#', {flat: true});
+    $.each(jsonNodes, function (i, val) {
+        if(IdsOnly)
+        idList.push($(val).attr('id'));
+        else
+            idList.push($(val));
+    })
+    return idList;
+}
 
 
     self.loadJsTree = function (jstreeDiv, jstreeData, options, callback) {

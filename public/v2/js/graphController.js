@@ -3,7 +3,7 @@ var GraphController=(function(){
  var self={};
 
 
- self.drawOrUpdateGraph=function(data,parentNodeId,fromVar,toVar,fromShape,toShape,visjOptions,callback){
+ self.drawOrUpdateGraph=function(graphDivId,data,parentNodeId,fromVar,toVar,fromShape,toShape,visjOptions,callback){
 
      var visjsData = {nodes: [], edges: []};
      var existingNodes = {}
@@ -49,8 +49,8 @@ var GraphController=(function(){
              var toId = item[toVar].value || "#";
              var toLabel = item[toVar + "Label"].value;
 
-             if ( !existingNodes[item[toVar].value]) {
-                 existingNodes[item[toVar].value] = 1;
+             if ( !existingNodes[toId]) {
+                 existingNodes[toId] = 1;
 
                  var node = {
                      id: toId,
