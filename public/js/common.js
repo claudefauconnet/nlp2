@@ -156,6 +156,24 @@ self.getjsTreeNodes=function(jstreeDiv,IdsOnly) {
         return str.replace(/\//g, "_").replace(/\./g, "_");
 
     }
+    self.palette=[
+        "#0072d5",
+        '#FF7D07',
+        "#c00000",
+        '#FFD900',
+        '#B354B3',
+        "#a6f1ff",
+        "#007aa4",
+        "#584f99",
+        "#cd4850",
+        "#005d96",
+        "#ffc6ff",
+        '#007DFF',
+        "#ffc36f",
+        "#ff6983",
+        "#7fef11",
+        '#B3B005',
+    ]
 
 
     return self;

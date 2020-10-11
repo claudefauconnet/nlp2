@@ -1,4 +1,4 @@
-var sparql_GEMET = (function () {
+var Sparql_GEMET = (function () {
         var self = {};
         var elasticUrl = "/elastic";
         if (window.location.href.indexOf("https") > -1)

@@ -1,5 +1,9 @@
-var NavigateThesaurus = (function () {
+var ThesaurusBrowser = (function () {
     var self = {}
+
+    self.init=function(thesaurusLabel){
+        self.showThesaurusTopConcepts(thesaurusLabel)
+    }
 
     self.showThesaurusTopConcepts = function (thesaurusLabel) {
         Sparql_facade.getTopConcepts(thesaurusLabel, function (err, result) {
@@ -62,7 +66,7 @@ var NavigateThesaurus = (function () {
                 return MainController.message(err);
             }
         //    SkosConceptEditor.editConcept("graphDiv",result)
-            self.showNodeInfos("graphDiv","en",result)
+            self.showNodeInfos("graphDiv","en",node.id,result)
 
 
         })
@@ -71,7 +75,7 @@ var NavigateThesaurus = (function () {
 
     }
 
-    self.showNodeInfos= function (divId,defaultLang,data) {
+    self.showNodeInfos= function (divId,defaultLang,nodeId,data) {
 
         var bindings = []
         var propertiesMap = {label: "", id: "", properties: {}};
@@ -122,9 +126,9 @@ var NavigateThesaurus = (function () {
                 if (defaultProps.indexOf(key) < 0)
                     defaultProps.push(key)
             }
-            var str = "<table >"
-            str += "<tr><td>UUID</td><td><a target='_blank' href='"+data.id+"'>"+data.id+"</a></td></tr>"
-
+            var str = "<table class='infosTable'>"
+            str += "<tr><td class='detailsCellName'>UUID</td><td><a target='_blank' href='"+nodeId+"'>"+nodeId+"</a></td></tr>"
+        str += "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>"
             defaultProps.forEach(function (key) {
                 if (!propertiesMap.properties[key])
                     return;
@@ -137,15 +141,15 @@ var NavigateThesaurus = (function () {
                     values.forEach(function (value) {
                         if (value.indexOf("http") == 0)
                             value = "<a target='_blank' href='" + value + "'>" + value + "</a>"
-                        str += "<td class='detailsCell'>" + propertiesMap.properties[key].name + "</td>"
-                        str += "<td class='detailsCell'>" + value + "</td>"
+                        str += "<td class='detailsCellName'>" + propertiesMap.properties[key].name + "</td>"
+                        str += "<td class='detailsCellValue'>" + value + "</td>"
                         str += "</tr>"
                     })
 
                 } else {
                     var keyName = propertiesMap.properties[key].name
                     var selectId = "detailsLangSelect_" + keyName
-                    var propNameSelect = "<select id='" + selectId + "' onchange=NavigateThesaurus.onNodeDetailsLangChange('" + keyName + "') >"
+                    var propNameSelect = "<select id='" + selectId + "' onchange=ThesaurusBrowser.onNodeDetailsLangChange('" + keyName + "') >"
                     var langDivs = "";
 
                     for (var lang in propertiesMap.properties[key].langValues) {
@@ -163,10 +167,10 @@ var NavigateThesaurus = (function () {
 
                             propNameSelect += "</select>"
 
-                            str += "<td class='detailsCell'>" + propertiesMap.properties[key].name + " " + propNameSelect + "</td>"
-                            str += "<td class='detailsCell'>" + langDivs + "</td>";
+                            str += "<td class='detailsCellName'>" + propertiesMap.properties[key].name + " " + propNameSelect + "</td>"
+                            str += "<td class='detailsCellValue'>" + langDivs + "</td>";
                             if (propertiesMap.properties[key].langValues[defaultLang])
-                                str += "<script>NavigateThesaurus.onNodeDetailsLangChange('" + keyName + "','" + defaultLang + "') </script>";
+                                str += "<script>ThesaurusBrowser.onNodeDetailsLangChange('" + keyName + "','" + defaultLang + "') </script>";
 
                             str += "</tr>"
 

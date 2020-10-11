@@ -22,7 +22,7 @@
     <script src="../js/graph/visjsGraph2.js"></script>
 
 
-    <script src="js/app_config.js"></script>
+
     <script src="js/mainController.js"></script>
     <script src="js/graphController.js"></script>
     <script src="js/treeController.js"></script>
@@ -34,12 +34,23 @@
     <script src="js/sparqlProxies/sparql_skos_generic.js"></script>
 
     <script src="js/sparqlProxies/sparql_ISO_15926.js"></script>
+    <script src="js/sparqlProxies/sparql_WORDNET.js"></script>
     <script src="js/sparqlProxies/sparql_GEMET.js"></script>
     <script src="js/sparqlProxies/sparql_GBA.js"></script>
     <script src="js/sparqlProxies/sparql_USGS.js"></script>
+    <script src="js/sparqlProxies/sparql_Wikidata.js"></script>
+    <script src="js/sparqlProxies/sparql_microsoft-accademic.js"></script>
+    <script src="js/sparqlProxies/sparql_babelNet.js"></script>
 
 
-    <script src="js/navigateThesaurus.js"></script>
+    <script src="js/thesaurusBrowser.js"></script>
+    <script src="js/termTaxonomy.js"></script>
+    <script src="js/corpusGraph.js"></script>
+    <script src="js/ontologyBrowser.js"></script>
+
+
+
+    <script src="js/app_config.js"></script>
 
     <!--  <script src="js/authentification.js"></script>-->
 
@@ -70,15 +81,36 @@
 
 
         .jstree {
+            margin: 5px;
             height: 800px;
             width: 400px;
             overflow: auto;
 
         }
 
+        #graphDiv{
+            margin: 5px;
+        }
 
         .jstree-node {
             font-weight: bold;
+        }
+        .infosTable{
+            background-color: #d9d9d9;
+            padding: 5px;
+            width: 100%;
+        }
+        .detailsCellName{
+            padding: 2px;
+            max-width: 400px;
+            text-align: right;
+        }
+        .detailsCellValue{
+            padding: 2px;
+            border-radius: 3px;
+            border: 1px solid black;
+            background-color: white;
+            max-width: 400px;
         }
 
     </style>
@@ -103,11 +135,12 @@
 
             <h3><span class="title">Sources </span></h3>
             <div style="margin:5px">
+                <div id="sourceActionDiv"></div>
                 <div id="sourcesTreeDiv" class="jstree"></div>
             </div>
 
 
-            <h3><span class="title">Action </span></h3>
+            <h3><span class="title" id="sourcePanelLabel"> </span></h3>
             <div style="margin:5px">
                 <div id="actionDiv" class="jstree"></div>
             </div>

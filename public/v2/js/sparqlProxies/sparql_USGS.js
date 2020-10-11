@@ -1,4 +1,4 @@
-var sparql_USGS = (function () {
+var Sparql_USGS = (function () {
         var self = {};
 
 

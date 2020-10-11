@@ -29,13 +29,13 @@ var Sparql_skos_generic = (function () {
         }
 
 
-        self.getNodeChildren = function (graphIri,conceptId, options, callback) {
-            if (!options ) {
+        self.getNodeChildren = function (graphIri, conceptId, options, callback) {
+            if (!options) {
                 options = {depth: 0}
             }
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
-                "select distinct * from <"+graphIri +">"+
+                "select distinct * from <" + graphIri + ">" +
                 "where{ ?child1 skos:broader ?concept."
                 + " filter (?concept=<" + conceptId + ">) "
                 + "?child1 skos:prefLabel ?child1Label."
@@ -44,8 +44,8 @@ var Sparql_skos_generic = (function () {
             for (var i = 1; i <= options.depth; i++) {
 
                 query += "OPTIONAL { ?child" + (i + 1) + " skos:broader ?child" + i + "." +
-                    "?child" + (i + 1) + " skos:prefLabel ?child" + (i + 1) +"Label." +
-                    "filter( lang(?child" + (i + 1) +"Label)=\"en\")"
+                    "?child" + (i + 1) + " skos:prefLabel ?child" + (i + 1) + "Label." +
+                    "filter( lang(?child" + (i + 1) + "Label)=\"en\")"
             }
             for (var i = 1; i <= options.depth; i++) {
                 query += "}"
@@ -53,7 +53,7 @@ var Sparql_skos_generic = (function () {
             query += "  }ORDER BY ?child1Label ";
             query += "limit 10000 ";
 
-         
+
             var url = Config.sparql_url + "?query=";// + query + queryOptions
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -65,23 +65,25 @@ var Sparql_skos_generic = (function () {
         }
 
 
-        self.searchConceptAndAncestors = function (graphIri,word, ancestorsDepth, options, callback) {
-if(!options){
-    options={}
-}
+        self.searchConceptAndAncestors = function (graphIri, word,id, ancestorsDepth, options, callback) {
+            if (!options) {
+                options = {}
+            }
             if (word) {
                 var filter = "  regex(?conceptLabel, \"^" + word + "$\", \"i\")";
                 if (!options.exactMatch) {
                     filter = "  regex(?conceptLabel, \"" + word + "\", \"i\")";
                 }
-            } else {
-                if (options.conceptId) {
-                    filter = "  ?concept =<" + options.conceptId + ">";
-                }
+            } else if(id) {
+
+                    filter = "  ?concept =<" + id + ">";
+
+            }else{
+                callback("no word or id selected")
             }
 
             var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
-                "SELECT distinct * from <"+graphIri+">"+
+                "SELECT distinct * from <" + graphIri + ">" +
                 "WHERE {" +
                 "  ?concept skos:prefLabel ?conceptLabel . filter(" + filter + ")";
 
@@ -89,12 +91,12 @@ if(!options){
             for (var i = 1; i <= ancestorsDepth; i++) {
                 if (i == 1) {
                     query += "  ?concept" + " skos:broader ?broader" + i + "." +
-                        "?broader" + (i) + " skos:prefLabel ?broaderLabel" + (i) + ".";
+                        "?broader" + (i) + " skos:prefLabel ?broader" + (i) + "Label.";
                     "filter( lang(?broader" + (i) + ")=\"en\")"
 
                 } else {
                     query += "OPTIONAL { ?broader" + (i - 1) + " skos:broader ?broader" + i + "." +
-                        "?broader" + (i) + " skos:prefLabel ?broaderLabel" + (i) + "." +
+                        "?broader" + (i) + " skos:prefLabel ?broader" + (i) + "Label." +
                         "filter( lang(?broader" + (i) + ")=\"en\")"
                 }
             }
@@ -108,7 +110,7 @@ if(!options){
             query += "} LIMIT 10000"
 
             var graphIri = "";
-        
+
             var url = Config.sparql_url + "?query=";// + query + queryOptions
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -124,12 +126,12 @@ if(!options){
         }
 
 
-        self.getNodeInfos = function (graphIri,conceptId, options, callback) {
+        self.getNodeInfos = function (graphIri, conceptId, options, callback) {
 
-            var query = "select * from <" +graphIri+">"+
+            var query = "select * from <" + graphIri + ">" +
                 " where {<" + conceptId + "> ?prop ?value. } limit 500";
 
-         
+
             var url = Config.sparql_url + "?query=";// + query + queryOptions
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {

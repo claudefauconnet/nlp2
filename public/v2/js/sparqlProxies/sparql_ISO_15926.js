@@ -1,4 +1,4 @@
-var sparql_ISO_15926 = (function () {
+var Sparql_ISO_15926 = (function () {
         var self = {};
 
         var elasticUrl = "/elastic";

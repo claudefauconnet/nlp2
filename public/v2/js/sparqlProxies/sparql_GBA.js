@@ -1,4 +1,4 @@
-var sparql_GBA = (function () {
+var Sparql_GBA = (function () {
         var self = {};
         var elasticUrl = "/elastic";
         if (window.location.href.indexOf("https") > -1)
