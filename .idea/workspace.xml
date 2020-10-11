@@ -3,17 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="e3f42134-de86-4458-b1ba-3a42f4ba02e5" name="finir skoseditor en modification" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/common.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/app_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/app_config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/navigateThesaurus.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/thesaurusBrowser.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_GBA.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_GBA.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_GEMET.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_GEMET.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_ISO_15926.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_ISO_15926.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_USGS.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_USGS.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_facade.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_facade.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_skos_generic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/termTaxonomy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/termTaxonomy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/snippets/termTaxonomy.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/snippets/termTaxonomy.html" afterDir="false" />
     </list>
     <list id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -198,7 +190,7 @@
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
       <updated>1602337185733</updated>
-      <workItem from="1602337186322" duration="13422000" />
+      <workItem from="1602337186322" duration="20213000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />

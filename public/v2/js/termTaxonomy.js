@@ -1,37 +1,33 @@
-var TermTaxonomy=(function(){
-   var self={context:{}}
-    self.init=function(){
-       var html="<button onclick='TermTaxonomy.showActionPanel()'>OK</button>"
+var TermTaxonomy = (function () {
+    var self = {context: {}}
+    self.init = function () {
+        var html = "<button onclick='TermTaxonomy.showActionPanel()'>OK</button>"
         $("#sourceActionDiv").html(html)
 
     }
 
     var colorsMap = {}
     var conceptsMap = {};
-    var sources = [];
+    var sourceIds = [];
 
 
-
-
-    self.showActionPanel=function(){
-        self.initSources();
+    self.showActionPanel = function () {
+        self.initsourceIds();
         $("#actionDiv").load("snippets/termTaxonomy.html")
         $("#accordion").accordion("option", {active: 2});
 
     }
 
 
-    self.initSources=function() {
+    self.initsourceIds = function () {
 
-        sources= $("#sourcesTreeDiv").jstree(true).get_checked(true);
-        for (var key in sources) {
-            var source = sources[key]
-            source.name = key;
-            source.color = common.palette[Object.keys(sources).length]
-            sources.push(source)
-        }
-
-
+        var jsTreesourceIds = $("#sourcesTreeDiv").jstree(true).get_checked();
+        sourceIds=[]
+        jsTreesourceIds.forEach(function (sourceId) {
+            if (!Config.sources[sourceId].color)
+                Config.sources[sourceId].color =common.palette[Object.keys(sourceIds).length];
+            sourceIds.push(sourceId)
+        })
     }
 
 
@@ -47,8 +43,9 @@ var TermTaxonomy=(function(){
         var bindings = {}
         var sourceNodes = [];
 
-        sources.forEach(function (source) {
-            sourceNodes.push({id: source.name, text: "<span class='tree_level_1' style='background-color: " + source.color + "'>" + source.name + "</span>", chldren: [], parent: "#"})
+        sourceIds.forEach(function (sourceId) {
+
+            sourceNodes.push({id: sourceId, text: "<span class='tree_level_1' style='background-color: " +  Config.sources[sourceId].color + "'>" + sourceId + "</span>", children: [], parent: "#"})
 
 
         })
@@ -68,29 +65,29 @@ var TermTaxonomy=(function(){
 
         });
         var selectedIds = [];
-        //  sources.forEach(function (source) {
-        async.eachSeries(sources, function (source, callbackEach) {
+        //  sourceIds.forEach(function (source) {
+        async.eachSeries(sourceIds, function (sourceId, callbackEach) {
 
 
-
-            Sparql_facade.searchConceptAndAncestors(source.id,word,null,1,{exactMatch: exactMatch}, function (err, result){
-           // sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
+            Sparql_facade.searchConceptAndAncestors(sourceId, word, null, 1, {exactMatch: exactMatch}, function (err, result) {
+                // sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
 
                 if (err) {
                     return console.log(err);
                 }
 
                 result.forEach(function (item) {
-                    if (!conceptsMap[item.id]) {
-                        if (result.length == 1)
-                            selectedIds.push(item.id)
-                        conceptsMap[item.id] = item;
-                        item.source = source.name;
-                        item.title = item.label + " / " + (item.description || "")
+                    var conceptId=item.concept.value
+                    if (!conceptsMap[conceptId]) {
+                        /*  if (result.length == 1)
+                              selectedIds.push(item.id)*/
+                        conceptsMap[conceptId] = item;
+                        item.sourceId = sourceId;
+                        item.title = item.conceptLabel.value + " / " + (item.description || item.broader1Label.value)
 
-                        var newNode = {id: item.id, text: "<span class='tree_level_2'>" + item.title + "</span>", data: item}
+                        var newNode = {id: conceptId, text: "<span class='tree_level_2'>" + item.title + "</span>", data: item}
                         // setTimeout(function () {
-                        $("#conceptsJstreeDiv").jstree(true).create_node(source.name, newNode, "first", function () {
+                        $("#conceptsJstreeDiv").jstree(true).create_node(sourceId, newNode, "first", function () {
                             $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
 
 
@@ -100,9 +97,7 @@ var TermTaxonomy=(function(){
                     }
 
                 })
-                if (source.sparql_url == 'http://vps475829.ovh.net:8890/sparql') {
-                    callbackEach()
-                }
+              callbackEach()
 
 
             })
@@ -125,51 +120,84 @@ var TermTaxonomy=(function(){
 
     }
 
-    self.searchConceptsContainWord = function () {
-        var selectedConcepts = []
-        var xx = $("#conceptsJstreeDiv").jstree(true).get_checked(null, true)
-        xx.forEach(function (nodeId) {
-            if (conceptsMap[nodeId])
-                selectedConcepts.push(conceptsMap[nodeId]);
-        });
-        $("#conceptsJstreeDiv").jstree(true).uncheck_all()
-        var xx = selectedConcepts;
-        selectedConcepts.forEach(function (concept) {
-            sparql_abstract.list(concept.source, self.context.currentWord, {exactMatch: false, selectedThesaurus: concept.thesaurus}, function (err, result) {
+    self.displayGraph = function (direction) {
 
-                if (err) {
-                    return console.log(err);
+var defaultMaxDepth=5
+
+        drawRootNode = function (word) {
+            var rootNodeColor = "#dda";
+            var rootNodeSize = 20
+            $("#graphDiv").width($(window).width() - 20)
+            self.rootNode = {
+                label: word,
+                id: word,
+                color: rootNodeColor,
+                size: rootNodeSize
+            }
+            var visjsData = {nodes: [], edges: []}
+            visjsData.nodes.push(self.rootNode);
+            visjsGraph.draw("graphDiv", visjsData, {
+                onclickFn: TermTaxonomy.onGraphNodeClick,
+                //  onHoverNodeFn: multiSkosGraph3.onNodeClick,
+                afterDrawing: function () {
+                    $("#waitImg").css("display", "none")
                 }
-                result.forEach(function (item) {
-                    if (!conceptsMap[item.id]) {
-                        conceptsMap[item.id] = item;
-                        item.source = concept.source;
-                        item.title = item.label + " / " + item.description
-                        if (concept.source == "private") {
-                            item.title = item.thesaurus + " : " + item.title
-                        }
-                        var newNode = {id: item.id, text: item.title, data: item}
-                        setTimeout(function () {
-                            $("#conceptsJstreeDiv").jstree(true).create_node(concept.id, newNode, "first", function () {
-                                $("#conceptsJstreeDiv").jstree(true)._open_to(newNode.id);
-
-                            }, false);
-                        }, 1000)
-                    }
-
-                })
-
             })
 
 
+        }
+
+
+        var selectedConcepts = []
+        var jstreeNodes = $("#conceptsJstreeDiv").jstree(true).get_bottom_checked (false)
+        jstreeNodes.forEach(function (nodeId) {
+            if (conceptsMap[nodeId])
+                selectedConcepts.push(conceptsMap[nodeId]);
+        });
+
+
+        drawRootNode(self.context.currentWord)
+        setTimeout(function () {
+            selectedConcepts.forEach(function (item) {
+                var conceptId=item.concept.value
+                item.color = Config.sources[item.sourceId].color
+
+                if (direction == "ancestors") {
+                  //  sparql_abstract.getAncestors(concept.source.id, concept.id, {exactMatch: true}, function (err, result) {
+                        Sparql_facade.searchConceptAndAncestors(item.sourceId, null,conceptId, defaultMaxDepth, {exactMatch: true}, function (err, result) {
+                        if (err)
+                            return console.log(err)
+                        if (!result || !result.forEach)
+                            return;
+                        result.forEach(function (binding) {
+                            binding.source = item.sourceId;
+
+                            var visjsData = self.pathsToVisjsData(binding)
+
+                            self.addVisJsDataToGraph(visjsData)
+
+                        })
+                    })
+                } else if (direction == "children") {
+
+                    self.drawSourceRootNode(self.context.currentWord, item);
+                    sparql_abstract.getChildren(item.source, item.id, {}, function (err, result) {
+                        if (err)
+                            return console.log(err);
+                        self.addChildrenNodesToGraph(item, result)
+                    })
+                }
+
+
+            })
+                , self.multisearchTimeout
         })
 
 
     }
+    self.onGraphNodeClick=function(point,node,options){
 
-
-
-
+    }
 
 
     return self;

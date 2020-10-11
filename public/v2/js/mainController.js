@@ -44,8 +44,11 @@ var MainController = (function () {
 
         },
         onSourceSelect: function () {
+            if(self.currentTool.multiSources)
+                return
             if (!self.currentSource)
-                return MainController.UI.message("select a source")
+                return MainController.UI.message("select a source");
+
           self.UI.updateActionDivLabel()
             var controller = Config.tools[self.currentTool].controller
             controller.init(self.currentSource)
