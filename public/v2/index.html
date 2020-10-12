@@ -43,10 +43,12 @@
     <script src="js/sparqlProxies/sparql_babelNet.js"></script>
 
 
-    <script src="js/thesaurusBrowser.js"></script>
-    <script src="js/termTaxonomy.js"></script>
-    <script src="js/corpusGraph.js"></script>
-    <script src="js/ontologyBrowser.js"></script>
+    <script src="js/tools/thesaurusBrowser.js"></script>
+    <script src="js/tools/thesaurusMatcher.js"></script>
+    <script src="js/tools/nerEvaluator.js"></script>
+    <script src="js/tools/termTaxonomy.js"></script>
+    <script src="js/tools/corpusGraph.js"></script>
+    <script src="js/tools/ontologyBrowser.js"></script>
 
 
 
@@ -135,13 +137,14 @@
 
             <h3><span class="title">Sources </span></h3>
             <div style="margin:5px">
-                <div id="sourceActionDiv"></div>
+                <div id="sourceDivControlPanelDiv"></div>
                 <div id="sourcesTreeDiv" class="jstree"></div>
             </div>
 
 
             <h3><span class="title" id="sourcePanelLabel"> </span></h3>
             <div style="margin:5px">
+                <div id="actionDivContolPanelDiv" ></div>
                 <div id="actionDiv" class="jstree"></div>
             </div>
         </div>

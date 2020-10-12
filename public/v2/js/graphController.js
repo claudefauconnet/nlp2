@@ -1,20 +1,36 @@
 var GraphController=(function(){
 
  var self={};
+ self.defaultNodeColor="blue"
 
 
- self.drawOrUpdateGraph=function(graphDivId,data,parentNodeId,fromVar,toVar,fromShape,toShape,visjOptions,callback){
 
-     var visjsData = {nodes: [], edges: []};
+ self.toVisjsData=function(visjsData,data,parentNodeId,fromVar,toVar,visjOptions){
+if(!visjOptions){
+    visjOptions={from:{},to:{}}
+}
      var existingNodes = {}
      var existingEdges = {};
-     if( parentNodeId ){
+     if( parentNodeId ){// add to existingGraph
         visjsGraph.data.nodes.getIds().forEach(function(id){
              existingNodes[id]=id
          });
         visjsGraph.data.edges.getIds().forEach(function(id){
             existingEdges[id]=id
         });
+
+     }
+     else{// new Graph
+         if(!visjsData) //new visjsData
+             visjsData = {nodes: [], edges: []};
+         else {//add to existing  visjsData
+             visjsData.nodes.forEach(function (item) {
+                 existingNodes[item.id]=item.id
+             })
+             visjsData.edges.forEach(function (item) {
+                 existingEdges[item.id]=item.id
+             })
+         }
 
      }
 
@@ -35,11 +51,12 @@ var GraphController=(function(){
 
 
              if (!existingNodes[fromId]) {
-                 existingNodes[fromLabel] = 1;
+                 existingNodes[fromId] = 1;
                  var node = {
                      id: fromId,
                      label: fromLabel,
-                     shape: fromShape || "dot",
+                     shape: visjOptions.from.shape || "dot",
+                     color: visjOptions.from.color || self.defaultNodeColor
                  }
                  visjsData.nodes.push(node)
              }
@@ -55,7 +72,8 @@ var GraphController=(function(){
                  var node = {
                      id: toId,
                      label: toLabel,
-                     shape: toShape || "dot",
+                     shape: visjOptions.to.shape || "dot",
+                     color: visjOptions.to.color || self.defaultNodeColor
                  }
                  visjsData.nodes.push(node);
              }
@@ -77,15 +95,7 @@ var GraphController=(function(){
 
      })
 
-     if( parentNodeId && parentNodeId!="#"){
-
-         visjsGraph.data.nodes.add(self.context.newNodes)
-         visjsGraph.data.edges.add(self.context.newEdges)
-     }
-     else {
-         visjsGraph.draw("graphDiv", visjsData,visjOptions)
-     }
-
+     return visjsData;
 
 
 

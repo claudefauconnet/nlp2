@@ -2,7 +2,7 @@ var TermTaxonomy = (function () {
     var self = {context: {}}
     self.init = function () {
         var html = "<button onclick='TermTaxonomy.showActionPanel()'>OK</button>"
-        $("#sourceActionDiv").html(html)
+        $("#sourceDivControlPanelDiv").html(html)
 
     }
 
@@ -22,10 +22,10 @@ var TermTaxonomy = (function () {
     self.initsourceIds = function () {
 
         var jsTreesourceIds = $("#sourcesTreeDiv").jstree(true).get_checked();
-        sourceIds=[]
+        sourceIds = []
         jsTreesourceIds.forEach(function (sourceId) {
             if (!Config.sources[sourceId].color)
-                Config.sources[sourceId].color =common.palette[Object.keys(sourceIds).length];
+                Config.sources[sourceId].color = common.palette[Object.keys(sourceIds).length];
             sourceIds.push(sourceId)
         })
     }
@@ -45,7 +45,7 @@ var TermTaxonomy = (function () {
 
         sourceIds.forEach(function (sourceId) {
 
-            sourceNodes.push({id: sourceId, text: "<span class='tree_level_1' style='background-color: " +  Config.sources[sourceId].color + "'>" + sourceId + "</span>", children: [], parent: "#"})
+            sourceNodes.push({id: sourceId, text: "<span class='tree_level_1' style='background-color: " + Config.sources[sourceId].color + "'>" + sourceId + "</span>", children: [], parent: "#"})
 
 
         })
@@ -77,7 +77,7 @@ var TermTaxonomy = (function () {
                 }
 
                 result.forEach(function (item) {
-                    var conceptId=item.concept.value
+                    var conceptId = item.concept.value
                     if (!conceptsMap[conceptId]) {
                         /*  if (result.length == 1)
                               selectedIds.push(item.id)*/
@@ -97,7 +97,7 @@ var TermTaxonomy = (function () {
                     }
 
                 })
-              callbackEach()
+                callbackEach()
 
 
             })
@@ -122,7 +122,7 @@ var TermTaxonomy = (function () {
 
     self.displayGraph = function (direction) {
 
-var defaultMaxDepth=5
+        var maxDepth = 5
 
         drawRootNode = function (word) {
             var rootNodeColor = "#dda";
@@ -149,7 +149,7 @@ var defaultMaxDepth=5
 
 
         var selectedConcepts = []
-        var jstreeNodes = $("#conceptsJstreeDiv").jstree(true).get_bottom_checked (false)
+        var jstreeNodes = $("#conceptsJstreeDiv").jstree(true).get_bottom_checked(false)
         jstreeNodes.forEach(function (nodeId) {
             if (conceptsMap[nodeId])
                 selectedConcepts.push(conceptsMap[nodeId]);
@@ -159,24 +159,17 @@ var defaultMaxDepth=5
         drawRootNode(self.context.currentWord)
         setTimeout(function () {
             selectedConcepts.forEach(function (item) {
-                var conceptId=item.concept.value
+                var conceptId = item.concept.value
                 item.color = Config.sources[item.sourceId].color
 
                 if (direction == "ancestors") {
-                  //  sparql_abstract.getAncestors(concept.source.id, concept.id, {exactMatch: true}, function (err, result) {
-                        Sparql_facade.searchConceptAndAncestors(item.sourceId, null,conceptId, defaultMaxDepth, {exactMatch: true}, function (err, result) {
+                    //  sparql_abstract.getAncestors(concept.source.id, concept.id, {exactMatch: true}, function (err, result) {
+                    Sparql_facade.searchConceptAndAncestors(item.sourceId, null, conceptId, maxDepth, {exactMatch: true}, function (err, result) {
                         if (err)
                             return console.log(err)
                         if (!result || !result.forEach)
                             return;
-                        result.forEach(function (binding) {
-                            binding.source = item.sourceId;
-
-                            var visjsData = self.pathsToVisjsData(binding)
-
-                            self.addVisJsDataToGraph(visjsData)
-
-                        })
+                        self.addAncestorsGraph(item.sourceId,self.context.currentWord, result, maxDepth)
                     })
                 } else if (direction == "children") {
 
@@ -195,7 +188,47 @@ var defaultMaxDepth=5
 
 
     }
-    self.onGraphNodeClick=function(point,node,options){
+
+    self.addAncestorsGraph = function (sourceId,rootNodeId, bindings, depth) {
+        var visjsData = {nodes: [], edges: []}
+
+       // edge beetwen word and concept
+        var conceptId = bindings[0].concept.value;
+        visjsData.edges.push({
+            id: rootNodeId + "_" + conceptId,
+            from: rootNodeId,
+            to: conceptId,
+            label: sourceId
+        })
+
+
+        for (var i = 1; i < depth; i++) {
+            var fromVar = "";
+            if (i == 1)
+                fromVar = "concept"
+            else
+                fromVar = "broader" + (i - 1)
+
+            var toVar = "broader" + i;
+
+            var color=Config.sources[sourceId].color
+            var options={
+                from:{shape:"box",color:color},
+                to:{shape:"box",color:color}
+            }
+
+
+
+            visjsData = GraphController.toVisjsData(visjsData, bindings, null, fromVar, toVar, options)
+        }
+
+        visjsGraph.data.nodes.add(visjsData.nodes)
+        visjsGraph.data.edges.add(visjsData.edges)
+
+    }
+
+
+    self.onGraphNodeClick = function (point, node, options) {
 
     }
 

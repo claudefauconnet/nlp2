@@ -30,13 +30,13 @@ var MainController = (function () {
             common.loadJsTree(treeDiv, treeData, {
                 selectNodeFn: function (evt, obj) {
                     self.currentTool = obj.node.id;
-                    self.currentSource=null;
+                    self.currentSource = null;
                     MainController.UI.loadSources("sourcesTreeDiv", obj.node.data.multiSources);
                     $("#accordion").accordion("option", {active: 1});
                     var controller = Config.tools[self.currentTool].controller
-                    self.UI.updateActionDivLabel()
-                    controller.init(self.currentSource)
-
+                    self.UI.updateActionDivLabel();
+                    if (Config.tools[self.currentTool].multiSources)
+                        controller.init(self.currentSource)
 
 
                 }
@@ -44,12 +44,15 @@ var MainController = (function () {
 
         },
         onSourceSelect: function () {
-            if(self.currentTool.multiSources)
+            $("#actionDivContolPanelDiv").html("");
+            $("#sourceDivControlPanelDiv").html("");
+
+            if (Config.tools[self.currentTool].multiSources)
                 return
             if (!self.currentSource)
                 return MainController.UI.message("select a source");
 
-          self.UI.updateActionDivLabel()
+            self.UI.updateActionDivLabel()
             var controller = Config.tools[self.currentTool].controller
             controller.init(self.currentSource)
 
@@ -64,9 +67,9 @@ var MainController = (function () {
             $("#message").html("message")
         },
 
-        updateActionDivLabel:function(){
-            if(self.currentSource)
-            $("#sourcePanelLabel").html(Config.tools[self.currentTool].label + " : " + self.currentSource)
+        updateActionDivLabel: function () {
+            if (self.currentSource)
+                $("#sourcePanelLabel").html(Config.tools[self.currentTool].label + " : " + self.currentSource)
             else
                 $("#sourcePanelLabel").html(Config.tools[self.currentTool].label);
 

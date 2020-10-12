@@ -11,10 +11,7 @@ var ThesaurusBrowser = (function () {
                 return MainController.message(err);
             }
 
-            var options = {layoutHierarchical: 1}
 
-
-            //  GraphController.drawOrUpdateGraph("graphDiv",result,null,"#","topConcept",null,"box",options)
             $("#accordion").accordion("option", {active: 2});
             var html = "<div id='currentSourceTreeDiv'></div>"
 

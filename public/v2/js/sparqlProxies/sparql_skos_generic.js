@@ -91,13 +91,13 @@ var Sparql_skos_generic = (function () {
             for (var i = 1; i <= ancestorsDepth; i++) {
                 if (i == 1) {
                     query += "  ?concept" + " skos:broader ?broader" + i + "." +
-                        "?broader" + (i) + " skos:prefLabel ?broader" + (i) + "Label.";
-                    "filter( lang(?broader" + (i) + ")=\"en\")"
+                        "?broader" + (i) + " skos:prefLabel ?broader" + (i) + "Label."+
+                    "filter( lang(?broader" + (i) + "Label)=\"en\")"
 
                 } else {
                     query += "OPTIONAL { ?broader" + (i - 1) + " skos:broader ?broader" + i + "." +
                         "?broader" + (i) + " skos:prefLabel ?broader" + (i) + "Label." +
-                        "filter( lang(?broader" + (i) + ")=\"en\")"
+                        "filter( lang(?broader" + (i) + "Label)=\"en\")"
                 }
             }
             for (var i = 1; i < ancestorsDepth; i++) {
