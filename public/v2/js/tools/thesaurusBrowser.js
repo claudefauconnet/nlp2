@@ -5,7 +5,10 @@ var ThesaurusBrowser = (function () {
         self.showThesaurusTopConcepts(thesaurusLabel)
     }
 
-    self.showThesaurusTopConcepts = function (thesaurusLabel) {
+    self.showThesaurusTopConcepts = function (thesaurusLabel,options) {
+        if(!options)
+            options={}
+
         Sparql_facade.getTopConcepts(thesaurusLabel, function (err, result) {
             if (err) {
                 return MainController.message(err);
@@ -20,9 +23,12 @@ var ThesaurusBrowser = (function () {
 
             var jsTreeOptions = {
                 selectNodeFn: function (event, propertiesMap) {
-                    if(propertiesMap.event.ctrlKey){
+                    if(options.treeSelectNodeFn)
+                        options.treeSelectNodeFn(event, propertiesMap);
+                    if( true || propertiesMap.event.ctrlKey){
                         self.editThesaurusConceptInfos(thesaurusLabel,propertiesMap.node)
-                    }else {
+                    }
+                    {
                         self.openTreeNode("currentSourceTreeDiv", thesaurusLabel, propertiesMap.node)
                     }
 
@@ -45,9 +51,9 @@ var ThesaurusBrowser = (function () {
         if(node.children.length>0)
         return;
 
-        Sparql_facade.getNodeChildren(thesaurusLabel, node.id,null, function(err, result){
+        Sparql_facade.getNodeChildren(thesaurusLabel,null, node.id,1,null, function(err, result){
             if(err){
-                return MainController.message(err);
+                return MainController.UI.message(err);
             }
             TreeController.drawOrUpdateTree(divId, result,node.id, "child1")
 
@@ -60,7 +66,7 @@ var ThesaurusBrowser = (function () {
 
         Sparql_facade.getNodeInfos(thesaurusLabel,node.id,null,function(err, result){
             if(err){
-                return MainController.message(err);
+                return MainController.UI.message(err);
             }
         //    SkosConceptEditor.editConcept("graphDiv",result)
             self.showNodeInfos("graphDiv","en",node.id,result)

@@ -3,15 +3,27 @@
   <component name="ChangeListManager">
     <list default="true" id="e3f42134-de86-4458-b1ba-3a42f4ba02e5" name="finir skoseditor en modification" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/app_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/app_config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/corpusGraph.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/corpusGraph.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/graphController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/graphController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/mainController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/mainController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/ontologyBrowser.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/ontologyBrowser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_GBA.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_GBA.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_GEMET.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_GEMET.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_ISO_15926.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_ISO_15926.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_USGS.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_USGS.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_WORDNET.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_WORDNET.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_Wikidata.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_Wikidata.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_facade.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_facade.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_microsoft-accademic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_microsoft-accademic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_proxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_proxy.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_skos_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_skos_generic.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/termTaxonomy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/termTaxonomy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/thesaurusBrowser.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/thesaurusBrowser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/nerEvaluator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/nerEvaluator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/termTaxonomy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/termTaxonomy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/thesaurusBrowser.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/thesaurusBrowser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/thesaurusMatcher.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/thesaurusMatcher.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/snippets/thesaurusMatcher.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/snippets/thesaurusMatcher.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
     </list>
     <list id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -48,7 +60,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/v2/js/tools" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/v2/js/sparqlProxies" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -61,8 +73,8 @@
       <recent name="D:\GitHub\nlp2\public\js" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GitHub\nlp2\public\v2\js\tools" />
       <recent name="D:\GitHub\nlp2\public\v2\js\sparqlProxies" />
+      <recent name="D:\GitHub\nlp2\public\v2\js\tools" />
       <recent name="D:\GitHub\nlp2\public\v2\js" />
       <recent name="D:\GitHub\nlp2\public\js" />
       <recent name="D:\GitHub\nlp2\public\v2" />
@@ -197,7 +209,7 @@
       <option name="project" value="LOCAL" />
       <updated>1602337185733</updated>
       <workItem from="1602337186322" duration="20213000" />
-      <workItem from="1602487522813" duration="7410000" />
+      <workItem from="1602487522813" duration="54082000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -225,6 +237,30 @@
           <url>file://$PROJECT_DIR$/public/skosEditor/js/multiSkosGraph3.js</url>
           <line>68</line>
           <option name="timeStamp" value="788" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/ontograph/js/comparator.js</url>
+          <line>546</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="789" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/skosEditor/js/rdfTripleSkosProxy.js</url>
+          <line>188</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="791" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
+          <line>70</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="803" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/httpProxy..js</url>
+          <line>63</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="805" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

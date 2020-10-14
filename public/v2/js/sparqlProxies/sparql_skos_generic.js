@@ -29,7 +29,47 @@ var Sparql_skos_generic = (function () {
         }
 
 
-        self.getNodeChildren = function (graphIri, conceptId, options, callback) {
+        self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
+            if (!options) {
+                options = {}
+            }
+            var filter = ""
+            if (words) {
+                if (Array.isArray(words)) {
+                    var conceptWordStr = ""
+                    words.forEach(function (word, index) {
+                        if (index > 0)
+                            conceptWordStr += "|"
+                        if (options.exactMatch)
+                            conceptWordStr += "  \"^" + word + "$\"";
+                        else
+                            conceptWordStr += "  \"" + word + "\"";
+                    })
+                    filter = "  regex(?conceptLabel in( " + conceptWordStr + ")) ";
+                }
+                else {
+                    var filter = "  regex(?conceptLabel, \"^" + words + "$\", \"i\")";
+                    if (!options.exactMatch) {
+                        filter = "  regex(?conceptLabel, \"" + words + "\", \"i\")";
+
+                    }
+                }
+            } else if (ids) {
+                if (Array.isArray(ids)) {
+                    var conceptIdsStr = ""
+                    ids.forEach(function (id, index) {
+                        if (index > 0)
+                            conceptIdsStr += ","
+                        conceptIdsStr += "<" + id + ">"
+                    })
+                    filter = "  ?concept in( " + conceptIdsStr + ") ";
+                } else {
+                    filter = "  ?concept =<" + ids + ">";
+                }
+
+            } else {
+                callback("no word or id selected")
+            }
             if (!options) {
                 options = {depth: 0}
             }
@@ -37,17 +77,17 @@ var Sparql_skos_generic = (function () {
 
                 "select distinct * from <" + graphIri + ">" +
                 "where{ ?child1 skos:broader ?concept."
-                + " filter (?concept=<" + conceptId + ">) "
+                + "filter(" + filter + ")"
                 + "?child1 skos:prefLabel ?child1Label."
 
 
-            for (var i = 1; i <= options.depth; i++) {
+            for (var i = 1; i <= descendantsDepth; i++) {
 
                 query += "OPTIONAL { ?child" + (i + 1) + " skos:broader ?child" + i + "." +
                     "?child" + (i + 1) + " skos:prefLabel ?child" + (i + 1) + "Label." +
                     "filter( lang(?child" + (i + 1) + "Label)=\"en\")"
             }
-            for (var i = 1; i <= options.depth; i++) {
+            for (var i = 1; i <= descendantsDepth; i++) {
                 query += "}"
             }
             query += "  }ORDER BY ?child1Label ";
@@ -65,23 +105,46 @@ var Sparql_skos_generic = (function () {
         }
 
 
-        self.searchConceptAndAncestors = function (graphIri, word,id, ancestorsDepth, options, callback) {
+        self.getNodeParents = function (graphIri, words, ids, ancestorsDepth, options, callback) {
             if (!options) {
                 options = {}
             }
-            if (word) {
-                var filter = "  regex(?conceptLabel, \"^" + word + "$\", \"i\")";
-                if (!options.exactMatch) {
-                    filter = "  regex(?conceptLabel, \"" + word + "\", \"i\")";
+            if (words) {
+                if (Array.isArray(words)) {
+                    var conceptWordStr = ""
+                    words.forEach(function (word, index) {
+                        if (index > 0)
+                            conceptWordStr += "|"
+                        if (options.exactMatch)
+                            conceptWordStr += "  \"^" + word + "$\"";
+                        else
+                            conceptWordStr += "  \"" + word + "\"";
+                    })
+                    filter = "  regex(?conceptLabel in( " + conceptWordStr + ")) ";
                 }
-            } else if(id) {
+                else {
+                    var filter = "  regex(?conceptLabel, \"^" + words + "$\", \"i\")";
+                    if (!options.exactMatch) {
+                        filter = "  regex(?conceptLabel, \"" + words + "\", \"i\")";
 
-                    filter = "  ?concept =<" + id + ">";
+                    }
+                }
+            } else if (ids) {
+                if (Array.isArray(ids)) {
+                    var conceptIdsStr = ""
+                    ids.forEach(function (id, index) {
+                        if (index > 0)
+                            conceptIdsStr += ","
+                        conceptIdsStr += "<" + id + ">"
+                    })
+                    filter = "  ?concept in( " + conceptIdsStr + ") ";
+                } else {
+                    filter = "  ?concept =<" + ids + ">";
+                }
 
-            }else{
+            } else {
                 callback("no word or id selected")
             }
-
             var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                 "SELECT distinct * from <" + graphIri + ">" +
                 "WHERE {" +
@@ -91,8 +154,8 @@ var Sparql_skos_generic = (function () {
             for (var i = 1; i <= ancestorsDepth; i++) {
                 if (i == 1) {
                     query += "  ?concept" + " skos:broader ?broader" + i + "." +
-                        "?broader" + (i) + " skos:prefLabel ?broader" + (i) + "Label."+
-                    "filter( lang(?broader" + (i) + "Label)=\"en\")"
+                        "?broader" + (i) + " skos:prefLabel ?broader" + (i) + "Label." +
+                        "filter( lang(?broader" + (i) + "Label)=\"en\")"
 
                 } else {
                     query += "OPTIONAL { ?broader" + (i - 1) + " skos:broader ?broader" + i + "." +

@@ -5,7 +5,7 @@ var Sparql_GBA = (function () {
             elasticUrl = "../elastic";
 
 
-        self.getTopConcepts = function (callback) {
+        self.getTopConcepts = function (graphIri, callback) {
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                 "select distinct * " +
                 "where{" +
@@ -40,7 +40,7 @@ var Sparql_GBA = (function () {
         }
 
 
-        self.getNodeChildren = function (conceptId, options, callback) {
+        self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
 
 
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
@@ -84,8 +84,8 @@ var Sparql_GBA = (function () {
         }
 
 
-        self.searchConceptAndAncestors = function (word, ancestorsDepth, options, callback) {
-            sparql_skos_generic.searchConceptAndAncestors(word, ancestorsDepth, options, callback)
+        self.getNodeParents = function (word, ancestorsDepth, options, callback) {
+            sparql_skos_generic.getNodeParents(word, ancestorsDepth, options, callback)
         }
 
 

@@ -258,7 +258,7 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
         }
         if (req.body.getWikimediaPageNonThesaurusWords) {
             var mediawikiTaggger=require("../bin/others/mediawiki/mediawikiTagger.")
-            mediawikiTaggger.getWikimediaPageNonThesaurusWords(req.body.elasticUrl,req.body.indexName,req.body.pageName,req.body.graph,req.body.pageCategoryThesaurusWords,function (err, result) {
+            mediawikiTaggger.getWikimediaPageNonThesaurusWords(req.body.elasticUrl,req.body.indexName,req.body.pageName,req.body.graphIri,req.body.pageCategoryThesaurusWords,function (err, result) {
                 processResponse(response, err, result)
 
             })

@@ -8,6 +8,9 @@ var Sparql_microsoft_accademic = (function () {
     var headers = {
 
     }
+    self.getTopConcepts = function (graphIri, callback) {
+
+    }
 
 
     self.list = function (source, word, options, callback) {
@@ -104,7 +107,7 @@ var Sparql_microsoft_accademic = (function () {
         })
     }
 
-    self.getChildren = function (source, id, options, callback) {
+    self.geNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
         var url = source.sparql_url + "?default-graph-uri=" + "&query=";// + query + queryOptions
 
         /*  var query = " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +

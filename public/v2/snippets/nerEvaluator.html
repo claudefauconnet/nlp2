@@ -1,0 +1,27 @@
+<style>
+    .newWord {
+        background-color: #bdbdbd;
+        border-radius: 5px;
+        padding: 2px;
+        margin: 2px;
+    }
+
+    .selectedNewWord {
+        background-color: #95a4bd !important;
+    }
+</style>
+
+
+<div style="display: flex;flex-direction: row;justify-content:left">
+
+    <div style='max-width: 400px;'>
+        Wiki Categories<br>
+        <div id="nerEvaluator_treeDiv" style="height:500px;overflow: auto"></div>
+        <img src="../images/waitAnimated.gif" id="nerEvaluator_waitImg" style="display: none;width: 15px">
+        <div id="nerEvaluator_messageDiv" ></div>
+        <select id="nerEvaluator_graphUrisSelect"></select><!--<button onclick="NerEvaluator.filterGraphCategories()">filter categories</button>-->
+        <div id="nerEvaluator_missingWordsDiv" style="height: 350px;overflow: auto"></div>
+
+        <textarea type="text" style="width:300px" id="nerEvaluator_copiedWords"></textarea>
+    </div>
+

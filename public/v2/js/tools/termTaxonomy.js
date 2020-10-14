@@ -1,18 +1,25 @@
 var TermTaxonomy = (function () {
     var self = {context: {}}
-    self.init = function () {
-        var html = "<button onclick='TermTaxonomy.showActionPanel()'>OK</button>"
-        $("#sourceDivControlPanelDiv").html(html)
-
-    }
 
     var colorsMap = {}
     var conceptsMap = {};
     var sourceIds = [];
 
 
+
+
+    self.init = function () {
+        var html = "<button onclick='TermTaxonomy.showActionPanel()'>OK</button>"
+        $("#sourceDivControlPanelDiv").html(html)
+
+    }
+
+
+
+
     self.showActionPanel = function () {
         self.initsourceIds();
+        $("#actionDivContolPanelDiv").html("")
         $("#actionDiv").load("snippets/termTaxonomy.html")
         $("#accordion").accordion("option", {active: 2});
 
@@ -69,7 +76,7 @@ var TermTaxonomy = (function () {
         async.eachSeries(sourceIds, function (sourceId, callbackEach) {
 
 
-            Sparql_facade.searchConceptAndAncestors(sourceId, word, null, 1, {exactMatch: exactMatch}, function (err, result) {
+            Sparql_facade.getNodeParents(sourceId, word, null, 1, {exactMatch: exactMatch}, function (err, result) {
                 // sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
 
                 if (err) {
@@ -164,7 +171,7 @@ var TermTaxonomy = (function () {
 
                 if (direction == "ancestors") {
                     //  sparql_abstract.getAncestors(concept.source.id, concept.id, {exactMatch: true}, function (err, result) {
-                    Sparql_facade.searchConceptAndAncestors(item.sourceId, null, conceptId, maxDepth, {exactMatch: true}, function (err, result) {
+                    Sparql_facade.getNodeParents(item.sourceId, null, conceptId, maxDepth, {exactMatch: true}, function (err, result) {
                         if (err)
                             return console.log(err)
                         if (!result || !result.forEach)
@@ -228,7 +235,132 @@ var TermTaxonomy = (function () {
     }
 
 
-    self.onGraphNodeClick = function (point, node, options) {
+    self.onGraphNodeClick = function ( node,point, options) {
+        if (node) {
+            self.graphActions.currentNode = node;
+
+            self.graphActions.showPopup(point)
+        }
+    }
+    self.graphActions = {
+
+        showPopup: function (point) {
+            $("#graphPopupDiv").css("left", point.x)
+            $("#graphPopupDiv").css("top", point.y)
+            $("#graphPopupDiv").css("display", "flex")
+        },
+        hidePopup: function () {
+            $("#graphPopupDiv").css("display", "none")
+        },
+
+
+        drawChildren: function () {
+            self.graphActions.hidePopup();
+            sparql_abstract.getChildren(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, {}, function (err, children) {
+                if (err)
+                    return console.log(err);
+                self.addChildrenNodesToGraph(self.graphActions.currentNode, children)
+            })
+        }
+        ,
+        showDetails: function (defaultLang) {
+
+            self.graphActions.hidePopup();
+
+
+            var defaultProps = ["UUID", "http://www.w3.org/2004/02/skos/core#prefLabel",
+                "http://www.w3.org/2004/02/skos/core#definition", "" +
+                "http://www.w3.org/2004/02/skos/core#altLabel",
+                "http://www.w3.org/2004/02/skos/core#broader",
+                "http://www.w3.org/2004/02/skos/core#narrower",
+                "http://www.w3.org/2004/02/skos/core#related",
+                "http://www.w3.org/2004/02/skos/core#exactMatch",
+                "http://www.w3.org/2004/02/skos/core#closeMatch",
+                //  "http://www.w3.org/2004/02/skos/core#sameAs"
+            ];
+
+            if (!defaultLang)
+                defaultLang = 'en';
+            sparql_abstract.getDetails(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, {}, function (err, details) {
+                for (var key in details.properties) {
+                    if (defaultProps.indexOf(key) < 0)
+                        defaultProps.push(key)
+                }
+                var str = "<table >"
+                str += "<tr><td>UUID</td><td><a target='_blank' href='"+details.id+"'>"+details.id+"</a></td></tr>"
+
+                defaultProps.forEach(function (key) {
+                    if (!details.properties[key])
+                        return;
+
+                    str += "<tr >"
+
+
+                    if (details.properties[key].value) {
+                        var value=details.properties[key].value;
+                        if(value.indexOf("http")==0)
+                            value="<a target='_blank' href='"+value+"'>"+value+"</a>"
+                        str += "<td class='detailsCell'>" + details.properties[key].name + "</td>"
+                        str += "<td class='detailsCell'>" + value + "</td>"
+
+                    } else {
+                        var keyName = details.properties[key].name
+                        var selectId = "detailsLangSelect_" + keyName
+                        var propNameSelect = "<select id='" + selectId + "' onchange=multiSkosGraph3.graphActions.onDetailsLangChange('" + keyName + "') >"
+                        var langDivs = "";
+
+                        for (var lang in details.properties[key].langValues) {
+                            var value = details.properties[key].langValues[lang];
+
+                            if(value.indexOf("http")==0)
+                                value="<a target='_blank' href='"+value+"'>"+value+"</a>"
+                            var selected = "";
+                            if (lang == defaultLang)
+                                selected = "selected";
+                            propNameSelect += "<option " + selected + ">" + lang + "</option> ";
+
+
+                            langDivs += "<div class='detailsLangDiv_"+keyName+"' id='detailsLangDiv_" + keyName + "_" + lang + "'>" + value + "</div>"
+                        }
+                        propNameSelect += "</select>"
+
+                        str += "<td class='detailsCell'>" + details.properties[key].name + " " + propNameSelect + "</td>"
+                        str += "<td class='detailsCell'>" + langDivs + "</td>";
+                        if(details.properties[key].langValues[defaultLang])
+                            str += "<script>multiSkosGraph3.graphActions.onDetailsLangChange('" + keyName + "','" + defaultLang + "') </script>";
+
+                    }
+                    str += "</tr>"
+                })
+                str += "</table>"
+
+
+                $("#detailsDiv").html(str)
+                $("#detailsDiv").dialog("open");
+
+
+            })
+
+        },
+        onDetailsLangChange: function (property, lang) {
+            $('.detailsLangDiv_'+property).css('display', 'none')
+            if (!lang)
+                lang = $("#detailsLangSelect_" + property).val();
+            if( $("#detailsLangDiv_" + property + "_" + lang).html())
+                $("#detailsLangDiv_" + property + "_" + lang).css("display", "block");
+
+        }
+        ,
+        setAsRootNode: function () {
+            self.graphActions.hidePopup();
+            var word = self.graphActions.currentNode.label
+            $('#searchWordInput').val(word)
+            $('#dialogDiv').dialog('open')
+            self.searchConcepts(word);
+
+
+        }
+
 
     }
 

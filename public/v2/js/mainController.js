@@ -6,7 +6,10 @@ var MainController = (function () {
 
         loadSources: function (treeDiv, withCBX) {
             var treeData = []
-            Object.keys(Config.sources).forEach(function (sourceLabel) {
+            Object.keys(Config.sources).forEach(function (sourceLabel,index) {
+                    if (!Config.sources[sourceLabel].color)
+                        Config.sources[sourceLabel].color = common.palette[index%common.palette.length];
+
                 treeData.push({id: sourceLabel, text: sourceLabel, parent: "#", data: Config.sources[sourceLabel]})
             })
             common.loadJsTree(treeDiv, treeData, {

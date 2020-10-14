@@ -5,11 +5,14 @@ var Sparql_ISO_15926 = (function () {
         if (window.location.href.indexOf("https") > -1)
             elasticUrl = "../elastic";
 
-        self.getTopConcepts = function (callback) {
+        self.getTopConcepts = function (graphIri, callback) {
             var query = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
-            query += "select * where{?concept rdfs:subClassOf <http://data.15926.org/dm/Thing>."
-            query += "?concept rdfs:label ?conceptLabel." +
-                " " +
+            query += "select * "
+            if(graphIri && graphIri!="")
+                query +="<"+graphIri+">"
+            query += "where{?topConcept rdfs:subClassOf <http://data.15926.org/dm/Thing>."
+            query += "?topConcept rdfs:label ?topConceptLabel." +
+                "?concept rdfs:subClassOf  ?topConcept. ?topConcept rdfs:label ?topConceptLabel." +
                 "" +
                 "}order by ?conceptLabel limit 5000"
 
@@ -23,7 +26,7 @@ var Sparql_ISO_15926 = (function () {
         }
 
 
-        self.getNodeChildren = function (parentUri, options, callback) {
+        self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
             var query = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
                 "select distinct * where {";
 
@@ -62,7 +65,7 @@ var Sparql_ISO_15926 = (function () {
             })
         }
 
-        self.searchConceptAndAncestors = function (word,depth, options, callback) {
+        self.getNodeParents = function (word,depth, options, callback) {
 
 
             if(word) {

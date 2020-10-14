@@ -3,6 +3,9 @@ var Sparql_Wikidata = (function () {
 
     var self = {};
 
+    self.getTopConcepts = function (graphIri, callback) {
+
+    }
     self.list = function (source,word, options, callback) {
         var url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=" +
             word + "&format=json&errorformat=plaintext&language=en&uselang=en&type=item&origin=*"
@@ -79,7 +82,7 @@ var Sparql_Wikidata = (function () {
             return callback(null, paths)
         })
     }
-    self.getChildren = function (source,id, options, callback) {
+    self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
         var p = id.lastIndexOf("/")
         if (p > -1)
             id = id.substring(p + 1)

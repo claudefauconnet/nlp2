@@ -133,6 +133,8 @@ var Sparql_proxy=(function(){
 
             success: function (data, textStatus, jqXHR) {
                 var xx = data;
+                if(data.results.bindings.length==0)
+                    console.log(JSON.stringify(query))
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
                 /*  if (data.results.bindings.length == 0)

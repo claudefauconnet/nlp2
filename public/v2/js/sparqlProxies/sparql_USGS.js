@@ -2,7 +2,7 @@ var Sparql_USGS = (function () {
         var self = {};
 
 
-        self.getTopConcepts = function (callback) {
+        self.getTopConcepts = function (graphIri, callback) {
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>select distinct * where{" +
                 "?scheme skos:broader <https://www2.usgs.gov/science/USGSThesaurus/Categories>." +
                 "?scheme skos:prefLabel ?schemeLabel. filter(lang(?schemeLabel )='en') ?scheme skos:narrower ?concept.?concept rdfs:label|skos:prefLabel ?conceptLabel. filter(lang(?conceptLabel )='en')  } limit 1000"
@@ -21,7 +21,7 @@ var Sparql_USGS = (function () {
         }
 
 
-        self.getNodeChildren = function (conceptId, options, callback) {
+        self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
 
 
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
@@ -60,9 +60,9 @@ var Sparql_USGS = (function () {
         }
 
 
-        self.searchConceptAndAncestors = function (word, ancestorsDepth, options, callback) {
+        self.getNodeParents = function (word, ancestorsDepth, options, callback) {
             options.conceptsGraphUri="https://www2.usgs.gov/science/USGSThesaurus/";
-            sparql_skos_generic.searchConceptAndAncestors(word, ancestorsDepth, options, callback)
+            sparql_skos_generic.getNodeParents(word, ancestorsDepth, options, callback)
         }
 
 

@@ -737,7 +737,7 @@ var mediaWikiTagger = {
     }
 
     ,
-    getWikimediaPageNonThesaurusWords: function (elasticUrl, indexNames, pageName, graph, pageCategoryThesaurusWords, callback) {
+    getWikimediaPageNonThesaurusWords: function (elasticUrl, indexNames, pageName, graphIri, pageCategoryThesaurusWords, callback) {
 
         var pageAllwords = [];
         var pageAllwordsMap = {};
@@ -844,14 +844,11 @@ var mediaWikiTagger = {
                         wordsFilter += "^" + word + "$";
                     })
 
-                    var graphFilter = "";
-                    if (graph) {
-                        graphFilter = "  from <" + graph + "> "
-                    }
+
 
 
                     var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>" +
-                        "select distinct ?prefLabel " + graphFilter + "" +
+                        "select distinct ?prefLabel   from <"+graphIri+"> "+
                         " where {?concept skos:prefLabel|skos:altLabel ?prefLabel  " +
                         "filter (lang(?prefLabel)=\"en\" && regex(?prefLabel,\" " + wordsFilter + "\", \"i\"))" +
                         "} limit 10000"

@@ -9,23 +9,23 @@ var Sparql_facade = (function () {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
         var graphIri = source.graphIri
-        source.controller.getTopConcepts(graphIri, callback);
+        source.controller.getTopConcepts(sourceLabel, callback);
     }
 
-    self.getNodeChildren = function (sourceLabel, conceptId, options, callback) {
+    self.getNodeChildren = function (sourceLabel,word, conceptId,descendantsDepth, options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
         var graphIri = source.graphIri
-        source.controller.getNodeChildren(graphIri, conceptId, options, callback);
+        source.controller.getNodeChildren(sourceLabel, word,conceptId, descendantsDepth,options, callback);
 
     }
 
 
-    self.searchConceptAndAncestors = function (sourceLabel, word, id, ancestorsDepth, options, callback) {
+    self.getNodeParents = function (sourceLabel, word, id, ancestorsDepth, options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
         var graphIri = source.graphIri
-        source.controller.searchConceptAndAncestors(graphIri, word, id, ancestorsDepth, {}, callback)
+        source.controller.getNodeParents(sourceLabel, word, id, ancestorsDepth, options, callback)
 
     }
 
@@ -33,7 +33,7 @@ var Sparql_facade = (function () {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel];
         var graphIri = source.graphIri;
-        source.controller.searchConceptAndAncestors(null, conceptId, ancestorsDepth, options, callback);
+        source.controller.getNodeParents(sourceLabel,null, conceptId, ancestorsDepth, options, callback);
 
     }
 
@@ -41,7 +41,7 @@ var Sparql_facade = (function () {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
         var graphIri = source.graphIri
-        source.controller.getNodeInfos(graphIri, conceptId, options, callback);
+        source.controller.getNodeInfos(sourceLabel, conceptId, options, callback);
 
     }
 
