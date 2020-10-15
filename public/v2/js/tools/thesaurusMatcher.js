@@ -37,7 +37,7 @@ var ThesaurusMatcher = (function () {
             sourceNodeId = sourceNodeId[0];
             self.targetSourceId = $("#ThesaurusMatcher_targetGraphUriSelect").val();
             if (!self.targetSourceId)
-                return;
+                return MainController.UI.message("choose a target ressource");
 
 
             var output = $("#ThesaurusMatcher_outputTypeSelect").val();

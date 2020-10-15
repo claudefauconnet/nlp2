@@ -80,6 +80,7 @@
     <style>
         body {
             font-size: 16px;
+            font-family: Verdana;
         }
 
 
@@ -116,6 +117,11 @@
             max-width: 400px;
         }
 
+        #messageDiv{
+            font-weight: normal;
+            color: #6e2500;
+        }
+
     </style>
 </head>
 <body>
@@ -127,7 +133,10 @@
 <div style="display: flex;flex-direction: row;justify-content:left">
 
     <div style='max-width: 400px;'>
-
+        <div style="height: 50px">
+        <img src="../images/waitAnimated.gif" id="waitImg" style="display: none;width: 15px">
+        <span id="messageDiv" ></span>
+        </div>
         <div id="accordion">
 
             <h3><span class="title">Tool </span></h3>

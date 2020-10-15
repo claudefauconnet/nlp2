@@ -351,7 +351,8 @@ var NerEvaluator = (function () {
                     }
                 }
             }
-
+            $("#graphDiv").width($(window).width() - 20)
+            $("#graphDiv").height($(window).height() - 20)
             visjsGraph.draw("graphDiv", visjsData, {onclickFn: NerEvaluator.onGraphNodeClick})
            return callback(null)
             /* $("#sliderCountPagesMax").slider("option", "max", maxPages);

@@ -81,10 +81,10 @@ var Config = (function () {
     self.tools = {};
 
 
-    self.tools["thesaurusBrowser"] = {label: "thesaurus browser", multiSources: 0, controller: ThesaurusBrowser}
-    self.tools["thesauriMatcher"] = {label: "thesaurii  matcher", multiSources: 0, controller: ThesaurusMatcher}
-    self.tools["nerEvaluator"] = {label: "NER evaluator", multiSources: 1, controller: NerEvaluator}
-    self.tools["termTaxonomy"] = {label: "term taxonomy", multiSources: 1, controller: TermTaxonomy}
+    self.tools["thesaurusBrowser"] = {label: "source browser", multiSources: 0, controller: ThesaurusBrowser}
+    self.tools["thesauriMatcher"] = {label: "sources  matcher", multiSources: 0, controller: ThesaurusMatcher}
+    self.tools["nerEvaluator"] = {label: "sources evaluator", multiSources: 1, controller: NerEvaluator}
+    self.tools["termTaxonomy"] = {label: "term taxonomies", multiSources: 1, controller: TermTaxonomy}
     //  self.tools["corpusGraph"] = {label: "corpus concepts graph", multiSources: 1, controller: CorpusGraph}
     //  self.tools["ontologyBrowser"] = {label: "ontology browser", multiSources: 0, controller: OntologyBrowser}
 

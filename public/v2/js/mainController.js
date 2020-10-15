@@ -67,7 +67,7 @@ var MainController = (function () {
         },
 
         message: function (message) {
-            $("#message").html("message")
+            $("#messageDiv").html(message)
         },
 
         updateActionDivLabel: function () {
