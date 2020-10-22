@@ -5,8 +5,13 @@ var MainController = (function () {
     self.UI = {
 
         loadSources: function (treeDiv, withCBX) {
-            var treeData = []
+            var treeData = [];
+            $.getJSON("config/sources.json", function(json) {
+                Config.sources = json;
+
+
             Object.keys(Config.sources).forEach(function (sourceLabel,index) {
+                Config.sources[sourceLabel].controller=eval( Config.sources[sourceLabel].controller)
                     if (!Config.sources[sourceLabel].color)
                         Config.sources[sourceLabel].color = common.palette[index%common.palette.length];
 
@@ -20,6 +25,7 @@ var MainController = (function () {
 
                 }
             })
+            });
 
         },
 

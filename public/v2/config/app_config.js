@@ -7,7 +7,7 @@ var Config = (function () {
     self.wikiCategoriesGraphIri = "http://souslesens.org/data/total/ep/"
 
     self.sources = {}
-    self.sources['Total-CTG'] = {
+    /*self.sources['Total-CTG'] = {
         controller: Sparql_generic, sparql_url: self.default_sparql_url, graphIri: 'http://data.total.com/resource/thesaurus/ctg/',
         predicates: {lang: "en"}
     };
@@ -127,6 +127,9 @@ var Config = (function () {
     //   self.sources['Wikidata'] = {controller: Sparql_Wikidata, sparql_url: 'https://query.wikidata.org/', graphIri: 'http://skos.um.es/unesco6/'};
     //  self.sources['Microsoft-accademic'] = {controller: Sparql_microsoft_accademic, sparql_url: 'http://ma-graph.org/sparql/', graphIri: ''};
     //  self.sources['BabelNet'] = {controller: Sparql_babelNet, sparql_url: 'https://babelnet.org/sparql/', graphIri: ''}
+
+    */
+
 
 
     self.tools = {};

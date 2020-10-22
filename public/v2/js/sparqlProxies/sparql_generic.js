@@ -271,7 +271,20 @@ var Sparql_generic = (function () {
             var deleteTriplesStr="";
             var insertTriplesStr="";
             triples.forEach(function(item,index){
-                insertTriplesStr+="<"+item.subject+'> <'+item.predicate+'> <'+item.object+'>.';
+                var valueStr=""
+                if(item.valueType=="uri")
+                    valueStr="<"+item.object+">"
+                else {
+                    var langStr="";
+                    if(item.lang)
+                        langStr="@"+item.lang
+                    valueStr = "'" + item.object + "'"+langStr
+                }
+
+
+
+
+                insertTriplesStr+="<"+item.subject+'> <'+item.predicate+'> '+valueStr+'.';
                 deleteTriplesStr+= "<"+item.subject+'> <'+item.predicate+'> '+"?o_"+index+'.';
                 
             })
@@ -288,21 +301,15 @@ var Sparql_generic = (function () {
                 "INSERT DATA" +
                 "  {" +
                     insertTriplesStr+
-                "  }" +
-                "}"
+                "  }"
 
-            console.log(query)
+
+           // console.log(query)
             url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";
-            Sparql_proxy.querySPARQL_GET_proxy(url,query, nul,null, function(err, result){
+            Sparql_proxy.querySPARQL_GET_proxy(url,query, null,null, function(err, result){
                 return selectionCallback(err);
             })
         }
-
-
-
-
-
-
 
         return self;
     }
