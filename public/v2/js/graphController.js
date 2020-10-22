@@ -8,6 +8,21 @@ var GraphController = (function () {
         if (!visjOptions) {
             visjOptions = {from: {}, to: {}}
         }
+
+        if (!visjsData) {
+            visjsData = {nodes: [],edges:[]}
+        }
+
+        function getShape(target,nodeData) {
+            if (visjOptions[target] && visjOptions[target].shape) {
+                if (typeof visjOptions[target].shape == "string")
+                    return visjOptions[target].shape
+                else//fn
+                    return visjOptions[target].shape(nodeData)
+                    }
+            return  "dot";
+        }
+
         var existingNodes = {}
         var existingEdges = {};
         if (parentNodeId) {// add to existingGraph
@@ -34,7 +49,10 @@ var GraphController = (function () {
 
         data.forEach(function (item) {
 
-            if (!parentNodeId) {
+            if (parentNodeId) {
+                fromId = parentNodeId
+            }
+            else{
                 var fromId = ""
                 var fromLabel = "";
 
@@ -54,9 +72,11 @@ var GraphController = (function () {
                     var node = {
                         id: fromId,
                         label: fromLabel,
-                        shape: visjOptions.from.shape || "dot",
+                        shape: getShape("from",fromId),
                         color: visjOptions.from.color || self.defaultNodeColor
                     }
+                    if(visjOptions.data)
+                        node.data=visjOptions.data
                     visjsData.nodes.push(node)
                 }
             }
@@ -71,9 +91,11 @@ var GraphController = (function () {
                     var node = {
                         id: toId,
                         label: toLabel,
-                        shape: visjOptions.to.shape || "dot",
+                        shape: getShape("to",toId),
                         color: visjOptions.to.color || self.defaultNodeColor
                     }
+                    if(visjOptions.data)
+                        node.data=visjOptions.data
                     visjsData.nodes.push(node);
                 }
 
@@ -88,7 +110,9 @@ var GraphController = (function () {
                     visjsData.edges.push(edge);
 
                 }
+
             }
+
 
 
         })

@@ -266,6 +266,38 @@ var Sparql_generic = (function () {
         }
 
 
+        self.update=function(sourceLabel,triples,callback) {
+            var graphUri=Config.sources[sourceLabel].graphIri
+            var deleteTriplesStr="";
+            var insertTriplesStr="";
+            triples.forEach(function(item,index){
+                insertTriplesStr+="<"+item.subject+'> <'+item.predicate+'> <'+item.object+'>.';
+                deleteTriplesStr+= "<"+item.subject+'> <'+item.predicate+'> '+"?o_"+index+'.';
+                
+            })
+            var query = " WITH GRAPH  <"+graphUri+">  " +
+                "DELETE" +
+                "{  " +
+                    deleteTriplesStr+
+                "  }" +
+                "WHERE" +
+                "  {" +
+                    deleteTriplesStr+
+                "  };" +
+                "" +
+                "INSERT DATA" +
+                "  {" +
+                    insertTriplesStr+
+                "  }" +
+                "}"
+
+            console.log(query)
+            url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";
+            Sparql_proxy.querySPARQL_GET_proxy(url,query, nul,null, function(err, result){
+                return selectionCallback(err);
+            })
+        }
+
 
 
 

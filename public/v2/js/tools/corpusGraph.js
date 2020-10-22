@@ -1,7 +1,7 @@
 var CorpusGraph=(function(){
    var self={}
 
-self.init=function(){
+self.onSourceSelect=function(){
 
 }
 

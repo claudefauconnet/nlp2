@@ -10,13 +10,23 @@ var common = (function () {
                 value: ""
             }));
         }
-
-        data.forEach(function (item, index) {
-            $("#" + selectId).append($('<option>', {
-                text: item[textfield] || item,
-                value: item[valueField] || item
-            }));
-        });
+        if (Array.isArray(data)) {
+            data.forEach(function (item, index) {
+                $("#" + selectId).append($('<option>', {
+                    text: item[textfield] || item,
+                    value: item[valueField] || item
+                }));
+            });
+        } else {
+            for (var key in data) {
+                var item = data[key]
+                $("#" + selectId).append($('<option>', {
+                    text: item[textfield] || item,
+                    value: item[valueField] || item
+                }));
+            }
+            ;
+        }
 
     }
 

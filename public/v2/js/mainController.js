@@ -28,6 +28,7 @@ var MainController = (function () {
             for (var key in Config.tools) {
                 // Object.keys(Config.tools).forEach(function (toolLabel) {
                 treeData.push({id: key, text: Config.tools[key].label, parent: "#", data: Config.tools[key]})
+
             }
             //})
             common.loadJsTree(treeDiv, treeData, {
@@ -39,8 +40,9 @@ var MainController = (function () {
                     var controller = Config.tools[self.currentTool].controller
                     self.UI.updateActionDivLabel();
                     if (Config.tools[self.currentTool].multiSources)
-                        controller.init(self.currentSource)
-
+                        controller.onSourceSelect(self.currentSource)
+                    if(Config.tools[self.currentTool].onLoaded)
+                        Config.tools[self.currentTool].onLoaded()
 
                 }
             })
@@ -57,7 +59,7 @@ var MainController = (function () {
 
             self.UI.updateActionDivLabel()
             var controller = Config.tools[self.currentTool].controller
-            controller.init(self.currentSource)
+            controller.onSourceSelect(self.currentSource)
 
             /*    if (self.currentTool == 0) {
                     ThesaurusBrowser.showThesaurusTopConcepts(self.currentSource)
@@ -68,6 +70,16 @@ var MainController = (function () {
 
         message: function (message) {
             $("#messageDiv").html(message)
+        },
+
+
+
+        setCredits:function(){
+
+            var html="<div><span class='topTitle'>SousLeSens Vocables</span></div>"
+            $("#graphDiv").html(html)
+
+
         },
 
         updateActionDivLabel: function () {

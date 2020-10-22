@@ -4,7 +4,7 @@
 var ThesaurusMatcher = (function () {
         var self = {}
 
-        self.init = function (thesaurusLabel) {
+        self.onSourceSelect = function (thesaurusLabel) {
 
             //  $("#actionDivContolPanelDiv").html("<button onclick='ThesaurusMatcher.showcompareWithDialog()'>Compare with...</button>")
 

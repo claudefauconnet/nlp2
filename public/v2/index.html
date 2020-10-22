@@ -33,6 +33,7 @@
     <script src="js/sparqlProxies/sparql_proxy.js"></script>
     <script src="js/sparqlProxies/sparql_skos_generic.js"></script>
     <script src="js/sparqlProxies/sparql_generic.js"></script>
+    <script src="js/sparqlProxies/sparql_schema.js"></script>
 
     <script src="js/sparqlProxies/sparql_ISO_15926.js"></script>
     <script src="js/sparqlProxies/sparql_WORDNET.js"></script>
@@ -45,6 +46,7 @@
 
 
     <script src="js/tools/thesaurusBrowser.js"></script>
+    <script src="js/tools/sourceEditor.js"></script>
     <script src="js/tools/thesaurusMatcher.js"></script>
     <script src="js/tools/nerEvaluator.js"></script>
     <script src="js/tools/termTaxonomy.js"></script>
@@ -60,12 +62,13 @@
 
     <script>
 
-
+        var leftPanelWidth=400
         $(function () {
+
             var w = $(document).width();
             var h = $(document).height;
-            $("#graphDiv").width(w - 400)
-            $("#graphDiv").height(w - 400)
+            $("#graphDiv").width(w - leftPanelWidth)
+            $("#graphDiv").height(w - leftPanelWidth)
 
 
             $("#accordion").accordion()
@@ -73,6 +76,7 @@
 
             MainController.UI.loadToolsList("toolsTreeDiv")
             MainController.UI.loadSources("sourcesTreeDiv")
+            MainController.UI.setCredits()
         });
 
 
@@ -133,6 +137,7 @@
 <div style="display: flex;flex-direction: row;justify-content:left">
 
     <div style='max-width: 400px;'>
+
         <div style="height: 50px">
         <img src="../images/waitAnimated.gif" id="waitImg" style="display: none;width: 15px">
         <span id="messageDiv" ></span>
@@ -161,6 +166,12 @@
         </div>
     </div>
     <div id="graphDiv"></div>
+    <div id="graphPopupDiv" onclick="TermTaxonomy.graphActions.hidePopup();" style="position:absolute;flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+        <span class="popupMenuItem" onclick="TermTaxonomy.graphActions.drawChildren();"> draw children</span>
+        <span  class="popupMenuItem"onclick="TermTaxonomy.graphActions.showDetails();"> show details</span>
+        <span  class="popupMenuItem" onclick="TermTaxonomy.graphActions.setAsRootNode();"> set a rootNode</span>
+
+    </div>
 </div>
 
 

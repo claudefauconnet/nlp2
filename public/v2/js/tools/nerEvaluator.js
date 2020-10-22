@@ -3,7 +3,7 @@ var NerEvaluator = (function () {
     var sourceGraphsIriMap = {}
     self.selectedSources = []
    self.categoriesTreeId="nerEvaluator_treeDiv"
-    self.init = function () {
+    self.onSourceSelect = function () {
         var html = "<button onclick='NerEvaluator.showActionPanel()'>OK</button>"
         $("#sourceDivControlPanelDiv").html(html)
 
@@ -217,7 +217,7 @@ var NerEvaluator = (function () {
             var allEdges = [];
             var visjsData = {nodes: [], edges: []}
             var similarNodes = {}
-            var offsetY = -400
+            var offsetY = -leftPanelWidth
 
 
             var maxPages = 0;

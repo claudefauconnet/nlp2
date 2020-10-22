@@ -10,24 +10,27 @@ var common = (function () {
                 value: ""
             }));
         }
-
-        data.forEach(function (item, index) {
-            $("#" + selectId).append($('<option>', {
-                text: item[textfield] || item,
-                value: item[valueField] || item
-            }));
-        });
-
-    }
-
-    self.message = function (str, append) {
-        if (append) {
-            str = $("#messageDiv").html() + str
+        if (Array.isArray(data)) {
+            data.forEach(function (item, index) {
+                $("#" + selectId).append($('<option>', {
+                    text: item[textfield] || item,
+                    value: item[valueField] || item
+                }));
+            });
+        } else {
+            for (var key in data) {
+                var item = data[key]
+                $("#" + selectId).append($('<option>', {
+                    text: item[textfield] || item,
+                    value: item[valueField] || item
+                }));
+            }
+            ;
         }
-        $("#messageDiv").html(str);
 
     }
-self.getjsTreeNodes=function(jstreeDiv,IdsOnly) {
+
+    self.getjsTreeNodes=function(jstreeDiv,IdsOnly) {
     var idList = [];
     var jsonNodes = $('#' + jstreeDiv).jstree(true).get_json('#', {flat: true});
     $.each(jsonNodes, function (i, val) {
@@ -157,6 +160,30 @@ self.getjsTreeNodes=function(jstreeDiv,IdsOnly) {
 
     }
     self.palette=[
+    '#9edae5',
+        '#17becf',
+        '#dbdb8d',
+        '#bcbd22',
+        '#c7c7c7',
+        '#7f7f7f',
+        '#f7b6d2',
+        '#e377c2',
+        '#c49c94',
+        '#c5b0d5',
+        '#ff9896',
+        '#98df8a',
+        '#ffbb78',
+        '#ff7f0e',
+        '#aec7e8',
+        '#1f77b4',
+        '#9467bd',
+        '#8c564b',
+        '#d62728',
+        '#2ca02c',
+        ]
+
+        self.paletteX=[
+
         "#0072d5",
         '#FF7D07',
         "#c00000",

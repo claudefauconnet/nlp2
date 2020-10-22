@@ -1,7 +1,7 @@
 var ThesaurusBrowser = (function () {
     var self = {}
 
-    self.init = function (thesaurusLabel) {
+    self.onSourceSelect = function (thesaurusLabel) {
         self.showThesaurusTopConcepts(thesaurusLabel)
     }
 
@@ -23,10 +23,12 @@ var ThesaurusBrowser = (function () {
 
             var jsTreeOptions = {
                 selectNodeFn: function (event, propertiesMap) {
-                    if (options.treeSelectNodeFn)
+                    if (options.treeSelectNodeFn) {
                         options.treeSelectNodeFn(event, propertiesMap);
-                    if (true || propertiesMap.event.ctrlKey) {
-                        self.editThesaurusConceptInfos(thesaurusLabel, propertiesMap.node)
+                    }else {
+                        if (true || propertiesMap.event.ctrlKey) {
+                            self.editThesaurusConceptInfos(thesaurusLabel, propertiesMap.node)
+                        }
                     }
                     {
                         self.openTreeNode("currentSourceTreeDiv", thesaurusLabel, propertiesMap.node)
