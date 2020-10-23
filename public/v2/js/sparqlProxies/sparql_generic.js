@@ -307,7 +307,7 @@ var Sparql_generic = (function () {
            // console.log(query)
             url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";
             Sparql_proxy.querySPARQL_GET_proxy(url,query, null,null, function(err, result){
-                return selectionCallback(err);
+                return callback(err);
             })
         }
 

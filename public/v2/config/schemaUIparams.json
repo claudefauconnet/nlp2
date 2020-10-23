@@ -1,0 +1,31 @@
+{
+  "http://www.w3.org/2004/02/skos/core/": {
+    "label": "skos",
+    "newObject":{
+      "treeChildrenClasses": {
+        "http://www.w3.org/2004/02/skos/core#Concept": "http://www.w3.org/2004/02/skos/core#Concept",
+        "http://www.w3.org/2004/02/skos/core#ConceptSchem": "http://www.w3.org/2004/02/skos/core#Concept"
+      },
+      "treeParentProperty": "http://www.w3.org/2004/02/skos/core#broader",
+      "mandatoryProperties": ["http://www.w3.org/2004/02/skos/core#prefLabel"]
+    }
+
+
+  },
+  "http://sws.ifi.uio.no/vocab/npd-v2/": {
+    "newObjectParentProperty": "http://www.w3.org/2000/01/rdf-schema#subClassOf",
+    "mandatoryProperties": ["http://www.w3.org/2000/01/rdf-schema#label"]
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+}

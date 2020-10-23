@@ -17,7 +17,7 @@
         padding: 5px;
 
     }
-    .SourceEditor_minorDiv {
+    .SourceEditor_minorDiv,SourceEditor_aboutDiv {
 
         border-radius: 5px;
         border: #372806 1px solid;
@@ -37,11 +37,11 @@
     <div> graphUri <span id='SourceEditor_graphUri'></span></div>
     <div id="SourceEditor_NewObjectDiv" style="display:none">
        Object Class
-        <select id='SourceEditor_NewClassSelect' onchange='SourceEditor.onSelectClass($(this))'></select><br>
+        <select id='SourceEditor_NewClassSelect' onchange='SourceEditor.initClass()'></select><br>
 
     </div>
-    <div class='SourceEditor_minorDiv'>
-        <span id="SourceEditor_ObjectType"><b></b></span>About<input id="SourceEditor_ObjectUri" class="SourceEditor_input">
+    <div class='SourceEditor_aboutDiv'>
+        <span id="SourceEditor_ObjectType"><b></b></span>&nbsp;: about<input id="SourceEditor_ObjectUri" class="SourceEditor_input">
     </div>
     <div id="SourceEditor_ObjectAnnotationsDiv" class="SourceEditor_majorDiv">
 

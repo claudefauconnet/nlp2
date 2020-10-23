@@ -39,6 +39,21 @@ var ThesaurusBrowser = (function () {
 
 
             }
+            jsTreeOptions=options;
+            jsTreeOptions.selectNodeFn= function (event, propertiesMap) {
+                if (options.treeSelectNodeFn) {
+                    options.treeSelectNodeFn(event, propertiesMap);
+                }else {
+                    if (true || propertiesMap.event.ctrlKey) {
+                        self.editThesaurusConceptInfos(thesaurusLabel, propertiesMap.node)
+                    }
+                }
+                {
+                    self.openTreeNode("currentSourceTreeDiv", thesaurusLabel, propertiesMap.node)
+                }
+
+
+            }
 
             TreeController.drawOrUpdateTree("currentSourceTreeDiv", result, "#", "topConcept", jsTreeOptions)
 

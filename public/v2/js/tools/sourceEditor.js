@@ -5,16 +5,53 @@ var SourceEditor = (function () {
         self.currentSchemaUri;
         self.currentSourceUri;
         self.currentSourceLabel;
-
+        self.schemasParams;
         self.prefLang = "en"
         //self.currentSchemaUri=Sparql_schema.npdOntologyUri
 
         self.editingObject;
-        self.lastId = 1000;
+
+
+        self.getTreeHierarchyParentObjectProperty=function(){
+           var schema= SourceEditor.currentSchemaUri
+            if(schema== Sparql_schema.skosUri)
+                return  "skos:broader";
+            else
+                return  "rdfs:subClassOf";
+
+
+
+
+
+        }
 
         self.onLoaded = function () {
             $("#sourceDivControlPanelDiv").html("<button onclick='SourceEditor.onNewSourceButton()'>New Source</button>")
+           if(! self.schemasParams) {
+               $.getJSON("config/schemaUIparams.json", function (json) {
+                   self.schemasParams=json;
+               })
+           }
             //   console.log(JSON.stringify(Config.sources,null,2)
+
+        }
+
+
+        self.getJstreeContextMenu = function () {
+            return {
+                addChild: {
+                    label: "addChild",
+                    action: function (obj, sss, cc) {
+
+                        SourceEditor.onAddNewObject(self.editingObject)
+                        ;
+                    },
+
+                },
+
+
+            }
+
 
         }
 
@@ -28,7 +65,8 @@ var SourceEditor = (function () {
             self.initSchemaClasses(self.currentSchemaUri, function (err, result) {
                 if (err)
                     return MainController.UI.message(err)
-                ThesaurusBrowser.showThesaurusTopConcepts(sourceLabel, {treeSelectNodeFn: SourceEditor.editNode})
+                var contextMenu = self.getJstreeContextMenu()
+                ThesaurusBrowser.showThesaurusTopConcepts(sourceLabel, {treeSelectNodeFn: SourceEditor.editNode, contextMenu: contextMenu})
                 $("#graphDiv").load("snippets/sourceEditor.html")
                 $("#SourceEditor_NewObjectDiv").css("display", "none")
                 $("#actionDivContolPanelDiv").html("<button onclick='SourceEditor.onAddNewObject()'>+</button>")
@@ -37,34 +75,61 @@ var SourceEditor = (function () {
 
         }
 
-        self.onAddNewObject = function () {
+        self.onAddNewObject = function (parentObj) {
 
             $("#graphDiv").load("snippets/sourceEditor.html")
             setTimeout(function () {
                 $("#SourceEditor_NewObjectDiv").css("display", "block")
                 $("#SourceEditor_graphUri").html("sourceGraphUri")
                 common.fillSelectOptions("SourceEditor_NewClassSelect", self.schema.classes, true, "label", "id")
-            }, 500)
+if(parentObj){
+                if(self.schemasParams[self.currentSchemaUri]){
+                    var parentProperty=self.schemasParams[self.currentSchemaUri].newObject.treeParentProperty
+                    var mandatoryProps=self.schemasParams[self.currentSchemaUri].newObject.mandatoryProperties;
+                    var childClass=self.schemasParams[self.currentSchemaUri].newObject.treeChildrenClasses[parentObj.type ]
+                    var initData={}
+                    initData[parentProperty]=[{value:parentObj.about,type:"uri"}];
+                    mandatoryProps.forEach(function(item){
+                        initData[item]= [{"xml:lang":self.prefLang,value:"",type:"literal"}]
+                    })
+
+                    self.initClass (childClass,initData) ;
+
+                }
+}
 
 
-        }
-        self.onSelectClass = function (classObj) {
-            var classId = $(classObj).val();
-            var classLabel = $(classObj).find("option:selected").text();
-            self.initSchemaClasses(self.currentSchemaUri, function (err, result) {
-                if (err)
-                    return MainController.UI.message(err)
-                $("#SourceEditor_NewClassSelect").val("");
-                $("#SourceEditor_NewObjectDiv").css("display", "none");
-                $("#SourceEditor_ObjectType").html(classLabel);
 
-                self.lastId += 1;
-                var nodeId = self.currentSourceUri + self.lastId
-                $("#SourceEditor_ObjectUri").val(nodeId);
-                self.editNode(null, {node: {id: nodeId, data: {type: classId}}}, true)
-            })
 
-        }
+
+            }, 200)
+
+
+
+
+
+
+        },
+            self.initClass = function (classId, initData) {
+            if(!classId)
+                classId = $("#SourceEditor_NewClassSelect").val();
+
+                var classLabel = self.schema.classes[classId].label
+                self.initSchemaClasses(self.currentSchemaUri, function (err, result) {
+                    if (err)
+                        return MainController.UI.message(err)
+                    $("#SourceEditor_NewClassSelect").val("");
+                    $("#SourceEditor_NewObjectDiv").css("display", "none");
+                    $("#SourceEditor_ObjectType").html(classLabel);
+
+                    if (self.currentSourceUri.lastIndexOf("/") != self.currentSourceUri.length - 1)
+                        self.currentSourceUri += "/"
+                    var nodeId = self.currentSourceUri + common.getRandomHexaId(10)
+                    $("#SourceEditor_ObjectUri").val(nodeId);
+                    self.editNode(null, {node: {id: nodeId, data: {type: classId}}}, initData)
+                })
+
+            }
 
 
         self.onNewSourceButton = function () {
@@ -153,10 +218,10 @@ var SourceEditor = (function () {
         }
 
 
-        self.editNode = function (event, obj, isNewObect) {
+        self.editNode = function (event, obj, initData) {
 
 
-            var editingObject
+            var editingObject;
             var type;
             if (!obj.node.data || !obj.node.data.type)
                 type = "http://www.w3.org/2004/02/skos/core#Concept"
@@ -172,16 +237,15 @@ var SourceEditor = (function () {
                             return callbackSeries();
 
                         self.initClassPropsAndAnnotations(self.currentSchemaUri, type, function (err, result) {
-                            return callbackSeries(err)
+                            return callbackSeries()
                         })
-                    },
-
-
+                    }
                     //init editing object
                     , function (callbackSeries) {
                         editingObject = self.schema.classes[type]
                         editingObject.about = obj.node.id;
                         editingObject.type = editingObject.id;
+                        editingObject.parent = obj.node.parent;
                         // delete editingObject.id
                         editingObject.objectPropertiesList = Object.keys(self.schema.classes[type].objectProperties).sort();
                         editingObject.annotationsList = Object.keys(self.schema.classes[type].annotations).sort();
@@ -189,11 +253,14 @@ var SourceEditor = (function () {
                         return callbackSeries()
                     },
 
-
                     //get node data and prepare editingObject
                     function (callbackSeries) {
-                        if (isNewObect) {
+                        if (initData) {
                             editingObject.isNew = 1;
+                           for(var key in initData){
+                                nodeProps[key] =initData[key]
+                            }
+
                             return callbackSeries();
                         }
 
@@ -210,8 +277,8 @@ var SourceEditor = (function () {
                             })
                             callbackSeries()
                         })
-                    }
-                    , function (callbackSeries) {
+                    },
+                    function (callbackSeries) {
                         for (var prop in editingObject.objectProperties) {
                             if (nodeProps[prop])
                                 editingObject.objectProperties[prop].value = nodeProps[prop];
@@ -225,9 +292,11 @@ var SourceEditor = (function () {
 
                     },
                     //draw node data
-
                     function (callbackSeries) {
-                        $(".SourceEditor_minorDiv").remove()
+
+                        $("#SourceEditor_ObjectUri").val(editingObject.about);
+                        $("#SourceEditor_ObjectType").html(self.schema.classes[editingObject.type].label);
+                        $(".SourceEditor_minorDiv").remove();
                         common.fillSelectOptions("SourceEditor_NewObjectPropertySelect", editingObject.objectPropertiesList, true, "label", "id")
                         for (var key in editingObject.objectProperties) {
                             if (editingObject.objectProperties[key].value) {
@@ -266,6 +335,7 @@ var SourceEditor = (function () {
          * @return {string}
          */
         self.drawObjectValue = function (metaType, key, editingObject, parentDiv, focus, newValue) {
+
             var type = editingObject.type;
             var values = [];
             if (newValue) {
@@ -288,6 +358,7 @@ var SourceEditor = (function () {
                 if (value["xml:lang"]) {
                     langStr = "<input class='SourceEditor_lang' value='" + value["xml:lang"] + "'>"
                 }
+
                 html += "<tr class='SourceEditor_input_TR' id='SourceEditor_" + key + "'>" +
                     "<td><span>" + keyLabel + "</span></td>" +
                     "<td>" + langStr + "<input class='SourceEditor_value '  value='" + value.value + "'></td>" +
@@ -321,6 +392,8 @@ var SourceEditor = (function () {
             var triples = [];
             var predicate
             var nodeLabel = null
+            triples.push({subject: self.editingObject.about, predicate: "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", object: self.editingObject.type, valueType: "uri"})
+
             $(".SourceEditor_input_TR").each(function (e, x) {
 
                 predicate = $(this).attr("id").substring(13)
@@ -340,7 +413,6 @@ var SourceEditor = (function () {
                     nodeLabel = value;
 
             })
-            var xx = triples;
 
 
             Sparql_generic.update(self.currentSourceLabel, triples, function (err, result) {
@@ -352,10 +424,14 @@ var SourceEditor = (function () {
                     var jsTreeData = [{
                         id: self.editingObject.about,
                         text: nodeLabel,
-                        parent: self.currentSourceUri,
+                        parent: self.editingObject.parent,
                         data: {type: predicate}
                     }]
-                    common.addNodesToJstree('currentSourceTreeDiv', self.currentSourceUri, jsTreeData, {})
+                    var rootNode = $("#currentSourceTreeDiv").jstree(true).get_node("#")
+                    if (rootNode)
+                        common.addNodesToJstree('currentSourceTreeDiv', self.editingObject.parent, jsTreeData, {})
+                    else
+                        common.loadJsTree('currentSourceTreeDiv', jsTreeData, null)
                 }
 
             })

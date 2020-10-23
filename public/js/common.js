@@ -159,6 +159,20 @@ var common = (function () {
         return str.replace(/\//g, "_").replace(/\./g, "_");
 
     }
+
+    /**
+     * https://stackoverflow.com/questions/58325771/how-to-generate-random-hex-string-in-javascript
+     *
+     * @param length
+     * @return {string}
+     */
+    self.getRandomHexaId=function(length){
+            const str = Math.floor(Math.random() * Math.pow(16, length)).toString(16);
+            return "0".repeat(length - str.length) + str;
+
+    }
+
+
     self.palette=[
     '#9edae5',
         '#17becf',
