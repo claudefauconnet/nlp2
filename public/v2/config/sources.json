@@ -4,6 +4,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
     "graphIri": "http://souslesens/TEST",
+    "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
     },
@@ -13,6 +14,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
     "graphIri": "http://data.total.com/resource/thesaurus/ctg/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
     },
@@ -22,6 +24,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
     "graphIri": "http://souslesens.org/oil-gas/upstream/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
     },
@@ -31,6 +34,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
     "graphIri": "http://data.total.com/resource/dictionary/gaia/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
     },
@@ -40,7 +44,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://68.71.136.105/sparql/",
     "graphIri": null,
-    "schemaUri": "http://sws.ifi.uio.no/vocab/npd-v2/",
+    "sourceSchema": "ISO_15926",
     "predicates": {
       "prefixes": [
         "rdfs:<http://www.w3.org/2000/01/rdf-schema#>"
@@ -55,6 +59,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
     "graphIri": "http://www.eionet.europa.eu/gemet/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en",
       "prefLabel": "rdfs:label|skos:prefLabel",
@@ -67,6 +72,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "https://data.bnf.fr/sparql",
     "graphIri": "http://data.bnf.fr",
+    "sourceSchema": "SKOS",
     "predicates": {
       "topConceptbroader": "terms:isPartOf",
       "lang": "fr"
@@ -117,6 +123,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
     "graphIri": "http://api.termsciences.fr/termsciences/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "topConceptFilter": "?topConcept skos:prefLabel ?topConceptLabel.filter( ?topConcept in(<http://api.termsciences.fr/termsciences/TE-48512>,<http://api.termsciences.fr/termsciences/TE-60624>,<http://api.termsciences.fr/termsciences/TE-42031>,<http://api.termsciences.fr/termsciences/TE-27516>,<http://api.termsciences.fr/termsciences/TE-42056>,<http://api.termsciences.fr/termsciences/TE-15428>,<http://api.termsciences.fr/termsciences/TE-10236>) )",
       "lang": "en"
@@ -127,6 +134,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
     "graphIri": "http://www.souslesens.org/thesaurusIngenieur/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "topConceptFilter": "  ?topConcept skos:prefLabel ?topConceptLabel.filter( NOT EXISTS{?topConcept skos:broader ?x})",
       "lang": "en"
@@ -137,6 +145,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
     "graphIri": "http://skos.um.es/unesco6/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "topConceptFilter": "  ?topConcept skos:prefLabel ?topConceptLabel.filter( NOT EXISTS{?topConcept skos:broader ?x})",
       "lang": "en"
@@ -147,10 +156,29 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
     "graphIri": "http://www.loc.gov/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "topConceptFilter": "  ?topConcept skos:prefLabel ?topConceptLabel.filter( NOT EXISTS{?topConcept skos:broader ?x})",
       "lang": "en"
     },
     "color": "#ffbb78"
+  },
+
+
+  "NPD": {
+    "controller": "Sparql_generic",
+    "sparql_url":  "http://51.178.139.80:8890/sparql",
+    "graphIri":["http://sws.ifi.uio.no/data/npd-v2/", "http://sws.ifi.uio.no/vocab/npd-v2/"],
+    "sourceSchema": "NPD",
+    "predicates": {
+      "prefixes": [
+        "rdfs:<http://www.w3.org/2000/01/rdf-schema#>"
+      ],
+      "prefLabel": "rdfs:label",
+      "topConceptbroader": "rdfs:subClassOf|^rdfs:superClassFor",
+      "topConceptFilter":  " ?topConcept rdf:type rdfs:Class. ?x rdfs:range ?topConcept.  ?topConcept rdf:type ?type. filter (?type= owl:Class)",
+      "lang": null
+    },
+    "color": "#bcbd22"
   }
 }

@@ -2,34 +2,23 @@ var SourceEditor = (function () {
         var self = {};
         self.schema = {};
         self.data = {};
-        self.currentSchemaUri;
+        self.currentSourceSchema;
         self.currentSourceUri;
         self.currentSourceLabel;
-        self.schemasParams;
+        self.schemasConfig;
         self.prefLang = "en"
-        //self.currentSchemaUri=Sparql_schema.npdOntologyUri
+        //self.currentSourceSchema=Sparql_schema.npdOntologyUri
 
         self.editingObject;
 
 
-        self.getTreeHierarchyParentObjectProperty=function(){
-           var schema= SourceEditor.currentSchemaUri
-            if(schema== Sparql_schema.skosUri)
-                return  "skos:broader";
-            else
-                return  "rdfs:subClassOf";
 
-
-
-
-
-        }
 
         self.onLoaded = function () {
             $("#sourceDivControlPanelDiv").html("<button onclick='SourceEditor.onNewSourceButton()'>New Source</button>")
-           if(! self.schemasParams) {
-               $.getJSON("config/schemaUIparams.json", function (json) {
-                   self.schemasParams=json;
+           if(! self.schemasConfig) {
+               $.getJSON("config/schemas.json", function (json) {
+                   self.schemasConfig=json;
                })
            }
             //   console.log(JSON.stringify(Config.sources,null,2)
@@ -58,11 +47,11 @@ var SourceEditor = (function () {
         self.onSourceSelect = function (sourceLabel) {
             self.currentSourceLabel = sourceLabel;
             self.currentSourceUri = Config.sources[sourceLabel].graphIri
-            if (Config.sources[sourceLabel].schemaUri)
-                self.currentSchemaUri = Config.sources[sourceLabel].schemaUri
+            if (Config.sources[sourceLabel].sourceSchema)
+                self.currentSourceSchema = self.schemasConfig[Config.sources[sourceLabel].sourceSchema]
             else// default SKOS
-                self.currentSchemaUri = Sparql_schema.skosUri;
-            self.initSchemaClasses(self.currentSchemaUri, function (err, result) {
+                self.currentSourceSchema = self.schemasConfig["SKOS"];
+            self.initSchemaClasses(self.currentSourceSchema, function (err, result) {
                 if (err)
                     return MainController.UI.message(err)
                 var contextMenu = self.getJstreeContextMenu()
@@ -83,10 +72,10 @@ var SourceEditor = (function () {
                 $("#SourceEditor_graphUri").html("sourceGraphUri")
                 common.fillSelectOptions("SourceEditor_NewClassSelect", self.schema.classes, true, "label", "id")
 if(parentObj){
-                if(self.schemasParams[self.currentSchemaUri]){
-                    var parentProperty=self.schemasParams[self.currentSchemaUri].newObject.treeParentProperty
-                    var mandatoryProps=self.schemasParams[self.currentSchemaUri].newObject.mandatoryProperties;
-                    var childClass=self.schemasParams[self.currentSchemaUri].newObject.treeChildrenClasses[parentObj.type ]
+                if(self.currentSourceSchema){
+                    var parentProperty=self.currentSourceSchema.newObject.treeParentProperty
+                    var mandatoryProps=self.currentSourceSchema.newObject.mandatoryProperties;
+                    var childClass=self.currentSourceSchema.newObject.treeChildrenClasses[parentObj.type ]
                     var initData={}
                     initData[parentProperty]=[{value:parentObj.about,type:"uri"}];
                     mandatoryProps.forEach(function(item){
@@ -115,7 +104,7 @@ if(parentObj){
                 classId = $("#SourceEditor_NewClassSelect").val();
 
                 var classLabel = self.schema.classes[classId].label
-                self.initSchemaClasses(self.currentSchemaUri, function (err, result) {
+                self.initSchemaClasses(self.currentSourceSchema, function (err, result) {
                     if (err)
                         return MainController.UI.message(err)
                     $("#SourceEditor_NewClassSelect").val("");
@@ -144,7 +133,7 @@ if(parentObj){
                 $("#accordion").accordion("option", {active: 2});
 
 
-                self.initSchemaClasses(self.currentSchemaUri, function (err, result) {
+                self.initSchemaClasses(self.currentSourceSchema, function (err, result) {
                     if (err)
                         return MainController.UI.message(err)
 
@@ -163,14 +152,14 @@ if(parentObj){
         }
 
 
-        self.initSchemaClasses = function (schemaUri, callback) {
+        self.initSchemaClasses = function (sourceSchema, callback) {
 
-            Sparql_schema.getClasses(schemaUri, function (err, result) {
+            Sparql_schema.getClasses(sourceSchema, function (err, result) {
                 if (err)
                     return callback(err);
                 self.schema.classes = {}
                 result.forEach(function (item) {
-                    self.schema.classes[item.class.value] = {id: item.class.value, label: item.classLabel.value, objectProperties: {}, annotations: {}}
+                    self.schema.classes[item.class.value] = {id: item.class.value, label: common.getItemLabel(item,"class"), objectProperties: {}, annotations: {}}
                 })
                 return callback();
 
@@ -178,17 +167,17 @@ if(parentObj){
 
 
         }
-        self.initClassPropsAndAnnotations = function (schemaUri, classId, callback) {
+        self.initClassPropsAndAnnotations = function (sourceSchema, classId, callback) {
             async.series([
                 function (callbackSeries2) {
-                    Sparql_schema.getClassProperties(schemaUri, classId, function (err, result) {
+                    Sparql_schema.getClassProperties(sourceSchema, classId, function (err, result) {
                         if (err)
                             return callbackSeries2(err)
                         result.forEach(function (item) {
                             if (item.subProperty)
-                                self.schema.classes[classId].objectProperties[item.subProperty.value] = {id: item.subProperty.value, label: item.subPropertyLabel.value}
+                                self.schema.classes[classId].objectProperties[item.subProperty.value] = {id: item.subProperty.value, label: common.getItemLabel(item,"subProperty")}
                             else
-                                self.schema.classes[classId].objectProperties[item.property.value] = {id: item.property.value, label: item.propertyLabel.value}
+                                self.schema.classes[classId].objectProperties[item.property.value] = {id: item.property.value, label: common.getItemLabel(item,"property")}
 
                         })
 
@@ -196,12 +185,12 @@ if(parentObj){
                     })
                 }
                 , function (callbackSeries2) {
-                    Sparql_schema.getObjectAnnotations(schemaUri, classId, function (err, result) {
+                    Sparql_schema.getObjectAnnotations(sourceSchema, classId, function (err, result) {
                         if (err)
                             return callbackSeries2(err)
 
                         result.forEach(function (item) {
-                            self.schema.classes[classId].annotations[item.annotation.value] = {id: item.annotation.value, label: item.annotationLabel.value}
+                            self.schema.classes[classId].annotations[item.annotation.value] = {id: item.annotation.value, label:common.getItemLabel(annotation,"subProperty")}
                         })
 
                         callbackSeries2();
@@ -228,6 +217,7 @@ if(parentObj){
             else
                 type = obj.node.data.type
 
+
             var nodeProps = {}
             async.series([
 
@@ -236,7 +226,7 @@ if(parentObj){
                         if (Object.keys(self.schema.classes[type].objectProperties).length > 0)
                             return callbackSeries();
 
-                        self.initClassPropsAndAnnotations(self.currentSchemaUri, type, function (err, result) {
+                        self.initClassPropsAndAnnotations(self.currentSourceSchema, type, function (err, result) {
                             return callbackSeries()
                         })
                     }

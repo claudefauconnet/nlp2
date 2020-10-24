@@ -22,7 +22,7 @@ var Config = (function () {
         predicates: {lang: "en"}
     };
     self.sources['ISO_15926'] = {
-        controller: Sparql_generic, sparql_url: 'http://68.71.136.105/sparql/', graphIri: null,schemaUri:"http://sws.ifi.uio.no/vocab/npd-v2/",
+        controller: Sparql_generic, sparql_url: 'http://68.71.136.105/sparql/', graphIri: null,sourceSchema:"http://sws.ifi.uio.no/vocab/npd-v2/",
         predicates: {
             prefixes: ["rdfs:<http://www.w3.org/2000/01/rdf-schema#>"],
             prefLabel: "rdfs:label",

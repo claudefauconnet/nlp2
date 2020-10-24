@@ -30,22 +30,22 @@ var common = (function () {
 
     }
 
-    self.getjsTreeNodes=function(jstreeDiv,IdsOnly) {
-    var idList = [];
-    var jsonNodes = $('#' + jstreeDiv).jstree(true).get_json('#', {flat: true});
-    $.each(jsonNodes, function (i, val) {
-        if(IdsOnly)
-        idList.push($(val).attr('id'));
-        else
-            idList.push($(val));
-    })
-    return idList;
-}
+    self.getjsTreeNodes = function (jstreeDiv, IdsOnly) {
+        var idList = [];
+        var jsonNodes = $('#' + jstreeDiv).jstree(true).get_json('#', {flat: true});
+        $.each(jsonNodes, function (i, val) {
+            if (IdsOnly)
+                idList.push($(val).attr('id'));
+            else
+                idList.push($(val));
+        })
+        return idList;
+    }
 
 
     self.loadJsTree = function (jstreeDiv, jstreeData, options, callback) {
-        if(!options)
-            options={}
+        if (!options)
+            options = {}
         var plugins = [];
         if (!options.cascade)
             options.cascade = "xxx"
@@ -166,15 +166,29 @@ var common = (function () {
      * @param length
      * @return {string}
      */
-    self.getRandomHexaId=function(length){
-            const str = Math.floor(Math.random() * Math.pow(16, length)).toString(16);
-            return "0".repeat(length - str.length) + str;
+    self.getRandomHexaId = function (length) {
+        const str = Math.floor(Math.random() * Math.pow(16, length)).toString(16);
+        return "0".repeat(length - str.length) + str;
+
+    }
+
+    self.getItemLabel = function (item, varName) {
+
+        if (item[varName + "Label"])
+            return item[varName + "Label"].value
+        else {
+            var p = item[varName].value.lastIndexOf("#")
+            if (p < 0)
+                p = item[varName].value.lastIndexOf("/")
+            return item[varName].value.substring(p + 1)
+
+        }
 
     }
 
 
-    self.palette=[
-    '#9edae5',
+    self.palette = [
+        '#9edae5',
         '#17becf',
         '#dbdb8d',
         '#bcbd22',
@@ -194,9 +208,9 @@ var common = (function () {
         '#8c564b',
         '#d62728',
         '#2ca02c',
-        ]
+    ]
 
-        self.paletteX=[
+    self.paletteX = [
 
         "#0072d5",
         '#FF7D07',

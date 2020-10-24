@@ -1,6 +1,3 @@
-
-
-
 //biblio
 //https://www.iro.umontreal.ca/~lapalme/ift6281/sparql-1_1-cheat-sheet.pdf
 var Sparql_generic = (function () {
@@ -19,7 +16,7 @@ var Sparql_generic = (function () {
             , prefLabel: "skos:prefLabel"
             , altLabel: "skos:altLabel",
             limit: 1000,
-            optionalDepth:5
+            optionalDepth: 5
 
 
         }
@@ -35,8 +32,8 @@ var Sparql_generic = (function () {
         var topConceptLangFilter = "";
         var conceptLangFilter = "";
         var limit = "";
-        var optionalDepth=0
-        var lang ="";
+        var optionalDepth = 0
+        var lang = "";
         var url = "";
         var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
 
@@ -65,20 +62,24 @@ var Sparql_generic = (function () {
             })
 
             if (graphIri && graphIri != "")
-                fromStr = " FROM <" + graphIri + "> "
+                if (!Array.isArray(graphIri))
+                    graphIri = [graphIri];
+            graphIri.forEach(function (item) {
+                fromStr += " FROM <" + item + "> "
+            })
 
 
             topConceptFilter = predicates.topConceptFilter || defaultPredicates.topConceptFilter;
             broaderPredicate = predicates.topConceptbroader || defaultPredicates.topConceptbroader;
             prefLabelPredicate = predicates.prefLabel || defaultPredicates.prefLabel;
-            lang = predicates.lang ;
+            lang = predicates.lang;
             limit = predicates.limit || defaultPredicates.limit;
-            optionalDepth=predicates.optionalDepth ||defaultPredicates.optionalDepth;
+            optionalDepth = predicates.optionalDepth || defaultPredicates.optionalDepth;
             url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";
         }
 
 
-        setFilter = function (varName, ids, words,options) {
+        setFilter = function (varName, ids, words, options) {
             var filter = ";"
             if (words) {
                 if (Array.isArray(words)) {
@@ -113,9 +114,9 @@ var Sparql_generic = (function () {
                 }
 
             } else {
-               return  "";
+                return "";
             }
-            return filter ;
+            return filter;
         }
 
 
@@ -125,20 +126,20 @@ var Sparql_generic = (function () {
 
             var query = "";
             query += prefixesStr
-            query += " select distinct * " + fromStr + "  WHERE {"
+            query += " select distinct ?topConcept ?topConceptLabel ?type " + fromStr + "  WHERE {"
             query += topConceptFilter;
-            query += "?topConcept " + prefLabelPredicate + " ?topConceptLabel." ;
-            if(lang)
-                query +=  "filter(lang(?topConceptLabel )='" + lang + "')"
+            query += "?topConcept " + prefLabelPredicate + " ?topConceptLabel.";
+            if (lang)
+                query += "filter(lang(?topConceptLabel )='" + lang + "')"
+            query += "?topConcept rdf:type ?type."
             if (false) {
                 query += "?concept " + broaderPredicate + " ?topConcept." +
                     "?concept " + prefLabelPredicate + " ?conceptLabel."
-                if(lang)
-                    query +=  "filter(lang(?conceptLabel )='" + lang + "')"
+                if (lang)
+                    query += "filter(lang(?conceptLabel )='" + lang + "')"
             }
             query += "  } ORDER BY ?topConceptLabel ";
             query += "limit " + limit + " ";
-
 
 
             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -155,8 +156,7 @@ var Sparql_generic = (function () {
             setVariables(sourceLabel);
 
 
-
-            var filterStr = setFilter("concept", ids, words,options)
+            var filterStr = setFilter("concept", ids, words, options)
 
             if (!options) {
                 options = {depth: 0}
@@ -167,20 +167,23 @@ var Sparql_generic = (function () {
             query += " select distinct * " + fromStr + "  WHERE {"
 
             query += "?child1 " + broaderPredicate + " ?concept." +
-                "?child1 " + prefLabelPredicate + " ?child1Label. ";
-            if(lang)
-                query+="filter( lang(?child1Label)=\""+lang+"\")"
-            query+=filterStr;
-
-            descendantsDepth=Math.min(  descendantsDepth,optionalDepth);
+                "OPTIONAL{ ?child1 " + prefLabelPredicate + " ?child1Label. ";
+            if (lang)
+                query += "filter( lang(?child1Label)=\"" + lang + "\")"
+            query +="}"
+            query += filterStr;
+            query += "?child1 rdf:type ?type."
+            descendantsDepth = Math.min(descendantsDepth, optionalDepth);
             for (var i = 1; i < descendantsDepth; i++) {
 
-                query += "OPTIONAL { ?child" + (i + 1)+" " + broaderPredicate +" ?child" + i + "." +
-                    "?child" + (i + 1) + " " + prefLabelPredicate +"  ?child" + (i + 1) + "Label."
-                if(lang)
-                    query+="filter( lang(?child" + (i + 1) + "Label)=\""+lang+"\")"
+                query += "OPTIONAL { ?child" + (i + 1) + " " + broaderPredicate + " ?child" + i + "." +
+                    "OPTIONAL{?child" + (i + 1) + " " + prefLabelPredicate + "  ?child" + (i + 1) + "Label."
+                if (lang)
+                    query += "filter( lang(?child" + (i + 1) + "Label)=\"" + lang + "\")"
+                query +="}"
+                query += "?child" + (i + 1) + " rdf:type ?type."
             }
-            for (var i = 1; i <descendantsDepth; i++) {
+            for (var i = 1; i < descendantsDepth; i++) {
                 query += "} "
             }
             query += "  }ORDER BY ?child1Label ";
@@ -200,19 +203,19 @@ var Sparql_generic = (function () {
                 options = {depth: 0}
             }
             setVariables(sourceLabel);
-            var filterStr = setFilter("concept", ids, words,options)
+            var filterStr = setFilter("concept", ids, words, options)
 
             var query = "";
             query += prefixesStr;
             query += " select distinct * " + fromStr + "  WHERE {"
 
             query += "?concept " + prefLabelPredicate + " ?conceptLabel. ";
-            if(lang)
-                query+="filter( lang(?conceptLabel)=\""+lang+"\")"
-            query+=filterStr;
+            if (lang)
+                query += "filter( lang(?conceptLabel)=\"" + lang + "\")"
+            query += filterStr;
+            query += "?concept rdf:type ?type."
 
-
-            ancestorsDepth=Math.min(  ancestorsDepth,optionalDepth);
+            ancestorsDepth = Math.min(ancestorsDepth, optionalDepth);
             for (var i = 1; i <= ancestorsDepth; i++) {
                 if (i == 1) {
                     query += "  ?concept " + broaderPredicate + " ?broader" + i + "." +
@@ -227,13 +230,14 @@ var Sparql_generic = (function () {
                         query += "filter( lang(?broader" + (i) + "Label)=\"" + lang + "\")"
 
                 }
+                query += "?broader" + (i) + " rdf:type ?type."
+
             }
 
 
             for (var i = 1; i < ancestorsDepth; i++) {
                 query += "} "
             }
-
 
 
             query += "  }";
@@ -251,7 +255,7 @@ var Sparql_generic = (function () {
         self.getNodeInfos = function (sourceLabel, conceptId, options, callback) {
             setVariables(sourceLabel);
 
-           var query= " select distinct * " + fromStr + "  WHERE {"+
+            var query = " select distinct * " + fromStr + "  WHERE {" +
                 " <" + conceptId + "> ?prop ?value. } limit 500";
 
 
@@ -266,47 +270,45 @@ var Sparql_generic = (function () {
         }
 
 
-        self.update=function(sourceLabel,triples,callback) {
-            var graphUri=Config.sources[sourceLabel].graphIri
-            var deleteTriplesStr="";
-            var insertTriplesStr="";
-            triples.forEach(function(item,index){
-                var valueStr=""
-                if(item.valueType=="uri")
-                    valueStr="<"+item.object+">"
+        self.update = function (sourceLabel, triples, callback) {
+            var graphUri = Config.sources[sourceLabel].graphIri
+            var deleteTriplesStr = "";
+            var insertTriplesStr = "";
+            triples.forEach(function (item, index) {
+                var valueStr = ""
+                if (item.valueType == "uri")
+                    valueStr = "<" + item.object + ">"
                 else {
-                    var langStr="";
-                    if(item.lang)
-                        langStr="@"+item.lang
-                    valueStr = "'" + item.object + "'"+langStr
+                    var langStr = "";
+                    if (item.lang)
+                        langStr = "@" + item.lang
+                    valueStr = "'" + item.object + "'" + langStr
                 }
 
 
+                insertTriplesStr += "<" + item.subject + '> <' + item.predicate + '> ' + valueStr + '.';
+                deleteTriplesStr += "<" + item.subject + '> <' + item.predicate + '> ' + "?o_" + index + '.';
 
-
-                insertTriplesStr+="<"+item.subject+'> <'+item.predicate+'> '+valueStr+'.';
-                deleteTriplesStr+= "<"+item.subject+'> <'+item.predicate+'> '+"?o_"+index+'.';
-                
             })
-            var query = " WITH GRAPH  <"+graphUri+">  " +
+            var query = " WITH GRAPH  <" + graphUri + ">  " +
                 "DELETE" +
                 "{  " +
-                    deleteTriplesStr+
+                deleteTriplesStr +
                 "  }" +
                 "WHERE" +
                 "  {" +
-                    deleteTriplesStr+
+                deleteTriplesStr +
                 "  };" +
                 "" +
                 "INSERT DATA" +
                 "  {" +
-                    insertTriplesStr+
+                insertTriplesStr +
                 "  }"
 
 
-           // console.log(query)
+            // console.log(query)
             url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";
-            Sparql_proxy.querySPARQL_GET_proxy(url,query, null,null, function(err, result){
+            Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
                 return callback(err);
             })
         }

@@ -14,6 +14,7 @@ var TreeController = (function () {
             if (childNodeVar && item[childNodeVar]) {
                 var childNodeId = item[childNodeVar].value;
                 var childNodeLabel = item[childNodeVar + "Label"].value;
+                var type = item.type.value
 
                 if (!existingNodes[childNodeId]) {
                     existingNodes[childNodeId] = 1;
@@ -22,6 +23,7 @@ var TreeController = (function () {
                         parent: parentNodeId,
                         id: childNodeId,
                         text: childNodeLabel,
+                        data: {type: type}
 
                     }
                     jstreeData.push(child);
@@ -31,7 +33,6 @@ var TreeController = (function () {
 
 
         })
-
 
 
         if (parentNodeId == "#") {
