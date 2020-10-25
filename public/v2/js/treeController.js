@@ -13,7 +13,7 @@ var TreeController = (function () {
 
             if (childNodeVar && item[childNodeVar]) {
                 var childNodeId = item[childNodeVar].value;
-                var childNodeLabel = item[childNodeVar + "Label"].value;
+                var childNodeLabel = common.getItemLabel(item,childNodeVar)
                 var type = item.type.value
 
                 if (!existingNodes[childNodeId]) {

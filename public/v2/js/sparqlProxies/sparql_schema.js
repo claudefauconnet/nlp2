@@ -73,14 +73,14 @@ var Sparql_schema = (function () {
 
     }
 
-    self.getObjectRanges = function (sourceSchema, classId, callback) {
+    self.getObjectRangeProperties = function (sourceSchema, classId, callback) {
         var fromStr="";
         if (sourceSchema.graphUri)
              fromStr = "FROM <" + sourceSchema.graphUri + "> ";
         var query = " PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
             "PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
             " select distinct *  " + fromStr + "   WHERE  " +
-            "{ ?prop rdfs:domain <" + classId + "> " +
+            "{ ?prop rdfs:domain <" + classId + ">. " +
             "?prop rdfs:range ?range. OPTIONAL{?range rdfs:label ?rangeLabel }} " +
             "limit 1000"
 
@@ -94,6 +94,84 @@ var Sparql_schema = (function () {
         })
 
 
+    }
+    self.getObjectDomainProperties= function (sourceSchema, classId, callback) {
+        var fromStr="";
+        if (sourceSchema.graphUri)
+            fromStr = "FROM <" + sourceSchema.graphUri + "> ";
+        var query = " PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
+            "PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+            " select distinct *  " + fromStr + "   WHERE  " +
+            "{"+
+            "{ ?prop rdfs:range <" + classId + ">. " +
+            "?prop rdfs:domain ?domain. OPTIONAL{?domain rdfs:label ?domainLabel } " +
+
+            "}" +
+
+            "UNION{" +
+            "      <"+classId+"> rdfs:subClassOf* ?overClass." +
+            "        ?prop rdfs:range  ?overClass." +
+            "?prop rdfs:domain ?domain. OPTIONAL{?domain rdfs:label ?domainLabel } " +
+            "  }"+
+            "}limit 1000 "
+
+
+
+
+
+            "limit 1000"
+
+        var url = sourceSchema.sparql_url + "?query=&format=json";
+        Sparql_proxy.querySPARQL_GET_proxy(url, query, "", null, function (err, result) {
+            if (err) {
+                return callback(err)
+            }
+            return callback(null, result.results.bindings)
+
+        })
+
+
+    }
+
+    self.getDataTypeProperties=function(sourceSchema,classId,callback){
+        var fromStr="";
+        if (sourceSchema.graphUri)
+            fromStr = "FROM <" + sourceSchema.graphUri + "> ";
+
+       var query=" PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
+           " PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+           "select distinct ?property ?range  "+fromStr+" WHERE  { " +
+           "{" +
+           "    ?property rdf:type <http://www.w3.org/2002/07/owl#DatatypeProperty>." +
+        " ?property rdfs:domain  <"+classId+">." +
+           "  optional{?property rdfs:range ?range}" +
+           "}" +
+
+           "UNION{" +
+           "      <"+classId+"> rdfs:subClassOf* ?overClass." +
+           "     ?property rdf:type <http://www.w3.org/2002/07/owl#DatatypeProperty>. ?property rdfs:domain  ?overClass." +
+           "     optional{?property rdfs:range ?range}"+
+           "  }"+
+           "}limit 1000 "
+
+        self.executeQuery(sourceSchema,query,callback);
+
+    }
+
+
+
+
+    self.executeQuery=function(sourceSchema,query,callback){
+
+
+        var url = sourceSchema.sparql_url + "?query=&format=json";
+        Sparql_proxy.querySPARQL_GET_proxy(url, query, "", null, function (err, result) {
+            if (err) {
+                return callback(err)
+            }
+            return callback(null, result.results.bindings)
+
+        })
     }
 
 

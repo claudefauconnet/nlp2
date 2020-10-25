@@ -50,7 +50,7 @@
         "rdfs:<http://www.w3.org/2000/01/rdf-schema#>"
       ],
       "prefLabel": "rdfs:label",
-      "topConceptbroader": "rdfs:subClassOf|^rdfs:superClassFor",
+      "broaderPredicate": "rdfs:subClassOf|^rdfs:superClassFor",
       "topConceptFilter": "?topConcept rdfs:subClassOf <http://data.15926.org/dm/Thing>."
     },
     "color": "#bcbd22"
@@ -63,7 +63,7 @@
     "predicates": {
       "lang": "en",
       "prefLabel": "rdfs:label|skos:prefLabel",
-      "topConceptbroader": "^skos:member",
+      "broaderPredicate": "^skos:member",
       "topConceptFilter": "?topConcept rdf:type <http://www.eionet.europa.eu/gemet/2004/06/gemet-schema.rdf#SuperGroup>."
     },
     "color": "#c7c7c7"
@@ -74,7 +74,7 @@
     "graphIri": "http://data.bnf.fr",
     "sourceSchema": "SKOS",
     "predicates": {
-      "topConceptbroader": "terms:isPartOf",
+      "broaderPredicate": "terms:isPartOf",
       "lang": "fr"
     },
     "color": "#7f7f7f"
@@ -86,7 +86,7 @@
     "ancestorsDepth": 4,
     "predicates": {
       "topConceptFilter": "?topConcept  <http://www.w3.org/2000/01/rdf-schema#subClassOf>\t<http://www.w3.org/2002/07/owl#Thing> .",
-      "topConceptbroader": "rdfs:subClassOf",
+      "broaderPredicate": "rdfs:subClassOf",
       "prefLabel": "rdfs:label",
       "lang": "en"
     },
@@ -102,7 +102,7 @@
         "rdfs:<http://www.w3.org/2000/01/rdf-schema#>"
       ],
       "topConceptFilter": "?topConcept wordnet:hyponymOf  <http://wordnet.rkbexplorer.com/id/synset-entity-noun-1> .",
-      "topConceptbroader": " wordnet:hyponymOf",
+      "broaderPredicate": " wordnet:hyponymOf",
       "prefLabel": "rdfs:label",
       "optionalDepth": 1,
       "lang": "en"
@@ -175,8 +175,9 @@
         "rdfs:<http://www.w3.org/2000/01/rdf-schema#>"
       ],
       "prefLabel": "rdfs:label",
-      "topConceptbroader": "rdfs:subClassOf|^rdfs:superClassFor",
+      "broaderPredicate": "rdfs:subClassOf|^rdfs:superClassFor",
       "topConceptFilter":  " ?topConcept rdf:type rdfs:Class. ?x rdfs:range ?topConcept.  ?topConcept rdf:type ?type. filter (?type= owl:Class)",
+      "broader": "rdfs:subClassOf",
       "lang": null
     },
     "color": "#bcbd22"

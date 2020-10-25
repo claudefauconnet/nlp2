@@ -11,7 +11,7 @@ var Sparql_generic = (function () {
 
             ],
             topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"
-            , topConceptbroader: "skos:broader"
+            , broaderPredicate: "skos:broader"
             , broader: "skos:broader"
             , prefLabel: "skos:prefLabel"
             , altLabel: "skos:altLabel",
@@ -61,16 +61,17 @@ var Sparql_generic = (function () {
                 prefixesStr += "PREFIX " + item + " "
             })
 
-            if (graphIri && graphIri != "")
+            if (graphIri && graphIri != "") {
                 if (!Array.isArray(graphIri))
                     graphIri = [graphIri];
-            graphIri.forEach(function (item) {
-                fromStr += " FROM <" + item + "> "
-            })
+                graphIri.forEach(function (item) {
+                    fromStr += " FROM <" + item + "> "
+                })
+            }
 
 
             topConceptFilter = predicates.topConceptFilter || defaultPredicates.topConceptFilter;
-            broaderPredicate = predicates.topConceptbroader || defaultPredicates.topConceptbroader;
+            broaderPredicate = predicates.broaderPredicate || defaultPredicates.broaderPredicate;
             prefLabelPredicate = predicates.prefLabel || defaultPredicates.prefLabel;
             lang = predicates.lang;
             limit = predicates.limit || defaultPredicates.limit;
