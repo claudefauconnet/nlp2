@@ -185,6 +185,16 @@ var common = (function () {
         }
 
     }
+    self.getUriLabel = function (uri) {
+        var p = uri.lastIndexOf("#")
+        if (p < 0)
+            p = uri.lastIndexOf("/")
+        if (p > -1)
+            return uri.substring(p + 1)
+        else
+            return uri
+
+    }
 
 
     self.palette = [
