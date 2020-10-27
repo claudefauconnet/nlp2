@@ -80,6 +80,7 @@ var common = (function () {
         }).on('loaded.jstree', function () {
             if (options.openAll)
                 $('#' + jstreeDiv).jstree(true).open_all();
+
             $(".jstree-themeicon").css("display", "none")
             $(".jstree-anchor").css("line-height", "18px")
             $(".jstree-anchor").css("height", "18px")
@@ -118,7 +119,7 @@ var common = (function () {
     self.addNodesToJstree = function (jstreeDiv, parentNodeId, jstreeData, options) {
         jstreeData.forEach(function (node) {
             $("#" + jstreeDiv).jstree(true).create_node(parentNodeId, node, "last", function () {
-
+                $("#" + jstreeDiv).jstree(true).open_node(parentNodeId);
 
             })
 

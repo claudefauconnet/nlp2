@@ -9,10 +9,10 @@
     }
 
     .SourceEditor_majorDiv {
-        min-height: 300px;
+        min-height:150px;
         border-radius: 5px;
         border: #372806 2px solid;
-        background-color: #bdbdbd;
+        background-color: #ddd;
         margin: 5px;
         padding: 5px;
 
@@ -29,7 +29,7 @@
 
 
 </style>
-<div>
+<div id="SourceEditor_mainDiv" style="display: none">
 
 
 
@@ -40,6 +40,9 @@
         <select id='SourceEditor_NewClassSelect' onchange='SourceEditor.initClass()'></select><br>
 
     </div>
+    <button onclick="SourceEditor.saveEditingObject()">Save</button>
+    <button onclick="SourceEditor.onAddNewObject()">New</button>
+    <button onclick="SourceEditor.deleteEditingObject()">Delete</button>
     <div class='SourceEditor_aboutDiv'>
         <span id="SourceEditor_ObjectType"><b></b></span>&nbsp;: about<input id="SourceEditor_ObjectUri" class="SourceEditor_input">
     </div>
@@ -57,7 +60,7 @@
 </div>
 
 
-<button onclick="SourceEditor.saveEditingObject()">OK</button>
+
 
 
 </div>

@@ -156,7 +156,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
     "graphIri": "http://www.loc.gov/",
-    "sourceSchema": "SKOS",
+    "sourceSchema": "SKOS!!!",
     "predicates": {
       "topConceptFilter": "  ?topConcept skos:prefLabel ?topConceptLabel.filter( NOT EXISTS{?topConcept skos:broader ?x})",
       "lang": "en"

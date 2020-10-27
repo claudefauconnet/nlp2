@@ -47,8 +47,8 @@ var MainController = (function () {
                     self.UI.updateActionDivLabel();
                     if (Config.tools[self.currentTool].multiSources)
                         controller.onSourceSelect(self.currentSource)
-                    if(Config.tools[self.currentTool].onLoaded)
-                        Config.tools[self.currentTool].onLoaded()
+                    if(controller.onLoaded)
+                        controller.onLoaded()
 
                 }
             })
@@ -82,7 +82,8 @@ var MainController = (function () {
 
         setCredits:function(){
 
-            var html="<div><span class='topTitle'>SousLeSens Vocables</span></div>"
+            var html="<div><span class='topTitle'>SousLeSens Vocables</span><br>" +
+                "  <img src=\"images/description.png\"></div>"
             $("#graphDiv").html(html)
 
 

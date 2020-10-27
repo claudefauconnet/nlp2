@@ -1,8 +1,15 @@
 var ThesaurusBrowser = (function () {
     var self = {}
+    self.currentSourceLabel
 
+
+    self.onLoaded=function(){
+        $("#sourceDivControlPanelDiv").html("<input id='SourceEditor_searchAllSourcesTermInput'> <button onclick='ThesaurusBrowser.searchAllSourcesTerm()'>Search</button>")
+    }
     self.onSourceSelect = function (thesaurusLabel) {
+        self.currentSourceLabel = thesaurusLabel;
         self.showThesaurusTopConcepts(thesaurusLabel)
+        $("#sourceDivControlPanelDiv").html("<input id='SourceEditor_searchTermInput'> <button onclick='ThesaurusBrowser.searchTerm()'>Search</button>")
     }
 
     self.showThesaurusTopConcepts = function (thesaurusLabel, options) {
@@ -25,7 +32,7 @@ var ThesaurusBrowser = (function () {
                 selectNodeFn: function (event, propertiesMap) {
                     if (options.treeSelectNodeFn) {
                         options.treeSelectNodeFn(event, propertiesMap);
-                    }else {
+                    } else {
                         if (true || propertiesMap.event.ctrlKey) {
                             self.editThesaurusConceptInfos(thesaurusLabel, propertiesMap.node)
                         }
@@ -39,11 +46,11 @@ var ThesaurusBrowser = (function () {
 
 
             }
-            jsTreeOptions=options;
-            jsTreeOptions.selectNodeFn= function (event, propertiesMap) {
+            jsTreeOptions = options;
+            jsTreeOptions.selectNodeFn = function (event, propertiesMap) {
                 if (options.treeSelectNodeFn) {
                     options.treeSelectNodeFn(event, propertiesMap);
-                }else {
+                } else {
                     if (true || propertiesMap.event.ctrlKey) {
                         self.editThesaurusConceptInfos(thesaurusLabel, propertiesMap.node)
                     }
@@ -158,16 +165,16 @@ var ThesaurusBrowser = (function () {
             if (propertiesMap.properties[key].value) {
                 var values = propertiesMap.properties[key].value;
                 str += "<td class='detailsCellName'>" + propertiesMap.properties[key].name + "</td>"
-                var valuesStr=""
-                values.forEach(function (value,index) {
+                var valuesStr = ""
+                values.forEach(function (value, index) {
                     if (value.indexOf("http") == 0)
                         value = "<a target='_blank' href='" + value + "'>" + value + "</a>"
-                    if(index>0)
-                        valuesStr+="<br>"
-                    valuesStr+=value
+                    if (index > 0)
+                        valuesStr += "<br>"
+                    valuesStr += value
                 })
                 str += "<td class='detailsCellValue'>" + valuesStr + "</td>"
-                    str += "</tr>"
+                str += "</tr>"
 
 
             } else {
@@ -177,25 +184,25 @@ var ThesaurusBrowser = (function () {
                 var langDivs = "";
 
 
-                 for (var lang in propertiesMap.properties[key].langValues) {
-                         var values = propertiesMap.properties[key].langValues[lang];
-                     var selected = "";
-                     if (lang == defaultLang)
-                         selected = "selected";
-                     propNameSelect += "<option " + selected + ">" + lang + "</option> ";
-                        var valuesStr=""
-                         values.forEach(function (value,index) {
-                             if (value.indexOf("http") == 0)
-                                 value += "<a target='_blank' href='" + value + "'>" + value + "</a>"
-                             if(index>0)
-                                 valuesStr+="<br>"
-                             valuesStr+=value
+                for (var lang in propertiesMap.properties[key].langValues) {
+                    var values = propertiesMap.properties[key].langValues[lang];
+                    var selected = "";
+                    if (lang == defaultLang)
+                        selected = "selected";
+                    propNameSelect += "<option " + selected + ">" + lang + "</option> ";
+                    var valuesStr = ""
+                    values.forEach(function (value, index) {
+                        if (value.indexOf("http") == 0)
+                            value += "<a target='_blank' href='" + value + "'>" + value + "</a>"
+                        if (index > 0)
+                            valuesStr += "<br>"
+                        valuesStr += value
 
-                         })
+                    })
 
-                     langDivs += "<div class='detailsLangDiv_" + keyName + "' id='detailsLangDiv_" + keyName + "_" + lang + "'>" + valuesStr + "</div>"
+                    langDivs += "<div class='detailsLangDiv_" + keyName + "' id='detailsLangDiv_" + keyName + "_" + lang + "'>" + valuesStr + "</div>"
 
-                     }
+                }
 
 
                 propNameSelect += "</select>"
@@ -219,12 +226,103 @@ var ThesaurusBrowser = (function () {
 
     }
 
+
     self.onNodeDetailsLangChange = function (property, lang) {
         $('.detailsLangDiv_' + property).css('display', 'none')
         if (!lang)
             lang = $("#detailsLangSelect_" + property).val();
         if ($("#detailsLangDiv_" + property + "_" + lang).html())
             $("#detailsLangDiv_" + property + "_" + lang).css("display", "block");
+
+    }
+
+
+    self.searchTerm = function (sourceLabel,term,rootId,callback) {
+        if (!term)
+            term = $("#SourceEditor_searchTermInput").val()
+        if(!term || term=="")
+            return
+
+        if(!rootId)
+            rootId="#"
+        if(!sourceLabel)
+            sourceLabel=self.currentSourceLabel
+        var depth = 5
+        Sparql_generic.getNodeParents( sourceLabel,term, null, depth, null, function (err, result) {
+            if (err)
+                return MainController.UI.message(err)
+
+            var existingNodes={};
+            var jstreeData=[]
+
+                result.forEach(function (item) {
+                    for (var i = depth; i > 0; i--) {
+                        if (item["broader" + i]) {
+                            var id=item["broader" + i].value
+                            if(!existingNodes[id]) {
+                                existingNodes[id]=1
+                                var label = item["broader" + i + "Label"].value
+                               var parentId=rootId
+                             if(item["broader" + (i+1)])
+                                 parentId=item["broader" + (i+1)].value
+                                 jstreeData.push({id:id,text:label,parent:parentId,data:{sourceLabel:sourceLabel}})
+                                    }
+                        }
+                    }
+                    jstreeData.push({id:item.concept.value,text:item.conceptLabel.value,parent:item["broader1"].value,data:{sourceLabel:sourceLabel}})
+                })
+            if(callback)
+                return callback(null,jstreeData)
+
+            common.loadJsTree("currentSourceTreeDiv", jstreeData, {openAll:true, selectNodeFn: function (event, propertiesMap) {
+                    self.editThesaurusConceptInfos(self.currentSourceLabel, propertiesMap.node)
+                }
+            })
+
+
+        })
+
+
+    }
+
+    self.searchAllSourcesTerm=function(){
+        if(!term)
+        var term=$("#SourceEditor_searchAllSourcesTermInput").val()
+        if(!term || term=="")
+            return
+
+        var searchedSources=[];
+        for( var sourceLabel in Config.sources) {
+            if (Config.sources[sourceLabel].sourceSchema == "SKOS") {
+                searchedSources.push(sourceLabel)
+            }
+        }
+        var jstreeData=[]
+            async.eachSeries(searchedSources,function(sourceLabel,callbackEach){
+                MainController.UI.message("searching in "+sourceLabel)
+                self.searchTerm (sourceLabel,term,sourceLabel,function(err,result){
+                    if(err)
+                        return MainController.UI.message(err)
+                    jstreeData.push({id:sourceLabel,text:sourceLabel,parent:"#",data:{sourceLabel:sourceLabel}})
+                    jstreeData=jstreeData.concat(result)
+                    callbackEach();
+                })
+
+
+            },function(err){
+                $("#accordion").accordion("option", {active: 2});
+                var html = "<div id='currentSourceTreeDiv'></div>"
+
+                $("#actionDiv").html(html);
+
+                common.loadJsTree("currentSourceTreeDiv", jstreeData, {openAll:true, selectNodeFn: function (event, propertiesMap) {
+                        self.editThesaurusConceptInfos(propertiesMap.node.data.sourceLabel, propertiesMap.node)
+                    }
+                })
+
+            })
+
+
 
     }
 

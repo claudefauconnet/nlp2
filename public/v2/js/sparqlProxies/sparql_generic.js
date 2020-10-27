@@ -271,6 +271,22 @@ var Sparql_generic = (function () {
         }
 
 
+    self.deleteTriplesBySubject = function (sourceLabel, subjectId, callback) {
+            var query="with <"+Config.sources(sourceLabel).graphIri+"> " +
+                " DELETE {?s ?p ?o} WHERE{ ?s ?p ?o filter( ?s=<"+subjectId+">)}"
+
+        url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";
+        Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                return callback(err);
+            }
+            return callback(null, result.results.bindings)
+
+
+        })
+
+    }
+
         self.update = function (sourceLabel, triples, callback) {
             var graphUri = Config.sources[sourceLabel].graphIri
             var deleteTriplesStr = "";

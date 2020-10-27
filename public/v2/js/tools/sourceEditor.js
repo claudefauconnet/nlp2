@@ -68,9 +68,14 @@ var SourceEditor = (function () {
 
             $("#graphDiv").load("snippets/sourceEditor.html")
             setTimeout(function () {
+
+              //  $("#SourceEditor_mainDiv").css("display", "block")
                 $("#SourceEditor_NewObjectDiv").css("display", "block")
                 $("#SourceEditor_graphUri").html("sourceGraphUri")
                 common.fillSelectOptions("SourceEditor_NewClassSelect", self.schema.classes, true, "label", "id")
+
+                if(!parentObj)
+                    parentObj=self.editingObject
 if(parentObj){
                 if(self.currentSourceSchema){
                     var parentProperty=self.currentSourceSchema.newObject.treeParentProperty
@@ -190,7 +195,7 @@ if(parentObj){
                             return callbackSeries2(err)
 
                         result.forEach(function (item) {
-                            self.schema.classes[classId].annotations[item.annotation.value] = {id: item.annotation.value, label:common.getItemLabel(annotation,"subProperty")}
+                            self.schema.classes[classId].annotations[item.annotation.value] = {id: item.annotation.value, label:common.getItemLabel(item,"annotation")}
                         })
 
                         callbackSeries2();
@@ -209,7 +214,7 @@ if(parentObj){
 
         self.editNode = function (event, obj, initData) {
 
-
+            $("#SourceEditor_mainDiv").css("display", "block")
             var editingObject;
             var type;
             if (!obj.node.data || !obj.node.data.type)
@@ -235,7 +240,8 @@ if(parentObj){
                         editingObject = self.schema.classes[type]
                         editingObject.about = obj.node.id;
                         editingObject.type = editingObject.id;
-                        editingObject.parent = obj.node.parent;
+                        if(self.editingObject)
+                        editingObject.parent =self.editingObject.about
                         // delete editingObject.id
                         editingObject.objectPropertiesList = Object.keys(self.schema.classes[type].objectProperties).sort();
                         editingObject.annotationsList = Object.keys(self.schema.classes[type].annotations).sort();
@@ -439,6 +445,15 @@ if(parentObj){
         self.onSelectNewAnnotation = function (annotation) {
             $("#SourceEditor_NewPropertySelect").val("");
             self.drawObjectValue("annotations", annotation, self.editingObject, "SourceEditor_ObjectAnnotationsTableDiv", "focus", true)
+
+        }
+
+        self.deleteEditingObject=function(){
+            Sparql_generic.deleteTriplesBySubject(self.currentSourceLabel,self.editingObject.about,function(err, result){
+
+            })
+
+
 
         }
 
