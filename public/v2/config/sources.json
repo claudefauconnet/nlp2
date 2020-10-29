@@ -99,7 +99,8 @@
     "predicates": {
       "prefixes": [
         "wordnet:<http://www.w3.org/2006/03/wn/wn20/schema/>",
-        "rdfs:<http://www.w3.org/2000/01/rdf-schema#>"
+        "rdfs:<http://www.w3.org/2000/01/rdf-schema#>",
+        "rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
       ],
       "topConceptFilter": "?topConcept wordnet:hyponymOf  <http://wordnet.rkbexplorer.com/id/synset-entity-noun-1> .",
       "broaderPredicate": " wordnet:hyponymOf",

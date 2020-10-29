@@ -49,6 +49,10 @@ var MainController = (function () {
                         controller.onSourceSelect(self.currentSource)
                     if(controller.onLoaded)
                         controller.onLoaded()
+                    if(Config.tools[self.currentTool].toolDescriptionImg){
+                        $("#graphDiv").html("<img src='"+Config.tools[self.currentTool].toolDescriptionImg+"' width='600px' style='toolDescriptionImg'>")
+                    }else
+                        $("#graphDiv").html(self.currentTool);
 
                 }
             })
@@ -56,7 +60,7 @@ var MainController = (function () {
         },
         onSourceSelect: function () {
             $("#actionDivContolPanelDiv").html("");
-            $("#sourceDivControlPanelDiv").html("");
+          //  $("#sourceDivControlPanelDiv").html("");
 
             if (Config.tools[self.currentTool].multiSources)
                 return

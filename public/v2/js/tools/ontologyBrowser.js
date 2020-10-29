@@ -73,8 +73,10 @@ var OntologyBrowser = (function () {
             self.nodeProperties = {};
             result.forEach(function (item) {
                 var propLabel = common.getItemLabel(item, "property")
+                if( self.nodeProperties[propLabel])
+                    return;
                 var range = "";
-                if (item.range)
+                if (item.range )
                     range = item.range.value
                 else //?? correct ?????
                     range= "http://www.w3.org/2001/XMLSchema#string"

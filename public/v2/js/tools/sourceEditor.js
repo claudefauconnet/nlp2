@@ -29,10 +29,19 @@ var SourceEditor = (function () {
         self.getJstreeContextMenu = function () {
             return {
                 addChild: {
-                    label: "addChild",
+                    label: "add Child",
                     action: function (obj, sss, cc) {
 
                         SourceEditor.onAddNewObject(self.editingObject)
+                        ;
+                    },
+
+                },
+                delete: {
+                    label: "Delete",
+                    action: function (obj, sss, cc) {
+
+                        SourceEditor.deleteEditingObject()
                         ;
                     },
 
@@ -449,7 +458,18 @@ if(parentObj){
         }
 
         self.deleteEditingObject=function(){
+
+            var children=  $('#currentSourceTreeDiv').jstree(true).get_node(self.editingObject.about).children
+            if(children.length>0)
+               return alert("cannot delete node with children")
             Sparql_generic.deleteTriplesBySubject(self.currentSourceLabel,self.editingObject.about,function(err, result){
+                if(err)
+                    MainController.UI.message(err);
+                $('#currentSourceTreeDiv').jstree(true).delete_node(self.editingObject.about)
+                $('#currentSourceTreeDiv').jstree(true).deselect_all ();
+                self.editingObject=null;
+                $("#SourceEditor_mainDiv").css("display", "none")
+
 
             })
 

@@ -14,13 +14,12 @@ var Config = (function () {
     self.tools = {};
 
 
-    self.tools["thesaurusBrowser"] = {label: "Browse", multiSources: 0, controller: ThesaurusBrowser}
-    self.tools["sourceEditor"] = {label: "Edit", multiSources: 0, controller: SourceEditor,onLoaded:SourceEditor.onLoaded}
-    self.tools["thesauriMatcher"] = {label: "Match", multiSources: 0, controller: ThesaurusMatcher}
-    self.tools["nerEvaluator"] = {label: "Evaluate", multiSources: 1, controller: NerEvaluator}
-    self.tools["termTaxonomy"] = {label: "Taxonomy", multiSources: 1, controller: TermTaxonomy}
-    //  self.tools["corpusGraph"] = {label: "corpus concepts graph", multiSources: 1, controller: CorpusGraph}
-    self.tools["ontologyBrowser"] = {label: "ontology browser", multiSources: 0, controller: OntologyBrowser}
+    self.tools["thesaurusBrowser"] = {label: "Browse", multiSources: 0, controller: ThesaurusBrowser,toolDescriptionImg:"images/browse.png"}
+    self.tools["sourceEditor"] = {label: "Edit", multiSources: 0, controller: SourceEditor,toolDescriptionImg:null},
+    self.tools["thesauriMatcher"] = {label: "Match", multiSources: 0, controller: ThesaurusMatcher,toolDescriptionImg:"images/match.png"}
+    self.tools["nerEvaluator"] = {label: "Evaluate", multiSources: 1, controller: NerEvaluator,toolDescriptionImg:"images/evaluate.png"}
+    self.tools["termTaxonomy"] = {label: "Taxonomy", multiSources: 1, controller: TermTaxonomy,toolDescriptionImg:"images/taxonomy.png"}
+    self.tools["ontologyBrowser"] = {label: "Ontology", multiSources: 0, controller: OntologyBrowser,toolDescriptionImg:null}
 
 
     return self;

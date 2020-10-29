@@ -272,7 +272,7 @@ var Sparql_generic = (function () {
 
 
     self.deleteTriplesBySubject = function (sourceLabel, subjectId, callback) {
-            var query="with <"+Config.sources(sourceLabel).graphIri+"> " +
+            var query="with <"+Config.sources[sourceLabel].graphIri+"> " +
                 " DELETE {?s ?p ?o} WHERE{ ?s ?p ?o filter( ?s=<"+subjectId+">)}"
 
         url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";

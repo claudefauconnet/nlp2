@@ -9,6 +9,10 @@ var NerEvaluator = (function () {
 
     }
 
+    self.onLoaded = function () {
+
+    }
+
 
     self.showActionPanel = function () {
         self.selectedSources = $("#sourcesTreeDiv").jstree(true).get_checked()
