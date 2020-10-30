@@ -15,6 +15,7 @@
     <ul>
         <li><a href="#OntologyBrowser_tabs_graph">Graph</a></li>
         <li><a href="#OntologyBrowser_tabs_missingTerms">Missing terms</a></li>
+        <li><a href="#OntologyBrowser_tabs_wikiPageContent">Page content</a></li>
 
 
     </ul>
@@ -23,9 +24,17 @@
     </div>
 
     <div id="OntologyBrowser_tabs_missingTerms">
-        <span class="nerEvaluator_title"> Missing words</span><br>
+        <span class="nerEvaluator_title"> Search Missing words in source</span>
         <select id="nerEvaluator_graphUrisSelect" onchange="NerEvaluator.getWikipageMissingWords()"></select>
-        <div id="nerEvaluator_missingWordsDiv" style="height: 250px;overflow: auto"></div>
+        <div id="nerEvaluator_missingWordsDiv" style="min-height: 400px;overflow: auto"></div>
 
         <textarea type="text" style="width:300px" id="nerEvaluator_copiedWords"></textarea>
     </div>
+
+    <div id="OntologyBrowser_tabs_wikiPageContent">
+        <iframe id=OntologyBrowser_wikiPageContent_iframe  width="600px"  height="800px">
+
+        </iframe>
+
+    </div>
+</div>

@@ -1,8 +1,11 @@
 var NerEvaluator = (function () {
     var self = {}
+
+    self.maxGraphConceptLength = 500
     var sourceGraphsIriMap = {}
+
     self.selectedSources = []
-   self.categoriesTreeId="nerEvaluator_treeDiv"
+    self.categoriesTreeId = "nerEvaluator_treeDiv"
     self.onSourceSelect = function () {
         var html = "<button onclick='NerEvaluator.showActionPanel()'>OK</button>"
         $("#sourceDivControlPanelDiv").html(html)
@@ -21,8 +24,11 @@ var NerEvaluator = (function () {
         $("#graphDiv").load("snippets/nerEvaluator_right.html")
         $("#accordion").accordion("option", {active: 2});
         setTimeout(function () {
-$("#NerEvaluator_tabs").tabs();
-//$("#nerEvaluator_treeDiv").height(600)
+            $("#NerEvaluator_tabs").tabs({
+                activate: self.onTabActivate
+
+                });
+
             common.fillSelectOptions("nerEvaluator_graphUrisSelect", self.selectedSources, true)
             self.showWikiCategoriesTree();
 
@@ -30,6 +36,49 @@ $("#NerEvaluator_tabs").tabs();
         }, 200)
 
 
+    }
+    self.onTreeClickNode = function (evt, obj) {
+        $("#messageDiv").html("");
+        self.currentTreeNode = obj.node
+
+
+        if (obj.node.data && obj.node.data.type == "wikiPage") {
+
+            var activeTab = $('ul.tabs li a.active');
+
+            if(true || (activeTab && activeTab.data('id')=="OntologyBrowser_tabs_wikiPageContent")) {
+                self.loadWikiPage()
+            }
+            return self.getWikipageMissingWords(obj.node)
+        }
+        self.addTreeChildrenNodes(obj.node.id);
+        if (obj.node.parents.length > 3 || obj.event.ctrlKey) {
+            self.showNodeConceptsGraph(obj.node, function (err, result) {
+                self.addWikiPagesToTree(obj.node)
+            })
+
+        }
+
+
+
+    }
+
+    self.onTabActivate=function(e,ui){
+       var divId=ui.newPanel.attr('id');
+       if( divId=="OntologyBrowser_tabs_wikiPageContent"){
+           self.loadWikiPage()
+       }
+    }
+
+    self.loadWikiPage=function(){
+        var selectedNode = $("#" + NerEvaluator.categoriesTreeId).jstree(true).get_selected(true);
+        if (!selectedNode || !selectedNode[0].data)
+            return MainController.UI.message("select a page ")
+        var type = selectedNode[0].data.type
+        if (type != "wikiPage")
+            return MainController.UI.message("select a page ")
+        var page = selectedNode[0].id
+        $("#OntologyBrowser_wikiPageContent_iframe").attr('src', page)
     }
 
 
@@ -70,7 +119,6 @@ $("#NerEvaluator_tabs").tabs();
                     },
                     treeDivId: "categoriesTreeId",
                     type: "TopConcept",
-                    icon: "concept-icon.png",
                     id: id,
                     parent: "#",
                     text: prefLabel,
@@ -81,24 +129,24 @@ $("#NerEvaluator_tabs").tabs();
 
             var types = {
 
-            /*    "default": {
-                    "icon": "glyphicon glyphicon-flash"
-                },
-                "TopConcept": {
-                    "icon": 'icons/wiki.png'
+                /*    "default": {
+                        "icon": "glyphicon glyphicon-flash"
+                    },
+                    "TopConcept": {
+                        "icon": 'icons/wiki.png'
 
 
-                },
-                "Concept": {
-                    "icon": 'icons/concept.png'
+                    },
+                    "Concept": {
+                        "icon": 'icons/concept.png'
 
 
-                },
-                "Page": {
-                    "icon": 'icons/page.png'
+                    },
+                    "Page": {
+                        "icon": 'icons/page.png'
 
 
-                }*/
+                    }*/
             }
 
             common.loadJsTree(self.categoriesTreeId, nodes, {selectNodeFn: NerEvaluator.onTreeClickNode, types: types});
@@ -177,9 +225,9 @@ $("#NerEvaluator_tabs").tabs();
           if (!countAllPages) countPagesMaxFilter = " filter(?countPages<" + countPagesMax + ")"*/
         self.selectedSources.forEach(function (item) {
             var source = Config.sources[item]
-            sourceGraphsIriMap[source.graphIri]= {
-               color:source.color,
-               label:item
+            sourceGraphsIriMap[source.graphIri] = {
+                color: source.color,
+                label: item
             }
         })
 
@@ -212,7 +260,7 @@ $("#NerEvaluator_tabs").tabs();
             " optional {?concept skos:member ?member }" +
             "  optional{ ?concept skos:broader ?broader1. ?broader1 skos:prefLabel ?broader1Label  filter(lang(?broader1Label)='en')      optional{ ?broader1 skos:broader ?broader2. ?broader2 skos:prefLabel ?broader2Label  filter(lang(?broader2Label)='en')      optional{ ?broader2 skos:broader ?broader3. ?broader3 skos:prefLabel ?broader3Label  filter(lang(?broader3Label)='en')         optional{ ?broader3 skos:broader ?broader4. ?broader4 skos:prefLabel ?broader4Label  filter(lang(?broader4Label)='en') }    }    }  }     " +
             " GRAPH ?g{?concept skos:prefLabel ?x}" +
-            "} order by ?concept limit 1000"
+            "} order by ?concept limit 10000"
         Sparql_proxy.querySPARQL_GET_proxy(Config.default_sparql_url, query, {}, {}, function (err, result) {
 
             if (err) {
@@ -233,14 +281,14 @@ $("#NerEvaluator_tabs").tabs();
             if (result.results.bindings.length == 0)
                 return $("#messageDiv").html("no concepts matching");
 
-            if (result.results.bindings.length > 200) {
+            if (result.results.bindings.length > self.maxGraphConceptLength) {
                 self.tooManyNodes = true;
                 result.results.bindings.forEach(function (item) {
                     var conceptLabel = item.conceptLabelLower.value;
                     if (self.currentConceptsLabels.indexOf(conceptLabel) < 0)
                         self.currentConceptsLabels.push(conceptLabel);
                 })
-                $("#messageDiv").html("too many concepts to show :" + result.results.bindings.length);
+                $("#NerEvaluator_graphDiv").html("too many concepts to show :" + result.results.bindings.length);
                 return callback(null)
 
 
@@ -264,8 +312,8 @@ $("#NerEvaluator_tabs").tabs();
                 var color = "#ddd";
 
                 var conceptGraph = item.g.value
-               if(!sourceGraphsIriMap[conceptGraph])
-                  return;
+                if (!sourceGraphsIriMap[conceptGraph])
+                    return;
                 color = sourceGraphsIriMap[conceptGraph].color;
                 graphLabel = sourceGraphsIriMap[conceptGraph].label
 
@@ -360,7 +408,7 @@ $("#NerEvaluator_tabs").tabs();
             $("#NerEvaluator_graphDiv").width($(window).width() - 20)
             $("#NerEvaluator_graphDiv").height($(window).height() - 20)
             visjsGraph.draw("NerEvaluator_graphDiv", visjsData, {onclickFn: NerEvaluator.onGraphNodeClick})
-           return callback(null)
+            return callback(null)
             /* $("#sliderCountPagesMax").slider("option", "max", maxPages);
              $("#sliderCountPagesMax").slider("option", "mmin", minPages);
              $("#minPages").html(minPages)
@@ -431,155 +479,138 @@ $("#NerEvaluator_tabs").tabs();
 
     }
 
-    self.onTreeClickNode = function (evt, obj) {
-        $("#messageDiv").html("");
-        self.currentTreeNode = obj.node
 
 
-        if (obj.node.data && obj.node.data.type == "wikiPage")
-            return self.getWikipageMissingWords(obj.node)
 
-        self.addTreeChildrenNodes(obj.node.id);
-        if (obj.node.parents.length > 3 || obj.event.ctrlKey) {
-            self.showNodeConceptsGraph(obj.node, function (err, result) {
-                self.addWikiPagesToTree(obj.node)
+    self.addWikiPagesToTree = function (subject) {
+        var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>  prefix foaf: <http://xmlns.com/foaf/0.1/>" +
+            "SELECT  * WHERE {" +
+            "  ?category foaf:page ?page. ?category foaf:topic ?subject  " +
+            "  filter(?subject=<" + subject.id + ">)" +
+            "} limit 1000"
+        Sparql_proxy.querySPARQL_GET_proxy(Config.default_sparql_url, query, {}, {}, function (err, result) {
+
+            if (err) {
+                return console.log(err);
+            }
+            var nodes = []
+            result.results.bindings.forEach(function (item) {
+                var page = item.page.value;
+                // var prefLabel = item.conceptLabel.value;
+                var pageLabel = "Page :" + page.substring(page.lastIndexOf("/") + 1)
+                var node = {
+                    data: {
+                        type: "wikiPage",
+                    },
+                    treeDivId: "treeDiv1",
+                    type: "Page",
+                    id: page,
+                    parent: subject.id,
+                    text: pageLabel,
+                }
+                nodes.push(node);
+
             })
 
+            common.addNodesToJstree(self.categoriesTreeId, subject.id, nodes);
+
+
+        })
+    }
+
+    self.getWikipageMissingWords = function (page) {
+        if (!page) {
+            var selectedNode = $("#" + NerEvaluator.categoriesTreeId).jstree(true).get_selected(true);
+            if (!selectedNode || !selectedNode[0].data)
+                return MainController.UI.message("select a page ")
+            var type = selectedNode[0].data.type
+            if (type != "wikiPage")
+                return MainController.UI.message("select a page ")
+            page = selectedNode[0].id
         }
 
 
+        var graphIri = $("#nerEvaluator_graphUrisSelect").val();
+        if (!graphIri || graphIri == "")
+            return $("#messageDiv").html("select a source");
+        graphIri = Config.sources[graphIri].graphIri
+        $("#waitImg").css("display", "block")
+        $("#commentDiv").html("searching new concepts in selected wiki page")
+        // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
+
+        if (!self.currentConceptsLabels)
+            self.currentConceptsLabels = ["x"]
+        var pageName = page.text
+        var p = pageName.indexOf(":")
+        if (p > -1)
+            pageName = pageName.substring(p)
+        var payload = {
+
+
+            getWikimediaPageNonThesaurusWords: 1,
+            elasticUrl: "http://vps254642.ovh.net:2009/",
+            indexName: "mediawiki-pages-*",
+            pageName: pageName,
+            graphIri: graphIri,
+            pageCategoryThesaurusWords: JSON.stringify(self.currentConceptsLabels)
+
+
+        }
+
+        $("#messageDiv").html("Searching missing Words");
+        $.ajax({
+            type: "POST",
+            url: Config.serverUrl,
+            data: payload,
+            dataType: "json",
+
+            success: function (data, textStatus, jqXHR) {
+                var xx = data;
+                var html = "";
+                /*  if(self.tooManyNodes)
+                      html="<b>All words in page:</b><br><ul>";
+                  else*/
+                html = "<b>Page words not in thesaurus:</b><br><div style='display: flex;flex-wrap: wrap;'>";
+                data.forEach(function (word) {
+                    html += "<div draggable='true' class='newWord' id='newWord_" + word + "'>" + word + "</div>";
+                })
+                html += "</div>";
+                html += "<script>" +
+                    "$('.newWord').bind('click',NerEvaluator.onMissingWordClick);" +
+
+                    "" +
+                    "</script>"
+                $("#nerEvaluator_missingWordsDiv").html(html)
+                $("#waitImg").css("display", "none")
+                $("#messageDiv").html("")
+
+            }
+            , error: function (err) {
+                $("#messageDiv").html(err.responseText);
+                $("#waitImg").css("display", "none")
+            }
+        })
     }
 
+    self.onMissingWordClick = function (event) {
+        var word = event.currentTarget.id.substring(8)
+        var id = event.currentTarget.id;
+        self.currentSelectedPageNewWord = word;
+        var classes = $('#' + id).attr('class').split(/\s+/);
+        var text = $("#copiedWords").val()
+        if (classes.indexOf('selectedNewWord') > -1) {
+            $('#' + id).removeClass('selectedNewWord')
 
-   self.addWikiPagesToTree = function (subject) {
-      var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>  prefix foaf: <http://xmlns.com/foaf/0.1/>" +
-          "SELECT  * WHERE {" +
-          "  ?category foaf:page ?page. ?category foaf:topic ?subject  " +
-          "  filter(?subject=<" + subject.id + ">)" +
-          "} limit 1000"
-      Sparql_proxy.querySPARQL_GET_proxy(Config.default_sparql_url,query,  {}, {}, function (err, result) {
+            text = text.replace(word, "")
+            text = text.replace(",,", "")
 
-         if (err) {
-            return console.log(err);
-         }
-         var nodes = []
-         result.results.bindings.forEach(function (item) {
-            var page = item.page.value;
-            // var prefLabel = item.conceptLabel.value;
-            var pageLabel = "Page :" + page.substring(page.lastIndexOf("/") + 1)
-            var node = {
-               data: {
-                  type: "wikiPage",
-               },
-               treeDivId: "treeDiv1",
-               type: "Page",
-               id: page,
-               parent: subject.id,
-               text: pageLabel,
-            }
-            nodes.push(node);
+        } else {
+            $('#' + id).addClass('selectedNewWord')
+            text = text + "," + word;
+        }
+        $("#nerEvaluator_copiedWords").val(text)
 
-         })
-
-         common.addNodesToJstree(self.categoriesTreeId, subject.id, nodes);
-
-
-      })
-   }
-
-   self.getWikipageMissingWords = function (page) {
-if(!page){
-    var selectedNode=$("#"+NerEvaluator.categoriesTreeId).jstree(true).get_selected(true);
-    if(!selectedNode || !selectedNode[0].data)
-        return MainController.UI.message("select a page ")
-        var type=selectedNode[0].data.type
-    if(type!="wikiPage")
-        return MainController.UI.message("select a page ")
-        page=selectedNode[0].id
-}
-
-
-      var graphIri = $("#nerEvaluator_graphUrisSelect").val();
-      if(!graphIri || graphIri=="")
-         return $("#messageDiv").html("select a source");
-       graphIri=Config.sources[graphIri].graphIri
-       $("#waitImg").css("display", "block")
-      $("#commentDiv").html("searching new concepts in selected wiki page")
-      // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
-
-      if (!self.currentConceptsLabels)
-         self.currentConceptsLabels = ["x"]
-      var pageName = page.text
-      var p = pageName.indexOf(":")
-      if (p > -1)
-         pageName = pageName.substring(p)
-      var payload = {
-
-
-         getWikimediaPageNonThesaurusWords: 1,
-         elasticUrl: "http://vps254642.ovh.net:2009/",
-         indexName: "mediawiki-pages-*",
-         pageName: pageName,
-         graphIri: graphIri,
-         pageCategoryThesaurusWords: JSON.stringify(self.currentConceptsLabels)
-
-
-      }
-
-      $("#messageDiv").html("Searching missing Words");
-      $.ajax({
-         type: "POST",
-         url: Config.serverUrl,
-         data: payload,
-         dataType: "json",
-
-         success: function (data, textStatus, jqXHR) {
-            var xx = data;
-            var html = "";
-            /*  if(self.tooManyNodes)
-                  html="<b>All words in page:</b><br><ul>";
-              else*/
-            html = "<b>Page words not in thesaurus:</b><br><div style='display: flex;flex-wrap: wrap;'>";
-            data.forEach(function (word) {
-               html += "<div draggable='true' class='newWord' id='newWord_" + word + "'>" + word + "</div>";
-            })
-            html += "</div>";
-            html += "<script>" +
-                "$('.newWord').bind('click',NerEvaluator.onMissingWordClick);" +
-
-                "" +
-                "</script>"
-            $("#nerEvaluator_missingWordsDiv").html(html)
-            $("#waitImg").css("display", "none")
-            $("#messageDiv").html("")
-
-         }
-         , error: function (err) {
-            $("#messageDiv").html(err.responseText);
-            $("#waitImg").css("display", "none")
-         }
-      })
-   }
-
-   self.onMissingWordClick = function (event) {
-      var word = event.currentTarget.id.substring(8)
-      var id = event.currentTarget.id;
-      self.currentSelectedPageNewWord = word;
-      var classes = $('#' + id).attr('class').split(/\s+/);
-      var text = $("#copiedWords").val()
-      if (classes.indexOf('selectedNewWord') > -1) {
-         $('#' + id).removeClass('selectedNewWord')
-
-         text = text.replace(word, "")
-         text = text.replace(",,", "")
-
-      } else {
-         $('#' + id).addClass('selectedNewWord')
-         text = text + "," + word;
-      }
-      $("#nerEvaluator_copiedWords").val(text)
-
-   }
+    }
 
 
     return self;
