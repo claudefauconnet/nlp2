@@ -89,8 +89,8 @@
 
         .jstree {
             margin: 5px;
-            height: 800px;
-            width: 400px;
+            min-height: 500px;
+            min-width: 300px;
             overflow: auto;
 
         }
@@ -122,7 +122,10 @@
 
         #messageDiv{
             font-weight: normal;
+            font-size: 12px;
             color: #6e2500;
+        max-width: 300px;
+
         }
         .toolDescriptionImg{
             padding: 5px;
@@ -142,8 +145,8 @@
 
     <div style='max-width: 400px;'>
 
-        <div style="height: 20px">
-        <img src="../images/waitAnimated.gif" id="waitImg" style="display: none;width: 15px">
+        <div style="height: 20px;display: flex;    flex-flow: row;" >
+        <img src="../images/waitAnimated.gif"  id="waitImg" style="display: none;width: 15px; text-align: justify">
         <span id="messageDiv" ></span>
         </div>
         <div id="accordion">

@@ -4,7 +4,7 @@ var SourceEditor = (function () {
         self.data = {};
         self.currentSourceSchema;
         self.currentSourceUri;
-        self.currentSourceLabel;
+
         self.schemasConfig;
         self.prefLang = "en"
         //self.currentSourceSchema=Sparql_schema.npdOntologyUri
@@ -12,15 +12,15 @@ var SourceEditor = (function () {
         self.editingObject;
 
 
-
-
         self.onLoaded = function () {
-            $("#sourceDivControlPanelDiv").html("<button onclick='SourceEditor.onNewSourceButton()'>New Source</button>")
-           if(! self.schemasConfig) {
-               $.getJSON("config/schemas.json", function (json) {
-                   self.schemasConfig=json;
-               })
-           }
+            $("#sourceDivControlPanelDiv").html("<input id='SourceEditor_searchAllSourcesTermInput'> <button onclick='ThesaurusBrowser.searchAllSourcesTerm()'>Search</button>")
+
+          //  $("#sourceDivControlPanelDiv").html("<button onclick='SourceEditor.onNewSourceButton()'>New Source</button>")
+            if (!self.schemasConfig) {
+                $.getJSON("config/schemas.json", function (json) {
+                    self.schemasConfig = json;
+                })
+            }
             //   console.log(JSON.stringify(Config.sources,null,2)
 
         }
@@ -54,7 +54,8 @@ var SourceEditor = (function () {
         }
 
         self.onSourceSelect = function (sourceLabel) {
-            self.currentSourceLabel = sourceLabel;
+
+            MainController.currentSource = sourceLabel;
             self.currentSourceUri = Config.sources[sourceLabel].graphIri
             if (Config.sources[sourceLabel].sourceSchema)
                 self.currentSourceSchema = self.schemasConfig[Config.sources[sourceLabel].sourceSchema]
@@ -67,55 +68,55 @@ var SourceEditor = (function () {
                 ThesaurusBrowser.showThesaurusTopConcepts(sourceLabel, {treeSelectNodeFn: SourceEditor.editNode, contextMenu: contextMenu})
                 $("#graphDiv").load("snippets/sourceEditor.html")
                 $("#SourceEditor_NewObjectDiv").css("display", "none")
-                $("#actionDivContolPanelDiv").html("<button onclick='SourceEditor.onAddNewObject()'>+</button>")
+               // $("#actionDivContolPanelDiv").html("<button onclick='SourceEditor.onAddNewObject()'>+</button>")
+                $("#actionDivContolPanelDiv").html("<input id='GenericTools_searchTermInput'> <button onclick='ThesaurusBrowser.searchTerm()'>Search</button>")
             })
 
 
         }
+
+        self.selectNodeFn = function (event, propertiesMap) {
+            self.editNode(event, propertiesMap)
+            ThesaurusBrowser.openTreeNode("currentSourceTreeDiv", MainController.currentSource, propertiesMap.node)
+        }
+
 
         self.onAddNewObject = function (parentObj) {
 
             $("#graphDiv").load("snippets/sourceEditor.html")
             setTimeout(function () {
 
-              //  $("#SourceEditor_mainDiv").css("display", "block")
+                //  $("#SourceEditor_mainDiv").css("display", "block")
                 $("#SourceEditor_NewObjectDiv").css("display", "block")
                 $("#SourceEditor_graphUri").html("sourceGraphUri")
                 common.fillSelectOptions("SourceEditor_NewClassSelect", self.schema.classes, true, "label", "id")
 
-                if(!parentObj)
-                    parentObj=self.editingObject
-if(parentObj){
-                if(self.currentSourceSchema){
-                    var parentProperty=self.currentSourceSchema.newObject.treeParentProperty
-                    var mandatoryProps=self.currentSourceSchema.newObject.mandatoryProperties;
-                    var childClass=self.currentSourceSchema.newObject.treeChildrenClasses[parentObj.type ]
-                    var initData={}
-                    initData[parentProperty]=[{value:parentObj.about,type:"uri"}];
-                    mandatoryProps.forEach(function(item){
-                        initData[item]= [{"xml:lang":self.prefLang,value:"",type:"literal"}]
-                    })
+                if (!parentObj)
+                    parentObj = self.editingObject
+                if (parentObj) {
+                    if (self.currentSourceSchema) {
+                        var parentProperty = self.currentSourceSchema.newObject.treeParentProperty
+                        var mandatoryProps = self.currentSourceSchema.newObject.mandatoryProperties;
+                        var childClass = self.currentSourceSchema.newObject.treeChildrenClasses[parentObj.type]
+                        var initData = {}
+                        initData[parentProperty] = [{value: parentObj.about, type: "uri"}];
+                        mandatoryProps.forEach(function (item) {
+                            initData[item] = [{"xml:lang": self.prefLang, value: "", type: "literal"}]
+                        })
 
-                    self.initClass (childClass,initData) ;
+                        self.initClass(childClass, initData);
 
+                    }
                 }
-}
-
-
-
 
 
             }, 200)
 
 
-
-
-
-
         },
             self.initClass = function (classId, initData) {
-            if(!classId)
-                classId = $("#SourceEditor_NewClassSelect").val();
+                if (!classId)
+                    classId = $("#SourceEditor_NewClassSelect").val();
 
                 var classLabel = self.schema.classes[classId].label
                 self.initSchemaClasses(self.currentSourceSchema, function (err, result) {
@@ -173,7 +174,7 @@ if(parentObj){
                     return callback(err);
                 self.schema.classes = {}
                 result.forEach(function (item) {
-                    self.schema.classes[item.class.value] = {id: item.class.value, label: common.getItemLabel(item,"class"), objectProperties: {}, annotations: {}}
+                    self.schema.classes[item.class.value] = {id: item.class.value, label: common.getItemLabel(item, "class"), objectProperties: {}, annotations: {}}
                 })
                 return callback();
 
@@ -189,9 +190,9 @@ if(parentObj){
                             return callbackSeries2(err)
                         result.forEach(function (item) {
                             if (item.subProperty)
-                                self.schema.classes[classId].objectProperties[item.subProperty.value] = {id: item.subProperty.value, label: common.getItemLabel(item,"subProperty")}
+                                self.schema.classes[classId].objectProperties[item.subProperty.value] = {id: item.subProperty.value, label: common.getItemLabel(item, "subProperty")}
                             else
-                                self.schema.classes[classId].objectProperties[item.property.value] = {id: item.property.value, label: common.getItemLabel(item,"property")}
+                                self.schema.classes[classId].objectProperties[item.property.value] = {id: item.property.value, label: common.getItemLabel(item, "property")}
 
                         })
 
@@ -204,7 +205,7 @@ if(parentObj){
                             return callbackSeries2(err)
 
                         result.forEach(function (item) {
-                            self.schema.classes[classId].annotations[item.annotation.value] = {id: item.annotation.value, label:common.getItemLabel(item,"annotation")}
+                            self.schema.classes[classId].annotations[item.annotation.value] = {id: item.annotation.value, label: common.getItemLabel(item, "annotation")}
                         })
 
                         callbackSeries2();
@@ -249,8 +250,8 @@ if(parentObj){
                         editingObject = self.schema.classes[type]
                         editingObject.about = obj.node.id;
                         editingObject.type = editingObject.id;
-                        if(self.editingObject)
-                        editingObject.parent =self.editingObject.about
+                        if (self.editingObject)
+                            editingObject.parent = self.editingObject.about
                         // delete editingObject.id
                         editingObject.objectPropertiesList = Object.keys(self.schema.classes[type].objectProperties).sort();
                         editingObject.annotationsList = Object.keys(self.schema.classes[type].annotations).sort();
@@ -262,15 +263,15 @@ if(parentObj){
                     function (callbackSeries) {
                         if (initData) {
                             editingObject.isNew = 1;
-                           for(var key in initData){
-                                nodeProps[key] =initData[key]
+                            for (var key in initData) {
+                                nodeProps[key] = initData[key]
                             }
 
                             return callbackSeries();
                         }
 
 
-                        Sparql_generic.getNodeInfos(self.currentSourceLabel, obj.node.id, {}, function (err, result) {
+                        Sparql_generic.getNodeInfos(MainController.currentSource, obj.node.id, {}, function (err, result) {
                             if (err) {
                                 return callbackSeries()
                             }
@@ -420,7 +421,7 @@ if(parentObj){
             })
 
 
-            Sparql_generic.update(self.currentSourceLabel, triples, function (err, result) {
+            Sparql_generic.update(MainController.currentSource, triples, function (err, result) {
                 if (err)
                     MainController.UI.message(err)
 
@@ -457,22 +458,21 @@ if(parentObj){
 
         }
 
-        self.deleteEditingObject=function(){
+        self.deleteEditingObject = function () {
 
-            var children=  $('#currentSourceTreeDiv').jstree(true).get_node(self.editingObject.about).children
-            if(children.length>0)
-               return alert("cannot delete node with children")
-            Sparql_generic.deleteTriplesBySubject(self.currentSourceLabel,self.editingObject.about,function(err, result){
-                if(err)
+            var children = $('#currentSourceTreeDiv').jstree(true).get_node(self.editingObject.about).children
+            if (children.length > 0)
+                return alert("cannot delete node with children")
+            Sparql_generic.deleteTriplesBySubject(MainController.currentSource, self.editingObject.about, function (err, result) {
+                if (err)
                     MainController.UI.message(err);
                 $('#currentSourceTreeDiv').jstree(true).delete_node(self.editingObject.about)
-                $('#currentSourceTreeDiv').jstree(true).deselect_all ();
-                self.editingObject=null;
+                $('#currentSourceTreeDiv').jstree(true).deselect_all();
+                self.editingObject = null;
                 $("#SourceEditor_mainDiv").css("display", "none")
 
 
             })
-
 
 
         }

@@ -3,7 +3,7 @@ var OntologyBrowser = (function () {
 
     self.schemasConfig
     self.currentSourceSchema
-    self.currentSourceLabel
+      MainController.currentSource
     self.currentSourceUri
     self.nodeProperties;
     self.currentFilters = {}
@@ -21,7 +21,7 @@ var OntologyBrowser = (function () {
     }
 
     self.onSourceSelect = function (sourceLabel) {
-        self.currentSourceLabel = sourceLabel;
+          MainController.currentSource = sourceLabel;
         self.currentSourceUri = Config.sources[sourceLabel].graphIri
         if (Config.sources[sourceLabel].sourceSchema) {
             //  if(! self.schemasConfig) {
@@ -29,6 +29,7 @@ var OntologyBrowser = (function () {
                 self.schemasConfig = json;
                 self.currentSourceSchema = self.schemasConfig[Config.sources[sourceLabel].sourceSchema]
                 ThesaurusBrowser.showThesaurusTopConcepts(sourceLabel, {treeSelectNodeFn: OntologyBrowser.onNodeSelect, contextMenu: {}})
+                $("#actionDivContolPanelDiv").html("<input id='GenericTools_searchTermInput'> <button onclick='ThesaurusBrowser.searchTerm()'>Search</button>")
                 $("#graphDiv").load("snippets/ontologyBrowser.html")
                 setTimeout(function () {
                     $("#OntologyBrowser_tabs").tabs()
@@ -241,7 +242,7 @@ var OntologyBrowser = (function () {
             })
         }
         var fromStr = ""
-        var graphIri = Config.sources[self.currentSourceLabel].graphIri
+        var graphIri = Config.sources[  MainController.currentSource].graphIri
         if (graphIri && graphIri != "") {
             if (!Array.isArray(graphIri))
                 graphIri = [graphIri];
@@ -255,7 +256,7 @@ var OntologyBrowser = (function () {
             queryWhere + " " + querySelectProps +
             "}limit 1000 "
 
-        var url = Config.sources[self.currentSourceLabel].sparql_url + "?query=&format=json";
+        var url = Config.sources[  MainController.currentSource].sparql_url + "?query=&format=json";
         Sparql_proxy.querySPARQL_GET_proxy(url, query, {}, null, function (err, result) {
             if (err) {
                 return err

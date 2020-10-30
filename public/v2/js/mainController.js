@@ -59,7 +59,7 @@ var MainController = (function () {
 
         },
         onSourceSelect: function () {
-            $("#actionDivContolPanelDiv").html("");
+           // $("#actionDivContolPanelDiv").html("");
           //  $("#sourceDivControlPanelDiv").html("");
 
             if (Config.tools[self.currentTool].multiSources)

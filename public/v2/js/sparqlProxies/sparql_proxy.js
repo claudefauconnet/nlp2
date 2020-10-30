@@ -33,7 +33,7 @@ var Sparql_proxy=(function(){
                 }
 
 
-                $("#waitImg").css("display", "block");
+                    $("#waitImg").css("display", "block");
 
 
                 //   url="http://vps475829.ovh.net:8890/sparql"
@@ -103,7 +103,7 @@ var Sparql_proxy=(function(){
         }
 
 
-        $("#waitImg").css("display", "block");
+            $("#waitImg").css("display", "block");
 
 
 

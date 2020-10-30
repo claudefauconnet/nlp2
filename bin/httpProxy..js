@@ -75,7 +75,7 @@ var httpProxy = {
                 }
             } catch (e) {
                 console.log(body)
-                return callback(e)
+                return callback(body)
             }
 
             return;

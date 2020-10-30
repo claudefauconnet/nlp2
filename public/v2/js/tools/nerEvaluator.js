@@ -16,11 +16,13 @@ var NerEvaluator = (function () {
 
     self.showActionPanel = function () {
         self.selectedSources = $("#sourcesTreeDiv").jstree(true).get_checked()
-        $("#actionDivContolPanelDiv").html("")
-        $("#actionDivContolPanelDiv").load("snippets/nerEvaluator.html")
+        $("#actionDiv").html("")
+        $("#actionDivContolPanelDiv").load("snippets/nerEvaluator_left.html")
+        $("#graphDiv").load("snippets/nerEvaluator_right.html")
         $("#accordion").accordion("option", {active: 2});
         setTimeout(function () {
-
+$("#NerEvaluator_tabs").tabs();
+//$("#nerEvaluator_treeDiv").height(600)
             common.fillSelectOptions("nerEvaluator_graphUrisSelect", self.selectedSources, true)
             self.showWikiCategoriesTree();
 
@@ -198,7 +200,7 @@ var NerEvaluator = (function () {
         })
 
 
-        $("#nerEvaluator_messageDiv").html("Searching...");
+        $("#messageDiv").html("Searching...");
         var query = "prefix skos: <http://www.w3.org/2004/02/skos/core#>prefix foaf: <http://xmlns.com/foaf/0.1/>prefix schema: <http://schema.org/>" +
             "SELECT distinct  * " + fromStr + " WHERE{ " +
             " ?concept  <http://souslesens.org/vocab#wikimedia-category>  ?category." + parentCategoriesFilter +
@@ -229,7 +231,7 @@ var NerEvaluator = (function () {
             self.currentConceptsLabels = []
 
             if (result.results.bindings.length == 0)
-                return $("#nerEvaluator_messageDiv").html("no concepts matching");
+                return $("#messageDiv").html("no concepts matching");
 
             if (result.results.bindings.length > 200) {
                 self.tooManyNodes = true;
@@ -238,14 +240,14 @@ var NerEvaluator = (function () {
                     if (self.currentConceptsLabels.indexOf(conceptLabel) < 0)
                         self.currentConceptsLabels.push(conceptLabel);
                 })
-                $("#nerEvaluator_messageDiv").html("too many concepts to show :" + result.results.bindings.length);
+                $("#messageDiv").html("too many concepts to show :" + result.results.bindings.length);
                 return callback(null)
 
 
             }
             self.tooManyNodes = false;
             result.results.bindings.forEach(function (item) {
-                $("#nerEvaluator_messageDiv").html(node.text + " concepts :" + result.results.bindings.length);
+                $("#messageDiv").html(node.text + " concepts :" + result.results.bindings.length);
 
                 var subject = item.subject.value;
                 var conceptId = item.concept.value;
@@ -355,9 +357,9 @@ var NerEvaluator = (function () {
                     }
                 }
             }
-            $("#graphDiv").width($(window).width() - 20)
-            $("#graphDiv").height($(window).height() - 20)
-            visjsGraph.draw("graphDiv", visjsData, {onclickFn: NerEvaluator.onGraphNodeClick})
+            $("#NerEvaluator_graphDiv").width($(window).width() - 20)
+            $("#NerEvaluator_graphDiv").height($(window).height() - 20)
+            visjsGraph.draw("NerEvaluator_graphDiv", visjsData, {onclickFn: NerEvaluator.onGraphNodeClick})
            return callback(null)
             /* $("#sliderCountPagesMax").slider("option", "max", maxPages);
              $("#sliderCountPagesMax").slider("option", "mmin", minPages);
@@ -430,7 +432,7 @@ var NerEvaluator = (function () {
     }
 
     self.onTreeClickNode = function (evt, obj) {
-        $("#nerEvaluator_messageDiv").html("");
+        $("#messageDiv").html("");
         self.currentTreeNode = obj.node
 
 
@@ -486,14 +488,22 @@ var NerEvaluator = (function () {
    }
 
    self.getWikipageMissingWords = function (page) {
-
+if(!page){
+    var selectedNode=$("#"+NerEvaluator.categoriesTreeId).jstree(true).get_selected(true);
+    if(!selectedNode || !selectedNode[0].data)
+        return MainController.UI.message("select a page ")
+        var type=selectedNode[0].data.type
+    if(type!="wikiPage")
+        return MainController.UI.message("select a page ")
+        page=selectedNode[0].id
+}
 
 
       var graphIri = $("#nerEvaluator_graphUrisSelect").val();
       if(!graphIri || graphIri=="")
-         return $("#nerEvaluator_messageDiv").html("select a source");
+         return $("#messageDiv").html("select a source");
        graphIri=Config.sources[graphIri].graphIri
-       $("#nerEvaluator_waitImg").css("display", "block")
+       $("#waitImg").css("display", "block")
       $("#commentDiv").html("searching new concepts in selected wiki page")
       // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
 
@@ -516,7 +526,7 @@ var NerEvaluator = (function () {
 
       }
 
-      $("#nerEvaluator_messageDiv").html("Searching missing Words");
+      $("#messageDiv").html("Searching missing Words");
       $.ajax({
          type: "POST",
          url: Config.serverUrl,
@@ -540,13 +550,13 @@ var NerEvaluator = (function () {
                 "" +
                 "</script>"
             $("#nerEvaluator_missingWordsDiv").html(html)
-            $("#nerEvaluator_waitImg").css("display", "none")
-            $("#nerEvaluator_messageDiv").html("")
+            $("#waitImg").css("display", "none")
+            $("#messageDiv").html("")
 
          }
          , error: function (err) {
-            $("#nerEvaluator_messageDiv").html(err.responseText);
-            $("#nerEvaluator_waitImg").css("display", "none")
+            $("#messageDiv").html(err.responseText);
+            $("#waitImg").css("display", "none")
          }
       })
    }
