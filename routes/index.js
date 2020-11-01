@@ -263,6 +263,17 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
             })
         }
+
+        if (req.body.annotateLive) {
+            var annotatorLive=require("../bin/annotatorLive.")
+            annotatorLive.annotate(req.body.text,JSON.parse(req.body.sources),function (err, result) {
+                processResponse(response, err, result)
+
+            })
+        }
+
+
+
     },
     router.get('/heatMap', function (req, res, next) {
         var elasticQuery = JSON.parse(req.query.query);

@@ -20,6 +20,9 @@ var Config = (function () {
     self.tools["nerEvaluator"] = {label: "Evaluate", multiSources: 1, controller: NerEvaluator,toolDescriptionImg:"images/evaluate.png"}
     self.tools["termTaxonomy"] = {label: "Taxonomy", multiSources: 1, controller: TermTaxonomy,toolDescriptionImg:"images/taxonomy.png"}
     self.tools["ontologyBrowser"] = {label: "Ontology", multiSources: 0, controller: OntologyBrowser,toolDescriptionImg:null}
+    self.tools["curator"] = {label: "Curator", multiSources: 0, controller: Curator,toolDescriptionImg:null}
+    self.tools["annotator"] = {label: "Annotator", multiSources: 1, controller: Annotator,toolDescriptionImg:null}
+
 
 
     return self;

@@ -42,6 +42,9 @@ var NerEvaluator = (function () {
         self.currentTreeNode = obj.node
 
 
+
+
+
         if (obj.node.data && obj.node.data.type == "wikiPage") {
 
             var activeTab = $('ul.tabs li a.active');
@@ -519,6 +522,11 @@ var NerEvaluator = (function () {
     }
 
     self.getWikipageMissingWords = function (page) {
+        MainController.UI.message("")
+        $("#nerEvaluator_missingWordsDiv").html("")
+        $("#nerEvaluator_copiedWords").html("")
+
+        $( "#NerEvaluator_tabs" ).tabs("option", 'active', 1)
         if (!page) {
             var selectedNode = $("#" + NerEvaluator.categoriesTreeId).jstree(true).get_selected(true);
             if (!selectedNode || !selectedNode[0].data)
@@ -526,7 +534,7 @@ var NerEvaluator = (function () {
             var type = selectedNode[0].data.type
             if (type != "wikiPage")
                 return MainController.UI.message("select a page ")
-            page = selectedNode[0].id
+            page = {text:selectedNode[0].id}
         }
 
 
@@ -597,7 +605,7 @@ var NerEvaluator = (function () {
         var id = event.currentTarget.id;
         self.currentSelectedPageNewWord = word;
         var classes = $('#' + id).attr('class').split(/\s+/);
-        var text = $("#copiedWords").val()
+        var text = $("#nerEvaluator_copiedWords").val()
         if (classes.indexOf('selectedNewWord') > -1) {
             $('#' + id).removeClass('selectedNewWord')
 
