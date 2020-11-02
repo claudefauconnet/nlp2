@@ -99,7 +99,16 @@ var MainController = (function () {
             else
                 $("#sourcePanelLabel").html(Config.tools[self.currentTool].label);
 
-        }
+        },
+
+        showPopup: function (point) {
+            $("#popupDiv").css("left", point.x+leftPanelWidth)
+            $("#popupDiv").css("top", point.y)
+            $("#popupDiv").css("display", "flex")
+        },
+        hidePopup: function () {
+            $("#popupDiv").css("display", "none")
+        },
     }
 
 

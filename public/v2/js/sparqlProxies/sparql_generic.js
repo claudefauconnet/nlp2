@@ -253,6 +253,30 @@ var Sparql_generic = (function () {
             })
         }
 
+    self.getSingleNodeAllAncestors = function (sourceLabel,  id,callback) {
+        setVariables(sourceLabel);
+        var query = "";
+        query += prefixesStr;
+        query += " select distinct * " + fromStr + "  WHERE {"
+        query += "  ?concept " + broaderPredicate + "* ?broader." +
+            "filter (?concept=<" +id+">) "+
+            "?broader " + prefLabelPredicate + " ?broaderLabel."
+        if (lang)
+            query += "filter( lang(?broaderLabel)=\"" + lang + "\")"
+        query += "  }";
+        query += "limit " + limit + " ";
+
+
+        Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            if (err) {
+                return callback(err)
+            }
+            return callback(null, result.results.bindings);
+        })
+
+    }
+
+
         self.getNodeInfos = function (sourceLabel, conceptId, options, callback) {
             setVariables(sourceLabel);
 

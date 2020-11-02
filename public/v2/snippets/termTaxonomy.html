@@ -1,19 +1,21 @@
 <style>
-#searchWordInput{
-width:200px;
-    font-weight: bold;
+    #searchWordInput {
+        width: 200px;
+        font-weight: bold;
 
 
-}
+    }
 
 </style>
 
 
 <div id="dialogDiv" style="display: flex;flex-direction: column">
-    <input id="searchWordInput" value="zinc" >
-    <div><button onclick="TermTaxonomy.searchConcepts($('#searchWordInput').val())">Search</button>
+    <input id="searchWordInput" value="zinc">
+    <div>
+        <button onclick="TermTaxonomy.searchConcepts($('#searchWordInput').val())">Search</button>
         <input type="checkbox" checked="checked" id="exactMatchCBX">Exact Match&nbsp;
-        &nbsp;<input type="checkbox" id='allConceptsCbx' onchange="TermTaxonomy.onAllConceptsCbxChange()">select All</div>
+        &nbsp;<input type="checkbox" id='allConceptsCbx' onchange="TermTaxonomy.onAllConceptsCbxChange()">select All
+    </div>
 
 
     <div id="conceptOperationsDiv">
@@ -24,6 +26,11 @@ width:200px;
     </div>
     <div id="conceptsJstreeDiv" style="width: 400px;height: 600px;overflow: auto"></div>
 </div>
+<div id="graphPopupDiv" onclick="TermTaxonomy.graphActions.hidePopup();" style=" z-index:20;position:absolute;flex-direction:column;padding:5px;border-radius:5px;text-align:center;display: none;background-color: #ddd">
+    <span class="popupMenuItem" onclick="TermTaxonomy.graphActions.drawChildren();"> draw children</span>
+    <span  class="popupMenuItem"onclick="TermTaxonomy.graphActions.showDetails();"> show details</span>
+    <span  class="popupMenuItem" onclick="TermTaxonomy.graphActions.setAsRootNode();"> set a rootNode</span>
+
 </div>
 
 

@@ -266,7 +266,8 @@ router.post(serverParams.routesRootUrl + '/elastic', function (req, response) {
 
         if (req.body.annotateLive) {
             var annotatorLive=require("../bin/annotatorLive.")
-            annotatorLive.annotate(req.body.text,JSON.parse(req.body.sources),function (err, result) {
+            var sources=JSON.parse(req.body.sources)
+            annotatorLive.annotate(req.body.text,sources,function (err, result) {
                 processResponse(response, err, result)
 
             })
