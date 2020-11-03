@@ -78,6 +78,7 @@ var SourceEditor = (function () {
         self.selectNodeFn = function (event, propertiesMap) {
             self.editNode(event, propertiesMap)
             ThesaurusBrowser.openTreeNode("currentSourceTreeDiv", MainController.currentSource, propertiesMap.node)
+
         }
 
 

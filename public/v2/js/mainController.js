@@ -2,6 +2,7 @@ var MainController = (function () {
     var self = {}
     self.currentSource = null;
     self.currentTool = null
+    self.clipboardContent=null
     self.UI = {
 
         loadSources: function (treeDiv, withCBX) {
@@ -101,13 +102,17 @@ var MainController = (function () {
 
         },
 
-        showPopup: function (point) {
-            $("#popupDiv").css("left", point.x+leftPanelWidth)
-            $("#popupDiv").css("top", point.y)
-            $("#popupDiv").css("display", "flex")
+        showPopup: function (point,popupDiv) {
+            if(!popupDiv)
+                popupDiv="popupDiv"
+            $("#"+popupDiv).css("left", point.x+leftPanelWidth)
+            $("#"+popupDiv).css("top", point.y)
+            $("#"+popupDiv).css("display", "flex")
         },
-        hidePopup: function () {
-            $("#popupDiv").css("display", "none")
+        hidePopup: function (popupDiv) {
+            if(!popupDiv)
+                popupDiv="popupDiv"
+            $("#"+popupDiv).css("display", "none")
         },
     }
 

@@ -105,8 +105,12 @@ var Annotator = (function () {
         }
 
         self.onNodeClick = function (e) {
-            if (e.ctrlKey)
-                MainController.UI.showPopup({x:e.pageX-leftPanelWidth,y:e.pageY})
+
+            if (e.ctrlKey) {
+                MainController.clipboardContent=e.target.id
+                $("#clipboardContentSpan").html(e.target.id);
+                //MainController.UI.showPopup({x: e.pageX - leftPanelWidth, y: e.pageY})
+            }
 
             else
                 self.getEntityInfo(e)
@@ -142,18 +146,6 @@ var Annotator = (function () {
         }
 
 
-        self.popupActions = {
-
-            copyNodeOnly: function () {
-
-            },
-            copyDescendants: function () {
-
-            }
-            , copyAscendants: function () {
-
-            }
-        }
 
 
         return self;

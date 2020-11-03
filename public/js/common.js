@@ -117,7 +117,17 @@ var common = (function () {
             }
 
 
-        });
+        }).on("create_node.jstree", function (parent,node,position) {
+            if (options.onCreateNodeFn) {
+                options.onCreateNodeFn(parent,node,position)
+            }
+        }).on("delete_node.jstree", function (node, parent) {
+    if (options.onDeleteNodeFn) {
+        options.onDeleteNodeFn(node, parent )
+    }
+
+});
+
 
     }
 
