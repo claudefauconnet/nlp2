@@ -11,7 +11,8 @@ var MainController = (function () {
                 Config.sources = json;
 
 
-            Object.keys(Config.sources).forEach(function (sourceLabel,index) {
+
+            Object.keys(Config.sources).sort().forEach(function (sourceLabel,index) {
                 Config.sources[sourceLabel].controller=eval( Config.sources[sourceLabel].controller)
                     if (!Config.sources[sourceLabel].color)
                         Config.sources[sourceLabel].color = common.palette[index%common.palette.length];

@@ -173,7 +173,7 @@ var Sparql_generic = (function () {
             query += "filter( lang(?child1Label)=\"" + lang + "\")"
         query += "}"
         query += filterStr;
-        query += "?child1 rdf:type ?type."
+        query += "OPTIONAL{?child1 rdf:type ?type.}"
         descendantsDepth = Math.min(descendantsDepth, optionalDepth);
         for (var i = 1; i < descendantsDepth; i++) {
 
@@ -182,7 +182,7 @@ var Sparql_generic = (function () {
             if (lang)
                 query += "filter( lang(?child" + (i + 1) + "Label)=\"" + lang + "\")"
             query += "}"
-            query += "?child" + (i + 1) + " rdf:type ?type."
+            query += "OPTIONAL {?child" + (i + 1) + " rdf:type ?type.}"
         }
         for (var i = 1; i < descendantsDepth; i++) {
             query += "} "
@@ -214,7 +214,7 @@ var Sparql_generic = (function () {
         if (lang)
             query += "filter( lang(?conceptLabel)=\"" + lang + "\")"
         query += filterStr;
-        query += "?concept rdf:type ?type."
+        query += "OPTIONAL{?concept rdf:type ?type.}"
 
         ancestorsDepth = Math.min(ancestorsDepth, optionalDepth);
         for (var i = 1; i <= ancestorsDepth; i++) {

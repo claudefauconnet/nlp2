@@ -46,11 +46,12 @@ var common = (function () {
     self.loadJsTree = function (jstreeDiv, jstreeData, options, callback) {
         if (!options)
             options = {}
+
         var plugins = [];
         if (!options.cascade)
             options.cascade = "xxx"
         if (options.selectDescendants)
-            cascade = "down"
+            options.cascade = "down"
         if (options.withCheckboxes)
             plugins.push("checkbox")
         if (options.searchPlugin)
@@ -59,6 +60,10 @@ var common = (function () {
             plugins.push("types")
         if (options.contextMenu)
             plugins.push("contextmenu")
+        if (options.dnd)
+            plugins.push("dnd")
+
+
         if ($('#' + jstreeDiv).jstree)
             $('#' + jstreeDiv).jstree("destroy")
         $('#' + jstreeDiv).jstree({
@@ -68,8 +73,8 @@ var common = (function () {
              },*/
             "plugins": plugins,
             "core": {
+                'data': jstreeData,
                 'check_callback': true,
-                'data': jstreeData
             }, 'checkbox': {
                 /*   three_state: options.three_state,
                   cascade: options.cascade,
@@ -78,6 +83,7 @@ var common = (function () {
                 tie_selection: false,
                 three_state: false,
             },
+            'dnd': options.dnd,
             types: options.types,
 
             contextmenu: {items: options.contextMenu}
@@ -117,16 +123,39 @@ var common = (function () {
             }
 
 
-        }).on("create_node.jstree", function (parent,node,position) {
+        }).on("create_node.jstree", function (parent, node, position) {
             if (options.onCreateNodeFn) {
-                options.onCreateNodeFn(parent,node,position)
+                options.onCreateNodeFn(parent, node, position)
             }
         }).on("delete_node.jstree", function (node, parent) {
-    if (options.onDeleteNodeFn) {
-        options.onDeleteNodeFn(node, parent )
-    }
+            if (options.onDeleteNodeFn) {
+                options.onDeleteNodeFn(node, parent)
+            }
+        })
+        .on("move_node.jstree", function (node, parent,position,oldParent,oldPosition,is_multi, old_instance,new_instance) {
+                if (options.onMoveNodeFn) {
+                    options.onMoveNodeFn(node,parent,position,oldParent,oldPosition,is_multi, old_instance,new_instance);
+                }
+        });
 
-});
+
+        if(options.dnd) {
+            if(options.dnd.drag_start) {
+                $(document).on('dnd_start.vakata', function (data, element, helper, event) {
+                    options.dnd.drag_start(data, element, helper, event)
+                });
+            }
+            if(options.dnd.drag_move) {
+                $(document).on('dnd_move.vakata Event', function (data, element, helper, event) {
+                    options.dnd.drag_move(data, element, helper, event)
+                });
+            }
+                if(options.dnd.drag_stop) {
+                    $(document).on('dnd_stop.vakata Event', function (data, element, helper, event) {
+                        options.dnd.drag_stop(data, element, helper, event)
+                    });
+                }
+        }
 
 
     }

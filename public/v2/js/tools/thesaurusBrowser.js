@@ -12,7 +12,7 @@ var ThesaurusBrowser = (function () {
     }
 
     self.selectNodeFn = function (event, propertiesMap) {
-
+        self.currentTreeNode = propertiesMap.node
         if (true || propertiesMap.event.ctrlKey) {
             self.editThesaurusConceptInfos(MainController.currentSource, propertiesMap.node)
         }
@@ -39,6 +39,7 @@ var ThesaurusBrowser = (function () {
 
 
             var jsTreeOptions = options;
+            jsTreeOptions.contextMenu = self.getJstreeContextMenu()
             jsTreeOptions.selectNodeFn =Config.tools[MainController.currentTool].controller.selectNodeFn;
             TreeController.drawOrUpdateTree("currentSourceTreeDiv", result, "#", "topConcept", jsTreeOptions)
 
@@ -46,6 +47,18 @@ var ThesaurusBrowser = (function () {
         })
 
 
+    }
+    self.getJstreeContextMenu = function () {
+        return {
+            copyNode: {
+                label: "Copy Node",
+                action: function () {
+                    MainController.clipboardContent = "browser|"+ MainController.currentSource+"|"+self.currentTreeNode.id
+                    ;
+                },
+
+            },
+        }
     }
 
     self.openTreeNode = function (divId, thesaurusLabel, node, callback) {
