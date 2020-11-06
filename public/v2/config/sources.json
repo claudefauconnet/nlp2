@@ -1,6 +1,7 @@
 {
 
   "TEST": {
+    "editable": true,
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
     "graphIri": "http://souslesens/TEST",
@@ -11,6 +12,7 @@
     "color": "#9edae5"
   },
   "Total-CTG": {
+    "editable": true,
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
     "graphIri": "http://data.total.com/resource/thesaurus/ctg/",
