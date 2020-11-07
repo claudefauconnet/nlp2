@@ -2,7 +2,7 @@ var Sparql_WORDNET = (function () {
 
 
     var self = {};
-    self.getTopConcepts = function (graphIri, callback) {
+    self.getTopConcepts = function (graphUri, callback) {
 
     }
 
@@ -105,7 +105,7 @@ var Sparql_WORDNET = (function () {
         })
     }
 
-    self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
+    self.getNodeChildren = function (graphUri, words, ids, descendantsDepth, options, callback) {
         var url = source.sparql_url + "?default-graph-uri=" + encodeURIComponent(source.graphIRI) + "&query=";// + query + queryOptions
 
         var query = "PREFIX rdf:<http://www.w3.org/2000/01/rdf-schema#> PREFIX wordnet: <http://www.w3.org/2006/03/wn/wn20/schema/>" +

@@ -22,7 +22,7 @@ var Sparql_generic = (function () {
         }
 
         var source = "";
-        var graphIri = "";
+        var graphUri = "";
         var predicates = "";
         var prefixesStr = "";
         var fromStr = "";
@@ -40,7 +40,7 @@ var Sparql_generic = (function () {
 
         setVariables = function (sourceLabel) {
             source = ""
-            graphIri = ""
+            graphUri = ""
             predicates = ""
             prefixesStr = ""
             fromStr = "";
@@ -50,7 +50,7 @@ var Sparql_generic = (function () {
             limit = "";
             url = ""
             source = Config.sources[sourceLabel]
-            graphIri = source.graphIri;
+            graphUri = source.graphUri;
             predicates = defaultPredicates;
             if (source.predicates)
                 predicates = source.predicates
@@ -61,10 +61,10 @@ var Sparql_generic = (function () {
                 prefixesStr += "PREFIX " + item + " "
             })
 
-            if (graphIri && graphIri != "") {
-                if (!Array.isArray(graphIri))
-                    graphIri = [graphIri];
-                graphIri.forEach(function (item) {
+            if (graphUri && graphUri != "") {
+                if (!Array.isArray(graphUri))
+                    graphUri = [graphUri];
+                graphUri.forEach(function (item) {
                     fromStr += " FROM <" + item + "> "
                 })
             }
@@ -120,11 +120,11 @@ var Sparql_generic = (function () {
             return filter;
         }
 
-        function getIriFilter(varName, iri) {
+        function getUriFilter(varName, uri) {
             var filterStr = ""
-            if (Array.isArray(iri)) {
+            if (Array.isArray(uri)) {
                 var str = ""
-                iri.forEach(function (item, index) {
+                uri.forEach(function (item, index) {
                     if (index > 0)
                         str += ","
                     str += "<" + item + ">"
@@ -132,7 +132,7 @@ var Sparql_generic = (function () {
                 filterStr = "filter (?" + varName + " in (" + str + "))"
 
             } else {
-                filterStr += "filter( ?" + varName + "=<" + iri + ">)."
+                filterStr += "filter( ?" + varName + "=<" + uri + ">)."
             }
             return filterStr;
         }
@@ -344,9 +344,10 @@ var Sparql_generic = (function () {
 
         self.getNodeInfos = function (sourceLabel, conceptId, options, callback) {
             setVariables(sourceLabel);
+            var filter = getUriFilter("id", conceptId);
 
             var query = " select distinct * " + fromStr + "  WHERE {" +
-                " <" + conceptId + "> ?prop ?value. } limit 500";
+                " ?id ?prop ?value. " + filter + "} limit 500";
 
 
             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -392,20 +393,20 @@ var Sparql_generic = (function () {
         }
 
 
-        self.deleteTriples = function (sourceLabel, subjectIri, predicateIri, objectIri, callback) {
-            if (!subjectIri && !subjectIri && !subjectIri)
+        self.deleteTriples = function (sourceLabel, subjectUri, predicateUri, objectUri, callback) {
+            if (!subjectUri && !subjectUri && !subjectUri)
                 return call("no subject predicate and object filter : cannot delete")
 
             var filterStr = "";
-            if (subjectIri)
-                filterStr += getIriFilter("s", subjectIri)
-            if (predicateIri)
-                filterStr += getIriFilter("p", predicateIri)
-            if (objectIri)
-                filterStr += getIriFilter("o", objectIri)
+            if (subjectUri)
+                filterStr += getUriFilter("s", subjectUri)
+            if (predicateUri)
+                filterStr += getUriFilter("p", predicateUri)
+            if (objectUri)
+                filterStr += getUriFilter("o", objectUri)
 
-            var query = "with <" + Config.sources[sourceLabel].graphIri + "> " +
-                " DELETE {?s ?p ?o} WHERE{ ?s ?p ?o "+filterStr+"}"
+            var query = "with <" + Config.sources[sourceLabel].graphUri + "> " +
+                " DELETE {?s ?p ?o} WHERE{ ?s ?p ?o " + filterStr + "}"
 
             url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";
             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -419,7 +420,7 @@ var Sparql_generic = (function () {
         }
 
         self.update = function (sourceLabel, triples, callback) {
-            var graphUri = Config.sources[sourceLabel].graphIri
+            var graphUri = Config.sources[sourceLabel].graphUri
             var deleteTriplesStr = "";
             var insertTriplesStr = "";
             triples.forEach(function (item, index) {
@@ -462,22 +463,96 @@ var Sparql_generic = (function () {
         }
 
         self.deleteGraph = function (sourceLabel, callback) {
-            graphIri = Config.sources[sourceLabel].graphIri
+            graphUri = Config.sources[sourceLabel].graphUri
 
 
-            var query = " WITH <" + graphIri + "> DELETE {?s ?p ?o}"
+            var query = " WITH <" + graphUri + "> DELETE {?s ?p ?o}"
             url = Config.sources[sourceLabel].serverUrl + "?query=&format=json";
             Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
                 return callback(err);
             })
         }
 
-        self.cloneGraph = function (fromSourceLabel, toGraphIri, callback) {
-            var fromGraphIri = Config.sources[fromSourceLabel].graphIri;
-            var query = " COPY <" + fromGraphIri + "> TO <" + toGraphIri + ">;"
+        self.copyGraph = function (fromSourceLabel, toGraphUri, callback) {
+            var fromGraphUri = Config.sources[fromSourceLabel].graphUri;
+            var query = " COPY <" + fromGraphUri + "> TO <" + toGraphUri + ">;"
             url = Config.sources[fromSourceLabel].sparql_url + "?query=&format=json";
             Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
                 return callback(err);
+            })
+
+        }
+        /**
+         *
+         *
+         * @param fromSourceLabel
+         * @param toGraphUri
+         * @param sourceIds
+         * @param targetIds optional list od new ids
+         * @param properties optional properties to copy
+         * @param callback
+         */
+
+
+
+
+        self.copyNodes = function (fromSourceLabel, toGraphUri, sourceIds, properties, targetIdsFn, callback) {
+
+            var newTriples = [];
+            async.series([
+                // get sources nodes properties
+                function (callbackSeries) {
+                    self.getNodeInfos(fromSourceLabel, sourceIds, null, function (err, result) {
+                        if (err)
+                            return callbackSeries(err);
+                        result.forEach(function (item) {
+                            var subject = item.id.value
+                            if (targetIdsFn)
+                                subject = targetIdsFn(subject)
+
+                            var prop = item.prop.value;
+                            if (!properties || properties.indexOf(item.prop.value) > -1) {
+                                var valueStr = ""
+                                if (item.value.valueType == "uri")
+                                    valueStr = "<" + item.value.value + ">"
+                                else {
+                                    var langStr = "";
+                                    if (item.lang)
+                                        langStr = "@" + item.value.lang
+                                    valueStr = "'" + item.value.value + "'" + langStr
+                                }
+                                newTriples.push("<" + subject + "> <" + prop + "> " + valueStr + ".")
+                            }
+
+                        })
+                        return callbackSeries()
+                    })
+
+
+                },
+
+                //write new triples
+                function (callbackSeries) {
+
+                    var insertTriplesStr = "";
+                    newTriples.forEach(function (item) {
+                        insertTriplesStr += item;
+                    })
+                    var query = " WITH GRAPH  <" + toGraphUri + ">  " +
+                        "INSERT DATA" +
+                        "  {" +
+                        insertTriplesStr +
+                        "  }"
+
+                    url = Config.sources[fromSourceLabel].sparql_url + "?query=&format=json";
+                    Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
+                        return callbackSeries(err);
+                    })
+                }
+
+            ], function (err) {
+                return callback(err, newTriples.length)
+
             })
 
         }

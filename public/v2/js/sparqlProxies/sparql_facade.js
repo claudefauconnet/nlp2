@@ -8,14 +8,14 @@ var Sparql_facade = (function () {
     self.getTopConcepts = function (sourceLabel, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
-        var graphIri = source.graphIri
+        var graphUri = source.graphUri
         source.controller.getTopConcepts(sourceLabel, callback);
     }
 
     self.getNodeChildren = function (sourceLabel,word, conceptId,descendantsDepth, options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
-        var graphIri = source.graphIri
+        var graphUri = source.graphUri
         source.controller.getNodeChildren(sourceLabel, word,conceptId, descendantsDepth,options, callback);
 
     }
@@ -24,7 +24,7 @@ var Sparql_facade = (function () {
     self.getNodeParents = function (sourceLabel, word, id, ancestorsDepth, options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
-        var graphIri = source.graphIri
+        var graphUri = source.graphUri
         source.controller.getNodeParents(sourceLabel, word, id, ancestorsDepth, options, callback)
 
     }
@@ -32,7 +32,7 @@ var Sparql_facade = (function () {
     self.getConceptAndAncestorsById = function (sourceLabel, conceptId, ancestorsDepth, options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel];
-        var graphIri = source.graphIri;
+        var graphUri = source.graphUri;
         source.controller.getNodeParents(sourceLabel,null, conceptId, ancestorsDepth, options, callback);
 
     }
@@ -40,7 +40,7 @@ var Sparql_facade = (function () {
     self.getNodeInfos = function (sourceLabel, conceptId, options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
-        var graphIri = source.graphIri
+        var graphUri = source.graphUri
         source.controller.getNodeInfos(sourceLabel, conceptId, options, callback);
 
     }

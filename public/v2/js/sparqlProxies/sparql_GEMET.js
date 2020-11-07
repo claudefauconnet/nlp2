@@ -5,7 +5,7 @@ var Sparql_GEMET = (function () {
             elasticUrl = "../elastic";
 
 
-        self.getTopConcepts = function (graphIri, callback) {
+        self.getTopConcepts = function (graphUri, callback) {
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                 "select distinct * " +
                 "where{" +
@@ -32,7 +32,7 @@ var Sparql_GEMET = (function () {
         }
 
 
-        self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
+        self.getNodeChildren = function (graphUri, words, ids, descendantsDepth, options, callback) {
 
 
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdfsyn:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +

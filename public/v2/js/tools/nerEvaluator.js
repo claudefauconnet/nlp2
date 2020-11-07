@@ -2,7 +2,7 @@ var NerEvaluator = (function () {
     var self = {}
 
     self.maxGraphConceptLength = 500
-    var sourceGraphsIriMap = {}
+    var sourceGraphsUriMap = {}
 
     self.selectedSources = []
     self.categoriesTreeId = "nerEvaluator_treeDiv"
@@ -228,7 +228,7 @@ var NerEvaluator = (function () {
           if (!countAllPages) countPagesMaxFilter = " filter(?countPages<" + countPagesMax + ")"*/
         self.selectedSources.forEach(function (item) {
             var source = Config.sources[item]
-            sourceGraphsIriMap[source.graphIri] = {
+            sourceGraphsUriMap[source.graphUri] = {
                 color: source.color,
                 label: item
             }
@@ -245,9 +245,9 @@ var NerEvaluator = (function () {
         })
         parentCategoriesFilter += "))"
 
-        var fromStr = "from <" + Config.wikiCategoriesGraphIri + "> "
+        var fromStr = "from <" + Config.wikiCategoriesGraphUri + "> "
         self.selectedSources.forEach(function (item) {
-            fromStr += " from <" + Config.sources[item].graphIri + "> "
+            fromStr += " from <" + Config.sources[item].graphUri + "> "
         })
 
 
@@ -315,10 +315,10 @@ var NerEvaluator = (function () {
                 var color = "#ddd";
 
                 var conceptGraph = item.g.value
-                if (!sourceGraphsIriMap[conceptGraph])
+                if (!sourceGraphsUriMap[conceptGraph])
                     return;
-                color = sourceGraphsIriMap[conceptGraph].color;
-                graphLabel = sourceGraphsIriMap[conceptGraph].label
+                color = sourceGraphsUriMap[conceptGraph].color;
+                graphLabel = sourceGraphsUriMap[conceptGraph].label
 
 
                 if (graphLabel == "")
@@ -538,10 +538,10 @@ var NerEvaluator = (function () {
         }
 
 
-        var graphIri = $("#nerEvaluator_graphUrisSelect").val();
-        if (!graphIri || graphIri == "")
+        var graphUri = $("#nerEvaluator_graphUrisSelect").val();
+        if (!graphUri || graphUri == "")
             return $("#messageDiv").html("select a source");
-        graphIri = Config.sources[graphIri].graphIri
+        graphUri = Config.sources[graphUri].graphUri
         $("#waitImg").css("display", "block")
         $("#commentDiv").html("searching new concepts in selected wiki page")
         // getWimimediaPageSpecificWords:function(elasticUrl,indexName,pageName,pageCategories, callback){
@@ -559,7 +559,7 @@ var NerEvaluator = (function () {
             elasticUrl: "http://vps254642.ovh.net:2009/",
             indexName: "mediawiki-pages-*",
             pageName: pageName,
-            graphIri: graphIri,
+            graphUri: graphUri,
             pageCategoryThesaurusWords: JSON.stringify(self.currentConceptsLabels)
 
 

@@ -2,11 +2,11 @@ var Sparql_skos_generic = (function () {
         var self = {};
 
 
-        self.getTopConcepts = function (graphIri, callback) {
+        self.getTopConcepts = function (graphUri, callback) {
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                 "PREFIX elements:<http://purl.org/dc/elements/1.1/>" +
                 "select distinct * " +
-                " from <" + graphIri + ">" +
+                " from <" + graphUri + ">" +
                 "where{" +
                 "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))" +
                 "?topConcept skos:prefLabel|rdfs:label|elements:title ?topConceptLabel." +
@@ -29,7 +29,7 @@ var Sparql_skos_generic = (function () {
         }
 
 
-        self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
+        self.getNodeChildren = function (graphUri, words, ids, descendantsDepth, options, callback) {
             if (!options) {
                 options = {}
             }
@@ -75,7 +75,7 @@ var Sparql_skos_generic = (function () {
             }
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
 
-                "select distinct * from <" + graphIri + ">" +
+                "select distinct * from <" + graphUri + ">" +
                 "where{ ?child1 skos:broader ?concept."
                 + "filter(" + filter + ")"
                 + "?child1 skos:prefLabel ?child1Label."
@@ -105,7 +105,7 @@ var Sparql_skos_generic = (function () {
         }
 
 
-        self.getNodeParents = function (graphIri, words, ids, ancestorsDepth, options, callback) {
+        self.getNodeParents = function (graphUri, words, ids, ancestorsDepth, options, callback) {
             if (!options) {
                 options = {}
             }
@@ -146,7 +146,7 @@ var Sparql_skos_generic = (function () {
                 callback("no word or id selected")
             }
             var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
-                "SELECT distinct * from <" + graphIri + ">" +
+                "SELECT distinct * from <" + graphUri + ">" +
                 "WHERE {" +
                 "  ?concept skos:prefLabel ?conceptLabel . filter(" + filter + ")";
 
@@ -172,7 +172,7 @@ var Sparql_skos_generic = (function () {
 
             query += "} LIMIT 10000"
 
-            var graphIri = "";
+            var graphUri = "";
 
             var url = Config.sparql_url + "?query=";// + query + queryOptions
             var queryOptions = "&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=20000&debug=off"
@@ -189,9 +189,9 @@ var Sparql_skos_generic = (function () {
         }
 
 
-        self.getNodeInfos = function (graphIri, conceptId, options, callback) {
+        self.getNodeInfos = function (graphUri, conceptId, options, callback) {
 
-            var query = "select * from <" + graphIri + ">" +
+            var query = "select * from <" + graphUri + ">" +
                 " where {<" + conceptId + "> ?prop ?value. } limit 500";
 
 

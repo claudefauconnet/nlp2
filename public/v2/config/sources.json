@@ -4,7 +4,7 @@
     "editable": true,
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
-    "graphIri": "http://souslesens/TEST",
+    "graphUri": "http://souslesens/TEST",
     "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
@@ -15,7 +15,7 @@
     "editable": true,
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
-    "graphIri": "http://data.total.com/resource/thesaurus/ctg/",
+    "graphUri": "http://data.total.com/resource/thesaurus/ctg/",
     "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
@@ -25,7 +25,7 @@
   "Oil&Gas-Upstream": {
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
-    "graphIri": "http://souslesens.org/oil-gas/upstream/",
+    "graphUri": "http://souslesens.org/oil-gas/upstream/",
     "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
@@ -35,7 +35,7 @@
   "Gaia": {
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
-    "graphIri": "http://data.total.com/resource/dictionary/gaia/",
+    "graphUri": "http://data.total.com/resource/dictionary/gaia/",
     "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
@@ -45,7 +45,7 @@
   "ISO_15926": {
     "controller": "Sparql_generic",
     "sparql_url": "http://68.71.136.105/sparql/",
-    "graphIri": null,
+    "graphUri": null,
     "sourceSchema": "ISO_15926",
     "predicates": {
       "prefixes": [
@@ -60,7 +60,7 @@
   "GEMET": {
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
-    "graphIri": "http://www.eionet.europa.eu/gemet/",
+    "graphUri": "http://www.eionet.europa.eu/gemet/",
     "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en",
@@ -73,7 +73,7 @@
   "BNF": {
     "controller": "Sparql_generic",
     "sparql_url": "https://data.bnf.fr/sparql",
-    "graphIri": "http://data.bnf.fr",
+    "graphUri": "http://data.bnf.fr",
     "sourceSchema": "SKOS",
     "predicates": {
       "broaderPredicate": "terms:isPartOf",
@@ -84,7 +84,7 @@
   "Dbpedia": {
     "controller": "Sparql_generic",
     "sparql_url": "http://dbpedia.org/sparql",
-    "graphIri": "http://dbpedia.org",
+    "graphUri": "http://dbpedia.org",
     "ancestorsDepth": 4,
     "predicates": {
       "topConceptFilter": "?topConcept  <http://www.w3.org/2000/01/rdf-schema#subClassOf>\t<http://www.w3.org/2002/07/owl#Thing> .",
@@ -97,7 +97,7 @@
   "WORDNET": {
     "controller": "Sparql_generic",
     "sparql_url": "http://wordnet.rkbexplorer.com/sparql/",
-    "graphIri": "",
+    "graphUri": "",
     "predicates": {
       "prefixes": [
         "wordnet:<http://www.w3.org/2006/03/wn/wn20/schema/>",
@@ -115,7 +115,7 @@
   "USGS": {
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
-    "graphIri": "https://www2.usgs.gov/science/USGSThesaurus/",
+    "graphUri": "https://www2.usgs.gov/science/USGSThesaurus/",
     "predicates": {
       "topConceptFilter": "?topConcept skos:broader <https://www2.usgs.gov/science/USGSThesaurus/Categories>.",
       "lang": "en"
@@ -125,7 +125,7 @@
   "TermSciences": {
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
-    "graphIri": "http://api.termsciences.fr/termsciences/",
+    "graphUri": "http://api.termsciences.fr/termsciences/",
     "sourceSchema": "SKOS",
     "predicates": {
       "topConceptFilter": "?topConcept skos:prefLabel ?topConceptLabel.filter( ?topConcept in(<http://api.termsciences.fr/termsciences/TE-48512>,<http://api.termsciences.fr/termsciences/TE-60624>,<http://api.termsciences.fr/termsciences/TE-42031>,<http://api.termsciences.fr/termsciences/TE-27516>,<http://api.termsciences.fr/termsciences/TE-42056>,<http://api.termsciences.fr/termsciences/TE-15428>,<http://api.termsciences.fr/termsciences/TE-10236>) )",
@@ -136,7 +136,7 @@
   "ThesaurusIngenieur": {
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
-    "graphIri": "http://www.souslesens.org/thesaurusIngenieur/",
+    "graphUri": "http://www.souslesens.org/thesaurusIngenieur/",
     "sourceSchema": "SKOS",
     "predicates": {
       "topConceptFilter": "  ?topConcept skos:prefLabel ?topConceptLabel.filter( NOT EXISTS{?topConcept skos:broader ?x})",
@@ -147,7 +147,7 @@
   "Unesco": {
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
-    "graphIri": "http://skos.um.es/unesco6/",
+    "graphUri": "http://skos.um.es/unesco6/",
     "sourceSchema": "SKOS",
     "predicates": {
       "topConceptFilter": "  ?topConcept skos:prefLabel ?topConceptLabel.filter( NOT EXISTS{?topConcept skos:broader ?x})",
@@ -158,7 +158,7 @@
   "LibraryOfCongress": {
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
-    "graphIri": "http://www.loc.gov/",
+    "graphUri": "http://www.loc.gov/",
     "sourceSchema": "SKOS!!!",
     "predicates": {
       "topConceptFilter": "  ?topConcept skos:prefLabel ?topConceptLabel.filter( NOT EXISTS{?topConcept skos:broader ?x})",
@@ -171,7 +171,7 @@
   "NPD": {
     "controller": "Sparql_generic",
     "sparql_url":  "http://51.178.139.80:8890/sparql",
-    "graphIri":["http://sws.ifi.uio.no/data/npd-v2/", "http://sws.ifi.uio.no/vocab/npd-v2/"],
+    "graphUri":["http://sws.ifi.uio.no/data/npd-v2/", "http://sws.ifi.uio.no/vocab/npd-v2/"],
     "sourceSchema": "NPD",
     "predicates": {
       "prefixes": [

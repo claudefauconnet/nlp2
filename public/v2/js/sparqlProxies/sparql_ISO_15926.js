@@ -5,11 +5,11 @@ var Sparql_ISO_15926 = (function () {
         if (window.location.href.indexOf("https") > -1)
             elasticUrl = "../elastic";
 
-        self.getTopConcepts = function (graphIri, callback) {
+        self.getTopConcepts = function (graphUri, callback) {
             var query = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
             query += "select * "
-            if(graphIri && graphIri!="")
-                query +="<"+graphIri+">"
+            if(graphUri && graphUri!="")
+                query +="<"+graphUri+">"
             query += "where{?topConcept rdfs:subClassOf <http://data.15926.org/dm/Thing>."
             query += "?topConcept rdfs:label ?topConceptLabel." +
                 "?concept rdfs:subClassOf  ?topConcept. ?topConcept rdfs:label ?topConceptLabel." +
@@ -26,7 +26,7 @@ var Sparql_ISO_15926 = (function () {
         }
 
 
-        self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
+        self.getNodeChildren = function (graphUri, words, ids, descendantsDepth, options, callback) {
             var query = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
                 "select distinct * where {";
 

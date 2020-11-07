@@ -4,7 +4,7 @@ var Config = (function () {
     self.default_sparql_url = "http://51.178.139.80:8890/sparql"
 
 
-    self.wikiCategoriesGraphIri = "http://souslesens.org/data/total/ep/"
+    self.wikiCategoriesGraphUri = "http://souslesens.org/data/total/ep/"
 
     self.sources = {}
 

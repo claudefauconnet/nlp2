@@ -53,8 +53,9 @@ var ThesaurusBrowser = (function () {
             copyNode: {
                 label: "Copy Node",
                 action: function () {
-                    MainController.clipboardContent = "browser|"+ MainController.currentSource+"|"+self.currentTreeNode.id
-                    ;
+                    Clipboard.copy =({id:self.currentTreeNode.id,label:self.currentTreeNode.text})
+
+
                 },
 
             },

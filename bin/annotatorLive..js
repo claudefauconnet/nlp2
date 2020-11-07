@@ -1,6 +1,7 @@
 var httpProxy = require('../bin/httpProxy.')
 var async = require('async')
 var spacyServerUrl = "http://vps475829.ovh.net/spacy/pos"
+var Inflector = require('inflected');
 
 
 var annotatorLive = {
@@ -26,10 +27,10 @@ var annotatorLive = {
 
                     result.data.forEach(function (sentence) {
                         sentence.tags.forEach(function (item) {
-                            if (item.tag == "NN") {//item.tag.indexOf("NN")>-1) {
-                                item.text = item.text.toLowerCase();
+                            if (item.tag.indexOf("NN")>-1) {//item.tag.indexOf("NN")>-1) {
+                               var text=Inflector.singularize(item.text.toLowerCase());
                                 if (textNouns.indexOf(item.text) < 0)
-                                    textNouns.push({text: item.text, entities: {}})
+                                    textNouns.push({text:   text, entities: {}})
 
                             }
                         })
@@ -61,7 +62,7 @@ var annotatorLive = {
 
                         var query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>" +
                             "SELECT * " +
-                            "FROM <" + source.graphIri + "> " +
+                            "FROM <" + source.graphUri + "> " +
                             "WHERE {" +
                             "?id skos:prefLabel|skos:altLabel ?prefLabel ." +
                             "FILTER (lang(?prefLabel) = '" + source.predicates.lang + "')" +
@@ -154,5 +155,7 @@ var annotatorLive = {
 }
 module.exports = annotatorLive
 
+
+//annotatorLive.test()
 
 

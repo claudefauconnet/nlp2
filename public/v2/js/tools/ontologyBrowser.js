@@ -22,7 +22,7 @@ var OntologyBrowser = (function () {
 
     self.onSourceSelect = function (sourceLabel) {
           MainController.currentSource = sourceLabel;
-        self.currentSourceUri = Config.sources[sourceLabel].graphIri
+        self.currentSourceUri = Config.sources[sourceLabel].graphUri
         if (Config.sources[sourceLabel].sourceSchema) {
             //  if(! self.schemasConfig) {
             $.getJSON("config/schemas.json", function (json) {
@@ -242,11 +242,11 @@ var OntologyBrowser = (function () {
             })
         }
         var fromStr = ""
-        var graphIri = Config.sources[  MainController.currentSource].graphIri
-        if (graphIri && graphIri != "") {
-            if (!Array.isArray(graphIri))
-                graphIri = [graphIri];
-            graphIri.forEach(function (item) {
+        var graphUri = Config.sources[  MainController.currentSource].graphUri
+        if (graphUri && graphUri != "") {
+            if (!Array.isArray(graphUri))
+                graphUri = [graphUri];
+            graphUri.forEach(function (item) {
                 fromStr += " FROM <" + item + "> "
             })
         }

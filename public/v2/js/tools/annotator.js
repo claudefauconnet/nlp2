@@ -80,7 +80,10 @@ var Annotator = (function () {
                         data.entities[word][source].forEach(function (entity) {
 
                             if (entity.source == source)
-                                value += "<span class='Annotator_entitySpan' id='Annotator_entity|" + source + "|" + entity.id + "'>" + "+" + "</span>"
+
+                                var id=("AnnotatorEntity|" + source + "|"+entity.id )
+                            console.log(id)
+                            value += "<span class='Annotator_entitySpan' id='"+id +"'>" + "+" + "</span>"
                         })
                     }
                     html += "<td>" + value + "</td>"
@@ -100,16 +103,16 @@ var Annotator = (function () {
 
             })
             $("#Annotator_orphanNounsDiv").html(html)
-            $(".Annotator_orphanNouns").bind("click", Annotator.onNodeClick)
+            $(".Annotator_orphanNouns").bind("click", function(){
+                Clipboard.copy({type:"word",label:$(this).html()},$(this).attr("id"),e)})
 
         }
 
         self.onNodeClick = function (e) {
 
             if (e.ctrlKey) {
-                MainController.clipboardContent=e.target.id
-                $("#clipboardContentSpan").html(e.target.id);
-                //MainController.UI.showPopup({x: e.pageX - leftPanelWidth, y: e.pageY})
+                Clipboard.copy({type:"node",id:e.target.id,label:e.target.text},$(this).attr("id"),e)
+
             }
 
             else
@@ -120,7 +123,7 @@ var Annotator = (function () {
         self.getEntityInfo = function (e) {
 
             var id = e.target.id;
-            var array = id.split("|")
+            var array =id.split("|")
             var source = array[1]
             id = array[2]
             Sparql_generic.getNodeInfos(source, id, null, function (err, result) {

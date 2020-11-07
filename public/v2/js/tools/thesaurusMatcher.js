@@ -155,7 +155,7 @@ var ThesaurusMatcher = (function () {
                             return callbackSeries();
 
                         var targetSparql_url = Config.sources[self.targetSourceId].sparql_url
-                        var targetGraphURI = Config.sources[self.targetSourceId].graphIri
+                        var targetGraphURI = Config.sources[self.targetSourceId].graphUri
 
                         var sourceConceptsSlices = common.sliceArray(allSourceConcepts, sliceSize)
                         async.eachSeries(sourceConceptsSlices, function (sourceConcepts, callbackEach) {

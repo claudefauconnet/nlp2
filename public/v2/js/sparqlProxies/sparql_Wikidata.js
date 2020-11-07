@@ -3,7 +3,7 @@ var Sparql_Wikidata = (function () {
 
     var self = {};
 
-    self.getTopConcepts = function (graphIri, callback) {
+    self.getTopConcepts = function (graphUri, callback) {
 
     }
     self.list = function (source,word, options, callback) {
@@ -82,7 +82,7 @@ var Sparql_Wikidata = (function () {
             return callback(null, paths)
         })
     }
-    self.getNodeChildren = function (graphIri, words, ids, descendantsDepth, options, callback) {
+    self.getNodeChildren = function (graphUri, words, ids, descendantsDepth, options, callback) {
         var p = id.lastIndexOf("/")
         if (p > -1)
             id = id.substring(p + 1)

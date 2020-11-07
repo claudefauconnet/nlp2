@@ -149,7 +149,7 @@ var SourceEditor = (function () {
         }
         self.onSourceSelect = function (sourceLabel) {
             MainController.currentSource = sourceLabel;
-            self.currentSourceUri = Config.sources[sourceLabel].graphIri
+            self.currentSourceUri = Config.sources[sourceLabel].graphUri
             self.initSourceSchema(sourceLabel, function (err, result) {
 
                 if (err)
