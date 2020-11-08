@@ -39,10 +39,11 @@ var Cook = (function () {
 
         self.onSourceSelect = function (source) {
 
-            if (self.modifiedNodes.length > 0) {
-                if (confirm("leave source without saving " + self.modifiedNodes.length + "modifications ?"))
-                    return self.saveModifiedNodes()
-
+            if (source == "") {
+                $("#Cook_treeDiv").html("");
+                self.currentTreeNode = null;
+                self.currentSource = null;
+                return
             }
 
             self.currentSource = "_cookTempSource"
@@ -130,44 +131,51 @@ var Cook = (function () {
             var clipboard = Clipboard.getContent()
             if (clipboard && clipboard.type == "node") {
 
+
                 menuItems.pasteNode = {
-                    label: "paste Node",
-                    action: function () {
-                        self.menuActions.pasteClipboardNodeOnly()
-                        ;
-                    },
+                    "label": "Paste...",
+                    "separator_before": false,
+                    "separator_after": true,
+
+                    "action": false,
+                    "submenu": {
+                        pasteNode: {
+                            label: "node",
+                            action: function () {
+                                self.menuActions.pasteClipboardNodeOnly();
+                            }
+                        },
+                        pasteProperties: {
+                            label: "some properties...",
+                            action: function () {
+                                self.menuActions.pasteClipboardNodeProperties()
+                                ;
+                            },
+                        }
+                        ,
+                        pasteDescendants: {
+                            label: " descendants",
+                            action: function (obj, sss, cc) {
+                                self.menuActions.pasteClipboardNodeDescendants()
+                                ;
+                            },
+                        },
+
+                     /*   pasteAscendants: {
+                            label: "ascendants",
+                            action: function (obj, sss, cc) {
+                                self.menuActions.pasteClipboardNodeAscendants()
+                                ;
+                            },
+                        }*/
+                    }
 
                 }
-                menuItems.pasteProperties = {
-                    label: "paste  properties...",
-                    action: function () {
 
-                        self.menuActions.pasteClipboardNodeProperties()
-                        ;
-                    },
-
-                }
-                menuItems.pasteDescendants = {
-                    label: "paste node and Descendants",
-                    action: function (obj, sss, cc) {
-                        self.menuActions.pasteClipboardNodeDescendants()
-                        ;
-                    },
-
-                }
-
-                menuItems.pasteAscendants = {
-                    label: "paste node and Ascendants",
-                    action: function (obj, sss, cc) {
-
-                        self.menuActions.pasteClipboardNodeAscendants()
-                        ;
-                    },
-                }
             }
 
-            menuItems.modifyNode = {
-                label: "Modify node",
+            menuItems.editNode = {
+                label: "Edit node",
                 action: function (obj, sss, cc) {
                     var type = "http://www.w3.org/2004/02/skos/core#Concept"
                     $("#Cook_PopupDiv").dialog("open")
@@ -181,18 +189,15 @@ var Cook = (function () {
             menuItems.deleteNode = {
                 label: "Delete node",
                 action: function (obj, sss, cc) {
-
-                    self.menuActions.deleteNode()
-                    ;
+                    self.menuActions.deleteNode();
                 },
 
 
             }
             menuItems.addChildNodeNode = {
-                label: "Add child node",
+                label: "Create child",
                 action: function (obj, sss, cc) {
-
-                    //   self.menuActions.deleteNode()
+                    self.menuActions.createChildNode();
                     ;
                 },
             }
@@ -226,30 +231,30 @@ var Cook = (function () {
                 })
 
             },
+
+
             deleteNode: function () {
+                if (self.currentTreeNode.children.length > 0)
+                    return alert("cannot delete nodes with Children")
                 if (confirm("delete node " + self.currentTreeNode.text)) {
-                    $("#Cook_treeDiv").jstree(true).delete_node(self.currentTreeNode.id)
+                    Sparql_generic.deleteTriples(self.currentSource, self.currentTreeNode.id, null, null, function (err, result) {
+                        if (err) {
+                            return MainController.UI.message(err)
+                        }
+                        common.deleteNode ("Cook_treeDiv",  self.currentTreeNode.id)
+                    })
                 }
             },
-            /**
-             *
-             * MainController.clipboardContent stucture object or array of object
-             *
-             * @param callback
-             * @return {*}
-             */
+
 
             pasteClipboardNodeOnly: function (callback) {
-
-
                 var data = Clipboard.getContent();
                 if (!data)
                     return;
 
-
                 if (data.type == "node") {// cf clipboard and annotator
                     var fromSource = data.source;
-                    var toGraphUri=Config.sources[ self.currentSource].graphUri
+                    var toGraphUri = Config.sources[self.currentSource].graphUri
                     var id = data.id;
                     var label = data.label;
                     var existingNodeIds = common.getjsTreeNodes("Cook_treeDiv", true)
@@ -258,11 +263,13 @@ var Cook = (function () {
                         if (callback)
                             return callback(null)
                     }
-                    Sparql_generic.copyNodes(fromSource,toGraphUri, id, {setObjectFn:Cook.menuActions.setCopiedNodeObjectFn},  function (err, result) {
+                    Sparql_generic.copyNodes(fromSource, toGraphUri, id, {setObjectFn: Cook.menuActions.setCopiedNodeObjectFn}, function (err, result) {
                         if (err)
                             return MainController.UI.message(err);
                         var jstreeData = [{id: id, text: label, parent: self.currentTreeNode.id, data: {type: "http://www.w3.org/2004/02/skos/core#Concept"}}]
                         common.addNodesToJstree("Cook_treeDiv", self.currentTreeNode.id, jstreeData)
+                        if (callback)
+                            return callback(null)
 
                     })
                 } else if (data.type == "word") {
@@ -271,14 +278,15 @@ var Cook = (function () {
 
 
             },
-            setCopiedNodeObjectFn:function(item){
-                var newParent=self.currentTreeNode;
-                if( item.prop.value=="http://www.w3.org/2004/02/skos/core#broader")
-                    item.value.value=newParent.id;
-                    return item
+            setCopiedNodeObjectFn: function (item) {
+                var newParent = self.currentTreeNode;
+                if (item.prop.value == "http://www.w3.org/2004/02/skos/core#broader")
+                    item.value.value = newParent.id;
+                return item
 
 
             },
+
 
 
             pasteClipboardNodeDescendants: function (callback) {
@@ -287,17 +295,20 @@ var Cook = (function () {
                     return;
 
                 self.menuActions.pasteClipboardNodeOnly(function (err, result) {
+
                     var existingNodeIds = common.getjsTreeNodes("Cook_treeDiv", true)
                     var fromSource = data.source;
-                    var toGraphUri=Config.sources[ self.currentSource].graphUri
+                    var toGraphUri = Config.sources[self.currentSource].graphUri
                     var id = data.id;
                     var label = data.label;
                     var depth = 8
-                    Sparql_generic.getNodeChildren(source, null, id, depth, null, function (err, result) {
-                        var parentsMap = {};
+                    Sparql_generic.getNodeChildren(fromSource, null, id, depth, null, function (err, result) {
+
                         var childrenIds = []
+
                         if (result.length > 0) {
                             for (var i = 1; i <= depth; i++) {
+                                var items = {}
                                 result.forEach(function (item) {
 
                                     var parentId;
@@ -311,31 +322,30 @@ var Cook = (function () {
                                         var childId = item["child" + i].value
                                         if (existingNodeIds.indexOf(childId) > -1)
                                             return
-
-                                        if (!parentsMap[parentId])
-                                            parentsMap[parentId] = [];
-                                        parentsMap[parentId].push(item)
                                         childrenIds.push(childId)
+                                        if (!items[parentId])
+                                            items[parentId] = [];
+                                        items[parentId].push(item)
 
 
                                     }
 
 
                                 })
-
-
-                                Sparql_generic.copyNodes(fromSource,toGraphUri, childrenIds, null, null, function (err, result) {
-                                    if (err)
-                                        return MainController.UI.message(err);
-
-
-                                    for (var parentId in parentsMap) {
-                                        TreeController.drawOrUpdateTree("Cook_treeDiv", parentsMap[parentId], parentId, "child" + i, null)
-                                    }
-                                })
+                                for (var parentId in items) {
+                                    TreeController.drawOrUpdateTree("Cook_treeDiv", items[parentId], parentId, "child" + i, null)
+                                }
 
 
                             }
+                            Sparql_generic.copyNodes(fromSource, toGraphUri, childrenIds, {}, function (err, result) {
+                                if (err)
+                                    return MainController.UI.message(err);
+
+
+                            })
+
+
                         }
                         self.modified = true;
 
@@ -345,26 +355,87 @@ var Cook = (function () {
                 })
 
             }
+
+
+
+            /**
+             *
+             *  A FINIR
+             *
+             *
+             * @param callback
+             */
             , pasteClipboardNodeAscendants: function () {
-                var existingNodeIds = common.getjsTreeNodes("Cook_treeDiv", true)
-                var data = MainController.clipboardContent;
+                var data = Clipboard.getContent();
                 if (!data)
                     return;
-                var array = data.split("|")
-                if (array.length == 3) {// cf annotator
-                    var source = array[1];
-                    var id = array[2];
-                    Sparql_generic.getSingleNodeAllAncestors(source, id, function (err, result) {
-                        TreeController.drawOrUpdateTree("Cook_treeDiv", result, "#", "broader", null)
+
+                self.menuActions.pasteClipboardNodeOnly(function (err, result) {
+
+                    var existingNodeIds = common.getjsTreeNodes("Cook_treeDiv", true)
+                    var fromSource = data.source;
+                    var toGraphUri = Config.sources[self.currentSource].graphUri
+                    var id = data.id;
+                    var label = data.label;
+                    var depth = 8
+                    Sparql_generic.getNodeParents(fromSource, null, id, depth, null, function (err, result) {
+
+                        var childrenIds = []
+
+                        if (result.length > 0) {
+                            for (var i = 1; i <= depth; i++) {
+                                var items = {}
+                                result.forEach(function (item) {
+
+                                    var parentId;
+                                    if (item["broader" + i]) {
+                                        if (i == 1) {
+                                            parentId = id
+                                        } else {
+                                            parentId = item["broader" + (i - 1)].value;
+
+                                        }
+                                        var childId = item["broader" + i].value
+                                        if (existingNodeIds.indexOf(childId) > -1)
+                                            return
+                                        childrenIds.push(childId)
+                                        if (!items[parentId])
+                                            items[parentId] = [];
+                                        items[parentId].push(item)
+
+
+                                    }
+
+
+                                })
+                                for (var parentId in items) {
+                                    TreeController.drawOrUpdateTree("Cook_treeDiv", items[parentId], parentId, "broader" + i, null)
+                                }
+
+
+                            }
+                            Sparql_generic.copyNodes(fromSource, toGraphUri, childrenIds, {}, function (err, result) {
+                                if (err)
+                                    return MainController.UI.message(err);
+
+
+                            })
+
+
+                        }
                         self.modified = true;
 
                     })
 
 
-                }
+                })
 
             },
             pasteClipboardNodeProperties: function () {
+
+            },
+
+            createChildNode: function () {
 
             },
 

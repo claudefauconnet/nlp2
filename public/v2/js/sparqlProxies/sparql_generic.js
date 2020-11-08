@@ -570,6 +570,8 @@ var Sparql_generic = (function () {
         }
 
 
+
+
         return self;
     }
 )()

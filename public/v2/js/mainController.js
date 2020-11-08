@@ -55,8 +55,8 @@ var MainController = (function () {
                     $("#accordion").accordion("option", {active: 1});
                     var controller = Config.tools[self.currentTool].controller
                     self.UI.updateActionDivLabel();
-                  /*  if (Config.tools[self.currentTool].multiSources)
-                        controller.onSourceSelect(self.currentSource)*/
+                  if (Config.tools[self.currentTool].multiSources)
+                        controller.onSourceSelect(self.currentSource)
                     if(controller.onLoaded)
                         controller.onLoaded()
                     if(Config.tools[self.currentTool].toolDescriptionImg){

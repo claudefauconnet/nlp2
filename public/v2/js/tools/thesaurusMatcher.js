@@ -318,7 +318,7 @@ var ThesaurusMatcher = (function () {
                         var yOffset = 30;
 
 
-                        function addBroaderNodes(broaders, childId, startOffest, direction, color) {
+                        function addBroaderNodes(broaders, childId, startOffest, direction, color,source) {
                             broaders.forEach(function (itemBroader, index) {
 
 
@@ -329,6 +329,7 @@ var ThesaurusMatcher = (function () {
                                         id: itemBroader.id,
                                         label: itemBroader.label,
                                         color: color,
+                                        data:{source:source},
                                         shape: "box",
                                         fixed: {x: true, y: false},
                                         x: direction * (startOffest + (xOffset * (index + 1))),
@@ -378,6 +379,7 @@ var ThesaurusMatcher = (function () {
                                         label: item.source.label,
                                         color: "#add",
                                         shape: "box",
+                                        data:{source:MainController.currentSource},
                                         fixed: {x: true, y: true},
                                         x: currentX,
                                         y: currentY
@@ -391,6 +393,7 @@ var ThesaurusMatcher = (function () {
                                                 label: item.target.label,
                                                 color: "#dda",
                                                 shape: "box",
+                                                data:{source:self.targetSourceId},
                                                 fixed: {x: true, y: true},
                                                 x: currentX + xOffset,
                                                 y: currentY
@@ -408,9 +411,9 @@ var ThesaurusMatcher = (function () {
                                             })
                                         }
                                     }
-                                    addBroaderNodes(item.source.broaders, item.source.id, currentX, -1, "#add");
+                                    addBroaderNodes(item.source.broaders, item.source.id, currentX, -1, "#add",MainController.currentSource);
                                     if (item.target && item.target.broaders)
-                                        addBroaderNodes(item.target.broaders, item.target.id, currentX + xOffset, +1, "#dda")
+                                        addBroaderNodes(item.target.broaders, item.target.id, currentX + xOffset, +1, "#dda",self.targetSourceId)
 
                                 }
                                 currentY += yOffset;
@@ -540,7 +543,11 @@ var ThesaurusMatcher = (function () {
 
         }
 
-        self.onGraphClickNode = function (point, node, event) {
+        self.onGraphClickNode = function ( node, point,event) {
+            if(event.ctrlKey){
+                Clipboard.copy({type: "node", source: node.data.source, id: node.id, label:node.label}, node.id, event)
+            }
+
 
         }
 
