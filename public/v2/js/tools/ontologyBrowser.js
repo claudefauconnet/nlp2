@@ -3,7 +3,6 @@ var OntologyBrowser = (function () {
 
     self.schemasConfig
     self.currentSourceSchema
-      MainController.currentSource
     self.currentSourceUri
     self.nodeProperties;
     self.currentFilters = {}

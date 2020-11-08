@@ -1,35 +1,30 @@
-var Clipboard=(function(){
-   var self={};
-  var content=null;
-   self.copy=function(data,elementId,event){
+var Clipboard = (function () {
+    var self = {};
+    var content = null;
+    self.copy = function (data, elementId, event) {
 
-       content=data;
-       content.tool=MainController.currentTool
-       content.source=MainController.currentSource
-       content.date= new Date()
+        content = data;
+        content.tool = MainController.currentTool
+        if (!data.source)
+            content.source = MainController.currentSource
+        content.date = new Date()
 
 
+        $(".clipboardSelected").removeClass("clipboardSelected")
 
-       $(".clipboardSelected").removeClass("clipboardSelected")
+        if (elementId) {
+            var elt = document.getElementById(elementId)
 
-       if(elementId){
- var elt=document.getElementById(elementId)
-
-           $(elt).addClass("clipboardSelected")
-       }
-
+            $(elt).addClass("clipboardSelected")
+        }
 
 
     }
 
-    self.getContent=function(){
-      return content;
+    self.getContent = function () {
+        return content;
     }
 
 
-
-
-
-
-   return self;
+    return self;
 })()

@@ -81,9 +81,9 @@ var Annotator = (function () {
 
                             if (entity.source == source)
 
-                                var id=("AnnotatorEntity|" + source + "|"+entity.id )
+                                var id = ("AnnotatorEntity|" + source + "|" + entity.id)
                             console.log(id)
-                            value += "<span class='Annotator_entitySpan' id='"+id +"'>" + "+" + "</span>"
+                            value += "<span class='Annotator_entitySpan' data-source='" +source+ "' data-label='"+ word+"'  data-id='"+ entity.id+"' id='" + id + "'>" + "+" + "</span>"
                         })
                     }
                     html += "<td>" + value + "</td>"
@@ -103,19 +103,20 @@ var Annotator = (function () {
 
             })
             $("#Annotator_orphanNounsDiv").html(html)
-            $(".Annotator_orphanNouns").bind("click", function(){
-                Clipboard.copy({type:"word",label:$(this).html()},$(this).attr("id"),e)})
+            $(".Annotator_orphanNouns").bind("click", function () {
+                Clipboard.copy({type: "word", source:"none",label: $(this).html()}, $(this).attr("id"), e)
+            })
 
         }
 
         self.onNodeClick = function (e) {
-
+            var source = $(this).data("source")
+            var label = $(this).data("label")
+            var id = $(this).data("id")
             if (e.ctrlKey) {
-                Clipboard.copy({type:"node",id:e.target.id,label:e.target.text},$(this).attr("id"),e)
+                Clipboard.copy({type: "node", source: source, id: id, label:label}, $(this).attr("id"), e)
 
-            }
-
-            else
+            } else
                 self.getEntityInfo(e)
         }
 
@@ -123,7 +124,7 @@ var Annotator = (function () {
         self.getEntityInfo = function (e) {
 
             var id = e.target.id;
-            var array =id.split("|")
+            var array = id.split("|")
             var source = array[1]
             id = array[2]
             Sparql_generic.getNodeInfos(source, id, null, function (err, result) {
@@ -137,7 +138,7 @@ var Annotator = (function () {
 
                 var html = "Ancestors : "
                 result.forEach(function (item) {
-                    html += "<span class='Annotator_entityAncestorsSpan' id='Annotator_entity|" + source + "|" + item.broader.value + "'>" + item.broaderLabel.value + "</span>"
+                    html += "<span class='Annotator_entityAncestorsSpan'  data-source='"+source+"' data-id='"+item.broader.value+"'  data-label='"+ item.broaderLabel.value +"' id='Annotator_entity|" + source + "|" + item.broader.value + "'>" + item.broaderLabel.value + "</span>"
 
                 })
 
@@ -147,8 +148,6 @@ var Annotator = (function () {
             })
 
         }
-
-
 
 
         return self;

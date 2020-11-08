@@ -12,7 +12,8 @@ var ThesaurusBrowser = (function () {
     }
 
     self.selectNodeFn = function (event, propertiesMap) {
-        self.currentTreeNode = propertiesMap.node
+        self.currentTreeNode = propertiesMap.node;
+
         if (true || propertiesMap.event.ctrlKey) {
             self.editThesaurusConceptInfos(MainController.currentSource, propertiesMap.node)
         }
@@ -52,8 +53,8 @@ var ThesaurusBrowser = (function () {
         return {
             copyNode: {
                 label: "Copy Node",
-                action: function () {
-                    Clipboard.copy =({id:self.currentTreeNode.id,label:self.currentTreeNode.text})
+                action: function (e) {
+                    Clipboard.copy ({type:"node",id:self.currentTreeNode.id,label:self.currentTreeNode.text,source:MainController.currentSource},self.currentTreeNode.id+"_anchor",e)
 
 
                 },

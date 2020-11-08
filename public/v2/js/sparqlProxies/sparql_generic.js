@@ -488,16 +488,22 @@ var Sparql_generic = (function () {
          * @param fromSourceLabel
          * @param toGraphUri
          * @param sourceIds
-         * @param targetIds optional list od new ids
-         * @param properties optional properties to copy
+         * @param options :
+            * setSubjectFn : function to transform target subjects
+         * setPredicateFn : function to transform target predicates
+         * setObjectFn : function to transform target objects
+         * properties :  optional properties to copy
+         *
          * @param callback
          */
 
 
 
 
-        self.copyNodes = function (fromSourceLabel, toGraphUri, sourceIds, properties, targetIdsFn, callback) {
-
+        self.copyNodes = function (fromSourceLabel, toGraphUri, sourceIds, options, callback) {
+            if (!options) {
+                options = {}
+            }
             var newTriples = [];
             async.series([
                 // get sources nodes properties
@@ -507,20 +513,26 @@ var Sparql_generic = (function () {
                             return callbackSeries(err);
                         result.forEach(function (item) {
                             var subject = item.id.value
-                            if (targetIdsFn)
-                                subject = targetIdsFn(subject)
-
+                            if (options.setSubjectFn)
+                                subject = options.setSubjectFn(item)
                             var prop = item.prop.value;
-                            if (!properties || properties.indexOf(item.prop.value) > -1) {
-                                var valueStr = ""
-                                if (item.value.valueType == "uri")
-                                    valueStr = "<" + item.value.value + ">"
-                                else {
-                                    var langStr = "";
-                                    if (item.lang)
-                                        langStr = "@" + item.value.lang
-                                    valueStr = "'" + item.value.value + "'" + langStr
-                                }
+                            if (options.setPredicateFn)
+                                prop = options.setPredicateFn(item)
+                            if (options.setObjectFn)
+                                valueStr = options.setObjectFn(item)
+                            if (!options.properties || options.properties.indexOf(item.prop.value) > -1) {
+
+
+                                    var valueStr = ""
+                                    if (item.value.valueType == "uri")
+                                        valueStr = "<" + item.value.value + ">"
+                                    else {
+                                        var langStr = "";
+                                        if (item.lang)
+                                            langStr = "@" + item.value.lang
+                                        valueStr = "'" + item.value.value + "'" + langStr
+                                    }
+
                                 newTriples.push("<" + subject + "> <" + prop + "> " + valueStr + ".")
                             }
 
