@@ -47,6 +47,10 @@ var visjsGraph = (function () {
             }
 
         }
+        if (_options.groups){
+            options.groups=_options.groups
+        }
+
 
 
         self.network = new vis.Network(container, self.data, options);

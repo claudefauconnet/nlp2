@@ -420,7 +420,8 @@ var ThesaurusMatcher = (function () {
 
                             }
                         }
-                        visjsGraph.draw("graphDiv", visjsData, {onclickFn: ThesaurusMatcher.onGraphClickNode})
+
+                        visjsGraph.draw("graphDiv", visjsData, {onclickFn: ThesaurusMatcher.onGraphClickNode,groups:Clipboard.VisjsGroups})
                         return callbackSeries();
                     },
 
@@ -545,7 +546,7 @@ var ThesaurusMatcher = (function () {
 
         self.onGraphClickNode = function ( node, point,event) {
             if(event.ctrlKey){
-                Clipboard.copy({type: "node", source: node.data.source, id: node.id, label:node.label}, node.id, event)
+                Clipboard.copy({type: "node", source: node.data.source, id: node.id, label:node.label}, "_visjsNode", event)
             }
 
 

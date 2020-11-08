@@ -161,13 +161,13 @@ var Cook = (function () {
                             },
                         },
 
-                     /*   pasteAscendants: {
-                            label: "ascendants",
-                            action: function (obj, sss, cc) {
-                                self.menuActions.pasteClipboardNodeAscendants()
-                                ;
-                            },
-                        }*/
+                        /*   pasteAscendants: {
+                               label: "ascendants",
+                               action: function (obj, sss, cc) {
+                                   self.menuActions.pasteClipboardNodeAscendants()
+                                   ;
+                               },
+                           }*/
                     }
 
                 }
@@ -241,7 +241,7 @@ var Cook = (function () {
                         if (err) {
                             return MainController.UI.message(err)
                         }
-                        common.deleteNode ("Cook_treeDiv",  self.currentTreeNode.id)
+                        common.deleteNode("Cook_treeDiv", self.currentTreeNode.id)
                     })
                 }
             },
@@ -288,7 +288,6 @@ var Cook = (function () {
             },
 
 
-
             pasteClipboardNodeDescendants: function (callback) {
                 var data = Clipboard.getContent();
                 if (!data)
@@ -301,9 +300,10 @@ var Cook = (function () {
                     var toGraphUri = Config.sources[self.currentSource].graphUri
                     var id = data.id;
                     var label = data.label;
-                    var depth = 8
+                    var depth = 3
                     Sparql_generic.getNodeChildren(fromSource, null, id, depth, null, function (err, result) {
-
+                        if (err)
+                            return MainController.UI.message(err);
                         var childrenIds = []
 
                         if (result.length > 0) {
@@ -379,7 +379,8 @@ var Cook = (function () {
                     var label = data.label;
                     var depth = 8
                     Sparql_generic.getNodeParents(fromSource, null, id, depth, null, function (err, result) {
-
+                        if (err)
+                            return MainController.UI.message(err);
                         var childrenIds = []
 
                         if (result.length > 0) {
