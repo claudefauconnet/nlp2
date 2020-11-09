@@ -610,7 +610,14 @@ var NerEvaluator = (function () {
     }
 
     self.onMissingWordClick = function (event) {
+
+
         var word = event.currentTarget.id.substring(8)
+        if(event.ctrlKey){
+            return Clipboard.copy({type:"word",text:word},event.currentTarget.id,event)
+
+        }
+
         var id = event.currentTarget.id;
         self.currentSelectedPageNewWord = word;
         var classes = $('#' + id).attr('class').split(/\s+/);

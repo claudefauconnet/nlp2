@@ -240,7 +240,7 @@ var TermTaxonomy = (function () {
     self.onGraphNodeClick = function ( node,point, options) {
 
 
-            if(options.ctrlKey){
+            if(options && options.ctrlKey){
                return  Clipboard.copy({type: "node", source: node.data.source, id: node.id, label:node.label}, "_visjsNode", options)
             }
 

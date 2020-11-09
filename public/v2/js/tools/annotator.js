@@ -104,7 +104,7 @@ var Annotator = (function () {
             })
             $("#Annotator_orphanNounsDiv").html(html)
             $(".Annotator_orphanNouns").bind("click", function () {
-                Clipboard.copy({type: "word", source:"none",label: $(this).html()}, $(this).attr("id"), e)
+                Clipboard.copy({type: "word", source:"none",label: $(this).html()}, $(this).attr("id"))
             })
 
         }

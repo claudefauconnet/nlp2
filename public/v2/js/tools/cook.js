@@ -172,6 +172,15 @@ var Cook = (function () {
 
                 }
 
+            } else if (clipboard && clipboard.type == "word") {
+                menuItems.pasteDescendants = {
+                    label: " create concept " + Clipboard.getContent().label,
+                    action: function (obj, sss, cc) {
+                        self.menuActions.createConceptFromWord()
+                        ;
+                    }
+
+                }
             }
 
             menuItems.editNode = {
@@ -234,18 +243,18 @@ var Cook = (function () {
 
 
             deleteNode: function () {
-                var str=""
+                var str = ""
                 if (self.currentTreeNode.children.length > 0)
-                    str=" and all its descendants"
-                if (confirm("delete node " + self.currentTreeNode.text+str)) {
+                    str = " and all its descendants"
+                if (confirm("delete node " + self.currentTreeNode.text + str)) {
 
-                    if(self.currentTreeNode.children.length > 0){
-                        Sparql_generic.getSingleNodeAllDescendants(self.currentSource, self.currentTreeNode.id,function(err, result){
+                    if (self.currentTreeNode.children.length > 0) {
+                        Sparql_generic.getSingleNodeAllDescendants(self.currentSource, self.currentTreeNode.id, function (err, result) {
                             if (err) {
                                 return MainController.UI.message(err)
                             }
-                         var subjectsIds=[self.currentTreeNode.id]
-                            result.forEach(function(item){
+                            var subjectsIds = [self.currentTreeNode.id]
+                            result.forEach(function (item) {
                                 subjectsIds.push(item.narrower.value)
                             })
                             Sparql_generic.deleteTriples(self.currentSource, subjectsIds, null, null, function (err, result) {
@@ -256,9 +265,7 @@ var Cook = (function () {
                             })
 
                         })
-                    }
-
-                    else {
+                    } else {
                         Sparql_generic.deleteTriples(self.currentSource, self.currentTreeNode.id, null, null, function (err, result) {
                             if (err) {
                                 return MainController.UI.message(err)
@@ -272,6 +279,8 @@ var Cook = (function () {
 
             pasteClipboardNodeOnly: function (callback) {
                 var data = Clipboard.getContent();
+                if (!callback)
+                    Clipboard.clear();
                 if (!data)
                     return;
 
@@ -317,6 +326,8 @@ var Cook = (function () {
                     return;
 
                 self.menuActions.pasteClipboardNodeOnly(function (err, result) {
+
+                    Clipboard.clear();
 
                     var existingNodeIds = common.getjsTreeNodes("Cook_treeDiv", true)
                     var fromSource = data.source;
@@ -468,10 +479,14 @@ var Cook = (function () {
 
             },
             pasteClipboardNodeProperties: function () {
-
+                var data = Clipboard.getContent();
+                Clipboard.clear();
             },
 
             createChildNode: function () {
+
+            },
+            createConceptFromWord: function () {
 
             },
 
