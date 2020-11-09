@@ -31,6 +31,7 @@ var ThesaurusMatcher = (function () {
         self.selectNodeFn = function (event, propertiesMap) {
             $("#actionDivContolPanelDiv").css('display', 'block')
             ThesaurusBrowser.openTreeNode("currentSourceTreeDiv", MainController.currentSource, propertiesMap.node)
+            ThesaurusBrowser.currentTreeNode= propertiesMap.node
         }
 
 
@@ -421,7 +422,7 @@ var ThesaurusMatcher = (function () {
                             }
                         }
 
-                        visjsGraph.draw("graphDiv", visjsData, {onclickFn: ThesaurusMatcher.onGraphClickNode,groups:Clipboard.VisjsGroups})
+                        visjsGraph.draw("graphDiv", visjsData, {onclickFn: ThesaurusMatcher.onGraphClickNode,})
                         return callbackSeries();
                     },
 

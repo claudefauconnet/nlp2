@@ -1,5 +1,5 @@
-var Sparql_proxy=(function(){
-    var self={};
+var Sparql_proxy = (function () {
+    var self = {};
 
     self.querySPARQL_GET_proxy_cursor = function (url, query, queryOptions, options, callback) {
         var offset = 0;
@@ -33,7 +33,7 @@ var Sparql_proxy=(function(){
                 }
 
 
-                    $("#waitImg").css("display", "block");
+                $("#waitImg").css("display", "block");
 
 
                 //   url="http://vps475829.ovh.net:8890/sparql"
@@ -87,12 +87,6 @@ var Sparql_proxy=(function(){
     self.querySPARQL_GET_proxy = function (url, query, queryOptions, options, callback) {
         if (!options)
             options = {}
-        if (!options.doNotEncode) {
-            var query2 = encodeURIComponent(query);
-            query2 = query2.replace(/%2B/g, "+").trim()
-        }
-
-
 
         var body = {
             params: {query: query},
@@ -103,24 +97,22 @@ var Sparql_proxy=(function(){
         }
 
 
-            $("#waitImg").css("display", "block");
-
-
+        $("#waitImg").css("display", "block");
 
 
         var payload = {
             httpProxy: 1,
             url: url,
             body: body,
-            options:queryOptions
+            options: queryOptions
 
 
         }
 
-        if (options.method && options.method=="GET")
-            payload.GET=true;
+        if (options.method && options.method == "GET")
+            payload.GET = true;
         else
-            payload.POST=true;
+            payload.POST = true;
 
         $.ajax({
             type: "POST",
@@ -133,7 +125,7 @@ var Sparql_proxy=(function(){
 
             success: function (data, textStatus, jqXHR) {
                 var xx = data;
-                if(data.results.bindings.length==0)
+                if (data.results.bindings.length == 0)
                     console.log(JSON.stringify(query))
                 //  $("#messageDiv").html("found : " + data.results.bindings.length);
                 $("#waitImg").css("display", "none");
@@ -143,7 +135,10 @@ var Sparql_proxy=(function(){
 
             }
             , error: function (err) {
-                $("#messageDiv").html(err.responseText);
+                if (err.responseText.indexOf("Virtuoso 42000") > -1) { //Virtuoso 42000 The estimated execution time
+                    alert(err.responseText.substring(0, err.responseText.indexOf(".")) + "\n select more detailed data")
+                } else
+                    $("#messageDiv").html(err.responseText);
 
                 $("#waitImg").css("display", "none");
                 console.log(JSON.stringify(err))
@@ -158,15 +153,7 @@ var Sparql_proxy=(function(){
     }
 
 
-
-
-
-
-
-
     return self;
-
-
 
 
 })()

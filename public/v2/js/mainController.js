@@ -23,6 +23,10 @@ var MainController = (function () {
         showSources:function(treeDiv, withCBX){
             var treeData = [];
             Object.keys(Config.sources).sort().forEach(function (sourceLabel,index) {
+
+                if(Config.currentProfile.allowedSourceSchemas.indexOf( Config.sources[sourceLabel].sourceSchema)<0)
+                    return;
+                Config.sources[sourceLabel].name=sourceLabel
                 Config.sources[sourceLabel].controller=eval( Config.sources[sourceLabel].controller)
                 if (!Config.sources[sourceLabel].color)
                     Config.sources[sourceLabel].color = common.palette[index%common.palette.length];

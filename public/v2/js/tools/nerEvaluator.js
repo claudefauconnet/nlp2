@@ -226,11 +226,11 @@ var NerEvaluator = (function () {
           var countAllPages = $("#countAllPages").prop("checked")
 
           if (!countAllPages) countPagesMaxFilter = " filter(?countPages<" + countPagesMax + ")"*/
-        self.selectedSources.forEach(function (item) {
-            var source = Config.sources[item]
+        self.selectedSources.forEach(function (sourceLabel) {
+            var source = Config.sources[sourceLabel]
             sourceGraphsUriMap[source.graphUri] = {
                 color: source.color,
-                label: item
+                label: sourceLabel
             }
         })
 
@@ -337,7 +337,7 @@ var NerEvaluator = (function () {
 
                 if (allnodes.indexOf(graphLabel) < 0) {
                     allnodes.push(graphLabel)
-                    visjsData.nodes.push({id: graphLabel, label: graphLabel, shape: "ellipse", color: color, fixed: {x: true}, x: 500, y: offsetY, data: {type: "graph"}})
+                    visjsData.nodes.push({id: graphLabel, label: graphLabel, shape: "ellipse", color: color, fixed: {x: true}, x: 500, y: offsetY, data: {type: "graph",source:graphLabel}})
 
                 }
                 if (allnodes.indexOf(conceptId) < 0) {
@@ -345,7 +345,7 @@ var NerEvaluator = (function () {
                     if (member)
                         color = "#dac"
                     // visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "text", color: color,size:Math.round(20/countPages), fixed: {x: true, y: true}, x: -500, y: offsetY})
-                    visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "box", color: color, fixed: {x: true, y: true}, x: -500, y: offsetY, data: {type: "leafConcept"}})
+                    visjsData.nodes.push({id: conceptId, label: conceptLabel, shape: "box", color: color, fixed: {x: true, y: true}, x: -500, y: offsetY, data: {type: "leafConcept",source:graphLabel}})
 
                     offsetY += 30 + (20 / countPages);
                     //  visjsData.edges.push({id: nodeId + "_" + conceptId, from: nodeId, to: conceptId, color: color})
@@ -357,7 +357,7 @@ var NerEvaluator = (function () {
                         if (allnodes.indexOf(broaderId) < 0) {
                             allnodes.push(broaderId)
                             var broaderLabel = item["broader" + i + "Label"].value
-                            visjsData.nodes.push({id: broaderId, label: broaderLabel, shape: "box", color: color, data: {type: "broaderConcept"}})
+                            visjsData.nodes.push({id: broaderId, label: broaderLabel, shape: "box", color: color, data: {type: "broaderConcept",source:graphLabel}})
                         }
                         if (i == 1) {
                             var edgeId = conceptId + "_" + broaderId
@@ -419,6 +419,15 @@ var NerEvaluator = (function () {
             //  $( "#sliderCountPagesMax" ).slider( "option", "value", maxPages );
         })
     }
+
+
+    self.onGraphNodeClick = function ( node, point,event) {
+        if(event.ctrlKey){
+            Clipboard.copy({type: "node", source: node.data.source, id: node.id, label:node.label}, "_visjsNode", event)
+        }
+
+    }
+
     self.filterGraphCategories = function () {
         var graphUri = $("#graphUrisSelect").val()
         var query =

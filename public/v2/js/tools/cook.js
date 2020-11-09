@@ -234,15 +234,38 @@ var Cook = (function () {
 
 
             deleteNode: function () {
+                var str=""
                 if (self.currentTreeNode.children.length > 0)
-                    return alert("cannot delete nodes with Children")
-                if (confirm("delete node " + self.currentTreeNode.text)) {
-                    Sparql_generic.deleteTriples(self.currentSource, self.currentTreeNode.id, null, null, function (err, result) {
-                        if (err) {
-                            return MainController.UI.message(err)
-                        }
-                        common.deleteNode("Cook_treeDiv", self.currentTreeNode.id)
-                    })
+                    str=" and all its descendants"
+                if (confirm("delete node " + self.currentTreeNode.text+str)) {
+
+                    if(self.currentTreeNode.children.length > 0){
+                        Sparql_generic.getSingleNodeAllDescendants(self.currentSource, self.currentTreeNode.id,function(err, result){
+                            if (err) {
+                                return MainController.UI.message(err)
+                            }
+                         var subjectsIds=[self.currentTreeNode.id]
+                            result.forEach(function(item){
+                                subjectsIds.push(item.narrower.value)
+                            })
+                            Sparql_generic.deleteTriples(self.currentSource, subjectsIds, null, null, function (err, result) {
+                                if (err) {
+                                    return MainController.UI.message(err)
+                                }
+                                common.deleteNode("Cook_treeDiv", self.currentTreeNode.id)
+                            })
+
+                        })
+                    }
+
+                    else {
+                        Sparql_generic.deleteTriples(self.currentSource, self.currentTreeNode.id, null, null, function (err, result) {
+                            if (err) {
+                                return MainController.UI.message(err)
+                            }
+                            common.deleteNode("Cook_treeDiv", self.currentTreeNode.id)
+                        })
+                    }
                 }
             },
 
@@ -301,60 +324,72 @@ var Cook = (function () {
                     var id = data.id;
                     var label = data.label;
                     var depth = 3
-                    Sparql_generic.getNodeChildren(fromSource, null, id, depth, null, function (err, result) {
-                        if (err)
-                            return MainController.UI.message(err);
-                        var childrenIds = []
+                    var childrenIds = [id]
+                    var currentDepth = 1
+                    var totalNodesCount = 0
+                    async.whilst(
+                        function test(cb) {
+                            return childrenIds.length > 0
+                        },
 
-                        if (result.length > 0) {
-                            for (var i = 1; i <= depth; i++) {
+                        function (callbackWhilst) {//iterate
+
+                            Sparql_generic.getNodeChildren(fromSource, null, childrenIds, 1, null, function (err, result) {
+                                if (err)
+                                    return MainController.UI.message(err);
+                                childrenIds = []
+                                if (result.length == 0)
+                                    return callbackWhilst();
+                                totalNodesCount += result.length
                                 var items = {}
                                 result.forEach(function (item) {
 
                                     var parentId;
-                                    if (item["child" + i]) {
-                                        if (i == 1) {
-                                            parentId = id
-                                        } else {
-                                            parentId = item["child" + (i - 1)].value;
+                                    if (item["child" + currentDepth]) {
 
-                                        }
-                                        var childId = item["child" + i].value
+                                        parentId = item.concept.value;
+
+                                        var childId = item["child" + currentDepth].value
                                         if (existingNodeIds.indexOf(childId) > -1)
                                             return
                                         childrenIds.push(childId)
                                         if (!items[parentId])
                                             items[parentId] = [];
                                         items[parentId].push(item)
-
-
                                     }
 
+                                })
+
+
+                                Sparql_generic.copyNodes(fromSource, toGraphUri, childrenIds, {}, function (err, result) {
+                                    if (err)
+                                        return callbackWhilst(err)
+                                    for (var parentId in items) {
+                                        TreeController.drawOrUpdateTree("Cook_treeDiv", items[parentId], parentId, "child" + currentDepth, null)
+                                    }
+
+                                    callbackWhilst();
 
                                 })
-                                for (var parentId in items) {
-                                    TreeController.drawOrUpdateTree("Cook_treeDiv", items[parentId], parentId, "child" + i, null)
-                                }
-
-
-                            }
-                            Sparql_generic.copyNodes(fromSource, toGraphUri, childrenIds, {}, function (err, result) {
-                                if (err)
-                                    return MainController.UI.message(err);
 
 
                             })
-
-
                         }
-                        self.modified = true;
-
-                    })
-
-
+                        , function (err) {
+                            if (err)
+                                return MainController.UI.message(err)
+                            return MainController.UI.message("copied " + totalNodesCount + " nodes")
+                        })
                 })
 
+
             }
+
+
+
+
+
+
 
 
 

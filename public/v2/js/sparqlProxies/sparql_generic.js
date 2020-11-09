@@ -12,6 +12,7 @@ var Sparql_generic = (function () {
             ],
             topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"
             , broaderPredicate: "skos:broader"
+            ,narrowerPredicate:"skos:narrower"
             , broader: "skos:broader"
             , prefLabel: "skos:prefLabel"
             , altLabel: "skos:altLabel",
@@ -28,6 +29,7 @@ var Sparql_generic = (function () {
         var fromStr = "";
         var topConceptFilter = "";
         var broaderPredicate = "";
+        var narrowerPredicate="";
         var prefLabelPredicate = "";
         var topConceptLangFilter = "";
         var conceptLangFilter = "";
@@ -72,6 +74,7 @@ var Sparql_generic = (function () {
 
             topConceptFilter = predicates.topConceptFilter || defaultPredicates.topConceptFilter;
             broaderPredicate = predicates.broaderPredicate || defaultPredicates.broaderPredicate;
+            narrowerPredicate = predicates.narrowerPredicate || defaultPredicates.narrowerPredicate;
             prefLabelPredicate = predicates.prefLabel || defaultPredicates.prefLabel;
             lang = predicates.lang;
             limit = predicates.limit || defaultPredicates.limit;
@@ -135,6 +138,41 @@ var Sparql_generic = (function () {
                 filterStr += "filter( ?" + varName + "=<" + uri + ">)."
             }
             return filterStr;
+        }
+
+
+        var formatString = function (str, forUri) {
+            if (!str || !str.replace)
+                return null;
+
+            str = str.replace(/'/gm, "\"")
+            str = str.replace(/\n/gm, ".")
+            str = str.replace(/\r/gm, "")
+            str = str.replace(/\t/gm, " ")
+            str = str.replace(/\(/gm, "-")
+            str = str.replace(/\)/gm, "-")
+            str = str.replace(/\\xa0/gm, " ")
+
+            return str;
+
+            str = str.replace(/"/gm, "\\\"")
+            str = str.replace(/;/gm, " ")
+            str = str.replace(/\n/gm, "\\\\n")
+            str = str.replace(/\r/gm, "")
+            str = str.replace(/\t/gm, " ")
+            str = str.replace(/\(/gm, "-")
+            str = str.replace(/\)/gm, "-")
+            str = str.replace(/\\xa0/gm, " ")
+            str = str.replace(/'/gm, "\\\'")
+            if (forUri)
+                str = str.replace(/ /gm, "_")
+
+
+            return str;
+        }
+        formatUrl = function (str) {
+            str = str.replace(/%\d*/gm, "_")
+            return str;
         }
 
 
@@ -279,7 +317,7 @@ var Sparql_generic = (function () {
                 "filter (?concept=<" + id + ">) " +
                 "?broader " + prefLabelPredicate + " ?broaderLabel." +
                 "?broader rdf:type ?type."
-            if (lang)
+            if (false && lang)
                 query += "filter( lang(?broaderLabel)=\"" + lang + "\")"
             query += "  }";
             query += "limit " + limit + " ";
@@ -299,11 +337,11 @@ var Sparql_generic = (function () {
             var query = "";
             query += prefixesStr;
             query += " select distinct * " + fromStr + "  WHERE {"
-            query += "  ?concept ^" + broaderPredicate + "* ?narrower." +
+            query += "  ?concept ^" + broaderPredicate + "*|"+narrowerPredicate+"* ?narrower." +
                 "filter (?concept=<" + id + ">) " +
                 "?narrower " + prefLabelPredicate + " ?narrowerLabel." +
                 "?narrower rdf:type ?type."
-            if (lang)
+            if (false && lang)
                 query += "filter( lang(?narrowerLabel)=\"" + lang + "\")"
             query += "  }";
             query += "limit " + limit + " ";
@@ -347,7 +385,7 @@ var Sparql_generic = (function () {
             var filter = getUriFilter("id", conceptId);
 
             var query = " select distinct * " + fromStr + "  WHERE {" +
-                " ?id ?prop ?value. " + filter + "} limit 500";
+                " ?id ?prop ?value. " + filter + "} limit 10000";
 
 
             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
@@ -396,6 +434,7 @@ var Sparql_generic = (function () {
         self.deleteTriples = function (sourceLabel, subjectUri, predicateUri, objectUri, callback) {
             if (!subjectUri && !subjectUri && !subjectUri)
                 return call("no subject predicate and object filter : cannot delete")
+
 
             var filterStr = "";
             if (subjectUri)
@@ -504,7 +543,9 @@ var Sparql_generic = (function () {
             if (!options) {
                 options = {}
             }
+            var newTriplesSets = [];
             var newTriples = [];
+            var setSize = 100
             async.series([
                 // get sources nodes properties
                 function (callbackSeries) {
@@ -523,20 +564,25 @@ var Sparql_generic = (function () {
                             if (!options.properties || options.properties.indexOf(item.prop.value) > -1) {
 
 
-                                    var valueStr = ""
-                                    if (item.value.valueType == "uri")
-                                        valueStr = "<" + item.value.value + ">"
-                                    else {
-                                        var langStr = "";
-                                        if (item.lang)
-                                            langStr = "@" + item.value.lang
-                                        valueStr = "'" + item.value.value + "'" + langStr
-                                    }
+                                var valueStr = ""
+                                if (item.value.type == "uri")
+                                    valueStr = "<" + formatUrl(item.value.value) + ">"
+                                else {
+                                    var langStr = "";
+                                    if (item.lang)
+                                        langStr = "@" + item.value.lang
+                                    valueStr = "'" + formatString(item.value.value) + "'" + langStr
+                                }
 
-                                newTriples.push("<" + subject + "> <" + prop + "> " + valueStr + ".")
+                                newTriples.push("<" + formatUrl(subject) + "> <" + formatUrl(prop) + "> " + valueStr + ".")
+                                if (newTriples.length >= setSize) {
+                                    newTriplesSets.push(newTriples)
+                                    newTriples = []
+                                }
                             }
 
                         })
+                        newTriplesSets.push(newTriples)
                         return callbackSeries()
                     })
 
@@ -545,20 +591,23 @@ var Sparql_generic = (function () {
 
                 //write new triples
                 function (callbackSeries) {
+                    async.eachSeries(newTriplesSets, function (newTriples, callbackEach) {
+                        var insertTriplesStr = "";
+                        newTriples.forEach(function (item) {
+                            insertTriplesStr += item
+                        })
+                        var query = " WITH GRAPH  <" + toGraphUri + ">  " +
+                            "INSERT DATA" +
+                            "  {" +
+                            insertTriplesStr +
+                            "  }"
 
-                    var insertTriplesStr = "";
-                    newTriples.forEach(function (item) {
-                        insertTriplesStr += item;
-                    })
-                    var query = " WITH GRAPH  <" + toGraphUri + ">  " +
-                        "INSERT DATA" +
-                        "  {" +
-                        insertTriplesStr +
-                        "  }"
-
-                    url = Config.sources[fromSourceLabel].sparql_url + "?query=&format=json";
-                    Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
-                        return callbackSeries(err);
+                        url = Config.sources[fromSourceLabel].sparql_url + "?query=&format=json";
+                        Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
+                            return callbackEach(err);
+                        })
+                    }, function (err) {
+                        callbackSeries(err)
                     })
                 }
 
@@ -568,8 +617,6 @@ var Sparql_generic = (function () {
             })
 
         }
-
-
 
 
         return self;
