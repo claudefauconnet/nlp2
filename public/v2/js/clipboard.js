@@ -1,17 +1,29 @@
 var Clipboard = (function () {
     var self = {};
-    var content = null;
+    var content = [];
 
     self.copy = function (data, element, event) {
 
-        content = data;
-        content.tool = MainController.currentTool
+
+
+
+        data.tool = MainController.currentTool
         if (!data.source)
-            content.source = MainController.currentSource
-        content.date = new Date()
+            data.source = MainController.currentSource
+        data.date = new Date()
 
 
-        $(".clipboardSelected").removeClass("clipboardSelected")
+
+        if(!event.ctrlKey) {
+            content = [data]
+            $(".clipboardSelected").removeClass("clipboardSelected")
+        }
+        else{
+            content.push(data)
+
+
+        }
+
 
         if (element) {
             if (element === "_visjsNode") {
@@ -60,6 +72,8 @@ var Clipboard = (function () {
 
 
         var newNodes = [];
+        if(!visjsGraph.data)
+            return;
         visjsGraph.data.nodes.getIds().forEach(function (id) {
             var newNode = {id: id, hidden: false}
             if (selectedNodeId && selectedNodeId == id)

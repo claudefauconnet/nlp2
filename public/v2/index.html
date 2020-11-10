@@ -53,7 +53,7 @@
     <script src="js/tools/ontologyBrowser.js"></script>
     <script src="js/tools/annotator.js"></script>
 
-    <script src="js/tools/cook.js"></script>
+    <script src="js/tools/blender.js"></script>
 
 
     <script src="config/app_config.js"></script>
@@ -75,8 +75,8 @@
             $("#accordion").accordion()
             $("#accordion").accordion("option", {active: 0});
             $( "#accordion" ).on( "accordionactivate", function( event, ui ) {
-                if(ui.newPanel[0].id=="cookPanelDiv")
-                 Cook.initPanel();
+                if(ui.newPanel[0].id=="blenderPanelDiv")
+                 Blender.initPanel();
             } );
 
 
@@ -199,8 +199,8 @@
 
             </div>
 
-            <h3><span class="title" id="cookPanelLabel">Cook</span></h3>
-            <div id="cookPanelDiv" >
+            <h3><span class="title" id="blenderPanelLabel">Blend</span></h3>
+            <div id="blenderPanelDiv" >
 
             </div>
 

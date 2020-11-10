@@ -1,0 +1,27 @@
+
+<div style="width:20%;align-self:end">
+    <span style="font:bold 14px Arial;">Blender</span><select onchange="Blender.onSourceSelect($(this).val())" id="Blender_SourcesSelect"></select>
+</div>
+
+<!--<button onclick="Blender.saveModifiedNodes()">Save</button>-->
+<button onclick="Blender.createScheme()">createScheme</button>
+<div id="Blender_tabs" style="width:400px;height:80%">
+
+    <ul>
+        <li><a href="#Blender_tabs_targetThesaurus">Taxonomy</a></li>
+        <li><a href="#Blender_tabs_collections">Collections</a></li>
+
+
+
+    </ul>
+    <div id="Blender_tabs_targetThesaurus">
+        <div id="Blender_treeDiv"></div>
+    </div>
+    <div id="Blender_tabs_collections">
+        <div id="Blender_collections_treeDiv"></div>
+    </div>
+</div>
+<div id="Blender_PopupDiv" style="">
+
+
+</div>

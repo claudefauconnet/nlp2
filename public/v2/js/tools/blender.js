@@ -1,9 +1,12 @@
-var Cook = (function () {
+var Blender = (function () {
 
         var self = {}
         var isLoaded = false
         self.modifiedNodes = []
         self.tempGraph;
+        self.currentSourceSchema;
+        self.currentSource;
+        self.backupSource = false// using  a clone of source graph
         self.onLoaded = function () {
             // $("#sourceDivControlPanelDiv").html("")
         }
@@ -14,7 +17,7 @@ var Cook = (function () {
                 return;
 
 
-            $("#cookPanelDiv").load("snippets/cook.html")
+            $("#blenderPanelDiv").load("snippets/blender.html")
             setTimeout(function () {
                     var editableSources = [];
                     for (var key in Config.sources) {
@@ -22,14 +25,14 @@ var Cook = (function () {
                             editableSources.push(key)
                     }
 
-                    common.fillSelectOptions("Cook_SourcesSelect", editableSources.sort(), true)
-                    $("#Cook_PopupDiv").dialog({
+                    common.fillSelectOptions("Blender_SourcesSelect", editableSources.sort(), true)
+                    $("#Blender_PopupDiv").dialog({
                         autoOpen: false,
                         height: 600,
                         width: 600,
                         modal: true,
                     });
-                    $("#Cook_tabs").tabs({})
+                    $("#Blender_tabs").tabs({})
                     isLoaded = true;
                 }, 200
             )
@@ -38,47 +41,57 @@ var Cook = (function () {
 
 
         self.onSourceSelect = function (source) {
+            self.currentSource = source
+
+            function initSource() {
+                SourceEditor.schema.initSourceSchema(source, function (err, result) {
+
+                    Sparql_facade.getTopConcepts(self.currentSource, function (err, result) {
+                        if (err) {
+                            return MainController.message(err);
+                        }
+                        var jsTreeOptions = {};
+                        jsTreeOptions.contextMenu = Blender.getJstreeContextMenu()
+                        jsTreeOptions.selectNodeFn = Blender.selectNodeFn
+                        /*  jsTreeOptions.onCreateNodeFn = Blender.onCreateNodeFn
+                          jsTreeOptions.onDeleteNodeFn = Blender.onDeleteNodeFn*/
+                        jsTreeOptions.moveNode = Blender.menuActions.moveNode
+                        jsTreeOptions.dnd = self.dnd
+
+                        TreeController.drawOrUpdateTree("Blender_treeDiv", result, "#", "topConcept", jsTreeOptions)
+                    })
+                })
+            }
+
 
             if (source == "") {
-                $("#Cook_treeDiv").html("");
+                $("#Blender_treeDiv").html("");
                 self.currentTreeNode = null;
                 self.currentSource = null;
                 return
             }
 
-            self.currentSource = "_cookTempSource"
-            Config.sources[self.currentSource] = {
-                "controller": Sparql_generic,
-                "sparql_url": Config.sources[source].sparql_url,// on the same server !!!
-                "graphUri": "http://souslesens/_cookTempSource/" + source,
-                "sourceSchema": "SKOS",
-                "predicates": {
-                    "lang": "en"
-                },
-            };
+            if (self.backupSource) {
+                self.currentSource = "_blenderTempSource"
+                Config.sources[self.currentSource] = {
+                    "controller": Sparql_generic,
+                    "sparql_url": Config.sources[source].sparql_url,// on the same server !!!
+                    "graphUri": "http://souslesens/_blenderTempSource/" + source,
+                    "sourceSchema": "SKOS",
+                    "predicates": {
+                        "lang": "en"
+                    },
+                };
 
-
-            Sparql_generic.copyGraph(source, Config.sources[self.currentSource].graphUri, function (err, result) {
-
-
-                self.modifiedNodes = []
-
-                Sparql_facade.getTopConcepts(self.currentSource, function (err, result) {
-                    if (err) {
-                        return MainController.message(err);
-                    }
-                    var jsTreeOptions = {};
-                    jsTreeOptions.contextMenu = Cook.getJstreeContextMenu()
-                    jsTreeOptions.selectNodeFn = Cook.selectNodeFn
-                    /*  jsTreeOptions.onCreateNodeFn = Cook.onCreateNodeFn
-                      jsTreeOptions.onDeleteNodeFn = Cook.onDeleteNodeFn*/
-                    jsTreeOptions.moveNode = Cook.menuActions.moveNode
-                    jsTreeOptions.dnd = self.dnd
-
-                    TreeController.drawOrUpdateTree("Cook_treeDiv", result, "#", "topConcept", jsTreeOptions)
+                Sparql_generic.copyGraph(source, Config.sources[self.currentSource].graphUri, function (err, result) {
+                    initSource()
                 })
 
-            })
+
+            } else {
+                Config.sources[source].controller = eval(Config.sources[source].controller)
+                initSource()
+            }
 
 
         }
@@ -95,7 +108,7 @@ var Cook = (function () {
             },
             "drag_stop": function (data, element, helper, event) {
                 var nodeId = element.data.nodes[0]
-                var node = $("#Cook_treeDiv").jstree(true).get_node(nodeId)
+                var node = $("#Blender_treeDiv").jstree(true).get_node(nodeId)
 
                 if (confirm("Confirm : move node and descendants :" + node.text + "?"))
                     return true;
@@ -104,7 +117,7 @@ var Cook = (function () {
 
             },
             checkTreeOperations: function (operation, node, parent, position, more) {
-                Cook.currentOperation = {operation: operation, node: node, parent: parent, position: position, more, more}
+                Blender.currentOperation = {operation: operation, node: node, parent: parent, position: position, more, more}
 
                 return true;
             }
@@ -114,12 +127,12 @@ var Cook = (function () {
             self.selectNodeFn = function (event, propertiesMap) {
                 if (propertiesMap)
                     self.currentTreeNode = propertiesMap.node
-                ThesaurusBrowser.openTreeNode("Cook_treeDiv", self.currentSource, propertiesMap.node);
+                ThesaurusBrowser.openTreeNode("Blender_treeDiv", self.currentSource, propertiesMap.node);
 
 
-                var xx = $("#Cook_treeDiv").jstree(true).settings.contextmenu
+                var xx = $("#Blender_treeDiv").jstree(true).settings.contextmenu
 
-                $("#Cook_treeDiv").jstree(true).settings.contextmenu.items = self.getJstreeContextMenu()
+                $("#Blender_treeDiv").jstree(true).settings.contextmenu.items = self.getJstreeContextMenu()
 
                 //  $.jstree.defaults.contextmenu.items = self.getJstreeContextMenu();
 
@@ -129,7 +142,7 @@ var Cook = (function () {
         self.getJstreeContextMenu = function () {
             var menuItems = {}
             var clipboard = Clipboard.getContent()
-            if (clipboard && clipboard.type == "node") {
+            if (clipboard.length>0 && clipboard[0].type == "node") {
 
 
                 menuItems.pasteNode = {
@@ -186,12 +199,7 @@ var Cook = (function () {
             menuItems.editNode = {
                 label: "Edit node",
                 action: function (obj, sss, cc) {
-                    var type = "http://www.w3.org/2004/02/skos/core#Concept"
-                    $("#Cook_PopupDiv").dialog("open")
-                    $("#Cook_PopupDiv").on('dialogclose', function (event) {
-                        SourceEditor.saveEditingObject(Cook.currentSource)
-                    });
-                    SourceEditor.editNode("Cook_PopupDiv", self.currentSource, self.currentTreeNode.id, type, false)
+                    self.menuActions.editNode()
                 }
             }
 
@@ -261,7 +269,7 @@ var Cook = (function () {
                                 if (err) {
                                     return MainController.UI.message(err)
                                 }
-                                common.deleteNode("Cook_treeDiv", self.currentTreeNode.id)
+                                common.deleteNode("Blender_treeDiv", self.currentTreeNode.id)
                             })
 
                         })
@@ -270,7 +278,7 @@ var Cook = (function () {
                             if (err) {
                                 return MainController.UI.message(err)
                             }
-                            common.deleteNode("Cook_treeDiv", self.currentTreeNode.id)
+                            common.deleteNode("Blender_treeDiv", self.currentTreeNode.id)
                         })
                     }
                 }
@@ -278,35 +286,41 @@ var Cook = (function () {
 
 
             pasteClipboardNodeOnly: function (callback) {
-                var data = Clipboard.getContent();
-                if (!callback)
-                    Clipboard.clear();
-                if (!data)
-                    return;
+                var dataArray = Clipboard.getContent();
+                async.eachSeries(dataArray,function(data,callbackEach) {
 
-                if (data.type == "node") {// cf clipboard and annotator
-                    var fromSource = data.source;
-                    var toGraphUri = Config.sources[self.currentSource].graphUri
-                    var id = data.id;
-                    var label = data.label;
-                    var existingNodeIds = common.getjsTreeNodes("Cook_treeDiv", true)
-                    if (existingNodeIds.indexOf(id) > -1) {
-                        MainController.UI.message("node " + id + " already exists")
-                        if (callback)
-                            return callback(null)
+                    /* if (!callback)
+                         Clipboard.clear();*/
+                    if (!data)
+                        return;
+
+                    if (data.type == "node") {// cf clipboard and annotator
+                        var fromSource = data.source;
+                        var toGraphUri = Config.sources[self.currentSource].graphUri
+                        var id = data.id;
+                        var label = data.label;
+                        var existingNodeIds = common.getjsTreeNodes("Blender_treeDiv", true)
+                        if (existingNodeIds.indexOf(id) > -1) {
+                            MainController.UI.message("node " + id + " already exists")
+                            if (callback)
+                                return callback(null)
+                        }
+                        Sparql_generic.copyNodes(fromSource, toGraphUri, id, {setObjectFn: Blender.menuActions.setCopiedNodeObjectFn}, function (err, result) {
+                            if (err)
+                                return MainController.UI.message(err);
+                            var jstreeData = [{id: id, text: label, parent: self.currentTreeNode.id, data: {type: "http://www.w3.org/2004/02/skos/core#Concept"}}]
+                            common.addNodesToJstree("Blender_treeDiv", self.currentTreeNode.id, jstreeData)
+                           callbackEach()
+
+                        })
                     }
-                    Sparql_generic.copyNodes(fromSource, toGraphUri, id, {setObjectFn: Cook.menuActions.setCopiedNodeObjectFn}, function (err, result) {
-                        if (err)
-                            return MainController.UI.message(err);
-                        var jstreeData = [{id: id, text: label, parent: self.currentTreeNode.id, data: {type: "http://www.w3.org/2004/02/skos/core#Concept"}}]
-                        common.addNodesToJstree("Cook_treeDiv", self.currentTreeNode.id, jstreeData)
-                        if (callback)
-                            return callback(null)
+                },function(err){
+                    if (!callback)
+                        Clipboard.clear();
+                   else
+                        return callback(null)
 
-                    })
-                } else if (data.type == "word") {
-
-                }
+                })
 
 
             },
@@ -329,7 +343,7 @@ var Cook = (function () {
 
                     Clipboard.clear();
 
-                    var existingNodeIds = common.getjsTreeNodes("Cook_treeDiv", true)
+                    var existingNodeIds = common.getjsTreeNodes("Blender_treeDiv", true)
                     var fromSource = data.source;
                     var toGraphUri = Config.sources[self.currentSource].graphUri
                     var id = data.id;
@@ -376,7 +390,7 @@ var Cook = (function () {
                                     if (err)
                                         return callbackWhilst(err)
                                     for (var parentId in items) {
-                                        TreeController.drawOrUpdateTree("Cook_treeDiv", items[parentId], parentId, "child" + currentDepth, null)
+                                        TreeController.drawOrUpdateTree("Blender_treeDiv", items[parentId], parentId, "child" + currentDepth, null)
                                     }
 
                                     callbackWhilst();
@@ -418,7 +432,7 @@ var Cook = (function () {
 
                 self.menuActions.pasteClipboardNodeOnly(function (err, result) {
 
-                    var existingNodeIds = common.getjsTreeNodes("Cook_treeDiv", true)
+                    var existingNodeIds = common.getjsTreeNodes("Blender_treeDiv", true)
                     var fromSource = data.source;
                     var toGraphUri = Config.sources[self.currentSource].graphUri
                     var id = data.id;
@@ -456,7 +470,7 @@ var Cook = (function () {
 
                                 })
                                 for (var parentId in items) {
-                                    TreeController.drawOrUpdateTree("Cook_treeDiv", items[parentId], parentId, "broader" + i, null)
+                                    TreeController.drawOrUpdateTree("Blender_treeDiv", items[parentId], parentId, "broader" + i, null)
                                 }
 
 
@@ -483,40 +497,106 @@ var Cook = (function () {
                 Clipboard.clear();
             },
 
-            createChildNode: function () {
+            createChildNode: function (initData) {
+                if (!initData)
+                    initData = {}
+                var parentNode = self.currentTreeNode;
+                var parentProperty = SourceEditor.currentSourceSchema.newObject.treeParentProperty;
+                var mandatoryProps = SourceEditor.currentSourceSchema.newObject.mandatoryProperties;
+                var childClass = SourceEditor.currentSourceSchema.newObject.treeChildrenClasses[parentNode.data.type];
+                initData[parentProperty] = [{value: parentNode.id, type: "uri"}];
+                mandatoryProps.forEach(function (item) {
+                    if (!initData[item])
+                        initData[item] = [{"xml:lang": SourceEditor.prefLang, value: "", type: "literal"}]
+                })
+
+                if (self.currentTreeNode.data.type == "http://www.w3.org/2004/02/skos/core#ConceptScheme")
+                    initData["http://www.w3.org/2004/02/skos/core#topConceptOf"] = [{value: self.currentTreeNode.id, type: "uri"}]
+
+
+                $("#Blender_PopupDiv").dialog("open")
+                $("#Blender_PopupDiv").on('dialogclose', function (event) {
+                    if (event.ctrlKey || confirm("save node data")) {
+                        SourceEditor.saveEditingObject(function (err, editingObject) {
+                            if (editingObject.isNew) {
+                                editingObject.isNew = false;
+                                var jsTreeData = [{
+                                    id: editingObject.about,
+                                    text: editingObject.nodeLabel,
+                                    data: {type: editingObject.type}
+                                }]
+                                var parentNode = $("#Blender_treeDiv").jstree(true).get_selected("#")
+                                if (parentNode)
+                                    common.addNodesToJstree('Blender_treeDiv', self.currentTreeNode.id, jsTreeData, {})
+                                else
+                                    common.loadJsTree('Blender_treeDiv', jsTreeData, null)
+
+
+                            }
+                        })
+                    }
+                });
+
+                SourceEditor.editNewObject("Blender_PopupDiv", self.currentSource, childClass, initData);
 
             },
+
+
             createConceptFromWord: function () {
-
+                var data = Clipboard.getContent();
+                var initData = {"http://www.w3.org/2004/02/skos/core#prefLabel": [{"xml:lang": SourceEditor.prefLang, value: data.label, type: "literal"}]}
+                self.menuActions.createChildNode(initData)
             },
 
 
+            editNode: function () {
+                var type = "http://www.w3.org/2004/02/skos/core#Concept"
+                $("#Blender_PopupDiv").dialog("open")
+                $("#Blender_PopupDiv").on('dialogclose', function (event) {
+                    if (event.ctrlKey || confirm("save node data")) {
+                        SourceEditor.saveEditingObject(function (err, editingObject) {
+                            if (err) {
+                                return MainController.UI.message(err)
+                            }
+                            $("#Blender_treeDiv").jstree(true).rename_node ( self.currentTreeNode.id, editingObject.nodeLabel)
+                            common.setTreeAppearance();
+                        })
+
+                    }
+                });
+                SourceEditor.editNode("Blender_PopupDiv", self.currentSource, self.currentTreeNode.id, type, false)
+
+
+            }
         }
 
-        self.saveModifiedNodes = function () {
-            var actions = {delete: [], alter: [], create: [], move: []}
-            self.modifiedNodes.forEach(function (item) {
-                actions[item.action].push(item)
-            })
+        self.createScheme = function () {
+
+            if (!self.currentSource) {
+                return alert("select a source");
+            }
+            $("#Blender_PopupDiv").dialog("open")
+            $("#Blender_PopupDiv").on('dialogclose', function (event) {
+                SourceEditor.saveEditingObject(function (err, editingObject) {
+                    if (editingObject.isNew) {
+                        editingObject.isNew = false;
+                        var jsTreeData = [{
+                            id: editingObject.about,
+                            text: editingObject.nodeLabel,
+                            parent: "#",
+                            data: {type: editingObject.type}
+                        }]
+                        var parentNode = $("#Blender_treeDiv").jstree(true).get_selected("#")
+                        if (parentNode)
+                            common.addNodesToJstree('Blender_treeDiv', "#", jsTreeData, {})
+                        else
+                            common.loadJsTree('Blender_treeDiv', jsTreeData, null)
 
 
-            async.series([
-
-                //delete
-                function (callbackSeries) {
-                    var toDeleteIds = []
-                    actions.delete.forEach(function (item) {
-                        toDeleteIds.push(item.nodeId)
-                    })
-                    Sparql_generic.deleteTriplesBySubject(self.currentSource, toDeleteIds, function (err, result) {
-
-                        return callbackSeries(err);
-                    })
-                },
-            ], function (err) {
-
-            })
-
+                    }
+                })
+            });
+            SourceEditor.editNewObject("Blender_PopupDiv", self.currentSource, "http://www.w3.org/2004/02/skos/core#ConceptScheme", {});
 
         }
 

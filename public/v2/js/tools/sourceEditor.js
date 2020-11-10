@@ -132,7 +132,7 @@ var SourceEditor = (function () {
                     label: "add Child",
                     action: function (obj, sss, cc) {
 
-                        SourceEditor.onAddNewObject(self.editingObject)
+                        SourceEditor.onAddNewObject("graphDiv",self.editingObject)
                         ;
                     },
                 },
@@ -170,9 +170,9 @@ var SourceEditor = (function () {
         }
 
 
-        self.onAddNewObject = function (parentObj) {
+        self.onAddNewObject = function (divId,parentObj) {
 
-            $("#graphDiv").load("snippets/sourceEditor.html")
+            $("#"+divId).load("snippets/sourceEditor.html")
             setTimeout(function () {
 
                 //  $("#SourceEditor_mainDiv").css("display", "block")
@@ -193,7 +193,7 @@ var SourceEditor = (function () {
                             initData[item] = [{"xml:lang": self.prefLang, value: "", type: "literal"}]
                         })
 
-                        self.initClass(childClass, initData);
+                        self.editNewObject(childClass, initData);
 
                     }
                 }
@@ -203,58 +203,31 @@ var SourceEditor = (function () {
 
 
         },
-            self.initClass = function (classId, initData) {
+            self.editNewObject = function (divId,sourceLabel,classId, initData) {
                 if (!classId)
                     classId = $("#SourceEditor_NewClassSelect").val();
 
                 var classLabel = self.currentSourceSchema.classes[classId].label
-                self.schema.initClassProperties(self.currentSourceSchema, function (err, result) {
+                self.schema.initClassProperties(sourceLabel,classId, function (err, result) {
                     if (err)
                         return MainController.UI.message(err)
                     $("#SourceEditor_NewClassSelect").val("");
                     $("#SourceEditor_NewObjectDiv").css("display", "none");
                     $("#SourceEditor_ObjectType").html(classLabel);
 
-                    if (self.currentSourceUri.lastIndexOf("/") != self.currentSourceUri.length - 1)
-                        self.currentSourceUri += "/"
-                    var nodeId = self.currentSourceUri + common.getRandomHexaId(10)
+                    var sourceUri=Config.sources[sourceLabel].graphUri
+                    if (sourceUri.lastIndexOf("/") !=sourceUri.length - 1)
+                        sourceUri += "/"
+                    var nodeId = sourceUri + common.getRandomHexaId(10)
                     $("#SourceEditor_ObjectUri").val(nodeId);
 
-                    self.editNode("SourceEditor_mainDiv", MainController.currentSource, {id: nodeId, data: {type: classId}}, initData)
+                    self.editNode(divId, sourceLabel,  nodeId,classId, initData,true)
                 })
 
             }
 
 
-        /*    self.onNewSourceButton = function () {
-                var sourceGraphUri = prompt("new source graph uri", "http://mySourceUri/");
-                if (sourceGraphUri && sourceGraphUri != "") {
-                    self.currentSourceUri = sourceGraphUri;
 
-                    var html = "<div id='currentSourceTreeDiv'></div>"
-                    $("#actionDiv").html(html);
-                    var jsTreeData = [{id: sourceGraphUri, text: sourceGraphUri, parent: "#"}];
-                    common.loadJsTree('currentSourceTreeDiv', jsTreeData, {selectNodeFn: SourceEditor.editNode})
-                    $("#accordion").accordion("option", {active: 2});
-
-
-                    self.initSchemaClasses(self.currentSourceSchema, function (err, result) {
-                        if (err)
-                            return MainController.UI.message(err)
-
-                        $("#graphDiv").load("snippets/sourceEditor.html")
-                        setTimeout(function () {
-                            $("#SourceEditor_NewObjectDiv").css("display", "block")
-                            $("#SourceEditor_graphUri").html("sourceGraphUri")
-                            common.fillSelectOptions("SourceEditor_NewClassSelect", self.currentSourceSchema.classes, true, "label", "id")
-                        }, 500)
-
-
-                    })
-                }
-
-
-            }*/
 
         self.editjstreeNode = function (event, obj, initData) {
             var type;
@@ -267,7 +240,7 @@ var SourceEditor = (function () {
         }
 
 
-        self.editNode = function (divId, source, nodeId, type, initData) {
+        self.editNode = function (divId, source, nodeId, type, initData,isNew) {
             $("#" + divId).css("display", "block")
             var editingObject;
 
@@ -282,6 +255,9 @@ var SourceEditor = (function () {
                     //init editing object
                     , function (callbackSeries) {
                         editingObject = JSON.parse(JSON.stringify(self.currentSourceSchema.classes[type]))
+                        editingObject.source=source;
+                    if(isNew)
+                        editingObject.isNew=true
                         editingObject.about = nodeId;
                         editingObject.type = editingObject.id;
                         if (self.editingObject)
@@ -433,9 +409,7 @@ var SourceEditor = (function () {
             return null;
         }
 
-        self.saveEditingObject = function (source) {
-            if(!source)
-                source=MainController.currentSource;
+        self.saveEditingObject = function (callback) {
 
 
             var triples = [];
@@ -443,16 +417,31 @@ var SourceEditor = (function () {
             var nodeLabel = null
             triples.push({subject: self.editingObject.about, predicate: "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", object: self.editingObject.type, valueType: "uri"})
 
+
+
+
+
+
             $(".SourceEditor_input_TR").each(function (e, x) {
 
-                predicate = $(this).attr("id").substring(13)
+                predicate = $(this).attr("id").substring(13);
+
                 var value = $(this).find(".SourceEditor_value").val();
                 var lang = $(this).find(".SourceEditor_lang").val();
+
+
+
                 var valueType = self.getPredicateValueType(self.editingObject.type, predicate)
 
                 var triple = {subject: self.editingObject.about, predicate: predicate, object: value, valueType: valueType}
                 if (lang && lang != "")
                     triple.lang = lang;
+
+
+              //  var labelProp=Config.sources[self.editingObject.source].prefLabel || Sparql_generic.defaultPredicates.prefLabel;
+             //   if(!self.editingObject.nodeLabel  && predicate==labelProp && (!self.prefLang || lang==self.prefLang))// label for new jstree node...
+                if(!self.editingObject.nodeLabel  && predicate.indexOf("prefLabel")>-1 &&  (!self.prefLang || lang==self.prefLang))// label for new jstree node...
+                    self.editingObject.nodeLabel=value;
 
 
                 triples.push(triple)
@@ -464,24 +453,18 @@ var SourceEditor = (function () {
             })
 
 
-            Sparql_generic.update(source, triples, function (err, result) {
-                if (err)
+            Sparql_generic.update(self.editingObject.source, triples, function (err, result) {
+                if (err) {
                     MainController.UI.message(err)
+                    if(callback)
+                        return callback(err)
+                }
 
                 MainController.UI.message("data saved")
-                if (self.editingObject.isNew) {
-                    var jsTreeData = [{
-                        id: self.editingObject.about,
-                        text: nodeLabel,
-                        parent: self.editingObject.parent,
-                        data: {type: predicate}
-                    }]
-                    var rootNode = $("#currentSourceTreeDiv").jstree(true).get_node("#")
-                    if (rootNode)
-                        common.addNodesToJstree('currentSourceTreeDiv', self.editingObject.parent, jsTreeData, {})
-                    else
-                        common.loadJsTree('currentSourceTreeDiv', jsTreeData, null)
-                }
+
+              if(callback){
+                  return callback(null, self.editingObject)
+              }
 
             })
 

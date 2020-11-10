@@ -10,7 +10,10 @@ var Sparql_generic = (function () {
                 " elements:<http://purl.org/dc/elements/1.1/>"
 
             ],
-            topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"
+          //  topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"
+
+            topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>))"
+
             , broaderPredicate: "skos:broader"
             ,narrowerPredicate:"skos:narrower"
             , broader: "skos:broader"
@@ -21,6 +24,7 @@ var Sparql_generic = (function () {
 
 
         }
+        self.defaultPredicates=defaultPredicates;
 
         var source = "";
         var graphUri = "";

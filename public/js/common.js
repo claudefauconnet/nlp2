@@ -1,7 +1,7 @@
 var common = (function () {
         var self = {};
 
-        var setTreeAppearance = function () {
+        self.setTreeAppearance = function () {
             $(".jstree-themeicon").css("display", "none")
             $(".jstree-anchor").css("line-height", "18px")
             $(".jstree-anchor").css("height", "18px")
@@ -100,7 +100,7 @@ var common = (function () {
             }).on('loaded.jstree', function () {
                 if (options.openAll)
                     $('#' + jstreeDiv).jstree(true).open_all();
-                setTreeAppearance()
+                self.setTreeAppearance()
 
 
             }).on("select_node.jstree",
@@ -109,7 +109,7 @@ var common = (function () {
                     if (options.selectNodeFn)
                         options.selectNodeFn(evt, obj);
                 }).on('open_node.jstree', function () {
-                setTreeAppearance()
+                self.setTreeAppearance()
             }).on("check_node.jstree", function (evt, obj) {
 
                 if (options.onCheckNodeFn) {
@@ -128,18 +128,18 @@ var common = (function () {
             }).on("create_node.jstree", function (parent, node, position) {
                 if (options.onCreateNodeFn) {
                     options.onCreateNodeFn(parent, node, position)
-                    setTreeAppearance()
+                    self.setTreeAppearance()
                 }
             }).on("delete_node.jstree", function (node, parent) {
                 if (options.onDeleteNodeFn) {
                     options.onDeleteNodeFn(node, parent)
-                    setTreeAppearance()
+                    self.setTreeAppearance()
                 }
             })
                 .on("move_node.jstree", function (node, parent, position, oldParent, oldPosition, is_multi, old_instance, new_instance) {
                     if (options.onMoveNodeFn) {
                         options.onMoveNodeFn(node, parent, position, oldParent, oldPosition, is_multi, old_instance, new_instance);
-                        setTreeAppearance()
+                        self.setTreeAppearance()
                     }
                 });
 
@@ -173,14 +173,14 @@ var common = (function () {
                 })
 
             })
-            setTreeAppearance()
+            self.setTreeAppearance()
             $("#" + jstreeDiv).jstree(true).open_node(parentNodeId);
             var offset = $(document.getElementById(parentNodeId)).offset();
         }
 
         self.deleteNode = function (jstreeDiv, nodeId) {
             $("#" + jstreeDiv).jstree(true).delete_node(nodeId)
-            setTreeAppearance()
+            self.setTreeAppearance()
         }
 
 

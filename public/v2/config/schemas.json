@@ -6,6 +6,7 @@
     "isOntology":false,
     "allSubclasses": true,
     "newSourceTopClass": "http://www.w3.org/2004/02/skos/core#ConceptScheme",
+
     "newObject": {
       "treeChildrenClasses": {
         "http://www.w3.org/2004/02/skos/core#Concept": "http://www.w3.org/2004/02/skos/core#Concept",

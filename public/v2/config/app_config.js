@@ -23,7 +23,7 @@ var Config = (function () {
     self.tools["annotator"] = {label: "Annotator", multiSources: 1, controller: Annotator, toolDescriptionImg: null}
 
 
-    // moved self.tools["cook"] = {label: "Cook", multiSources: 0, controller: Cook,toolDescriptionImg:null}
+    // moved self.tools["blender"] = {label: "Blender", multiSources: 0, controller: Blender,toolDescriptionImg:null}
 
 
     return self;

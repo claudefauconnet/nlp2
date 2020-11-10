@@ -61,6 +61,12 @@ var Annotator = (function () {
         }
         self.showAnnotationResult = function (data) {
 
+            if(Object.keys(data.entities).length==0 && data.missingNouns.length==0){
+                $("#Annotator_AnnotationResultDiv").html("")
+                return alert ("no matching concepts")
+            }
+
+
 
             var html = "<table  class='center' >"
             html += "<tr><td>&nbsp;</td>"

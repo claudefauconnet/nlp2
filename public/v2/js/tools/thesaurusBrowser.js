@@ -13,6 +13,9 @@ var ThesaurusBrowser = (function () {
 
     self.selectNodeFn = function (event, propertiesMap) {
         self.currentTreeNode = propertiesMap.node;
+        if ( propertiesMap.event.ctrlKey)
+            Clipboard.copy ({type:"node",id:self.currentTreeNode.id,label:self.currentTreeNode.text,source:MainController.currentSource},self.currentTreeNode.id+"_anchor",event)
+
 
         if (true || propertiesMap.event.ctrlKey) {
             self.editThesaurusConceptInfos(MainController.currentSource, propertiesMap.node)
@@ -270,10 +273,10 @@ var ThesaurusBrowser = (function () {
 
             common.loadJsTree("currentSourceTreeDiv", jstreeData, {
                 openAll: true, selectNodeFn: function (event, propertiesMap) {
-                    if (Config.tools[MainController.currentTool].selectNodeFn)
+                    if (Config.tools[MainController.currentTool].controller.selectNodeFn)
                         return Config.tools[MainController.currentTool].controller.selectNodeFn(event, propertiesMap);
                     self.editThesaurusConceptInfos(MainController.currentSource, propertiesMap.node)
-                }
+                }, contextMenu:self.getJstreeContextMenu()
             })
 
 
@@ -317,7 +320,7 @@ var ThesaurusBrowser = (function () {
                     if (Config.tools[MainController.currentTool].selectNodeFn)
                         return Config.tools[MainController.currentTool].controller.selectNodeFn(event, propertiesMap);
                     self.editThesaurusConceptInfos(propertiesMap.node.data.sourceLabel, propertiesMap.node)
-                }
+                },    contextMenu:self.getJstreeContextMenu()
             })
 
         })

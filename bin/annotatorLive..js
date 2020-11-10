@@ -10,7 +10,7 @@ var annotatorLive = {
     annotate: function (text, sources, callback) {
         var textNouns = [];
         var entities = {};
-        var missingNouns=[]
+        var missingNouns = []
         async.series([
 
             //extract spacy nouns
@@ -27,10 +27,10 @@ var annotatorLive = {
 
                     result.data.forEach(function (sentence) {
                         sentence.tags.forEach(function (item) {
-                            if (item.tag.indexOf("NN")>-1) {//item.tag.indexOf("NN")>-1) {
-                               var text=Inflector.singularize(item.text.toLowerCase());
-                                if (textNouns.indexOf(item.text) < 0)
-                                    textNouns.push({text:   text, entities: {}})
+                            if (item.tag.indexOf("NN") > -1) {//item.tag.indexOf("NN")>-1) {
+                                var text = Inflector.singularize(item.text.toLowerCase());
+                               // if (textNouns.indexOf(item.text) < 0)
+                                    textNouns.push({text: text, entities: {}})
 
                             }
                         })
@@ -42,7 +42,8 @@ var annotatorLive = {
             //extract concepts for each source
             function (callbackSeries) {
 
-
+                if (textNouns.length == 0)
+                    return callbackSeries();
                 var textNounsSlices = [textNouns]
 
                 async.eachSeries(sources, function (source, callbackEachSource) {
@@ -88,14 +89,14 @@ var annotatorLive = {
                                     var key = item.prefLabel.value.toLowerCase()
                                     if (!entities[key])
                                         entities[key] = {}
-                            if( !entities[key][source.name])
-                                entities[key][source.name]=[]
-                                    entities[key][source.name] .push({
-                                                source: source.name,
-                                                id: item.id.value,
-                                                label: item.prefLabel.value
+                                    if (!entities[key][source.name])
+                                        entities[key][source.name] = []
+                                    entities[key][source.name].push({
+                                        source: source.name,
+                                        id: item.id.value,
+                                        label: item.prefLabel.value
 
-                                            })
+                                    })
                                 })
                             }
                             return callbackEachNounsSlice(err);
@@ -110,25 +111,25 @@ var annotatorLive = {
             },
             //set Missing nouns
             function (callbackSeries) {
-            var found=Object.keys(entities);
+                var found = Object.keys(entities);
 
-            textNouns.forEach(function(item){
-                var noun=item.text.toLowerCase()
-                if(found.indexOf(noun)<0)
-                    missingNouns.push(noun)
+                textNouns.forEach(function (item) {
+                    var noun = item.text.toLowerCase()
+                    if (found.indexOf(noun) < 0)
+                        missingNouns.push(noun)
 
-            })
+                })
                 callbackSeries()
             }
         ], function (err) {
-            callback(err, {entities:entities,missingNouns:missingNouns})
+            callback(err, {entities: entities, missingNouns: missingNouns})
 
         })
 
 
     }
     ,
-    test:function(){
+    test: function () {
         var text = "Liquid loss from a storage tank is generally caused by localized material failure in the form of localized corrosion. Tank bottom leaks can be a result of improper foundation design or operating a tank outside the recommended design pressure or temperature boundaries. Product liquid leakage remains a significant environmental concern. Any tank used to contain a hydrocarbon product can be prone to develop leaks sometime during the service life. Tank design options that reduce the risk of a leak can be considered, or in the event of a leak, any product that escapes is contained and detected in a realistic time frame."
 
         var source = {

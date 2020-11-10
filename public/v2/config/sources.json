@@ -1,16 +1,17 @@
 {
 
-  "TEST": {
+  "POC-EP": {
     "editable": true,
     "controller": "Sparql_generic",
     "sparql_url": "http://51.178.139.80:8890/sparql",
-    "graphUri": "http://souslesens/TEST",
+    "graphUri": "http://data.total.com/resource/thesaurus/POC-EP/",
     "sourceSchema": "SKOS",
     "predicates": {
       "lang": "en"
     },
     "color": "#9edae5"
   },
+
   "Total-CTG": {
     "editable": true,
     "controller": "Sparql_generic",
@@ -117,6 +118,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
     "graphUri": "https://www2.usgs.gov/science/USGSThesaurus/",
+    "sourceSchema": "SKOS",
     "predicates": {
       "topConceptFilter": "?topConcept skos:broader <https://www2.usgs.gov/science/USGSThesaurus/Categories>.",
       "lang": "en"
