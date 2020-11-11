@@ -45,6 +45,49 @@ var TreeController = (function () {
 
     }
 
+    self.getFilteredNodesJstreeData = function (sourceLabel, options, callback) {
+        if (!options.term)
+            options.term = $("#GenericTools_searchTermInput").val()
+
+
+        if (!options.rootId)
+            options.rootId = "#"
+        if (!sourceLabel)
+            sourceLabel = MainController.currentSource
+        var depth = 5
+        Sparql_generic.getNodeParents(sourceLabel, options.term, options.ids, depth, options, function (err, result) {
+            if (err)
+                return MainController.UI.message(err)
+
+            var existingNodes = {};
+            var jstreeData = []
+
+            result.forEach(function (item) {
+                for (var i = depth; i > 0; i--) {
+                    if (item["broader" + i]) {
+                        var id = item["broader" + i].value
+                        if (!existingNodes[id]) {
+                            existingNodes[id] = 1
+                            var label = item["broader" + i + "Label"].value
+                            var parentId = options.rootId
+                            if (item["broader" + (i + 1)])
+                                parentId = item["broader" + (i + 1)].value
+                            jstreeData.push({id: id, text: label, parent: parentId, data: {sourceLabel: sourceLabel}})
+                        }
+                    }
+                }
+                jstreeData.push({id: item.concept.value, text: item.conceptLabel.value, parent: item["broader1"].value, data: {sourceLabel: sourceLabel}})
+
+            })
+
+            return callback(null, jstreeData)
+
+
+        })
+
+
+    }
+
 
     return self;
 

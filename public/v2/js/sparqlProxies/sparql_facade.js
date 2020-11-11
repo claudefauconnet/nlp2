@@ -5,11 +5,11 @@ var Sparql_facade = (function () {
         elasticUrl = "../elastic";
 
 
-    self.getTopConcepts = function (sourceLabel, callback) {
+    self.getTopConcepts = function (sourceLabel, options, callback) {
         $("#waitImg").css("display", "block");
         var source = Config.sources[sourceLabel]
         var graphUri = source.graphUri
-        source.controller.getTopConcepts(sourceLabel, callback);
+        source.controller.getTopConcepts(sourceLabel,  options,callback);
     }
 
     self.getNodeChildren = function (sourceLabel,word, conceptId,descendantsDepth, options, callback) {

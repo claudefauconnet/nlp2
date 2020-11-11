@@ -47,7 +47,7 @@ var Clipboard = (function () {
     self.clear = function () {
         $(".clipboardSelected").removeClass("clipboardSelected")
         blinkVisjsNode(null);
-        content = {}
+        content = []
     }
 
 

@@ -2,7 +2,7 @@ var Sparql_WORDNET = (function () {
 
 
     var self = {};
-    self.getTopConcepts = function (graphUri, callback) {
+    self.getTopConcepts = function (graphUri, options, callback) {
 
     }
 

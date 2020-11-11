@@ -7,7 +7,7 @@
     "graphUri": "http://data.total.com/resource/thesaurus/POC-EP/",
     "sourceSchema": "SKOS",
     "predicates": {
-      "lang": "en"
+
     },
     "color": "#9edae5"
   },

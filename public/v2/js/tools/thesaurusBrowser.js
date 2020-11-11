@@ -13,8 +13,13 @@ var ThesaurusBrowser = (function () {
 
     self.selectNodeFn = function (event, propertiesMap) {
         self.currentTreeNode = propertiesMap.node;
-        if ( propertiesMap.event.ctrlKey)
-            Clipboard.copy ({type:"node",id:self.currentTreeNode.id,label:self.currentTreeNode.text,source:MainController.currentSource},self.currentTreeNode.id+"_anchor",event)
+        if (propertiesMap.event.ctrlKey)
+            Clipboard.copy({
+                type: "node",
+                id: self.currentTreeNode.id,
+                label: self.currentTreeNode.text,
+                source: MainController.currentSource
+            }, self.currentTreeNode.id + "_anchor", propertiesMap.event)
 
 
         if (true || propertiesMap.event.ctrlKey) {
@@ -30,7 +35,9 @@ var ThesaurusBrowser = (function () {
         if (!options)
             options = {}
 
-        Sparql_facade.getTopConcepts(thesaurusLabel, function (err, result) {
+        Sparql_facade.getTopConcepts(thesaurusLabel, options, function (err, result) {
+            if (!options)
+                options = {}
             if (err) {
                 return MainController.message(err);
             }
@@ -43,21 +50,26 @@ var ThesaurusBrowser = (function () {
 
 
             var jsTreeOptions = options;
-            jsTreeOptions.contextMenu = self.getJstreeContextMenu()
-            jsTreeOptions.selectNodeFn =Config.tools[MainController.currentTool].controller.selectNodeFn;
+            jsTreeOptions.contextMenu = self.getJstreeConceptsContextMenu()
+            jsTreeOptions.selectNodeFn = Config.tools[MainController.currentTool].controller.selectNodeFn;
             TreeController.drawOrUpdateTree("currentSourceTreeDiv", result, "#", "topConcept", jsTreeOptions)
+
+
+            Sparql_generic.collections.getCollections(thesaurusLabel, options, function (err, result) {
+
+            })
 
 
         })
 
 
     }
-    self.getJstreeContextMenu = function () {
+    self.getJstreeConceptsContextMenu = function () {
         return {
             copyNode: {
                 label: "Copy Node",
                 action: function (e) {
-                    Clipboard.copy ({type:"node",id:self.currentTreeNode.id,label:self.currentTreeNode.text,source:MainController.currentSource},self.currentTreeNode.id+"_anchor",e)
+                    Clipboard.copy({type: "node", id: self.currentTreeNode.id, label: self.currentTreeNode.text, source: MainController.currentSource}, self.currentTreeNode.id + "_anchor", e)
 
 
                 },
@@ -232,58 +244,31 @@ var ThesaurusBrowser = (function () {
 
     }
 
-
     self.searchTerm = function (sourceLabel, term, rootId, callback) {
         if (!term)
             term = $("#GenericTools_searchTermInput").val()
+
         if (!term || term == "")
             return
-
-        if (!rootId)
-            rootId = "#"
-        if (!sourceLabel)
-            sourceLabel = MainController.currentSource
-        var depth = 5
-        Sparql_generic.getNodeParents(sourceLabel, term, null, depth, null, function (err, result) {
-            if (err)
-                return MainController.UI.message(err)
-
-            var existingNodes = {};
-            var jstreeData = []
-
-            result.forEach(function (item) {
-                for (var i = depth; i > 0; i--) {
-                    if (item["broader" + i]) {
-                        var id = item["broader" + i].value
-                        if (!existingNodes[id]) {
-                            existingNodes[id] = 1
-                            var label = item["broader" + i + "Label"].value
-                            var parentId = rootId
-                            if (item["broader" + (i + 1)])
-                                parentId = item["broader" + (i + 1)].value
-                            jstreeData.push({id: id, text: label, parent: parentId, data: {sourceLabel: sourceLabel}})
-                        }
-                    }
-                }
-                jstreeData.push({id: item.concept.value, text: item.conceptLabel.value, parent: item["broader1"].value, data: {sourceLabel: sourceLabel}})
-                $("#messageDiv").html("");
-            })
+        var options = {
+            term: term,
+            rootId: rootId
+        }
+        TreeController.getFilteredNodesJstreeData(sourceLabel, options, function (err, jstreeData) {
             if (callback)
-                return callback(null, jstreeData)
-
+                return (err, jstreeData)
+            MainController.UI.message("")
             common.loadJsTree("currentSourceTreeDiv", jstreeData, {
                 openAll: true, selectNodeFn: function (event, propertiesMap) {
                     if (Config.tools[MainController.currentTool].controller.selectNodeFn)
                         return Config.tools[MainController.currentTool].controller.selectNodeFn(event, propertiesMap);
                     self.editThesaurusConceptInfos(MainController.currentSource, propertiesMap.node)
-                }, contextMenu:self.getJstreeContextMenu()
+                }, contextMenu: self.getJstreeConceptsContextMenu()
             })
 
-
         })
-
-
     }
+
 
     self.searchAllSourcesTerm = function () {
         if (!term)
@@ -300,7 +285,16 @@ var ThesaurusBrowser = (function () {
         var jstreeData = []
         async.eachSeries(searchedSources, function (sourceLabel, callbackEach) {
             MainController.UI.message("searching in " + sourceLabel)
-            self.searchTerm(sourceLabel, term, sourceLabel, function (err, result) {
+            if (!term)
+                term = $("#GenericTools_searchTermInput").val()
+
+            if (!term || term == "")
+                return
+            var options = {
+                term: term,
+                rootId: sourceLabel
+            }
+            TreeController.getFilteredNodesJstreeData(sourceLabel, options, function (err, result) {
                 if (err)
                     return MainController.UI.message(err)
                 jstreeData.push({id: sourceLabel, text: sourceLabel, parent: "#", data: {sourceLabel: sourceLabel}})
@@ -314,19 +308,22 @@ var ThesaurusBrowser = (function () {
             var html = "<div id='currentSourceTreeDiv'></div>"
 
             $("#actionDiv").html(html);
-
+            MainController.UI.message("")
             common.loadJsTree("currentSourceTreeDiv", jstreeData, {
                 openAll: true, selectNodeFn: function (event, propertiesMap) {
                     if (Config.tools[MainController.currentTool].selectNodeFn)
                         return Config.tools[MainController.currentTool].controller.selectNodeFn(event, propertiesMap);
                     self.editThesaurusConceptInfos(propertiesMap.node.data.sourceLabel, propertiesMap.node)
-                },    contextMenu:self.getJstreeContextMenu()
+                }, contextMenu: self.getJstreeConceptsContextMenu()
             })
 
         })
 
 
     }
+
+
+
 
     return self;
 

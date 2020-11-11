@@ -3,7 +3,7 @@ var Sparql_Wikidata = (function () {
 
     var self = {};
 
-    self.getTopConcepts = function (graphUri, callback) {
+    self.getTopConcepts = function (graphUri, options, callback) {
 
     }
     self.list = function (source,word, options, callback) {

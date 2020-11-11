@@ -8,7 +8,7 @@ var Sparql_microsoft_accademic = (function () {
     var headers = {
 
     }
-    self.getTopConcepts = function (graphUri, callback) {
+    self.getTopConcepts = function (graphUri, options, callback) {
 
     }
 

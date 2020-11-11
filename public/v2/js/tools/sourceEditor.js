@@ -126,7 +126,7 @@ var SourceEditor = (function () {
         }
 
 
-        self.getJstreeContextMenu = function () {
+        self.getJstreeConceptsContextMenu = function () {
             return {
                 addChild: {
                     label: "add Child",
@@ -154,7 +154,7 @@ var SourceEditor = (function () {
 
                 if (err)
                     return MainController.UI.message(err)
-                var contextMenu = self.getJstreeContextMenu()
+                var contextMenu = self.getJstreeConceptsContextMenu()
                 ThesaurusBrowser.showThesaurusTopConcepts(sourceLabel, {treeSelectNodeFn: SourceEditor.editjstreeNode, contextMenu: contextMenu})
                 $("#graphDiv").load("snippets/sourceEditor.html")
                 $("#SourceEditor_NewObjectDiv").css("display", "none")

@@ -10,12 +10,12 @@ var Sparql_generic = (function () {
                 " elements:<http://purl.org/dc/elements/1.1/>"
 
             ],
-          //  topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"
+            //  topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"
 
             topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>))"
 
             , broaderPredicate: "skos:broader"
-            ,narrowerPredicate:"skos:narrower"
+            , narrowerPredicate: "skos:narrower"
             , broader: "skos:broader"
             , prefLabel: "skos:prefLabel"
             , altLabel: "skos:altLabel",
@@ -24,7 +24,7 @@ var Sparql_generic = (function () {
 
 
         }
-        self.defaultPredicates=defaultPredicates;
+        self.defaultPredicates = defaultPredicates;
 
         var source = "";
         var graphUri = "";
@@ -33,7 +33,7 @@ var Sparql_generic = (function () {
         var fromStr = "";
         var topConceptFilter = "";
         var broaderPredicate = "";
-        var narrowerPredicate="";
+        var narrowerPredicate = "";
         var prefLabelPredicate = "";
         var topConceptLangFilter = "";
         var conceptLangFilter = "";
@@ -180,8 +180,13 @@ var Sparql_generic = (function () {
         }
 
 
-        self.getTopConcepts = function (sourceLabel, callback) {
+        self.getTopConcepts = function (sourceLabel, options, callback) {
+            if(!options){
+                options={}
+            }
+
             setVariables(sourceLabel);
+
 
 
             var query = "";
@@ -189,7 +194,7 @@ var Sparql_generic = (function () {
             query += " select distinct ?topConcept ?topConceptLabel ?type " + fromStr + "  WHERE {"
             query += topConceptFilter;
             query += "?topConcept " + prefLabelPredicate + " ?topConceptLabel.";
-            if (lang)
+            if (lang&& !options.noLang)
                 query += "filter(lang(?topConceptLabel )='" + lang + "')"
             query += "?topConcept rdf:type ?type."
             if (false) {
@@ -198,6 +203,9 @@ var Sparql_generic = (function () {
                 if (lang)
                     query += "filter(lang(?conceptLabel )='" + lang + "')"
             }
+            if(options.filterCollections)
+                query+="?collection skos:member ?topConcept."+ getUriFilter("collection",options.filterCollections)
+
             query += "  } ORDER BY ?topConceptLabel ";
             query += "limit " + limit + " ";
 
@@ -228,17 +236,20 @@ var Sparql_generic = (function () {
 
             query += "?child1 " + broaderPredicate + " ?concept." +
                 "OPTIONAL{ ?child1 " + prefLabelPredicate + " ?child1Label. ";
-            if (lang)
+            if (lang && !options.noLang)
                 query += "filter( lang(?child1Label)=\"" + lang + "\")"
             query += "}"
             query += filterStr;
             query += "OPTIONAL{?child1 rdf:type ?type.}"
+
+            if(options.filterCollections)
+                query+="?collection skos:member ?concept."+ getUriFilter("concept",options.filterCollections)
             descendantsDepth = Math.min(descendantsDepth, optionalDepth);
             for (var i = 1; i < descendantsDepth; i++) {
 
                 query += "OPTIONAL { ?child" + (i + 1) + " " + broaderPredicate + " ?child" + i + "." +
                     "OPTIONAL{?child" + (i + 1) + " " + prefLabelPredicate + "  ?child" + (i + 1) + "Label."
-                if (lang)
+                if (lang && !options.noLang)
                     query += "filter( lang(?child" + (i + 1) + "Label)=\"" + lang + "\")"
                 query += "}"
                 query += "OPTIONAL {?child" + (i + 1) + " rdf:type ?type.}"
@@ -270,11 +281,12 @@ var Sparql_generic = (function () {
             query += " select distinct * " + fromStr + "  WHERE {"
 
             query += "?concept " + prefLabelPredicate + " ?conceptLabel. ";
-            if (lang)
+            if (lang && !options.noLang)
                 query += "filter( lang(?conceptLabel)=\"" + lang + "\")"
             query += filterStr;
             query += "OPTIONAL{?concept rdf:type ?type.}"
-
+            if(options.filterCollections)
+                query+="?collection skos:member ?concept."+ getUriFilter("collection",options.filterCollections)
             ancestorsDepth = Math.min(ancestorsDepth, optionalDepth);
             for (var i = 1; i <= ancestorsDepth; i++) {
                 if (i == 1) {
@@ -286,7 +298,7 @@ var Sparql_generic = (function () {
                 } else {
                     query += "OPTIONAL { ?broader" + (i - 1) + " " + broaderPredicate + " ?broader" + i + "." +
                         "?broader" + (i) + " " + prefLabelPredicate + " ?broader" + (i) + "Label."
-                    if (lang)
+                    if (lang && !options.noLang)
                         query += "filter( lang(?broader" + (i) + "Label)=\"" + lang + "\")"
 
                 }
@@ -341,7 +353,7 @@ var Sparql_generic = (function () {
             var query = "";
             query += prefixesStr;
             query += " select distinct * " + fromStr + "  WHERE {"
-            query += "  ?concept ^" + broaderPredicate + "*|"+narrowerPredicate+"* ?narrower." +
+            query += "  ?concept ^" + broaderPredicate + "*|" + narrowerPredicate + "* ?narrower." +
                 "filter (?concept=<" + id + ">) " +
                 "?narrower " + prefLabelPredicate + " ?narrowerLabel." +
                 "?narrower rdf:type ?type."
@@ -623,6 +635,53 @@ var Sparql_generic = (function () {
         }
 
 
+        self.collections = {
+
+            getCollections: function (sourceLabel, options, callback) {
+                if (!options)
+                    options = {}
+                setVariables(sourceLabel);
+
+                var query = "PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX  skos:<http://www.w3.org/2004/02/skos/core#>" +
+                    " select    distinct * " + fromStr + "  WHERE {" +
+                    "?collection rdf:type  ?type. filter( ?type =skos:Collection). " +
+                    "?collection skos:prefLabel ?collectionLabel."
+                if (lang)
+                    query += "filter( lang(?collectionLabel)=\"" + lang + "\")"
+                if (options.onlyTopCollections)
+                    query += "FILTER (?collection  NOT EXISTS {?child skos:member ?collection)"
+
+                query += "} ORDER BY ?collectionLabel limit " + limit;
+
+
+                Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
+                    if(err)
+                    return callback(err);
+
+                    return callback(null, result.results.bindings)
+                })
+            },
+
+            setConceptsCollectionMembership(sourceLabel, conceptIds, collectionId, callback) {
+
+                var triples = []
+                conceptIds.forEach(function (item) {
+                    triples.push({subject:collectionId , predicate: "http://www.w3.org/2004/02/skos/core#member", object:item , valueType: "uri"})
+                })
+
+                Sparql_generic.update(sourceLabel, triples, function (err, result) {
+
+                    return callback(err, result)
+                })
+
+
+            }
+
+
+        }
+
+
         return self;
     }
-)()
+)
+()

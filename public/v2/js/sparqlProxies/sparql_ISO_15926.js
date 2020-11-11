@@ -5,7 +5,7 @@ var Sparql_ISO_15926 = (function () {
         if (window.location.href.indexOf("https") > -1)
             elasticUrl = "../elastic";
 
-        self.getTopConcepts = function (graphUri, callback) {
+        self.getTopConcepts = function (graphUri, options, callback) {
             var query = "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> "
             query += "select * "
             if(graphUri && graphUri!="")

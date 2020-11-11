@@ -2,7 +2,9 @@ var Sparql_skos_generic = (function () {
         var self = {};
 
 
-        self.getTopConcepts = function (graphUri, callback) {
+        self.getTopConcepts = function (graphUri,  options,callback) {
+            if(!options)
+                options={}
             var query = "PREFIX terms:<http://purl.org/dc/terms/>PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX skos:<http://www.w3.org/2004/02/skos/core#>" +
                 "PREFIX elements:<http://purl.org/dc/elements/1.1/>" +
                 "select distinct * " +

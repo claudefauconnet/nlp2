@@ -4,7 +4,8 @@
 </div>
 
 <!--<button onclick="Blender.saveModifiedNodes()">Save</button>-->
-<button onclick="Blender.createScheme()">createScheme</button>
+<button onclick="Blender.createSchemeOrCollection('Scheme')">New scheme</button>
+<button onclick="Blender.createSchemeOrCollection('Collection')">New Collection</button>
 <div id="Blender_tabs" style="width:400px;height:80%">
 
     <ul>
@@ -15,10 +16,10 @@
 
     </ul>
     <div id="Blender_tabs_targetThesaurus">
-        <div id="Blender_treeDiv"></div>
+        <div id="Blender_conceptTreeDiv"></div>
     </div>
     <div id="Blender_tabs_collections">
-        <div id="Blender_collections_treeDiv"></div>
+        <div id="Blender_collectionTreeDiv"></div>
     </div>
 </div>
 <div id="Blender_PopupDiv" style="">
