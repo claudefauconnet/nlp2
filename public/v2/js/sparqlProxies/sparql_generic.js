@@ -181,12 +181,11 @@ var Sparql_generic = (function () {
 
 
         self.getTopConcepts = function (sourceLabel, options, callback) {
-            if(!options){
-                options={}
+            if (!options) {
+                options = {}
             }
 
             setVariables(sourceLabel);
-
 
 
             var query = "";
@@ -194,7 +193,7 @@ var Sparql_generic = (function () {
             query += " select distinct ?topConcept ?topConceptLabel ?type " + fromStr + "  WHERE {"
             query += topConceptFilter;
             query += "?topConcept " + prefLabelPredicate + " ?topConceptLabel.";
-            if (lang&& !options.noLang)
+            if (lang && !options.noLang)
                 query += "filter(lang(?topConceptLabel )='" + lang + "')"
             query += "?topConcept rdf:type ?type."
             if (false) {
@@ -203,8 +202,8 @@ var Sparql_generic = (function () {
                 if (lang)
                     query += "filter(lang(?conceptLabel )='" + lang + "')"
             }
-            if(options.filterCollections)
-                query+="?collection skos:member ?topConcept."+ getUriFilter("collection",options.filterCollections)
+            if (options.filterCollections)
+                query += "?collection skos:member ?topConcept." + getUriFilter("collection", options.filterCollections)
 
             query += "  } ORDER BY ?topConceptLabel ";
             query += "limit " + limit + " ";
@@ -214,6 +213,7 @@ var Sparql_generic = (function () {
                 if (err) {
                     return callback(err)
                 }
+
                 return callback(null, result.results.bindings)
 
             })
@@ -242,8 +242,8 @@ var Sparql_generic = (function () {
             query += filterStr;
             query += "OPTIONAL{?child1 rdf:type ?type.}"
 
-            if(options.filterCollections)
-                query+="?collection skos:member ?concept."+ getUriFilter("concept",options.filterCollections)
+            if (options.filterCollections)
+                query += "?collection skos:member ?concept." + getUriFilter("concept", options.filterCollections)
             descendantsDepth = Math.min(descendantsDepth, optionalDepth);
             for (var i = 1; i < descendantsDepth; i++) {
 
@@ -285,8 +285,8 @@ var Sparql_generic = (function () {
                 query += "filter( lang(?conceptLabel)=\"" + lang + "\")"
             query += filterStr;
             query += "OPTIONAL{?concept rdf:type ?type.}"
-            if(options.filterCollections)
-                query+="?collection skos:member ?concept."+ getUriFilter("collection",options.filterCollections)
+            if (options.filterCollections)
+                query += "?collection skos:member ?concept." + getUriFilter("collection", options.filterCollections)
             ancestorsDepth = Math.min(ancestorsDepth, optionalDepth);
             for (var i = 1; i <= ancestorsDepth; i++) {
                 if (i == 1) {
@@ -478,6 +478,7 @@ var Sparql_generic = (function () {
             var graphUri = Config.sources[sourceLabel].graphUri
             var deleteTriplesStr = "";
             var insertTriplesStr = "";
+            var subject;
             triples.forEach(function (item, index) {
                 var valueStr = ""
                 if (item.valueType == "uri")
@@ -488,26 +489,30 @@ var Sparql_generic = (function () {
                         langStr = "@" + item.lang
                     valueStr = "'" + item.object + "'" + langStr
                 }
-
+                if (!subject)
+                    subject = item.subject
+           /*     else if(subject!= item.subject)
+                   return callback("all items dont have the same subject")*/
 
                 insertTriplesStr += "<" + item.subject + '> <' + item.predicate + '> ' + valueStr + '.';
-                deleteTriplesStr += "<" + item.subject + '> <' + item.predicate + '> ' + "?o_" + index + '.';
+
 
             })
+            deleteTriplesStr += "<?s ?p ?o.";
             var query = " WITH GRAPH  <" + graphUri + ">  " +
                 "DELETE" +
                 "{  " +
-                deleteTriplesStr +
-                "  }" +
-                "WHERE" +
-                "  {" +
-                deleteTriplesStr +
-                "  };" +
-                "" +
-                "INSERT DATA" +
-                "  {" +
-                insertTriplesStr +
-                "  }"
+                "?s ?p ?o."+
+            "  }" +
+            "WHERE" +
+            "  {" +
+            "?s ?p ?o. filter (?s=<"+subject+">)"+
+            "  };" +
+            "" +
+            "INSERT DATA" +
+            "  {" +
+            insertTriplesStr +
+            "  }"
 
 
             // console.log(query)
@@ -648,15 +653,15 @@ var Sparql_generic = (function () {
                     "?collection skos:prefLabel ?collectionLabel."
                 if (lang)
                     query += "filter( lang(?collectionLabel)=\"" + lang + "\")"
-                if (options.onlyTopCollections)
-                    query += "FILTER (?collection  NOT EXISTS {?child skos:member ?collection)"
+                if (true || options.onlyTopCollections)
+                    query += "FILTER (  NOT EXISTS {?child skos:member ?collection})"
 
                 query += "} ORDER BY ?collectionLabel limit " + limit;
 
 
                 Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
-                    if(err)
-                    return callback(err);
+                    if (err)
+                        return callback(err);
 
                     return callback(null, result.results.bindings)
                 })
@@ -666,7 +671,7 @@ var Sparql_generic = (function () {
 
                 var triples = []
                 conceptIds.forEach(function (item) {
-                    triples.push({subject:collectionId , predicate: "http://www.w3.org/2004/02/skos/core#member", object:item , valueType: "uri"})
+                    triples.push({subject: collectionId, predicate: Collection.broaderProperty, object: item, valueType: "uri"})
                 })
 
                 Sparql_generic.update(sourceLabel, triples, function (err, result) {

@@ -1,5 +1,18 @@
 {
 
+  "TEST": {
+    "editable": true,
+    "controller": "Sparql_generic",
+    "sparql_url": "http://51.178.139.80:8890/sparql",
+    "graphUri": "http://souslesens/thesaurus/TEST/",
+    "sourceSchema": "SKOS",
+    "predicates": {
+
+    },
+    "color": "#9edae5"
+
+  },
+
   "POC-EP": {
     "editable": true,
     "controller": "Sparql_generic",
@@ -76,7 +89,7 @@
     "controller": "Sparql_generic",
     "sparql_url": "https://data.bnf.fr/sparql",
     "graphUri": "http://data.bnf.fr",
-    "sourceSchema": "SKOS",
+    "sourceSchema": "SKOSXXX",
     "predicates": {
       "broaderPredicate": "terms:isPartOf",
       "lang": "fr"

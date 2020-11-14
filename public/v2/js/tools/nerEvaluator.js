@@ -422,7 +422,7 @@ var NerEvaluator = (function () {
 
 
     self.onGraphNodeClick = function ( node, point,event) {
-        if(event.ctrlKey){
+        if(event && event.ctrlKey){
             Clipboard.copy({type: "node", source: node.data.source, id: node.id, label:node.label}, "_visjsNode", event)
         }
 
@@ -613,7 +613,7 @@ var NerEvaluator = (function () {
 
 
         var word = event.currentTarget.id.substring(8)
-        if(event.ctrlKey){
+        if(event && event.ctrlKey){
             return Clipboard.copy({type:"word",text:word},event.currentTarget.id,event)
 
         }

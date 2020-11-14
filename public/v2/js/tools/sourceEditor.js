@@ -20,14 +20,14 @@ var SourceEditor = (function () {
                             return callbackSeries();
 
 
-                            $.getJSON("config/schemas.json", function (json) {
-                                self.schemasConfig = json;
-                                if (Config.sources[sourceLabel].sourceSchema)
-                                    self.currentSourceSchema = self.schemasConfig[Config.sources[sourceLabel].sourceSchema]
-                                else// default SKOS
-                                    self.currentSourceSchema = self.schemasConfig["SKOS"];
-                                return callbackSeries();
-                            })
+                        $.getJSON("config/schemas.json", function (json) {
+                            self.schemasConfig = json;
+                            if (Config.sources[sourceLabel].sourceSchema)
+                                self.currentSourceSchema = self.schemasConfig[Config.sources[sourceLabel].sourceSchema]
+                            else// default SKOS
+                                self.currentSourceSchema = self.schemasConfig["SKOS"];
+                            return callbackSeries();
+                        })
 
 
                     },
@@ -132,7 +132,7 @@ var SourceEditor = (function () {
                     label: "add Child",
                     action: function (obj, sss, cc) {
 
-                        SourceEditor.onAddNewObject("graphDiv",self.editingObject)
+                        SourceEditor.onAddNewObject("graphDiv", self.editingObject)
                         ;
                     },
                 },
@@ -170,9 +170,9 @@ var SourceEditor = (function () {
         }
 
 
-        self.onAddNewObject = function (divId,parentObj) {
+        self.onAddNewObject = function (divId, parentObj) {
 
-            $("#"+divId).load("snippets/sourceEditor.html")
+            $("#" + divId).load("snippets/sourceEditor.html")
             setTimeout(function () {
 
                 //  $("#SourceEditor_mainDiv").css("display", "block")
@@ -203,30 +203,28 @@ var SourceEditor = (function () {
 
 
         },
-            self.editNewObject = function (divId,sourceLabel,classId, initData) {
+            self.editNewObject = function (divId, sourceLabel, classId, initData) {
                 if (!classId)
                     classId = $("#SourceEditor_NewClassSelect").val();
 
                 var classLabel = self.currentSourceSchema.classes[classId].label
-                self.schema.initClassProperties(sourceLabel,classId, function (err, result) {
+                self.schema.initClassProperties(sourceLabel, classId, function (err, result) {
                     if (err)
                         return MainController.UI.message(err)
                     $("#SourceEditor_NewClassSelect").val("");
                     $("#SourceEditor_NewObjectDiv").css("display", "none");
                     $("#SourceEditor_ObjectType").html(classLabel);
 
-                    var sourceUri=Config.sources[sourceLabel].graphUri
-                    if (sourceUri.lastIndexOf("/") !=sourceUri.length - 1)
+                    var sourceUri = Config.sources[sourceLabel].graphUri
+                    if (sourceUri.lastIndexOf("/") != sourceUri.length - 1)
                         sourceUri += "/"
                     var nodeId = sourceUri + common.getRandomHexaId(10)
                     $("#SourceEditor_ObjectUri").val(nodeId);
 
-                    self.editNode(divId, sourceLabel,  nodeId,classId, initData,true)
+                    self.editNode(divId, sourceLabel, nodeId, classId, initData, true)
                 })
 
             }
-
-
 
 
         self.editjstreeNode = function (event, obj, initData) {
@@ -240,7 +238,7 @@ var SourceEditor = (function () {
         }
 
 
-        self.editNode = function (divId, source, nodeId, type, initData,isNew) {
+        self.editNode = function (divId, source, nodeId, type, initData, isNew) {
             $("#" + divId).css("display", "block")
             var editingObject;
 
@@ -255,9 +253,10 @@ var SourceEditor = (function () {
                     //init editing object
                     , function (callbackSeries) {
                         editingObject = JSON.parse(JSON.stringify(self.currentSourceSchema.classes[type]))
-                        editingObject.source=source;
-                    if(isNew)
-                        editingObject.isNew=true
+                        editingObject.source = source;
+                        editingObject.inverseObjectProperties={}
+                        if (isNew)
+                            editingObject.isNew = true
                         editingObject.about = nodeId;
                         editingObject.type = editingObject.id;
                         if (self.editingObject)
@@ -273,6 +272,8 @@ var SourceEditor = (function () {
                         if (initData) {
                             editingObject.isNew = 1;
                             for (var key in initData) {
+
+
                                 nodeProps[key] = initData[key]
                             }
 
@@ -297,6 +298,9 @@ var SourceEditor = (function () {
                         for (var prop in editingObject.objectProperties) {
                             if (nodeProps[prop])
                                 editingObject.objectProperties[prop].value = nodeProps[prop];
+                            if (nodeProps["^"+prop]) {
+                                editingObject.inverseObjectProperties[prop] = nodeProps["^"+prop];
+                            }
                         }
                         for (var prop in editingObject.annotations) {
                             if (nodeProps[prop])
@@ -310,28 +314,28 @@ var SourceEditor = (function () {
                     function (callbackSeries) {
 
 
-                        $("#"+divId).load("snippets/sourceEditor.html");
+                        $("#" + divId).load("snippets/sourceEditor.html");
 
-                        setTimeout(function(){
-                            $("#SourceEditor_mainDiv").css("display","block")
-                        $("#SourceEditor_ObjectUri").val(editingObject.about);
-                        $("#SourceEditor_ObjectType").html(self.currentSourceSchema.classes[editingObject.type].label);
-                        $(".SourceEditor_minorDiv").remove();
-                           var objectPropertiesList = Object.keys(self.currentSourceSchema.classes[type].objectProperties).sort();
-                        common.fillSelectOptions("SourceEditor_NewObjectPropertySelect",objectPropertiesList, true, "label", "id")
-                        for (var key in editingObject.objectProperties) {
-                            if (editingObject.objectProperties[key].value) {
+                        setTimeout(function () {
+                            $("#SourceEditor_mainDiv").css("display", "block")
+                            $("#SourceEditor_ObjectUri").val(editingObject.about);
+                            $("#SourceEditor_ObjectType").html(self.currentSourceSchema.classes[editingObject.type].label);
+                            $(".SourceEditor_minorDiv").remove();
+                            var objectPropertiesList = Object.keys(self.currentSourceSchema.classes[type].objectProperties).sort();
+                            common.fillSelectOptions("SourceEditor_NewObjectPropertySelect", objectPropertiesList, true, "label", "id")
+                            for (var key in editingObject.objectProperties) {
+                                if (editingObject.objectProperties[key].value) {
 
-                                self.drawObjectValue("objectProperties", key, editingObject, "SourceEditor_ObjectPropertiesTableDiv")
+                                    self.drawObjectValue("objectProperties", key, editingObject, "SourceEditor_ObjectPropertiesTableDiv")
+                                }
                             }
-                        }
-                           var annotationsList = Object.keys(self.currentSourceSchema.classes[type].annotations).sort();
-                        common.fillSelectOptions("SourceEditor_NewObjectAnnotationSelect", annotationsList, true, "label", "id")
-                        for (var key in editingObject.annotations) {
-                            if (editingObject.annotations[key].value)
-                                self.drawObjectValue("annotations", key, editingObject, "SourceEditor_ObjectAnnotationsTableDiv")
-                        }
-                        },200)
+                            var annotationsList = Object.keys(self.currentSourceSchema.classes[type].annotations).sort();
+                            common.fillSelectOptions("SourceEditor_NewObjectAnnotationSelect", annotationsList, true, "label", "id")
+                            for (var key in editingObject.annotations) {
+                                if (editingObject.annotations[key].value)
+                                    self.drawObjectValue("annotations", key, editingObject, "SourceEditor_ObjectAnnotationsTableDiv")
+                            }
+                        }, 200)
 
                     }
 
@@ -384,10 +388,11 @@ var SourceEditor = (function () {
                 html += "<tr class='SourceEditor_input_TR' id='SourceEditor_" + key + "'>" +
                     "<td><span>" + keyLabel + "</span></td>" +
                     "<td>" + langStr + "<input class='SourceEditor_value '  value='" + value.value + "'></td>" +
+                    "<td><button onclick='SourceEditor.deleteEditingValue(\"SourceEditor_" + key + "\")'>X</button></td>" +
                     "</tr>"
             })
-
             var divId = "SourceEditor_" + keyLabel.replace(/ /g, "_") + "Div"
+
             //if (!self.currentSourceSchema.classes[type][metaType][key].divId) {
             if (!$("#" + divId).length) {
                 self.currentSourceSchema.classes[type][metaType][key].divId = divId;
@@ -399,6 +404,10 @@ var SourceEditor = (function () {
             }, 200)
             //$(html).appendTo( $( "#"+divId ) );
 
+        }
+        self.deleteEditingValue = function (id) {
+            var elt=document.getElementById(id)
+            $(elt).remove();
         }
 
         self.getPredicateValueType = function (className, predicate) {
@@ -412,24 +421,27 @@ var SourceEditor = (function () {
         self.saveEditingObject = function (callback) {
 
 
+            var mandatoryProps = SourceEditor.currentSourceSchema.newObject.mandatoryProperties;
             var triples = [];
             var predicate
             var nodeLabel = null
             triples.push({subject: self.editingObject.about, predicate: "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", object: self.editingObject.type, valueType: "uri"})
 
 
-
-
-
+            self.editingObject.errors = []
 
             $(".SourceEditor_input_TR").each(function (e, x) {
+
 
                 predicate = $(this).attr("id").substring(13);
 
                 var value = $(this).find(".SourceEditor_value").val();
                 var lang = $(this).find(".SourceEditor_lang").val();
 
-
+                if (mandatoryProps.indexOf(predicate) > -1) {
+                    if (!value || value == "")
+                        return self.editingObject.errors.push("missing property value :" + predicate)
+                }
 
                 var valueType = self.getPredicateValueType(self.editingObject.type, predicate)
 
@@ -438,10 +450,10 @@ var SourceEditor = (function () {
                     triple.lang = lang;
 
 
-              //  var labelProp=Config.sources[self.editingObject.source].prefLabel || Sparql_generic.defaultPredicates.prefLabel;
-             //   if(!self.editingObject.nodeLabel  && predicate==labelProp && (!self.prefLang || lang==self.prefLang))// label for new jstree node...
-                if(!self.editingObject.nodeLabel  && predicate.indexOf("prefLabel")>-1 &&  (!self.prefLang || lang==self.prefLang))// label for new jstree node...
-                    self.editingObject.nodeLabel=value;
+                //  var labelProp=Config.sources[self.editingObject.source].prefLabel || Sparql_generic.defaultPredicates.prefLabel;
+                //   if(!self.editingObject.nodeLabel  && predicate==labelProp && (!self.prefLang || lang==self.prefLang))// label for new jstree node...
+                if (!self.editingObject.nodeLabel && predicate.indexOf("prefLabel") > -1 && (!self.prefLang || lang == self.prefLang))// label for new jstree node...
+                    self.editingObject.nodeLabel = value;
 
 
                 triples.push(triple)
@@ -451,20 +463,26 @@ var SourceEditor = (function () {
                     nodeLabel = value;
 
             })
+            for(var key in self.editingObject.inverseObjectProperties){
+                self.editingObject.inverseObjectProperties[key].forEach(function(item){
+                    triples.push({subject: item.value, predicate: key, object:self.editingObject.about, valueType: "uri"});
+                })
+
+            }
 
 
             Sparql_generic.update(self.editingObject.source, triples, function (err, result) {
                 if (err) {
                     MainController.UI.message(err)
-                    if(callback)
+                    if (callback)
                         return callback(err)
                 }
 
                 MainController.UI.message("data saved")
 
-              if(callback){
-                  return callback(null, self.editingObject)
-              }
+                if (callback) {
+                    return callback(null, self.editingObject)
+                }
 
             })
 
@@ -490,7 +508,7 @@ var SourceEditor = (function () {
             if (children.length > 0)
                 return alert("cannot delete node with children")
 
-                Sparql_generic.deleteTriples(MainController.currentSource, self.editingObject.about, null,null,function (err, result) {
+            Sparql_generic.deleteTriples(MainController.currentSource, self.editingObject.about, null, null, function (err, result) {
                 if (err)
                     MainController.UI.message(err);
                 $('#currentSourceTreeDiv').jstree(true).delete_node(self.editingObject.about)

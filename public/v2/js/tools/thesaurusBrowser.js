@@ -12,21 +12,26 @@ var ThesaurusBrowser = (function () {
     }
 
     self.selectNodeFn = function (event, propertiesMap) {
+        var source;
+        if(propertiesMap.node.data && propertiesMap.node.data.sourceLabel)
+            source=propertiesMap.node.data && propertiesMap.node.data.sourceLabel // coming from search all sources
+        else
+            source= MainController.currentSource// coming from  specific tool current surce
         self.currentTreeNode = propertiesMap.node;
         if (propertiesMap.event.ctrlKey)
             Clipboard.copy({
                 type: "node",
                 id: self.currentTreeNode.id,
                 label: self.currentTreeNode.text,
-                source: MainController.currentSource
+                source:  source
             }, self.currentTreeNode.id + "_anchor", propertiesMap.event)
 
 
         if (true || propertiesMap.event.ctrlKey) {
-            self.editThesaurusConceptInfos(MainController.currentSource, propertiesMap.node)
+            self.editThesaurusConceptInfos(source, propertiesMap.node)
         }
         {
-            self.openTreeNode("currentSourceTreeDiv", MainController.currentSource, propertiesMap.node)
+            self.openTreeNode("currentSourceTreeDiv", source, propertiesMap.node)
         }
 
     }
@@ -41,6 +46,16 @@ var ThesaurusBrowser = (function () {
             if (err) {
                 return MainController.message(err);
             }
+
+            if(false){
+                var str=""
+                result.forEach(function(item){
+                 str+=thesaurusLabel+"\t"+item.topConcept.value+"\t"+item.topConceptLabel.value+"\n"
+                })
+                console.log(str)
+            }
+
+
 
 
             $("#accordion").accordion("option", {active: 2});
@@ -284,7 +299,9 @@ var ThesaurusBrowser = (function () {
         }
         var jstreeData = []
         async.eachSeries(searchedSources, function (sourceLabel, callbackEach) {
+            setTimeout(function(){
             MainController.UI.message("searching in " + sourceLabel)
+            },100)
             if (!term)
                 term = $("#GenericTools_searchTermInput").val()
 
@@ -307,15 +324,21 @@ var ThesaurusBrowser = (function () {
             $("#accordion").accordion("option", {active: 2});
             var html = "<div id='currentSourceTreeDiv'></div>"
 
+
             $("#actionDiv").html(html);
-            MainController.UI.message("")
+
+
             common.loadJsTree("currentSourceTreeDiv", jstreeData, {
                 openAll: true, selectNodeFn: function (event, propertiesMap) {
-                    if (Config.tools[MainController.currentTool].selectNodeFn)
+                    if (Config.tools[MainController.currentTool].controller.selectNodeFn)
                         return Config.tools[MainController.currentTool].controller.selectNodeFn(event, propertiesMap);
                     self.editThesaurusConceptInfos(propertiesMap.node.data.sourceLabel, propertiesMap.node)
                 }, contextMenu: self.getJstreeConceptsContextMenu()
             })
+            setTimeout(function(){
+            MainController.UI. updateActionDivLabel("Multi source search :"+term)
+                MainController.UI.message("")
+            },200)
 
         })
 

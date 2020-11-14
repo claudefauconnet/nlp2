@@ -56,8 +56,10 @@ var MainController = (function () {
                     self.currentTool = obj.node.id;
                     self.currentSource = null;
                     MainController.UI.showSources("sourcesTreeDiv", obj.node.data.multiSources);
+                    Clipboard.clear();
                     $("#accordion").accordion("option", {active: 1});
                     var controller = Config.tools[self.currentTool].controller
+                    $("#actionDivContolPanelDiv").html("")
                     self.UI.updateActionDivLabel();
                   if (Config.tools[self.currentTool].multiSources)
                         controller.onSourceSelect(self.currentSource)
@@ -107,11 +109,14 @@ var MainController = (function () {
 
         },
 
-        updateActionDivLabel: function () {
+        updateActionDivLabel: function (html) {
+            if(html)
+                $("#sourcePanelLabel").html(html)
             if (self.currentSource)
                 $("#sourcePanelLabel").html(Config.tools[self.currentTool].label + " : " + self.currentSource)
             else
                 $("#sourcePanelLabel").html(Config.tools[self.currentTool].label);
+
 
         },
 

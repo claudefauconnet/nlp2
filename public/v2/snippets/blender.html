@@ -4,8 +4,8 @@
 </div>
 
 <!--<button onclick="Blender.saveModifiedNodes()">Save</button>-->
-<button onclick="Blender.createSchemeOrCollection('Scheme')">New scheme</button>
-<button onclick="Blender.createSchemeOrCollection('Collection')">New Collection</button>
+<button onclick="Blender.nodeEdition.createSchemeOrCollection('Scheme')">New scheme</button>
+<button onclick="Blender.nodeEdition.createSchemeOrCollection('Collection')">New Collection</button>
 <div id="Blender_tabs" style="width:400px;height:80%">
 
     <ul>
@@ -23,6 +23,12 @@
     </div>
 </div>
 <div id="Blender_PopupDiv" style="">
+    <div>
+        <button onclick="Blender.nodeEdition.saveEditingNode()">Save</button>
+        <button onclick="Blender.nodeEdition.cancelEditingNode()">Cancel</button>
+    </div>
+
+    <div id="Blender_nodeEditionDiv"></div>
 
 
 </div>

@@ -5,11 +5,10 @@ var Clipboard = (function () {
     self.copy = function (data, element, event) {
 
 
-
+if(!data.source)
+    return console.log("copied data has no source property "+node.label)
 
         data.tool = MainController.currentTool
-        if (!data.source)
-            data.source = MainController.currentSource
         data.date = new Date()
 
 
@@ -27,7 +26,7 @@ var Clipboard = (function () {
 
         if (element) {
             if (element === "_visjsNode") {
-                blinkVisjsNode(content.id);
+                blinkVisjsNode(data.id);
             } else {
                 var elt = document.getElementById(element)
                 if (elt) {

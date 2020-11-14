@@ -546,7 +546,7 @@ var ThesaurusMatcher = (function () {
         }
 
         self.onGraphClickNode = function ( node, point,event) {
-            if(event.ctrlKey){
+            if(event && event.ctrlKey){
                 Clipboard.copy({type: "node", source: node.data.source, id: node.id, label:node.label}, "_visjsNode", event)
             }
 
