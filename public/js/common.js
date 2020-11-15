@@ -241,6 +241,13 @@ var common = (function () {
                 return uri
 
         }
+        self.getNewUri = function (sourceLabel) {
+            var sourceUri = Config.sources[sourceLabel].graphUri
+            if (sourceUri.lastIndexOf("/") != sourceUri.length - 1)
+                sourceUri += "/"
+            var nodeId = sourceUri + common.getRandomHexaId(10)
+            return nodeId;
+        }
 
 
         self.palette = [

@@ -70,7 +70,7 @@ var ThesaurusBrowser = (function () {
             TreeController.drawOrUpdateTree("currentSourceTreeDiv", result, "#", "topConcept", jsTreeOptions)
 
 
-            Sparql_generic.collections.getCollections(thesaurusLabel, options, function (err, result) {
+           Collection.Sparql.getCollections(thesaurusLabel, options, function (err, result) {
 
             })
 

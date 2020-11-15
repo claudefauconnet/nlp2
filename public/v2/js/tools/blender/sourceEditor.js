@@ -203,6 +203,7 @@ var SourceEditor = (function () {
 
 
         },
+
             self.editNewObject = function (divId, sourceLabel, classId, initData) {
                 if (!classId)
                     classId = $("#SourceEditor_NewClassSelect").val();
@@ -215,17 +216,21 @@ var SourceEditor = (function () {
                     $("#SourceEditor_NewObjectDiv").css("display", "none");
                     $("#SourceEditor_ObjectType").html(classLabel);
 
-                    var sourceUri = Config.sources[sourceLabel].graphUri
-                    if (sourceUri.lastIndexOf("/") != sourceUri.length - 1)
-                        sourceUri += "/"
-                    var nodeId = sourceUri + common.getRandomHexaId(10)
-                    $("#SourceEditor_ObjectUri").val(nodeId);
+                    var newNodeId = common.getNewUri(sourceLabel)
+                    $("#SourceEditor_ObjectUri").val(newNodeId);
 
-                    self.editNode(divId, sourceLabel, nodeId, classId, initData, true)
+                    self.editNode(divId, sourceLabel, newNodeId, classId, initData, true)
                 })
 
             }
 
+        self.getNewUri = function (sourceLabel) {
+            var sourceUri = Config.sources[sourceLabel].graphUri
+            if (sourceUri.lastIndexOf("/") != sourceUri.length - 1)
+                sourceUri += "/"
+            var nodeId = sourceUri + common.getRandomHexaId(10)
+            return nodeId;
+        }
 
         self.editjstreeNode = function (event, obj, initData) {
             var type;
@@ -254,7 +259,7 @@ var SourceEditor = (function () {
                     , function (callbackSeries) {
                         editingObject = JSON.parse(JSON.stringify(self.currentSourceSchema.classes[type]))
                         editingObject.source = source;
-                        editingObject.inverseObjectProperties={}
+                        editingObject.inverseObjectProperties = {}
                         if (isNew)
                             editingObject.isNew = true
                         editingObject.about = nodeId;
@@ -298,8 +303,8 @@ var SourceEditor = (function () {
                         for (var prop in editingObject.objectProperties) {
                             if (nodeProps[prop])
                                 editingObject.objectProperties[prop].value = nodeProps[prop];
-                            if (nodeProps["^"+prop]) {
-                                editingObject.inverseObjectProperties[prop] = nodeProps["^"+prop];
+                            if (nodeProps["^" + prop]) {
+                                editingObject.inverseObjectProperties[prop] = nodeProps["^" + prop];
                             }
                         }
                         for (var prop in editingObject.annotations) {
@@ -406,7 +411,7 @@ var SourceEditor = (function () {
 
         }
         self.deleteEditingValue = function (id) {
-            var elt=document.getElementById(id)
+            var elt = document.getElementById(id)
             $(elt).remove();
         }
 
@@ -463,9 +468,9 @@ var SourceEditor = (function () {
                     nodeLabel = value;
 
             })
-            for(var key in self.editingObject.inverseObjectProperties){
-                self.editingObject.inverseObjectProperties[key].forEach(function(item){
-                    triples.push({subject: item.value, predicate: key, object:self.editingObject.about, valueType: "uri"});
+            for (var key in self.editingObject.inverseObjectProperties) {
+                self.editingObject.inverseObjectProperties[key].forEach(function (item) {
+                    triples.push({subject: item.value, predicate: key, object: self.editingObject.about, valueType: "uri"});
                 })
 
             }

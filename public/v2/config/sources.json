@@ -1,5 +1,4 @@
 {
-
   "TEST": {
     "editable": true,
     "controller": "Sparql_generic",
@@ -7,12 +6,9 @@
     "graphUri": "http://souslesens/thesaurus/TEST/",
     "sourceSchema": "SKOS",
     "predicates": {
-
     },
     "color": "#9edae5"
-
   },
-
   "POC-EP": {
     "editable": true,
     "controller": "Sparql_generic",
@@ -20,11 +16,9 @@
     "graphUri": "http://data.total.com/resource/thesaurus/POC-EP/",
     "sourceSchema": "SKOS",
     "predicates": {
-
     },
     "color": "#9edae5"
   },
-
   "Total-CTG": {
     "editable": true,
     "controller": "Sparql_generic",
@@ -138,6 +132,17 @@
     },
     "color": "#c49c94"
   },
+  "GEOSCMIL": {
+    "controller": "Sparql_generic",
+    "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
+    "graphUri": "http://resource.geosciml.org/",
+    "sourceSchema": "SKOS",
+    "predicates": {
+      "broaderPredicate": "^skos:hasTopConcept|skos:borader|^skos:narrower"
+
+    },
+    "color": "#c5b0d5"
+  },
   "TermSciences": {
     "controller": "Sparql_generic",
     "sparql_url": "http://vps-c46025b8.vps.ovh.net:8890/sparql/",
@@ -182,12 +187,13 @@
     },
     "color": "#ffbb78"
   },
-
-
   "NPD": {
     "controller": "Sparql_generic",
-    "sparql_url":  "http://51.178.139.80:8890/sparql",
-    "graphUri":["http://sws.ifi.uio.no/data/npd-v2/", "http://sws.ifi.uio.no/vocab/npd-v2/"],
+    "sparql_url": "http://51.178.139.80:8890/sparql",
+    "graphUri": [
+      "http://sws.ifi.uio.no/data/npd-v2/",
+      "http://sws.ifi.uio.no/vocab/npd-v2/"
+    ],
     "sourceSchema": "NPD",
     "predicates": {
       "prefixes": [
@@ -195,7 +201,7 @@
       ],
       "prefLabel": "rdfs:label",
       "broaderPredicate": "rdfs:subClassOf|^rdfs:superClassFor",
-      "topConceptFilter":  " ?topConcept rdf:type rdfs:Class. ?x rdfs:range ?topConcept.  ?topConcept rdf:type ?type. filter (?type= owl:Class)",
+      "topConceptFilter": " ?topConcept rdf:type rdfs:Class. ?x rdfs:range ?topConcept.  ?topConcept rdf:type ?type. filter (?type= owl:Class)",
       "broader": "rdfs:subClassOf",
       "lang": null
     },

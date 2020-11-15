@@ -12,7 +12,7 @@ var Sparql_generic = (function () {
             ],
             //  topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>,<http://www.w3.org/2004/02/skos/core#Collection>))"
 
-            topConceptFilter: "?topConcept rdf:type ?type. filter(?type in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>))"
+            topConceptFilter: "?topConcept rdf:type ?topConceptType. filter(?topConceptType in( <http://www.w3.org/2004/02/skos/core#ConceptScheme>))"
 
             , broaderPredicate: "skos:broader"
             , narrowerPredicate: "skos:narrower"
@@ -87,6 +87,8 @@ var Sparql_generic = (function () {
         }
 
 
+
+
         setFilter = function (varName, ids, words, options) {
             var filter = ";"
             if (words) {
@@ -145,7 +147,7 @@ var Sparql_generic = (function () {
         }
 
 
-        var formatString = function (str, forUri) {
+      self.formatString = function (str, forUri) {
             if (!str || !str.replace)
                 return null;
 
@@ -190,12 +192,12 @@ var Sparql_generic = (function () {
 
             var query = "";
             query += prefixesStr
-            query += " select distinct ?topConcept ?topConceptLabel ?type " + fromStr + "  WHERE {"
+            query += " select distinct ?topConcept ?topConceptLabel ?topConceptType " + fromStr + "  WHERE {"
             query += topConceptFilter;
             query += "?topConcept " + prefLabelPredicate + " ?topConceptLabel.";
             if (lang && !options.noLang)
                 query += "filter(lang(?topConceptLabel )='" + lang + "')"
-            query += "?topConcept rdf:type ?type."
+          //  query += "?topConcept rdf:type ?topConceptType.  filter( ?topConceptType in (skos:Concept,skos:ConceptScheme))."
             if (false) {
                 query += "?concept " + broaderPredicate + " ?topConcept." +
                     "?concept " + prefLabelPredicate + " ?conceptLabel."
@@ -240,7 +242,7 @@ var Sparql_generic = (function () {
                 query += "filter( lang(?child1Label)=\"" + lang + "\")"
             query += "}"
             query += filterStr;
-            query += "OPTIONAL{?child1 rdf:type ?type.}"
+            query += "OPTIONAL{?child1 rdf:type ?child1Type.}"
 
             if (options.filterCollections)
                 query += "?collection skos:member ?concept." + getUriFilter("concept", options.filterCollections)
@@ -252,7 +254,7 @@ var Sparql_generic = (function () {
                 if (lang && !options.noLang)
                     query += "filter( lang(?child" + (i + 1) + "Label)=\"" + lang + "\")"
                 query += "}"
-                query += "OPTIONAL {?child" + (i + 1) + " rdf:type ?type.}"
+                query += "OPTIONAL {?child" + (i + 1) + " rdf:type ?child" + (i + 1) + "Type.}"
             }
             for (var i = 1; i < descendantsDepth; i++) {
                 query += "} "
@@ -474,28 +476,59 @@ var Sparql_generic = (function () {
 
         }
 
+        self.triplesObjectToString=function(item){
+            var valueStr = ""
+            if (item.valueType == "uri")
+                valueStr = "<" + item.object + ">"
+            else {
+                var langStr = "";
+                if (item.lang)
+                    langStr = "@" + item.lang
+                valueStr = "'" + item.object + "'" + langStr
+            }
+
+            var p=item.predicate.indexOf("^")
+            if(p==0){
+                var predicate=item.predicate.substring(1)
+                return  valueStr  + ' <' +predicate + '> <' + item.subject + '>. ';
+            }else
+           return  "<" + item.subject + '> <' + item.predicate + '> ' + valueStr + '. ';
+        }
+
+        self.insertTriples = function (sourceLabel, triples, callback) {
+            var graphUri = Config.sources[sourceLabel].graphUri
+            var insertTriplesStr = "";
+            triples.forEach(function (item, index) {
+
+                insertTriplesStr +=self.triplesObjectToString(item);
+
+            })
+
+            var query = " WITH GRAPH  <" + graphUri + ">  " +
+                "INSERT DATA" +
+                "  {" +
+                insertTriplesStr +
+                "  }"
+
+
+            // console.log(query)
+            url = Config.sources[sourceLabel].sparql_url + "?query=&format=json";
+            Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
+                return callback(err);
+            })
+        }
+
+
         self.update = function (sourceLabel, triples, callback) {
             var graphUri = Config.sources[sourceLabel].graphUri
             var deleteTriplesStr = "";
             var insertTriplesStr = "";
             var subject;
             triples.forEach(function (item, index) {
-                var valueStr = ""
-                if (item.valueType == "uri")
-                    valueStr = "<" + item.object + ">"
-                else {
-                    var langStr = "";
-                    if (item.lang)
-                        langStr = "@" + item.lang
-                    valueStr = "'" + item.object + "'" + langStr
-                }
+
                 if (!subject)
-                    subject = item.subject
-           /*     else if(subject!= item.subject)
-                   return callback("all items dont have the same subject")*/
-
-                insertTriplesStr += "<" + item.subject + '> <' + item.predicate + '> ' + valueStr + '.';
-
+                    subject = item.subject;
+                insertTriplesStr +=self.triplesObjectToString(item);
 
             })
             deleteTriplesStr += "<?s ?p ?o.";
@@ -592,7 +625,7 @@ var Sparql_generic = (function () {
                                     var langStr = "";
                                     if (item.lang)
                                         langStr = "@" + item.value.lang
-                                    valueStr = "'" + formatString(item.value.value) + "'" + langStr
+                                    valueStr = "'" + self.formatString(item.value.value) + "'" + langStr
                                 }
 
                                 newTriples.push("<" + formatUrl(subject) + "> <" + formatUrl(prop) + "> " + valueStr + ".")
@@ -638,53 +671,6 @@ var Sparql_generic = (function () {
             })
 
         }
-
-
-        self.collections = {
-
-            getCollections: function (sourceLabel, options, callback) {
-                if (!options)
-                    options = {}
-                setVariables(sourceLabel);
-
-                var query = "PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX  skos:<http://www.w3.org/2004/02/skos/core#>" +
-                    " select    distinct * " + fromStr + "  WHERE {" +
-                    "?collection rdf:type  ?type. filter( ?type =skos:Collection). " +
-                    "?collection skos:prefLabel ?collectionLabel."
-                if (lang)
-                    query += "filter( lang(?collectionLabel)=\"" + lang + "\")"
-                if (true || options.onlyTopCollections)
-                    query += "FILTER (  NOT EXISTS {?child skos:member ?collection})"
-
-                query += "} ORDER BY ?collectionLabel limit " + limit;
-
-
-                Sparql_proxy.querySPARQL_GET_proxy(url, query, null, null, function (err, result) {
-                    if (err)
-                        return callback(err);
-
-                    return callback(null, result.results.bindings)
-                })
-            },
-
-            setConceptsCollectionMembership(sourceLabel, conceptIds, collectionId, callback) {
-
-                var triples = []
-                conceptIds.forEach(function (item) {
-                    triples.push({subject: collectionId, predicate: Collection.broaderProperty, object: item, valueType: "uri"})
-                })
-
-                Sparql_generic.update(sourceLabel, triples, function (err, result) {
-
-                    return callback(err, result)
-                })
-
-
-            }
-
-
-        }
-
 
         return self;
     }

@@ -10,11 +10,14 @@ var TreeController = (function () {
         var jstreeData = [];
         var existingNodes = {}
         data.forEach(function (item) {
-
+            var type = item[childNodeVar + "Type"]
+            if (!type)
+                return console.log("node " + item[childNodeVar].value + " has no type")
+            type=type.value;
             if (childNodeVar && item[childNodeVar]) {
                 var childNodeId = item[childNodeVar].value;
-                var childNodeLabel = common.getItemLabel(item,childNodeVar)
-                var type = item.type.value
+                var childNodeLabel = common.getItemLabel(item, childNodeVar)
+
 
                 if (!existingNodes[childNodeId]) {
                     existingNodes[childNodeId] = 1;
