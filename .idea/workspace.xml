@@ -2,18 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e3f42134-de86-4458-b1ba-3a42f4ba02e5" name="finir skoseditor en modification" comment="">
-      <change afterPath="$PROJECT_DIR$/public/v2/js/tools/blender/collection.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/common.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/config/sources.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/config/sources.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_generic.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/blender.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/blender/blender.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/collection.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/sourceEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/blender/sourceEditor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/blender/blender.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/blender/blender.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/tools/thesaurusBrowser.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/thesaurusBrowser.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/js/treeController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/treeController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/v2/snippets/blender.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/snippets/blender/blender.html" afterDir="false" />
     </list>
     <list id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -211,7 +204,7 @@
       <workItem from="1604746595769" duration="87018000" />
       <workItem from="1605104591828" duration="11819000" />
       <workItem from="1605160755534" duration="51193000" />
-      <workItem from="1605434139190" duration="12690000" />
+      <workItem from="1605434139190" duration="23302000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -257,12 +250,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/v2/js/tools/blender/blender.js</url>
-          <line>656</line>
+          <line>740</line>
           <option name="timeStamp" value="795" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/v2/js/tools/blender/blender.js</url>
-          <line>757</line>
+          <line>841</line>
           <option name="timeStamp" value="796" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -272,7 +265,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_generic.js</url>
-          <line>528</line>
+          <line>533</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="798" />
         </line-breakpoint>

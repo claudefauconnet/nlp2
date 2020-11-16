@@ -138,7 +138,7 @@
     "graphUri": "http://resource.geosciml.org/",
     "sourceSchema": "SKOS",
     "predicates": {
-      "broaderPredicate": "^skos:hasTopConcept|skos:borader|^skos:narrower"
+      "broaderPredicate": "^skos:hasTopConcept|skos:broader|^skos:narrower"
 
     },
     "color": "#c5b0d5"

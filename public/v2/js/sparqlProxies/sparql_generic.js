@@ -399,8 +399,13 @@ var Sparql_generic = (function () {
 
 
         self.getNodeInfos = function (sourceLabel, conceptId, options, callback) {
+            if(!options)
+                options={}
             setVariables(sourceLabel);
             var filter = getUriFilter("id", conceptId);
+            if(options.propertyFilter){
+                filter+=getUriFilter("prop", options.propertyFilter);
+            }
 
             var query = " select distinct * " + fromStr + "  WHERE {" +
                 " ?id ?prop ?value. " + filter + "} limit 10000";

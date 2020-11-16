@@ -98,7 +98,7 @@ var ThesaurusBrowser = (function () {
         if (node.children.length > 0)
             return;
 
-        Sparql_facade.getNodeChildren(thesaurusLabel, null, node.id, 1, null, function (err, result) {
+        Sparql_generic.getNodeChildren(thesaurusLabel, null, node.id, 1, null, function (err, result) {
             if (err) {
                 return MainController.UI.message(err);
             }
@@ -107,6 +107,10 @@ var ThesaurusBrowser = (function () {
         })
 
     }
+
+
+
+
 
 
     self.editThesaurusConceptInfos = function (thesaurusLabel, node, callback) {
