@@ -3,10 +3,22 @@
   <component name="ChangeListManager">
     <list default="true" id="e3f42134-de86-4458-b1ba-3a42f4ba02e5" name="finir skoseditor en modification" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backoffice/util..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backoffice/util..js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" beforeDir="false" afterPath="$PROJECT_DIR$/bin/others/mediawiki/mediawikiTagger..js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/config/sources.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/config/sources.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/clipboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/clipboard.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_generic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_generic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/annotator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/annotator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/tools/blender/blender.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/blender/blender.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/blender/collection.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/blender/collection.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/blender/sourceEditor.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/blender/sourceEditor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/nerEvaluator.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/nerEvaluator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/termTaxonomy.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/termTaxonomy.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/v2/js/tools/thesaurusBrowser.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/thesaurusBrowser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/tools/thesaurusMatcher.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/tools/thesaurusMatcher.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/js/treeController.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/js/treeController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/v2/snippets/blender/blender.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/v2/snippets/blender/blender.html" afterDir="false" />
     </list>
     <list id="94c7558e-d252-4a99-abc2-e70860ef2a68" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,9 +33,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="JS module" />
         <option value="JavaScript File" />
-        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -43,7 +55,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/v2/js/tools" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -82,22 +94,22 @@
     <configuration name="annotatorLive..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="annotatorLive..js" working-dir="$PROJECT_DIR$/bin">
       <method v="2" />
     </configuration>
+    <configuration name="interestingTerms..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="interestingTerms..js" working-dir="$PROJECT_DIR$/bin/others/analysis">
+      <method v="2" />
+    </configuration>
     <configuration name="mediawikiTagger..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="mediawikiTagger..js" working-dir="$PROJECT_DIR$/bin/others/mediawiki">
       <method v="2" />
     </configuration>
     <configuration name="paragraphs.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="paragraphs.js" working-dir="$PROJECT_DIR$/public/ontograph/js">
       <method v="2" />
     </configuration>
-    <configuration name="tulsaToSkos..js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="tulsaToSkos..js" working-dir="$PROJECT_DIR$/bin/others">
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.mediawikiTagger..js" />
+        <item itemvalue="Node.js.interestingTerms..js" />
         <item itemvalue="Node.js.annotatorLive..js" />
         <item itemvalue="Node.js.RcReportsTriples..js" />
         <item itemvalue="Node.js.paragraphs.js" />
-        <item itemvalue="Node.js.mediawikiTagger..js" />
-        <item itemvalue="Node.js.tulsaToSkos..js" />
       </list>
     </recent_temporary>
   </component>
@@ -204,7 +216,8 @@
       <workItem from="1604746595769" duration="87018000" />
       <workItem from="1605104591828" duration="11819000" />
       <workItem from="1605160755534" duration="51193000" />
-      <workItem from="1605434139190" duration="23302000" />
+      <workItem from="1605434139190" duration="85341000" />
+      <workItem from="1605867107957" duration="8691000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -250,13 +263,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/v2/js/tools/blender/blender.js</url>
-          <line>740</line>
+          <line>790</line>
           <option name="timeStamp" value="795" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/public/v2/js/tools/blender/blender.js</url>
-          <line>841</line>
-          <option name="timeStamp" value="796" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/v2/js/tools/blender/sourceEditor.js</url>
@@ -265,9 +273,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/v2/js/sparqlProxies/sparql_generic.js</url>
-          <line>533</line>
-          <properties lambdaOrdinal="-1" />
+          <line>545</line>
           <option name="timeStamp" value="798" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/bin/others/analysis/interestingTerms..js</url>
+          <line>133</line>
+          <option name="timeStamp" value="814" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

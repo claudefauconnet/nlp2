@@ -13,7 +13,7 @@ if(!data.source)
 
 
 
-        if(!event.ctrlKey) {
+        if(!event.alt) {
             content = [data]
             $(".clipboardSelected").removeClass("clipboardSelected")
         }

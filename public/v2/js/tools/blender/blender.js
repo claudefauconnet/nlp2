@@ -52,6 +52,7 @@ var Blender = (function () {
             self.currentTreeNode = null;
             self.currentSource = null;
             $("#Blender_collectionTreeDiv").html("");
+            $("#Blender_tabs").tabs("option", "active", 1);
             Collection.currentTreeNode = null;
             if (source == "") {
                 return
@@ -77,7 +78,7 @@ var Blender = (function () {
                         Config.sources[self.currentSource] = {
                             "controller": Sparql_generic,
                             "sparql_url": Config.sources[source].sparql_url,// on the same server !!!
-                            "graphUri": "http://souslesens/_blenderTempSource/" + source,
+                            "graphUri": "http://souslesens/_backup/" + source,
                             "sourceSchema": "SKOS",
                             "predicates": {
                                 "lang": "en"
@@ -104,8 +105,14 @@ var Blender = (function () {
                             jsTreeOptions.selectNodeFn = Collection.selectNodeFn;
                             jsTreeOptions.onMoveNodeFn = Blender.dnd.moveNode;
                             jsTreeOptions.dnd = Blender.dnd
-                            TreeController.drawOrUpdateTree("Blender_collectionTreeDiv", result, "#", "collection", jsTreeOptions)
-                            callbackSeries(err);
+                            TreeController.drawOrUpdateTree("Blender_collectionTreeDiv", result, "#", "collection", jsTreeOptions,function(){
+                                var firstNodeId = $("#Blender_collectionTreeDiv").jstree(true).get_node("#").children[0];
+                                var firstNode = $("#Blender_collectionTreeDiv").jstree(true).get_node(firstNodeId);
+
+                                Collection.openTreeNode ("Blender_collectionTreeDiv", Blender.currentSource, firstNode)
+                                callbackSeries(err);
+                            })
+
 
                         })
                     }
@@ -115,24 +122,45 @@ var Blender = (function () {
                         return MainController.UI.message(err);
                 })
         }
+
+        self.copyGraph=function(){
+            if (!self.currentSource ) {
+                return MainController.UI.message("select a source")
+            }
+
+            var newGraphUri=prompt("newGraphUri")
+        if(newGraphUri && newGraphUri!="")
+            Sparql_generic.copyGraph(self.currentSource, newGraphUri, function (err, result) {
+                if(err)
+                    return MainController.UI.message(err)
+                MainController.UI.message("graph Copied");
+            })
+        }
+
         self.showTopConcepts = function (collectionIds, callback) {
             var options = {};
             if (collectionIds)
                 options.filterCollections = collectionIds
-            Sparql_facade.getTopConcepts(self.currentSource, options, function (err, result) {
+            Sparql_generic.getTopConcepts(self.currentSource, options, function (err, result) {
                 if (err) {
                     MainController.UI.message(err);
                     return callback(err)
                 }
-                var jsTreeOptions = {};
-                jsTreeOptions.contextMenu = Blender.getJstreeConceptsContextMenu()
-                jsTreeOptions.selectNodeFn = Blender.selectNodeFn
-                jsTreeOptions.onMoveNodeFn = Blender.dnd.moveNode
-                jsTreeOptions.dnd = self.dnd
-
+                var jsTreeOptions=self.getConceptJstreeOptions(true)
                 TreeController.drawOrUpdateTree("Blender_conceptTreeDiv", result, "#", "topConcept", jsTreeOptions)
                 return callback()
             })
+
+        }
+        self.getConceptJstreeOptions=function(withDnd){
+            var jsTreeOptions = {};
+            jsTreeOptions.contextMenu = Blender.getJstreeConceptsContextMenu()
+            jsTreeOptions.selectNodeFn = Blender.selectNodeFn
+            if(withDnd) {
+                jsTreeOptions.onMoveNodeFn = Blender.dnd.moveNode
+            }
+            jsTreeOptions.dnd = self.dnd
+            return jsTreeOptions;
 
         }
 
@@ -167,7 +195,7 @@ var Blender = (function () {
                 return true;
             },
             moveNode: function (event, obj) {
-                self.menuActions.movingNode = {id: obj.node.id, newParent: obj.parent, oldParent: obj.old_parent}
+                Blender.menuActions.movingNode = {id: obj.node.id, newParent: obj.parent, oldParent: obj.old_parent}
             },
 
         },
@@ -178,7 +206,15 @@ var Blender = (function () {
                     self.currentTreeNode = propertiesMap.node
                     $("#Blender_conceptTreeDiv").jstree(true).settings.contextmenu.items = self.getJstreeConceptsContextMenu()
 
-                    if (self.currentTreeNode.data.type == "externalReference")
+                    var source = self.currentTreeNode.data.source || self.currentSource;
+                    var type=self.currentTreeNode.data.type
+
+                           var options={type:type,labelClass:"treeType_"+type}
+                           if(Collection.currentCollectionFilter)
+                               options.filterCollections=Collection.currentCollectionFilter;
+                               ThesaurusBrowser.openTreeNode("Blender_conceptTreeDiv", source, propertiesMap.node,options);
+
+                    if (type == "externalReferenceTopConcept")
                         return;
 
                     if (propertiesMap.event.ctrlKey)
@@ -190,8 +226,8 @@ var Blender = (function () {
                         }, self.currentTreeNode.id + "_anchor", propertiesMap.event)
 
 
-                    ThesaurusBrowser.openTreeNode("Blender_conceptTreeDiv", self.currentSource, propertiesMap.node);
-                    self.externalReferences.openNarrowMatchNodes(self.currentSource, self.currentTreeNode.id)
+                  if(self.currentTreeNode.children.length==0)
+                  ExternalReferences.openNarrowMatchNodes(self.currentSource, self.currentTreeNode)
 
                 }
                 //  $.jstree.defaults.contextmenu.items = self.getJstreeConceptsContextMenu();
@@ -202,16 +238,25 @@ var Blender = (function () {
 
         self.getJstreeConceptsContextMenu = function () {
             var menuItems = {}
-            if (!self.currentTreeNode)
+            if (!self.currentTreeNode || !self.currentTreeNode.data)
                 return menuItems
-            if (self.currentTreeNode.data.type == "externalReference") {
-                menuItems.showExternalReferenceTreeNodes = {
 
-                    label: "show external nodes",
-                    action: function (obj, sss, cc) {
-                        self.externalReferences.showExternalReferenceTreeNodes()
+
+            if (self.currentTreeNode.data.type == "externalReferenceTopConcept") {
+                return ExternalReferences.getJstreeConceptsContextMenu(self.currentTreeNode)
+
+            }
+
+            if (self.currentTreeNode.data.type == "externalReference") {
+
+                    menuItems.showExternalReferenceNodeInfos = {
+
+                        label: "view node properties",
+                        action: function (obj, sss, cc) {
+                            ExternalReferences.showExternalReferenceNodeInfos()
+                        }
                     }
-                }
+
                 return menuItems;
             }
 
@@ -248,7 +293,7 @@ var Blender = (function () {
                         pasteAsReference: {
                             label: " reference",
                             action: function (obj, sss, cc) {
-                                self.externalReferences.pasteAsReference()
+                                ExternalReferences.pasteAsReference()
                                 ;
                             },
                         },
@@ -314,7 +359,8 @@ var Blender = (function () {
 
 
             dropNode: function () {
-
+if(!self.menuActions.movingNode)
+    return;
 
                 var newParent = self.menuActions.movingNode.newParent
                 var oldParent = self.menuActions.movingNode.oldParent
@@ -680,10 +726,13 @@ var Blender = (function () {
                 var skosType;
                 if (type == "Scheme") {
                     skosType = "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+                    self.currentTreeNode=$("#Blender_conceptTreeDiv").jstree(true).get_node("#")
                     $("#Blender_tabs").tabs("option", "active", 0);
                 } else if (type == "Collection") {
-                    $("#Blender_tabs").tabs("option", "active", 1);
+
                     skosType = "http://www.w3.org/2004/02/skos/core#Collection"
+                    Collection.currentTreeNode=$("#Blender_collectionTreeDiv").jstree(true).get_node("#")
+                    $("#Blender_tabs").tabs("option", "active", 1);
                 } else
                     return;
 
@@ -696,6 +745,7 @@ var Blender = (function () {
                     "http://www.w3.org/2004/02/skos/core#prefLabel":
                         [{"xml:lang": Config.sources[self.currentSource].prefLang || "en", value: "", type: "literal"}]
                 }
+
                 SourceEditor.editNewObject("Blender_nodeEditionDiv", self.currentSource, skosType, initData);
 
             }
@@ -762,6 +812,7 @@ var Blender = (function () {
                 $("#Blender_PopupEditDiv").dialog("open")
 
                 $(".ui-dialog-titlebar-close").css("display", "none")
+                $("#Blender_PopupEditButtonsDiv").css("display", "block")
 
             },
 
@@ -835,141 +886,7 @@ var Blender = (function () {
         }
 
 
-        self.externalReferences = {
-            /**
-             *
-             *
-             * adds nodes to tree comining from another scheme
-             * using narrowMatch property : its values concats <nodeUri>@<saprqlServerUrl>:<graphUri
 
-
-
-             */
-            openNarrowMatchNodes: function (thesaurusLabel, nodeId) {
-                // narrower match in other source
-                Sparql_generic.getNodeInfos(thesaurusLabel, nodeId, {propertyFilter: ["http://www.w3.org/2004/02/skos/core#narrowMatch"]}, function (err, result) {
-                    if (err) {
-                        return MainController.UI.message(err);
-                    }
-                    var newTreeNodes = []
-                    result.forEach(function (item) {
-                        newTreeNodes.push({
-                            id: item.value.value,
-                            text: "@" + item.value.value,
-                            parent: nodeId,
-                            data: {type: "externalReference"}
-
-                        })
-
-                    })
-                    if (newTreeNodes.length > 0)
-                        common.addNodesToJstree("Blender_conceptTreeDiv", nodeId, newTreeNodes)
-
-                    /*  var narrowMatchIds = []
-                      result.forEach(function (item) {
-                          var str = item.value.value;
-                          var array = (/[@:]/).exec(str)
-                          if (array.length == 4)
-                              narrowMatchIds.push({id: array[0],serverUrl:array[1],graphUri:array[2]})
-
-                          })*/
-
-
-                })
-
-
-            },
-
-
-            /**
-             *
-             *adds a "narrowMatch property to node with uri value : id + "@" + fromSparql_url + ":" + fromGraphUri
-             *show it as child node
-             *
-             *
-             *
-             */
-            pasteAsReference: function () {
-                var dataArray = Clipboard.getContent();
-                if (!dataArray)
-                    return;
-                var newTreeNodes = []
-
-                async.eachSeries(dataArray, function (data, callbackEach) {
-
-                        var existingNodeIds = common.getjsTreeNodes("Blender_conceptTreeDiv", true)
-                        var fromSource = data.source;
-                        var fromGraphUri = Config.sources[fromSource].graphUri
-                        var fromSparql_url = Config.sources[fromSource].sparql_url
-                        var id = data.id;
-
-                    var objectUri=self.externalReferences.generateExternalUrl(id,fromSparql_url,fromGraphUri,data.label)
-                        newTreeNodes.push(
-                            {
-                                id: id,
-                                text: "@" + fromSource + "/" + data.label,
-                                parent: self.currentTreeNode,
-                                data: {type: "externalReference"}
-                            }
-                        )
-
-                        var triple = {subject: self.currentTreeNode.id, predicate: "http://www.w3.org/2004/02/skos/core#narrowMatch", object: objectUri, valueType: "uri"};
-                        Sparql_generic.insertTriples(self.currentSource, [triple], function (err, result) {
-                            callbackEach(err);
-                        })
-
-                    }, function (err) {
-                        if (err)
-                            return MainController.UI.message(err);
-                        common.addNodesToJstree("Blender_conceptTreeDiv", self.currentTreeNode.id, newTreeNodes)
-                        Clipboard.clear();
-                    }
-                )
-            }
-
-            , showExternalReferenceTreeNodes: function () {
-                var str = self.currentTreeNode.id;
-
-                Sparql_generic.getNodeChildren(externalSourceLabel, null,id,0,{},function(err,result){
-                    if(err)
-                      return  MainController.UI.message(err);
-
-                    var jsTreeOptions={}
-                    TreeController.drawOrUpdateTree("Blender_conceptTreeDiv", result, id, "child1", jsTreeOptions)
-
-                })
-
-
-
-            },
-            parseExternalUrl:function(url) {
-
-
-                var p = str.indexOf("?")
-                if(p<0)
-                    return null;
-
-                var id = str.substring(0, p);
-                var params =  str.substring(p+1).split("&");
-                var obj={}
-               params.forEach(function(str){
-                   var array=str.split("=")
-                   obj[array[0]]=array[1]
-
-               })
-
-                for (var key in Config.sources) {
-                    if (Config.sources[key].sparql_url == sparql_url && Config.sources[key].graphUri == graphUri)
-                        sourceLabel = key
-                }
-
-            }
-            ,generateExternalUrl:function(id,sparql_url,graphUri,label){
-              return ""+id + "?sparql_url=" + sparql_url + "&graphUri=" + graphUri+ "&label=" + label;
-        }
-
-
-        }
 
 
         return self;

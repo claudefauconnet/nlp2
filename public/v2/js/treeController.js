@@ -10,14 +10,24 @@ var TreeController = (function () {
         var jstreeData = [];
         var existingNodes = {}
         data.forEach(function (item) {
+
             var type = item[childNodeVar + "Type"]
             if (!type)
                 return console.log("node " + item[childNodeVar].value + " has no type")
             type=type.value;
+            type= jsTreeOptions.type || type
             if (childNodeVar && item[childNodeVar]) {
                 var childNodeId = item[childNodeVar].value;
                 var childNodeLabel = common.getItemLabel(item, childNodeVar)
-
+                if(false){
+                    console.log(childNodeLabel)
+                }
+if(true || jsTreeOptions.labelClass) {
+    var cssType=type
+    if(type=="http://www.w3.org/2004/02/skos/core#Concept")
+        cssType="concept"
+    childNodeLabel = "<span class='treeType_" + cssType + "'>" + childNodeLabel + "</span>"
+}
 
                 if (!existingNodes[childNodeId]) {
                     existingNodes[childNodeId] = 1;
@@ -26,10 +36,12 @@ var TreeController = (function () {
                         parent: parentNodeId,
                         id: childNodeId,
                         text: childNodeLabel,
-                        data: {type: type}
+                        data: {type: type,source:jsTreeOptions.source}
 
                     }
+
                     jstreeData.push(child);
+
                 }
 
             }
@@ -48,48 +60,7 @@ var TreeController = (function () {
 
     }
 
-    self.getFilteredNodesJstreeData = function (sourceLabel, options, callback) {
-        if (!options.term)
-            options.term = $("#GenericTools_searchTermInput").val()
 
-
-        if (!options.rootId)
-            options.rootId = "#"
-        if (!sourceLabel)
-            sourceLabel = MainController.currentSource
-        var depth = 5
-        Sparql_generic.getNodeParents(sourceLabel, options.term, options.ids, depth, options, function (err, result) {
-            if (err)
-                return MainController.UI.message(err)
-
-            var existingNodes = {};
-            var jstreeData = []
-
-            result.forEach(function (item) {
-                for (var i = depth; i > 0; i--) {
-                    if (item["broader" + i]) {
-                        var id = item["broader" + i].value
-                        if (!existingNodes[id]) {
-                            existingNodes[id] = 1
-                            var label = item["broader" + i + "Label"].value
-                            var parentId = options.rootId
-                            if (item["broader" + (i + 1)])
-                                parentId = item["broader" + (i + 1)].value
-                            jstreeData.push({id: id, text: label, parent: parentId, data: {sourceLabel: sourceLabel}})
-                        }
-                    }
-                }
-                jstreeData.push({id: item.concept.value, text: item.conceptLabel.value, parent: item["broader1"].value, data: {sourceLabel: sourceLabel}})
-
-            })
-
-            return callback(null, jstreeData)
-
-
-        })
-
-
-    }
 
 
     return self;

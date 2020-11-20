@@ -1,6 +1,22 @@
 var fs=require('fs');
 
 var util = {
+
+    sliceArray :function (array, sliceSize) {
+        var slices = [];
+        var slice = []
+        array.forEach(function (item) {
+            if (slice.length >= sliceSize) {
+                slices.push(slice);
+                slice = [];
+            }
+            slice.push(item)
+        })
+        slices.push(slice);
+        return slices;ormat
+
+
+    },
     getStringHash: function (str) {
 
         var hash = 5381,

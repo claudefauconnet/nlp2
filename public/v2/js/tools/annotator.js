@@ -135,7 +135,7 @@ var Annotator = (function () {
             Sparql_generic.getNodeInfos(source, id, null, function (err, result) {
                 if (err)
                     return MainController.UI.message(err)
-                ThesaurusBrowser.showNodeInfos("Annotator_EntityDetailsDiv", "en", id, result);
+                SourceEditor.showNodeInfos("Annotator_EntityDetailsDiv", "en", id, result);
             })
             Sparql_generic.getSingleNodeAllAncestors(source, id, function (err, result) {
                 if (err)

@@ -151,15 +151,18 @@ var Sparql_generic = (function () {
             if (!str || !str.replace)
                 return null;
 
-            str = str.replace(/'/gm, "\"")
-            str = str.replace(/\n/gm, ".")
-            str = str.replace(/\r/gm, "")
-            str = str.replace(/\t/gm, " ")
-            str = str.replace(/\(/gm, "-")
-            str = str.replace(/\)/gm, "-")
+          str = str.replace(/&/gm, "and")
+            str = str.replace(/'/gm, " ")
+          str = str.replace(/\\/gm, "")
+          //  str = str.replace(/\n/gm, ".")
+          //  str = str.replace(/\r/gm, "")
+          //  str = str.replace(/\t/gm, " ")
+           // str = str.replace(/\(/gm, "-")
+          //  str = str.replace(/\)/gm, "-")
             str = str.replace(/\\xa0/gm, " ")
 
-            return str;
+
+          return    unescape( encodeURIComponent( str ) );
 
             str = str.replace(/"/gm, "\\\"")
             str = str.replace(/;/gm, " ")
@@ -205,7 +208,8 @@ var Sparql_generic = (function () {
                     query += "filter(lang(?conceptLabel )='" + lang + "')"
             }
             if (options.filterCollections)
-                query += "?collection skos:member ?topConcept." + getUriFilter("collection", options.filterCollections)
+           // query+="?collection skos:member+ ?aCollection.?acollection skos:member ?aConcept.?aConcept skos:broader* ?topConcept." + getUriFilter("collection", options.filterCollections)
+            query+="?collection skos:member ?aconcept. ?aConcept skos:broader* ?topConcept." + getUriFilter("collection", options.filterCollections)
 
             query += "  } ORDER BY ?topConceptLabel ";
             query += "limit " + limit + " ";
@@ -244,8 +248,7 @@ var Sparql_generic = (function () {
             query += filterStr;
             query += "OPTIONAL{?child1 rdf:type ?child1Type.}"
 
-            if (options.filterCollections)
-                query += "?collection skos:member ?concept." + getUriFilter("concept", options.filterCollections)
+
             descendantsDepth = Math.min(descendantsDepth, optionalDepth);
             for (var i = 1; i < descendantsDepth; i++) {
 
@@ -259,7 +262,12 @@ var Sparql_generic = (function () {
             for (var i = 1; i < descendantsDepth; i++) {
                 query += "} "
             }
-            query += "  }ORDER BY ?child1Label ";
+
+            if (options.filterCollections){
+              //  query+="  MINUS {?collection skos:member ?aconcept.?aconcept skos:broader ?child1 " + getUriFilter("collection", options.filterCollections)+"}"
+                query+="    ?collection skos:member ?aconcept. ?child1 skos:broader*|^skos:broader* ?aconcept. "+ getUriFilter("collection", options.filterCollections)+""
+            }
+             query+=   "}ORDER BY ?child1Label ";
             query += "limit " + limit + " ";
 
 
@@ -280,15 +288,15 @@ var Sparql_generic = (function () {
 
             var query = "";
             query += prefixesStr;
-            query += " select distinct * " + fromStr + "  WHERE {"
+            query += " select distinct * " + fromStr + "  WHERE {{"
 
             query += "?concept " + prefLabelPredicate + " ?conceptLabel. ";
             if (lang && !options.noLang)
                 query += "filter( lang(?conceptLabel)=\"" + lang + "\")"
             query += filterStr;
             query += "OPTIONAL{?concept rdf:type ?type.}"
-            if (options.filterCollections)
-                query += "?collection skos:member ?concept." + getUriFilter("collection", options.filterCollections)
+
+
             ancestorsDepth = Math.min(ancestorsDepth, optionalDepth);
             for (var i = 1; i <= ancestorsDepth; i++) {
                 if (i == 1) {
@@ -315,7 +323,11 @@ var Sparql_generic = (function () {
 
 
             query += "  }";
-            query += "limit " + limit + " ";
+
+            if (options.filterCollections){
+                query+="MINUS {?collection skos:member* ?aCollection.?acollection skos:member ?broader" + getUriFilter("collection", options.filterCollections)
+             }
+            query += "}limit " + limit + " ";
 
 
             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {

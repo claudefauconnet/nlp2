@@ -1153,7 +1153,7 @@ if (false) {
 }
 
 
-if (false) {
+if (true) {
 
     var wikiUrl = "https://wiki.seg.org/wiki/"
     var indexName = "mediawiki-pages-seg"
@@ -1167,14 +1167,16 @@ if (false) {
 
 
 
+
+
+
+
+
     var wikiUrl = "https://wiki.aapg.org/"
     var indexName = "mediawiki-pages-aapg"
 
-
     var wikiUrl = "https://petrowiki.spe.org/"
     var indexName = "mediawiki-pages-spe"
-
-
 
     var elasticUrl = "http://vps254642.ovh.net:2009/"
     thesaurusGraphUris = ["http://souslesens.org/oil-gas/upstream/"]//, "http://www.eionet.europa.eu/gemet/", "http://data.total.com/resource/thesaurus/ctg/", "https://www2.usgs.gov/science/USGSThesaurus/"]
@@ -1188,6 +1190,8 @@ if (false) {
     thesaurusGraphUris = ["https://www2.usgs.gov/science/USGSThesaurus/"]
 
     thesaurusGraphUris = ["http://data.total.com/resource/acronyms/"]
+
+    thesaurusGraphUris = ["http://resource.geosciml.org/"]
 
     mediaWikiTagger.tagPages(thesaurusGraphUris, elasticUrl, indexName, wikiUrl, function (err, result) {
         if (err)

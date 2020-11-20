@@ -76,7 +76,7 @@ var ThesaurusMatcher = (function () {
                     function (callbackSeries) {
 
 
-                        Sparql_facade.getNodeChildren(MainController.currentSource, null, sourceNodeId, sourceConceptAggrDepth, null, function (err, result) {
+                        Sparql_generic.getNodeChildren(MainController.currentSource, null, sourceNodeId, sourceConceptAggrDepth, null, function (err, result) {
                             //                       Concepts.getConceptDescendants({depth: sourceConceptAggrDepth, selectLabels: true}, function (err, conceptsSets) {
                             if (err)
                                 return callbackSeries(err);
@@ -278,7 +278,7 @@ var ThesaurusMatcher = (function () {
                         }
                         if (conceptIds.length == 0)
                             return callbackSeries();
-                        Sparql_facade.getNodeParents(MainController.currentSource, null, conceptIds, maxDescendantsDepth, null, function (err, result) {
+                        Sparql_generic.getNodeParents(MainController.currentSource, null, conceptIds, maxDescendantsDepth, null, function (err, result) {
                             //   Concepts.sparql_getAncestors(conceptIds, {}, function (err, result) {
                             var sourceBroaders = [];
                             result.forEach(function (item) {

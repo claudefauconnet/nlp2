@@ -1,7 +1,7 @@
 var NerEvaluator = (function () {
     var self = {}
 
-    self.maxGraphConceptLength = 500
+    self.maxGraphConceptLength = 1000
     var sourceGraphsUriMap = {}
 
     self.selectedSources = []

@@ -2,6 +2,7 @@ var Collection = (function () {
 
     var self = {}
     self.currentTreeNode;
+    self.currentCollectionFilter
     self.broaderProperty = "http://www.w3.org/2004/02/skos/core#member"
 
     self.getJstreeContextMenu = function () {
@@ -19,6 +20,18 @@ var Collection = (function () {
 
             }
         }
+        if (Collection.currentTreeNode &&  Collection.currentTreeNode.data.type == "http://www.w3.org/2004/02/skos/core#Concept") {
+            menuItems.editNode = {
+                label: "Edit node",
+                action: function (obj, sss, cc) {
+                    Blender.nodeEdition.editNode()
+                }
+            }
+
+            return menuItems;
+
+        }
+
         menuItems.filterConcepts = {
             label: "Filter Concepts",
             action: function (obj, sss, cc) {
@@ -56,13 +69,13 @@ var Collection = (function () {
             },
         },
 
-        menuItems.importChildren = {
-            label: "Import child nodes",
-            action: function (obj, sss, cc) {
-                Import.showImportNodesDialog();
-                ;
-            },
-        }
+            menuItems.importChildren = {
+                label: "Import child nodes",
+                action: function (obj, sss, cc) {
+                    Import.showImportNodesDialog();
+                    ;
+                },
+            }
         return menuItems;
     }
 
@@ -70,6 +83,7 @@ var Collection = (function () {
     self.selectNodeFn = function (event, propertiesMap) {
         if (propertiesMap)
             self.currentTreeNode = propertiesMap.node
+
         $("#Blender_collectionTreeDiv").jstree(true).settings.contextmenu.items = Collection.getJstreeContextMenu()
         self.openTreeNode("Blender_collectionTreeDiv", Blender.currentSource, self.currentTreeNode)
     }
@@ -80,7 +94,7 @@ var Collection = (function () {
         if (node.children.length > 0)
             return;
 
-        self.Sparql.getNodeChildren(thesaurusLabel,  node.id,  function (err, result) {
+        self.Sparql.getNodeChildren(thesaurusLabel, node.id, function (err, result) {
             if (err) {
                 return MainController.UI.message(err);
             }
@@ -97,7 +111,7 @@ var Collection = (function () {
         nodes.forEach(function (item) {
             conceptIds.push(item.id)
         })
-        Collections.Sparql.setConceptsCollectionMembership(Blender.currentSource, conceptIds, Collection.currentTreeNode.id, function (err, result) {
+        Collection.Sparql.setConceptsCollectionMembership(Blender.currentSource, conceptIds, Collection.currentTreeNode.id, function (err, result) {
             if (err)
                 return MainController.UI.message(err)
             return MainController.UI.message(result)
@@ -108,21 +122,60 @@ var Collection = (function () {
 
     }
     self.filterConcepts = function () {
+        $(".blender_collectionFilter").remove();
+        var collection = Collection.currentTreeNode;
         var options = {
-            filterCollections: Collection.currentTreeNode.id
+            filterCollections: collection.id,
         }
-        TreeController.getFilteredNodesJstreeData(self.currentSource, options, function (err, jstreeData) {
+        if (true || !self.currentCollectionFilter)
+            self.currentCollectionFilter = [];
+        //  self.currentCollectionFilter.push(collection.id)
+        self.currentCollectionFilter = collection.id;
 
-            MainController.UI.message("")
+        var html = ("<div  class='blender_collectionFilter' onclick='Collection.removeTaxonomyFilter()'>" + collection.text + "</div>")
+        $("#Blender_currentFilterDiv").append(html)
+
+        Sparql_generic.getTopConcepts(Blender.currentSource, options, function (err, result) {
+            //   ThesaurusBrowser.getFilteredNodesJstreeData(Blender.currentSource, options, function (err, jstreeData) {
+            if (err) {
+                return MainController.UI.message(err)
+            }
             $("#Blender_tabs").tabs("option", "active", 0);
-            common.loadJsTree("Blender_conceptTreeDiv", jstreeData, {
-                selectNodeFn: Blender.selectNodeFn,
-                contextMenu: Blender.getJstreeConceptsContextMenu()
-            })
+            $('#Blender_conceptTreeDiv').empty();
+            $("#Blender_conceptTreeDiv").html("");
+            if (result.length == 0)
+                return $("#Blender_conceptTreeDiv").html("No concept for collection :" + collection.text)
+
+            var jsTreeOptions = Blender.getConceptJstreeOptions()
+
+            TreeController.drawOrUpdateTree("Blender_conceptTreeDiv", result, "#", "topConcept", jsTreeOptions)
+
+            setTimeout(function () {
+                var firstNodeId = $("#Blender_conceptTreeDiv").jstree(true).get_node("#").children[0];
+                var firstNode = $("#Blender_conceptTreeDiv").jstree(true).get_node(firstNodeId);
+                var options = {filterCollections: Collection.currentCollectionFilter};
+                ThesaurusBrowser.openTreeNode("Blender_conceptTreeDiv", Blender.currentSource, firstNode, options);
+            }, 200)
 
         })
     }
+
+
+    self.removeTaxonomyFilter = function (collectionId) {
+        self.currentCollectionFilter = null;
+
+        $(".blender_collectionFilter").remove();
+
+        Blender.showTopConcepts(null, function (err,) {
+
+
+        })
+
+
+    }
     self.dropNode = function () {
+        if (!Blender.menuActions.movingNode)
+            return
         var newParent = Blender.menuActions.movingNode.newParent
         var oldParent = Blender.menuActions.movingNode.oldParent
         var id = Blender.menuActions.movingNode.id
@@ -131,7 +184,7 @@ var Collection = (function () {
         Blender.menuActions.lastDroppedNodeId = id;
         var broaderPredicate = self.broaderProperty
 
-        Sparql_generic.deleteTriples(Blender.currentSource, oldParent,  "http://www.w3.org/2004/02/skos/core#member",id, function (err, result) {
+        Sparql_generic.deleteTriples(Blender.currentSource, oldParent, "http://www.w3.org/2004/02/skos/core#member", id, function (err, result) {
 
             if (err) {
                 return MainController.UI.message(err)
@@ -146,90 +199,90 @@ var Collection = (function () {
 
     }
 
+
     self.Sparql = {
 
-    getVariables:function (sourceLabel) {
-        var source = Config.sources[sourceLabel]
-        var vars = {
-            serverUrl: source.sparql_url + "?query=&format=json",
-            graphUri: source.graphUri,
-            lang: source.predicates.lang,
-            limit:1000
-        }
-        return vars;
-    },
-
-    getCollections: function (sourceLabel, options, callback) {
-        if (!options)
-            options = {}
-        var variables=self.Sparql.getVariables(sourceLabel) ;
-        var query = "PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX  skos:<http://www.w3.org/2004/02/skos/core#>" +
-            " select    distinct * from  <"+variables.graphUri + ">  WHERE {" +
-            "?collection rdf:type  ?collectionType. filter( ?collectionType =skos:Collection). " +
-            "?collection skos:prefLabel ?collectionLabel."
-        if (variables.lang)
-            query += "filter( lang(?collectionLabel)=\"" + variables.lang + "\")"
-        if (true)
-            query += "FILTER (  NOT EXISTS {?child skos:member ?collection})"
-
-        query += "} ORDER BY ?collectionLabel limit " + variables.limit;
-
-
-        Sparql_proxy.querySPARQL_GET_proxy(variables.serverUrl, query, null, null, function (err, result) {
-            if (err)
-                return callback(err);
-
-            return callback(null, result.results.bindings)
-        })
-    }
-,
-
-    setConceptsCollectionMembership(sourceLabel, conceptIds, collectionId, callback)
-    {
-
-        var triples = []
-        conceptIds.forEach(function (item) {
-            triples.push({subject: collectionId, predicate: Collection.broaderProperty, object: item, valueType: "uri"})
-        })
-
-        Sparql_generic.update(sourceLabel, triples, function (err, result) {
-
-            return callback(err, result)
-        })
-
-
-    }
-,
-    getNodeChildren: function (sourceLabel, collectionId, callback) {
-        var variables=self.Sparql.getVariables(sourceLabel) ;
-
-        var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>";
-
-        query += " select distinct * from <" + variables.graphUri + ">  WHERE {"
-
-        query += "<"+collectionId+"> skos:member ?child1." +
-
-            "OPTIONAL{ ?child1  skos:prefLabel ?child1Label. ";
-        if (variables.lang)
-            query += "filter( lang(?child1Label)=\"" + variables.lang + "\")"
-        query += "}"
-
-        query += "OPTIONAL{?child1 rdf:type ?child1Type.}" +
-            "}" +
-            "limit " + variables.limit;
-
-        Sparql_proxy.querySPARQL_GET_proxy(variables.serverUrl, query, {}, null, function (err, result) {
-            if (err) {
-                return callback(err)
+        getVariables: function (sourceLabel) {
+            var source = Config.sources[sourceLabel]
+            var vars = {
+                serverUrl: source.sparql_url + "?query=&format=json",
+                graphUri: source.graphUri,
+                lang: source.predicates.lang,
+                limit: 1000
             }
-            return callback(null, result.results.bindings);
-        })
-    }
+            return vars;
+        },
+
+        getCollections: function (sourceLabel, options, callback) {
+            if (!options)
+                options = {}
+            var variables = self.Sparql.getVariables(sourceLabel);
+            var query = "PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX  skos:<http://www.w3.org/2004/02/skos/core#>" +
+                " select    distinct * from  <" + variables.graphUri + ">  WHERE {" +
+                "?collection rdf:type  ?collectionType. filter( ?collectionType =skos:Collection). " +
+                "?collection skos:prefLabel ?collectionLabel."
+            if (variables.lang)
+                query += "filter( lang(?collectionLabel)=\"" + variables.lang + "\")"
+            if (true)
+                query += "FILTER (  NOT EXISTS {?child skos:member ?collection})"
+
+            query += "} ORDER BY ?collectionLabel limit " + variables.limit;
 
 
-    ,
-       getSingleNodeAllDescendants : function (sourceLabel, id, callback) {
-           var variables=self.Sparql.getVariables(sourceLabel) ;
+            Sparql_proxy.querySPARQL_GET_proxy(variables.serverUrl, query, null, null, function (err, result) {
+                if (err)
+                    return callback(err);
+
+                return callback(null, result.results.bindings)
+            })
+        }
+        ,
+
+        setConceptsCollectionMembership(sourceLabel, conceptIds, collectionId, callback) {
+
+            var triples = []
+            conceptIds.forEach(function (item) {
+                triples.push({subject: collectionId, predicate: Collection.broaderProperty, object: item, valueType: "uri"})
+            })
+
+            Sparql_generic.insertTriples(sourceLabel, triples, function (err, result) {
+
+                return callback(err, result)
+            })
+
+
+        }
+        ,
+        getNodeChildren: function (sourceLabel, collectionId, callback) {
+            var variables = self.Sparql.getVariables(sourceLabel);
+
+            var query = "PREFIX skos:<http://www.w3.org/2004/02/skos/core#>";
+
+            query += " select distinct * from <" + variables.graphUri + ">  WHERE {"
+
+            query += "<" + collectionId + "> skos:member ?child1." +
+
+                "OPTIONAL{ ?child1  skos:prefLabel ?child1Label. ";
+            if (variables.lang)
+                query += "filter( lang(?child1Label)=\"" + variables.lang + "\")"
+            query += "}"
+
+            query += "OPTIONAL{?child1 rdf:type ?child1Type.}" +
+                "}" +
+                "limit " + variables.limit;
+
+            Sparql_proxy.querySPARQL_GET_proxy(variables.serverUrl, query, {}, null, function (err, result) {
+                if (err) {
+                    return callback(err)
+                }
+                return callback(null, result.results.bindings);
+            })
+        }
+
+
+        ,
+        getSingleNodeAllDescendants: function (sourceLabel, id, callback) {
+            var variables = self.Sparql.getVariables(sourceLabel);
             var query = "";
             query += prefixesStr;
             query += " select distinct * FROM <" + variables.graphUri + ">  WHERE {"
@@ -252,7 +305,7 @@ var Collection = (function () {
         }
 
 
-}
+    }
 
 
     return self;

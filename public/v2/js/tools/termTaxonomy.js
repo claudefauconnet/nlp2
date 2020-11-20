@@ -76,7 +76,7 @@ var TermTaxonomy = (function () {
         async.eachSeries(sourceIds, function (sourceId, callbackEach) {
 
 
-            Sparql_facade.getNodeParents(sourceId, word, null, 1, {exactMatch: exactMatch}, function (err, result) {
+            Sparql_generic.getNodeParents(sourceId, word, null, 1, {exactMatch: exactMatch}, function (err, result) {
                 // sparql_abstract.list(source.name, word, {exactMatch: exactMatch}, function (err, result) {
 
                 if (err) {
@@ -172,7 +172,7 @@ var TermTaxonomy = (function () {
 
                 if (direction == "ancestors") {
                     //  sparql_abstract.getAncestors(concept.source.id, concept.id, {exactMatch: true}, function (err, result) {
-                    Sparql_facade.getNodeParents(item.sourceId, null, conceptId, maxDepth, {exactMatch: true}, function (err, result) {
+                    Sparql_generic.getNodeParents(item.sourceId, null, conceptId, maxDepth, {exactMatch: true}, function (err, result) {
                         if (err)
                             return console.log(err)
                         if (!result || !result.forEach)
@@ -291,12 +291,12 @@ var TermTaxonomy = (function () {
         }
         ,
         showDetails: function (defaultLang) {
-            Sparql_facade.getNodeInfos(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, null, function (err, result) {
+            Sparql_generic.getNodeInfos(self.graphActions.currentNode.data.source, self.graphActions.currentNode.id, null, function (err, result) {
                 if (err) {
                     return MainController.UI.message(err);
                 }
 
-                ThesaurusBrowser.showNodeInfos("TermTaxonomy_nodeInfosDiv", "en", self.graphActions.currentNode.id, result)
+                SourceEditor.showNodeInfos("TermTaxonomy_nodeInfosDiv", "en", self.graphActions.currentNode.id, result)
 
             })
         }
