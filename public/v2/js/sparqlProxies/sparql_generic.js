@@ -87,8 +87,6 @@ var Sparql_generic = (function () {
         }
 
 
-
-
         setFilter = function (varName, ids, words, options) {
             var filter = ";"
             if (words) {
@@ -147,22 +145,22 @@ var Sparql_generic = (function () {
         }
 
 
-      self.formatString = function (str, forUri) {
+        self.formatString = function (str, forUri) {
             if (!str || !str.replace)
                 return null;
 
-          str = str.replace(/&/gm, "and")
+            str = str.replace(/&/gm, "and")
             str = str.replace(/'/gm, " ")
-          str = str.replace(/\\/gm, "")
-          //  str = str.replace(/\n/gm, ".")
-          //  str = str.replace(/\r/gm, "")
-          //  str = str.replace(/\t/gm, " ")
-           // str = str.replace(/\(/gm, "-")
-          //  str = str.replace(/\)/gm, "-")
+            str = str.replace(/\\/gm, "")
+            //  str = str.replace(/\n/gm, ".")
+            //  str = str.replace(/\r/gm, "")
+            //  str = str.replace(/\t/gm, " ")
+            // str = str.replace(/\(/gm, "-")
+            //  str = str.replace(/\)/gm, "-")
             str = str.replace(/\\xa0/gm, " ")
 
 
-          return    unescape( encodeURIComponent( str ) );
+            return unescape(encodeURIComponent(str));
 
             str = str.replace(/"/gm, "\\\"")
             str = str.replace(/;/gm, " ")
@@ -200,7 +198,7 @@ var Sparql_generic = (function () {
             query += "?topConcept " + prefLabelPredicate + " ?topConceptLabel.";
             if (lang && !options.noLang)
                 query += "filter(lang(?topConceptLabel )='" + lang + "')"
-          //  query += "?topConcept rdf:type ?topConceptType.  filter( ?topConceptType in (skos:Concept,skos:ConceptScheme))."
+            //  query += "?topConcept rdf:type ?topConceptType.  filter( ?topConceptType in (skos:Concept,skos:ConceptScheme))."
             if (false) {
                 query += "?concept " + broaderPredicate + " ?topConcept." +
                     "?concept " + prefLabelPredicate + " ?conceptLabel."
@@ -208,8 +206,8 @@ var Sparql_generic = (function () {
                     query += "filter(lang(?conceptLabel )='" + lang + "')"
             }
             if (options.filterCollections)
-           // query+="?collection skos:member+ ?aCollection.?acollection skos:member ?aConcept.?aConcept skos:broader* ?topConcept." + getUriFilter("collection", options.filterCollections)
-            query+="?collection skos:member ?aconcept. ?aConcept skos:broader* ?topConcept." + getUriFilter("collection", options.filterCollections)
+            // query+="?collection skos:member+ ?aCollection.?acollection skos:member ?aConcept.?aConcept skos:broader* ?topConcept." + getUriFilter("collection", options.filterCollections)
+                query += "?collection skos:member ?aconcept. ?aConcept skos:broader* ?topConcept." + getUriFilter("collection", options.filterCollections)
 
             query += "  } ORDER BY ?topConceptLabel ";
             query += "limit " + limit + " ";
@@ -225,8 +223,38 @@ var Sparql_generic = (function () {
             })
         }
 
+        /**
+         *
+         * request example with collection filtering
+         PREFIX  terms:<http://purl.org/dc/terms/> PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#> PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX  skos:<http://www.w3.org/2004/02/skos/core#> PREFIX  elements:<http://purl.org/dc/elements/1.1/>  select distinct ?child1,?child1Label, ?conceptLabel,?collLabel  FROM <http://souslesens/thesaurus/TEST/>   WHERE {?child1 skos:broader ?concept.
 
-        self.getNodeChildren = function (sourceLabel, words, ids, descendantsDepth, options, callback) {
+  ?concept skos:prefLabel ?conceptLabel.
+
+  OPTIONAL{ ?child1 skos:prefLabel ?child1Label. } .filter( ?concept =<http://souslesens/thesaurus/TEST/9d53e3925c>)OPTIONAL{?child1 rdf:type ?child1Type.}
+
+  ?collection skos:member* ?acollection. ?acollection rdf:type skos:Collection.   ?collection skos:prefLabel ?collLabel.  ?acollection skos:prefLabel ?acollLabel.filter (?collection= <http://souslesens/thesaurus/TEST/5d97abb964> )
+   ?acollection skos:member ?aconcept. ?aconcept rdf:type skos:Concept.?aconcept skos:prefLabel ?aconceptLabel.
+  ?childX skos:broader ?aconcept.?childX skos:prefLabel ?childLabel.  ?childX skos:broader* ?child1
+
+}ORDER BY ?child1Label limit 1000
+
+         *
+         * @param
+            sourceLabel
+         * @param
+            words
+         * @param
+            ids
+         * @param
+            descendantsDepth
+         * @param
+            options
+         * @param
+            callback
+         */
+
+
+         self.getNodeChildren = function (sourceLabel, words, ids, descendantsDepth, options, callback) {
             setVariables(sourceLabel);
 
 
@@ -263,11 +291,15 @@ var Sparql_generic = (function () {
                 query += "} "
             }
 
-            if (options.filterCollections){
-              //  query+="  MINUS {?collection skos:member ?aconcept.?aconcept skos:broader ?child1 " + getUriFilter("collection", options.filterCollections)+"}"
-                query+="    ?collection skos:member ?aconcept. ?child1 skos:broader*|^skos:broader* ?aconcept. "+ getUriFilter("collection", options.filterCollections)+""
+            if (options.filterCollections) {
+                query+="  ?collection skos:member* ?acollection. ?acollection rdf:type skos:Collection. " + getUriFilter("collection", options.filterCollections) +
+                    "   ?acollection skos:member ?aconcept. ?aconcept rdf:type skos:Concept." +
+                    "  ?childX skos:broader ?aconcept.  ?childX skos:broader* ?child1"
+
+                //  query+="  MINUS {?collection skos:member ?aconcept.?aconcept skos:broader ?child1 " + getUriFilter("collection", options.filterCollections)+"}"
+              //  query += "    ?collection skos:member ?aconcept. ?child1 skos:broader*|^skos:broader* ?aconcept. " + getUriFilter("collection", options.filterCollections) + ""
             }
-             query+=   "}ORDER BY ?child1Label ";
+            query += "}ORDER BY ?child1Label ";
             query += "limit " + limit + " ";
 
 
@@ -279,7 +311,7 @@ var Sparql_generic = (function () {
             })
         }
 
-        self.getNodeParents = function (sourceLabel, words, ids, ancestorsDepth, options, callback) {
+         self.getNodeParents = function (sourceLabel, words, ids, ancestorsDepth, options, callback) {
             if (!options) {
                 options = {depth: 0}
             }
@@ -324,9 +356,9 @@ var Sparql_generic = (function () {
 
             query += "  }";
 
-            if (options.filterCollections){
-                query+="MINUS {?collection skos:member* ?aCollection.?acollection skos:member ?broader" + getUriFilter("collection", options.filterCollections)
-             }
+            if (options.filterCollections) {
+                query += "MINUS {?collection skos:member* ?aCollection.?acollection skos:member ?broader" + getUriFilter("collection", options.filterCollections)
+            }
             query += "}limit " + limit + " ";
 
 
@@ -411,12 +443,12 @@ var Sparql_generic = (function () {
 
 
         self.getNodeInfos = function (sourceLabel, conceptId, options, callback) {
-            if(!options)
-                options={}
+            if (!options)
+                options = {}
             setVariables(sourceLabel);
             var filter = getUriFilter("id", conceptId);
-            if(options.propertyFilter){
-                filter+=getUriFilter("prop", options.propertyFilter);
+            if (options.propertyFilter) {
+                filter += getUriFilter("prop", options.propertyFilter);
             }
 
             var query = " select distinct * " + fromStr + "  WHERE {" +
@@ -493,7 +525,7 @@ var Sparql_generic = (function () {
 
         }
 
-        self.triplesObjectToString=function(item){
+        self.triplesObjectToString = function (item) {
             var valueStr = ""
             if (item.valueType == "uri")
                 valueStr = "<" + item.object + ">"
@@ -504,12 +536,12 @@ var Sparql_generic = (function () {
                 valueStr = "'" + item.object + "'" + langStr
             }
 
-            var p=item.predicate.indexOf("^")
-            if(p==0){
-                var predicate=item.predicate.substring(1)
-                return  valueStr  + ' <' +predicate + '> <' + item.subject + '>. ';
-            }else
-           return  "<" + item.subject + '> <' + item.predicate + '> ' + valueStr + '. ';
+            var p = item.predicate.indexOf("^")
+            if (p == 0) {
+                var predicate = item.predicate.substring(1)
+                return valueStr + ' <' + predicate + '> <' + item.subject + '>. ';
+            } else
+                return "<" + item.subject + '> <' + item.predicate + '> ' + valueStr + '. ';
         }
 
         self.insertTriples = function (sourceLabel, triples, callback) {
@@ -517,7 +549,7 @@ var Sparql_generic = (function () {
             var insertTriplesStr = "";
             triples.forEach(function (item, index) {
 
-                insertTriplesStr +=self.triplesObjectToString(item);
+                insertTriplesStr += self.triplesObjectToString(item);
 
             })
 
@@ -545,24 +577,24 @@ var Sparql_generic = (function () {
 
                 if (!subject)
                     subject = item.subject;
-                insertTriplesStr +=self.triplesObjectToString(item);
+                insertTriplesStr += self.triplesObjectToString(item);
 
             })
             deleteTriplesStr += "<?s ?p ?o.";
             var query = " WITH GRAPH  <" + graphUri + ">  " +
                 "DELETE" +
                 "{  " +
-                "?s ?p ?o."+
-            "  }" +
-            "WHERE" +
-            "  {" +
-            "?s ?p ?o. filter (?s=<"+subject+">)"+
-            "  };" +
-            "" +
-            "INSERT DATA" +
-            "  {" +
-            insertTriplesStr +
-            "  }"
+                "?s ?p ?o." +
+                "  }" +
+                "WHERE" +
+                "  {" +
+                "?s ?p ?o. filter (?s=<" + subject + ">)" +
+                "  };" +
+                "" +
+                "INSERT DATA" +
+                "  {" +
+                insertTriplesStr +
+                "  }"
 
 
             // console.log(query)
