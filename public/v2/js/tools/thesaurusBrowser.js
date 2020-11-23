@@ -180,7 +180,9 @@ var ThesaurusBrowser = (function () {
             }
         }
         var jstreeData = []
+        var uniqueIds={}
         async.eachSeries(searchedSources, function (sourceLabel, callbackEach) {
+
             setTimeout(function(){
             MainController.UI.message("searching in " + sourceLabel)
             },100)
@@ -196,8 +198,17 @@ var ThesaurusBrowser = (function () {
             ThesaurusBrowser.getFilteredNodesJstreeData(sourceLabel, options, function (err, result) {
                 if (err)
                     return MainController.UI.message(err)
-                jstreeData.push({id: sourceLabel, text: sourceLabel, parent: "#", data: {source: sourceLabel}})
-                jstreeData = jstreeData.concat(result)
+
+                var text="<span class='searched_conceptSource'>"+sourceLabel+"</span>"
+                jstreeData.push({id: sourceLabel, text: text, parent: "#", data: {source: sourceLabel}})
+                result.forEach(function(item){
+                    if(!uniqueIds[item.id]){
+                        uniqueIds[item.id]=1
+                        jstreeData.push(item)
+
+                    }
+                })
+
                 callbackEach();
             })
 
@@ -236,7 +247,7 @@ var ThesaurusBrowser = (function () {
             options.rootId = "#"
         if (!sourceLabel)
             sourceLabel = MainController.currentSource
-        var depth = 5
+        var depth = 6
         Sparql_generic.getNodeParents(sourceLabel, options.term, options.ids, depth, options, function (err, result) {
             if (err)
                 return MainController.UI.message(err)
@@ -258,8 +269,12 @@ var ThesaurusBrowser = (function () {
                         }
                     }
                 }
-                jstreeData.push({id: item.concept.value, text: item.conceptLabel.value, parent: item["broader1"].value, data: {source: sourceLabel}})
-
+                var itemId=existingNodes[item.concept.value]
+                if (!existingNodes[itemId]) {
+                    existingNodes[itemId]=1;
+                    var text="<span class='searched_concept'>"+item.conceptLabel.value+"</span>"
+                jstreeData.push({id: item.concept.value, text: text, parent: item["broader1"].value, data: {source: sourceLabel}})
+                }
             })
 
             return callback(null, jstreeData)

@@ -8,6 +8,7 @@ var Blender = (function () {
         self.currentSource;
         self.currentTab = 0;
         self.backupSource = false// using  a clone of source graph
+        self.displayMode="leftPanel"
         self.onLoaded = function () {
             // $("#sourceDivControlPanelDiv").html("")
         }
@@ -19,6 +20,8 @@ var Blender = (function () {
 
 
             $("#blenderPanelDiv").load("snippets/blender/blender.html")
+            if(!MainController.currentTool)
+                $("#graphDiv").html("")
             setTimeout(function () {
                     var editableSources = [];
                     for (var key in Config.sources) {
@@ -883,6 +886,25 @@ if(!self.menuActions.movingNode)
                 $("#Blender_PopupEditDiv").dialog("close")
             }
 
+        }
+
+
+        self.moveTaxonomyPanel=function() {
+            if (self.displayMode == "leftPanel") {
+                self.displayMode = "centralPanel"
+                var html = "<div style='display: flex;flex-direction: row'><div id='Blender_ConceptTreeContainerDiv'></div><div id='Blender_NodeEditionDiv'></div></div>"
+                $('#graphDiv').html(html)
+                var element = $('#Blender_conceptTreeDiv').detach();
+                $('#Blender_ConceptTreeContainerDiv').append(element);
+
+            }
+            else{
+                self.displayMode = "leftPanel"
+
+                var element = $('#Blender_conceptTreeDiv').detach();
+                $('#Blender_conceptTreeDiv').append(element);
+                $('#graphDiv').html("")
+            }
         }
 
 

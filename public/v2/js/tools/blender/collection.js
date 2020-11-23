@@ -31,6 +31,12 @@ var Collection = (function () {
             return menuItems;
 
         }
+        menuItems.editNode = {
+            label: "Edit node",
+            action: function (obj, sss, cc) {
+                Blender.nodeEdition.editNode()
+            }
+        }
 
         menuItems.filterConcepts = {
             label: "Filter Concepts",
@@ -46,12 +52,7 @@ var Collection = (function () {
             },
         }
 
-        menuItems.editNode = {
-            label: "Edit node",
-            action: function (obj, sss, cc) {
-                Blender.nodeEdition.editNode()
-            }
-        }
+
 
         menuItems.deleteNode = {
             label: "Delete node",
@@ -108,13 +109,20 @@ var Collection = (function () {
     self.assignConcepts = function () {
         var nodes = Clipboard.getContent();
         var conceptIds = [];
+        var newTreeNodes=[]
         nodes.forEach(function (item) {
             conceptIds.push(item.id)
+            newTreeNodes.push({
+                text: "<span class='searched_concept'>"+item.label+"</span>",
+                id:item.id,
+                parent: Collection.currentTreeNode.id,
+                data: {type: "treeType_concept"}})
         })
         Collection.Sparql.setConceptsCollectionMembership(Blender.currentSource, conceptIds, Collection.currentTreeNode.id, function (err, result) {
             if (err)
                 return MainController.UI.message(err)
             return MainController.UI.message(result)
+            common.addNodesToJstree("Blender_collectionTreeDiv",Collection.currentTreeNode.id, newTreeNodes)
         })
 
     }

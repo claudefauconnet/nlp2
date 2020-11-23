@@ -152,7 +152,7 @@ var Sparql_generic = (function () {
             str = str.replace(/&/gm, "and")
             str = str.replace(/'/gm, " ")
             str = str.replace(/\\/gm, "")
-            //  str = str.replace(/\n/gm, ".")
+            //  str = str.replace(//gm, ".")
             //  str = str.replace(/\r/gm, "")
             //  str = str.replace(/\t/gm, " ")
             // str = str.replace(/\(/gm, "-")
@@ -162,15 +162,7 @@ var Sparql_generic = (function () {
 
             return unescape(encodeURIComponent(str));
 
-            str = str.replace(/"/gm, "\\\"")
-            str = str.replace(/;/gm, " ")
-            str = str.replace(/\n/gm, "\\\\n")
-            str = str.replace(/\r/gm, "")
-            str = str.replace(/\t/gm, " ")
-            str = str.replace(/\(/gm, "-")
-            str = str.replace(/\)/gm, "-")
-            str = str.replace(/\\xa0/gm, " ")
-            str = str.replace(/'/gm, "\\\'")
+
             if (forUri)
                 str = str.replace(/ /gm, "_")
 
@@ -291,19 +283,54 @@ var Sparql_generic = (function () {
                 query += "} "
             }
 
-            if (options.filterCollections) {
-                query+="  ?collection skos:member* ?acollection. ?acollection rdf:type skos:Collection. " + getUriFilter("collection", options.filterCollections) +
-                    "   ?acollection skos:member ?aconcept. ?aconcept rdf:type skos:Concept." +
-                    "  ?childX skos:broader ?aconcept.  ?childX skos:broader* ?child1"
 
-                //  query+="  MINUS {?collection skos:member ?aconcept.?aconcept skos:broader ?child1 " + getUriFilter("collection", options.filterCollections)+"}"
-              //  query += "    ?collection skos:member ?aconcept. ?child1 skos:broader*|^skos:broader* ?aconcept. " + getUriFilter("collection", options.filterCollections) + ""
-            }
+                
+                
+                
+                
+                
+                
+
             query += "}ORDER BY ?child1Label ";
             query += "limit " + limit + " ";
 
 
-            Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+
+
+             if (false && options.filterCollections) {
+                 query = "PREFIX  terms:<http://purl.org/dc/terms/> PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
+                     " PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+                     "PREFIX  skos:<http://www.w3.org/2004/02/skos/core#>" +
+                     " PREFIX  elements:<http://purl.org/dc/elements/1.1/> " +
+                     " select  distinct * FROM <http://souslesens/thesaurus/TEST/> " +
+                     "  WHERE {  ?collection skos:member* ?acollection. " + getUriFilter("collection", options.filterCollections) +
+                     "?acollection rdf:type skos:Collection.   ?acollection skos:member ?aconcept. ?aconcept rdf:type skos:Concept." +
+                     "  ?child1 skos:broader ?concept. " +
+                     "  filter( exists{?aconcept skos:broader+|^skos:broader+ ?concept. "  + filterStr +"})"+
+                     "   ?child1 skos:prefLabel ?child1Label." +
+                     "    ?child1 rdf:type ?child1Type. " +
+                     "  " +
+                     "} limit 1000"
+             }
+             if ( options.filterCollections) {
+                 query = " PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
+                     "PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+                     "PREFIX  skos:<http://www.w3.org/2004/02/skos/core#> " +
+                     " select  distinct * FROM <http://souslesens/thesaurus/TEST/>   WHERE { " +
+                     "  ?child1 skos:broader ?concept.   "  + filterStr  +
+                     "   ?collection skos:member* ?acollection. "+ getUriFilter("collection", options.filterCollections) +
+                     "?acollection rdf:type skos:Collection.    ?acollection skos:member/(^skos:broader+|skos:broader*) ?child1.  " +
+                     "  " +
+                     "   ?collection skos:prefLabel ?collectionLabel." +
+                     "   ?acollection skos:prefLabel ?acollectionLabel." +
+                     "   ?concept skos:prefLabel ?conceptLabel." +
+                     "   ?child1 skos:prefLabel ?child1Label." +
+                     "   ?child1 rdf:type ?child1Type." +
+                     "}order by ?concept"
+             }
+
+
+             Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
                 if (err) {
                     return callback(err)
                 }
