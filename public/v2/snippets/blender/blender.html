@@ -15,14 +15,19 @@
         margin: 2px
     }
 
-    #Blender_ConceptTreeContainerDiv{
-        width: 50%;
-        height: 800px;
+    #Blender_conceptTreeContainerDiv{
+     max-width: 50%;
+        min-width: 400px;
+
+        margin: 10px;
+        border: #6e2500 solid 1px;
+        border-radius: 5px;
+        background-color: white;
     }
 
-    #Blender_NodeEditionDiv{
-        width: 50%;
-        height: 800px;
+    #Blender_nodeEditionContainerDiv{
+
+        margin: 10px;
     }
 
 </style>
@@ -48,7 +53,7 @@
     </ul>
     <div id="Blender_tabs_concepts">
 
-        <div id="Blender_conceptTreeDiv"></div>
+        <div class='max-height' id="Blender_conceptTreeDiv"></div>
     </div>
     <div id="Blender_tabs_collections">
         <div id="Blender_collectionTreeDiv"></div>

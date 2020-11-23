@@ -12,8 +12,10 @@ var TreeController = (function () {
         data.forEach(function (item) {
 
             var type = item[childNodeVar + "Type"]
-            if (!type)
-                return console.log("node " + item[childNodeVar].value + " has no type")
+            if (!type) {// force concept Type
+                type="http://www.w3.org/2004/02/skos/core#Concept"
+                 console.log("node " + item[childNodeVar].value + " has no type")
+            }
             type=type.value;
             type= jsTreeOptions.type || type
             if (childNodeVar && item[childNodeVar]) {

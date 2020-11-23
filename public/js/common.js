@@ -241,11 +241,13 @@ var common = (function () {
                 return uri
 
         }
-        self.getNewUri = function (sourceLabel) {
+        self.getNewUri = function (sourceLabel,length) {
+            if(!length)
+                length=10
             var sourceUri = Config.sources[sourceLabel].graphUri
             if (sourceUri.lastIndexOf("/") != sourceUri.length - 1)
                 sourceUri += "/"
-            var nodeId = sourceUri + common.getRandomHexaId(10)
+            var nodeId = sourceUri + common.getRandomHexaId(length)
             return nodeId;
         }
 

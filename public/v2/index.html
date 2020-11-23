@@ -58,7 +58,7 @@
     <script src="js/tools/blender/sourceEditor.js"></script>
     <script src="js/tools/blender/import.js"></script>
     <script src="js/tools/blender/externalReferences.js"></script>
-
+    <script src="js/tools/blender/transform.js"></script>
 
     <script src="config/app_config.js"></script>
 
@@ -193,30 +193,30 @@
     <div id="leftPanelDiv" style='max-width: 400px;'>
 
 
-        <div id="accordion">
+        <div id="accordion" >
 
             <h3><span class="title">Tool </span></h3>
-            <div style="margin:5px">
-                <div id="toolsTreeDiv" class="jstree"></div>
+            <div style="margin:5px" class='max-height'>
+                <div  class='max-height' id="toolsTreeDiv" class="jstree"></div>
             </div>
 
 
             <h3><span class="title">Sources </span></h3>
-            <div style="margin:5px">
+            <div style="margin:5px"  class='max-height'>
                 <div id="sourceDivControlPanelDiv"></div>
-                <div id="sourcesTreeDiv" class="jstree"></div>
+                <div  class='max-height' id="sourcesTreeDiv" class="jstree"></div>
             </div>
 
 
             <h3><span class="title" id="sourcePanelLabel"> </span></h3>
-            <div style="margin:5px">
+            <div style="margin:5px" class='max-height'>
                 <div id="actionDivContolPanelDiv"></div>
                 <div id="actionDiv" class="jstree"></div>
 
             </div>
 
             <h3><span class="title" id="blenderPanelLabel">Blend</span></h3>
-            <div id="blenderPanelDiv" >
+            <div id="blenderPanelDiv" class='max-height' >
 
             </div>
 

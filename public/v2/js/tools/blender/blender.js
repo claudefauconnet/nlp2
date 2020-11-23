@@ -43,6 +43,11 @@ var Blender = (function () {
 
                     })
                     isLoaded = true;
+
+                    if(!MainController.currentTool){
+                        self.moveTaxonomyPanel()
+                    }
+
                 }, 200
             )
 
@@ -219,15 +224,17 @@ var Blender = (function () {
 
                     if (type == "externalReferenceTopConcept")
                         return;
-
-                    if (propertiesMap.event.ctrlKey)
-                        Clipboard.copy({
-                            type: "node",
-                            id: self.currentTreeNode.id,
-                            label: self.currentTreeNode.text,
-                            source: self.currentSource
-                        }, self.currentTreeNode.id + "_anchor", propertiesMap.event)
-
+                   if(propertiesMap.event.ctrlKey){
+                       if(Blender.displayMode=="centralPanel") {
+                           self.nodeEdition.editNode()
+                       }
+                           Clipboard.copy({
+                               type: "node",
+                               id: self.currentTreeNode.id,
+                               label: self.currentTreeNode.text,
+                               source: self.currentSource
+                           }, self.currentTreeNode.id + "_anchor", propertiesMap.event)
+                       }
 
                   if(self.currentTreeNode.children.length==0)
                   ExternalReferences.openNarrowMatchNodes(self.currentSource, self.currentTreeNode)
@@ -756,13 +763,21 @@ if(!self.menuActions.movingNode)
 
             ,
             editNode: function () {
-                self.nodeEdition.openDialog()
-                if (self.currentTab == 0) {
+                if (self.displayMode == "centralPanel") {
                     var type = "http://www.w3.org/2004/02/skos/core#Concept"
-                    SourceEditor.editNode("Blender_nodeEditionDiv", self.currentSource, self.currentTreeNode.id, type, false)
-                } else if (self.currentTab == 1) {
-                    var type = "http://www.w3.org/2004/02/skos/core#Collection"
-                    SourceEditor.editNode("Blender_nodeEditionDiv", self.currentSource, Collection.currentTreeNode.id, type, false)
+                    SourceEditor.editNode("Blender_nodeEditionContainerDiv", self.currentSource, self.currentTreeNode.id, type, false)
+                }
+                else {
+                    self.nodeEdition.openDialog()
+                    if (self.currentTab == 0) {
+                        var type = "http://www.w3.org/2004/02/skos/core#Concept"
+                            SourceEditor.editNode("Blender_nodeEditionDiv", self.currentSource, self.currentTreeNode.id, type, false)
+
+
+                    } else if (self.currentTab == 1) {
+                        var type = "http://www.w3.org/2004/02/skos/core#Collection"
+                        SourceEditor.editNode("Blender_nodeEditionDiv", self.currentSource, Collection.currentTreeNode.id, type, false)
+                    }
                 }
                 return true;
 
@@ -892,17 +907,32 @@ if(!self.menuActions.movingNode)
         self.moveTaxonomyPanel=function() {
             if (self.displayMode == "leftPanel") {
                 self.displayMode = "centralPanel"
-                var html = "<div style='display: flex;flex-direction: row'><div id='Blender_ConceptTreeContainerDiv'></div><div id='Blender_NodeEditionDiv'></div></div>"
+                $( "#Blender_tabs" ).tabs( "disable", 0 );
+
+                var html = "" +
+                    "<div id='Blender_collectionFilterContainerDiv' style='width:200px'></div>" +
+                    "</div><div style='display: flex;flex-direction: row;background-color: #ccc;'\n" +
+                    "}><div id='Blender_conceptTreeContainerDiv'></div><div id='Blender_nodeEditionContainerDiv'></div></div>"
                 $('#graphDiv').html(html)
-                var element = $('#Blender_conceptTreeDiv').detach();
-                $('#Blender_ConceptTreeContainerDiv').append(element);
+               setTimeout(function(){
+                var treeElement = $('#Blender_conceptTreeDiv').detach();
+                $('#Blender_conceptTreeContainerDiv').append(treeElement);
+                if(Collection.currentTreeNode) {
+                    var html = ("<div  class='blender_collectionFilter' onclick='Collection.removeTaxonomyFilter()'>" + Collection.currentTreeNode.text + "</div>")
+                    $('#Blender_collectionFilterContainerDiv').html("Collection" + Collection.currentTreeNode.text);
+                }
+
+                200})
 
             }
             else{
                 self.displayMode = "leftPanel"
+                $( "#Blender_tabs" ).tabs( "enable", 0 );
+                var treeElement = $('#Blender_conceptTreeDiv').detach();
+                $('#Blender_tabs_concepts').append(treeElement);
 
-                var element = $('#Blender_conceptTreeDiv').detach();
-                $('#Blender_conceptTreeDiv').append(element);
+
+
                 $('#graphDiv').html("")
             }
         }

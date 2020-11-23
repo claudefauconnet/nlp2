@@ -295,23 +295,6 @@ var Sparql_generic = (function () {
             query += "limit " + limit + " ";
 
 
-
-
-             if (false && options.filterCollections) {
-                 query = "PREFIX  terms:<http://purl.org/dc/terms/> PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#>" +
-                     " PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
-                     "PREFIX  skos:<http://www.w3.org/2004/02/skos/core#>" +
-                     " PREFIX  elements:<http://purl.org/dc/elements/1.1/> " +
-                     " select  distinct * FROM <http://souslesens/thesaurus/TEST/> " +
-                     "  WHERE {  ?collection skos:member* ?acollection. " + getUriFilter("collection", options.filterCollections) +
-                     "?acollection rdf:type skos:Collection.   ?acollection skos:member ?aconcept. ?aconcept rdf:type skos:Concept." +
-                     "  ?child1 skos:broader ?concept. " +
-                     "  filter( exists{?aconcept skos:broader+|^skos:broader+ ?concept. "  + filterStr +"})"+
-                     "   ?child1 skos:prefLabel ?child1Label." +
-                     "    ?child1 rdf:type ?child1Type. " +
-                     "  " +
-                     "} limit 1000"
-             }
              if ( options.filterCollections) {
                  query = " PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#> " +
                      "PREFIX  rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +

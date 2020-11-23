@@ -31,7 +31,7 @@ var ThesaurusBrowser = (function () {
             self.editThesaurusConceptInfos(source, propertiesMap.node)
         }
         {
-            self.openTreeNode("currentSourceTreeDiv", source, propertiesMap.node)
+            self.openTreeNode("currentSourceTreeDiv", source, propertiesMap.node,{ctrlKey: propertiesMap.event.ctrlKey})
         }
 
     }
@@ -97,7 +97,8 @@ var ThesaurusBrowser = (function () {
     self.openTreeNode = function (divId, thesaurusLabel, node, options) {
         var existingNodes = common.getjsTreeNodes(divId, true)
         if (node.children.length > 0)
-            return;
+          if(!options.ctrlKey)
+              return;
 
         Sparql_generic.getNodeChildren(thesaurusLabel, null, node.id, 1 , options,function (err, result) {
             if (err) {

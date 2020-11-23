@@ -20,7 +20,7 @@ var Collection = (function () {
 
             }
         }
-        if (Collection.currentTreeNode &&  Collection.currentTreeNode.data.type == "http://www.w3.org/2004/02/skos/core#Concept") {
+        if (Collection.currentTreeNode && Collection.currentTreeNode.data.type == "http://www.w3.org/2004/02/skos/core#Concept") {
             menuItems.editNode = {
                 label: "Edit node",
                 action: function (obj, sss, cc) {
@@ -37,13 +37,16 @@ var Collection = (function () {
                 Blender.nodeEdition.editNode()
             }
         }
-
-        menuItems.filterConcepts = {
-            label: "Filter Concepts",
-            action: function (obj, sss, cc) {
-                Collection.filterConcepts()
+        if (Blender.displayMode == "leftPanel") {
+            menuItems.filterConcepts = {
+                label: "Filter Concepts",
+                action: function (obj, sss, cc) {
+                    Collection.filterConcepts()
+                }
             }
         }
+
+
         menuItems.unAssignConcepts = {
             label: "Unassign Concepts",
             action: function (obj, sss, cc) {
@@ -51,7 +54,6 @@ var Collection = (function () {
                 ;
             },
         }
-
 
 
         menuItems.deleteNode = {
@@ -86,6 +88,11 @@ var Collection = (function () {
             self.currentTreeNode = propertiesMap.node
 
         $("#Blender_collectionTreeDiv").jstree(true).settings.contextmenu.items = Collection.getJstreeContextMenu()
+        if (Blender.displayMode == "centralPanel") {
+            if(!propertiesMap.event.ctrlKey) {
+                self.filterConcepts()
+            }
+        }
         self.openTreeNode("Blender_collectionTreeDiv", Blender.currentSource, self.currentTreeNode)
     }
 
@@ -109,20 +116,21 @@ var Collection = (function () {
     self.assignConcepts = function () {
         var nodes = Clipboard.getContent();
         var conceptIds = [];
-        var newTreeNodes=[]
+        var newTreeNodes = []
         nodes.forEach(function (item) {
             conceptIds.push(item.id)
             newTreeNodes.push({
-                text: "<span class='searched_concept'>"+item.label+"</span>",
-                id:item.id,
+                text: "<span class='searched_concept'>" + item.label + "</span>",
+                id: item.id,
                 parent: Collection.currentTreeNode.id,
-                data: {type: "treeType_concept"}})
+                data: {type: "treeType_concept"}
+            })
         })
         Collection.Sparql.setConceptsCollectionMembership(Blender.currentSource, conceptIds, Collection.currentTreeNode.id, function (err, result) {
             if (err)
                 return MainController.UI.message(err)
             return MainController.UI.message(result)
-            common.addNodesToJstree("Blender_collectionTreeDiv",Collection.currentTreeNode.id, newTreeNodes)
+            common.addNodesToJstree("Blender_collectionTreeDiv", Collection.currentTreeNode.id, newTreeNodes)
         })
 
     }
@@ -148,7 +156,8 @@ var Collection = (function () {
             if (err) {
                 return MainController.UI.message(err)
             }
-            $("#Blender_tabs").tabs("option", "active", 0);
+            if (Blender.displayMode == "leftPanel")
+                $("#Blender_tabs").tabs("option", "active", 0);
             $('#Blender_conceptTreeDiv').empty();
             $("#Blender_conceptTreeDiv").html("");
             if (result.length == 0)
@@ -159,10 +168,19 @@ var Collection = (function () {
             TreeController.drawOrUpdateTree("Blender_conceptTreeDiv", result, "#", "topConcept", jsTreeOptions)
 
             setTimeout(function () {
-                var firstNodeId = $("#Blender_conceptTreeDiv").jstree(true).get_node("#").children[0];
-                var firstNode = $("#Blender_conceptTreeDiv").jstree(true).get_node(firstNodeId);
-                var options = {filterCollections: Collection.currentCollectionFilter};
-                ThesaurusBrowser.openTreeNode("Blender_conceptTreeDiv", Blender.currentSource, firstNode, options);
+                if( $("#Blender_conceptTreeDiv").jstree(true)) {
+                    var firstNodeId = $("#Blender_conceptTreeDiv").jstree(true).get_node("#").children[0];
+                    var firstNode = $("#Blender_conceptTreeDiv").jstree(true).get_node(firstNodeId);
+                    var options = {filterCollections: Collection.currentCollectionFilter};
+                    ThesaurusBrowser.openTreeNode("Blender_conceptTreeDiv", Blender.currentSource, firstNode, options);
+                }
+
+                if (Blender.currentTreeNode && Blender.currentTreeNode.children.length == 0)
+                    ExternalReferences.openNarrowMatchNodes(Blender.currentSource, Blender.currentTreeNode)
+                if (Collection.currentTreeNode) {
+                    var html = "<div  class='blender_collectionFilter'  onclick='Collection.removeTaxonomyFilter()'>" + Collection.currentTreeNode.text + "</div>"
+                    $('#Blender_collectionFilterContainerDiv').html( html);
+                }
             }, 200)
 
         })
