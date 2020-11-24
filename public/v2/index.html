@@ -81,6 +81,10 @@
             $( "#accordion" ).on( "accordionactivate", function( event, ui ) {
                 if(ui.newPanel[0].id=="blenderPanelDiv")
                  Blender.initPanel();
+              else
+                        self.moveTaxonomyPanel("centralPanel")
+
+
             } );
 
 

@@ -44,6 +44,7 @@ var MainController = (function () {
         },
 
         showToolsList: function (treeDiv) {
+            var x=$(window).height()
             $(".max-height").height($(window).height()-300)
             var treeData = []
             for (var key in Config.tools) {

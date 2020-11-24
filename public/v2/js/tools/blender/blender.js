@@ -8,7 +8,7 @@ var Blender = (function () {
         self.currentSource;
         self.currentTab = 0;
         self.backupSource = false// using  a clone of source graph
-        self.displayMode="leftPanel"
+        self.displayMode = "leftPanel"
         self.onLoaded = function () {
             // $("#sourceDivControlPanelDiv").html("")
         }
@@ -20,7 +20,7 @@ var Blender = (function () {
 
 
             $("#blenderPanelDiv").load("snippets/blender/blender.html")
-            if(!MainController.currentTool)
+            if (!MainController.currentTool)
                 $("#graphDiv").html("")
             setTimeout(function () {
                     var editableSources = [];
@@ -42,11 +42,10 @@ var Blender = (function () {
                         }
 
                     })
+                if(!MainController.currentTool)
+                    self.moveTaxonomyPanel ("leftPanel")
                     isLoaded = true;
 
-                    if(!MainController.currentTool){
-                        self.moveTaxonomyPanel()
-                    }
 
                 }, 200
             )
@@ -113,11 +112,11 @@ var Blender = (function () {
                             jsTreeOptions.selectNodeFn = Collection.selectNodeFn;
                             jsTreeOptions.onMoveNodeFn = Blender.dnd.moveNode;
                             jsTreeOptions.dnd = Blender.dnd
-                            TreeController.drawOrUpdateTree("Blender_collectionTreeDiv", result, "#", "collection", jsTreeOptions,function(){
+                            TreeController.drawOrUpdateTree("Blender_collectionTreeDiv", result, "#", "collection", jsTreeOptions, function () {
                                 var firstNodeId = $("#Blender_collectionTreeDiv").jstree(true).get_node("#").children[0];
                                 var firstNode = $("#Blender_collectionTreeDiv").jstree(true).get_node(firstNodeId);
 
-                                Collection.openTreeNode ("Blender_collectionTreeDiv", Blender.currentSource, firstNode)
+                                Collection.openTreeNode("Blender_collectionTreeDiv", Blender.currentSource, firstNode)
                                 callbackSeries(err);
                             })
 
@@ -131,18 +130,18 @@ var Blender = (function () {
                 })
         }
 
-        self.copyGraph=function(){
-            if (!self.currentSource ) {
+        self.copyGraph = function () {
+            if (!self.currentSource) {
                 return MainController.UI.message("select a source")
             }
 
-            var newGraphUri=prompt("newGraphUri")
-        if(newGraphUri && newGraphUri!="")
-            Sparql_generic.copyGraph(self.currentSource, newGraphUri, function (err, result) {
-                if(err)
-                    return MainController.UI.message(err)
-                MainController.UI.message("graph Copied");
-            })
+            var newGraphUri = prompt("newGraphUri")
+            if (newGraphUri && newGraphUri != "")
+                Sparql_generic.copyGraph(self.currentSource, newGraphUri, function (err, result) {
+                    if (err)
+                        return MainController.UI.message(err)
+                    MainController.UI.message("graph Copied");
+                })
         }
 
         self.showTopConcepts = function (collectionIds, callback) {
@@ -154,17 +153,17 @@ var Blender = (function () {
                     MainController.UI.message(err);
                     return callback(err)
                 }
-                var jsTreeOptions=self.getConceptJstreeOptions(true)
+                var jsTreeOptions = self.getConceptJstreeOptions(true)
                 TreeController.drawOrUpdateTree("Blender_conceptTreeDiv", result, "#", "topConcept", jsTreeOptions)
                 return callback()
             })
 
         }
-        self.getConceptJstreeOptions=function(withDnd){
+        self.getConceptJstreeOptions = function (withDnd) {
             var jsTreeOptions = {};
             jsTreeOptions.contextMenu = Blender.getJstreeConceptsContextMenu()
             jsTreeOptions.selectNodeFn = Blender.selectNodeFn
-            if(withDnd) {
+            if (withDnd) {
                 jsTreeOptions.onMoveNodeFn = Blender.dnd.moveNode
             }
             jsTreeOptions.dnd = self.dnd
@@ -215,29 +214,29 @@ var Blender = (function () {
                     $("#Blender_conceptTreeDiv").jstree(true).settings.contextmenu.items = self.getJstreeConceptsContextMenu()
 
                     var source = self.currentTreeNode.data.source || self.currentSource;
-                    var type=self.currentTreeNode.data.type
+                    var type = self.currentTreeNode.data.type
 
-                           var options={type:type,labelClass:"treeType_"+type}
-                           if(Collection.currentCollectionFilter)
-                               options.filterCollections=Collection.currentCollectionFilter;
-                               ThesaurusBrowser.openTreeNode("Blender_conceptTreeDiv", source, propertiesMap.node,options);
+                    var options = {type: type, labelClass: "treeType_" + type}
+                    if (Collection.currentCollectionFilter)
+                        options.filterCollections = Collection.currentCollectionFilter;
+                    ThesaurusBrowser.openTreeNode("Blender_conceptTreeDiv", source, propertiesMap.node, options);
 
                     if (type == "externalReferenceTopConcept")
                         return;
-                   if(propertiesMap.event.ctrlKey){
-                       if(Blender.displayMode=="centralPanel") {
-                           self.nodeEdition.editNode()
-                       }
-                           Clipboard.copy({
-                               type: "node",
-                               id: self.currentTreeNode.id,
-                               label: self.currentTreeNode.text,
-                               source: self.currentSource
-                           }, self.currentTreeNode.id + "_anchor", propertiesMap.event)
-                       }
+                    if (propertiesMap.event.ctrlKey) {
+                        if (Blender.displayMode == "centralPanel") {
+                            self.nodeEdition.editNode("concept")
+                        }
+                        Clipboard.copy({
+                            type: "node",
+                            id: self.currentTreeNode.id,
+                            label: self.currentTreeNode.text,
+                            source: self.currentSource
+                        }, self.currentTreeNode.id + "_anchor", propertiesMap.event)
+                    }
 
-                  if(self.currentTreeNode.children.length==0)
-                  ExternalReferences.openNarrowMatchNodes(self.currentSource, self.currentTreeNode)
+                    if (self.currentTreeNode.children.length == 0)
+                        ExternalReferences.openNarrowMatchNodes(self.currentSource, self.currentTreeNode)
 
                 }
                 //  $.jstree.defaults.contextmenu.items = self.getJstreeConceptsContextMenu();
@@ -259,13 +258,13 @@ var Blender = (function () {
 
             if (self.currentTreeNode.data.type == "externalReference") {
 
-                    menuItems.showExternalReferenceNodeInfos = {
+                menuItems.showExternalReferenceNodeInfos = {
 
-                        label: "view node properties",
-                        action: function (obj, sss, cc) {
-                            ExternalReferences.showExternalReferenceNodeInfos()
-                        }
+                    label: "view node properties",
+                    action: function (obj, sss, cc) {
+                        ExternalReferences.showExternalReferenceNodeInfos()
                     }
+                }
 
                 return menuItems;
             }
@@ -333,7 +332,7 @@ var Blender = (function () {
             menuItems.editNode = {
                 label: "Edit node",
                 action: function (obj, sss, cc) {
-                    self.nodeEdition.editNode()
+                    self.nodeEdition.editNode("concept")
                 }
             }
 
@@ -369,8 +368,8 @@ var Blender = (function () {
 
 
             dropNode: function () {
-if(!self.menuActions.movingNode)
-    return;
+                if (!self.menuActions.movingNode)
+                    return;
 
                 var newParent = self.menuActions.movingNode.newParent
                 var oldParent = self.menuActions.movingNode.oldParent
@@ -393,7 +392,7 @@ if(!self.menuActions.movingNode)
                         return MainController.UI.message(err)
                     }
                     var triple = {subject: id, predicate: broaderPredicate, object: newParent, valueType: "uri"}
-                    Sparql_generic.update(self.currentSource, [triple], function (err, result) {
+                    Sparql_generic.insertTriples(self.currentSource, [triple], function (err, result) {
                         if (err) {
                             return MainController.UI.message(err)
                         }
@@ -736,12 +735,12 @@ if(!self.menuActions.movingNode)
                 var skosType;
                 if (type == "Scheme") {
                     skosType = "http://www.w3.org/2004/02/skos/core#ConceptScheme"
-                    self.currentTreeNode=$("#Blender_conceptTreeDiv").jstree(true).get_node("#")
+                    self.currentTreeNode = $("#Blender_conceptTreeDiv").jstree(true).get_node("#")
                     $("#Blender_tabs").tabs("option", "active", 0);
                 } else if (type == "Collection") {
 
                     skosType = "http://www.w3.org/2004/02/skos/core#Collection"
-                    Collection.currentTreeNode=$("#Blender_collectionTreeDiv").jstree(true).get_node("#")
+                    Collection.currentTreeNode = $("#Blender_collectionTreeDiv").jstree(true).get_node("#")
                     $("#Blender_tabs").tabs("option", "active", 1);
                 } else
                     return;
@@ -762,23 +761,27 @@ if(!self.menuActions.movingNode)
 
 
             ,
-            editNode: function () {
-                if (self.displayMode == "centralPanel") {
-                    var type = "http://www.w3.org/2004/02/skos/core#Concept"
-                    SourceEditor.editNode("Blender_nodeEditionContainerDiv", self.currentSource, self.currentTreeNode.id, type, false)
-                }
-                else {
-                    self.nodeEdition.openDialog()
-                    if (self.currentTab == 0) {
-                        var type = "http://www.w3.org/2004/02/skos/core#Concept"
-                            SourceEditor.editNode("Blender_nodeEditionDiv", self.currentSource, self.currentTreeNode.id, type, false)
+            editNode: function (type) {
+                if (!type)
+                    type = "concept"
 
 
-                    } else if (self.currentTab == 1) {
-                        var type = "http://www.w3.org/2004/02/skos/core#Collection"
-                        SourceEditor.editNode("Blender_nodeEditionDiv", self.currentSource, Collection.currentTreeNode.id, type, false)
+                if (type == "concept") {
+
+                    var skosType = "http://www.w3.org/2004/02/skos/core#Concept"
+                    if (self.displayMode == "centralPanel") {
+                        SourceEditor.editNode("Blender_nodeEditionContainerDiv", self.currentSource, self.currentTreeNode.id, skosType, false)
+                    } else {
+                        self.nodeEdition.openDialog()
+                        SourceEditor.editNode("Blender_nodeEditionDiv", self.currentSource, self.currentTreeNode.id, skosType, false)
                     }
+
+                } else if (type == "collection") {
+                    self.nodeEdition.openDialog()
+                    var type = "http://www.w3.org/2004/02/skos/core#Collection"
+                    SourceEditor.editNode("Blender_nodeEditionDiv", self.currentSource, Collection.currentTreeNode.id, type, false)
                 }
+
                 return true;
 
 
@@ -904,41 +907,43 @@ if(!self.menuActions.movingNode)
         }
 
 
-        self.moveTaxonomyPanel=function() {
+        self.moveTaxonomyPanel = function (fromMode) {
+            if (fromMode)
+                self.displayMode = fromMode
             if (self.displayMode == "leftPanel") {
                 self.displayMode = "centralPanel"
-                $( "#Blender_tabs" ).tabs( "disable", 0 );
+                $("#Blender_tabs").tabs("disable", 0);
 
                 var html = "" +
                     "<div id='Blender_collectionFilterContainerDiv' style='width:200px'></div>" +
-                    "</div><div style='display: flex;flex-direction: row;background-color: #ccc;'\n" +
-                    "}><div id='Blender_conceptTreeContainerDiv'></div><div id='Blender_nodeEditionContainerDiv'></div></div>"
+                    "<div style='display: flex;flex-direction: row;background-color: #ccc;'>" +
+                    "<div   id='Blender_conceptTreeContainerDiv'></div>" +
+                    "<div    id='Blender_nodeEditionContainerDiv'></div>" +
+                    "</div>"
                 $('#graphDiv').html(html)
-               setTimeout(function(){
-                var treeElement = $('#Blender_conceptTreeDiv').detach();
-                $('#Blender_conceptTreeContainerDiv').append(treeElement);
-                if(Collection.currentTreeNode) {
-                    var html = ("<div  class='blender_collectionFilter' onclick='Collection.removeTaxonomyFilter()'>" + Collection.currentTreeNode.text + "</div>")
-                    $('#Blender_collectionFilterContainerDiv').html("Collection" + Collection.currentTreeNode.text);
-                }
 
-                200})
+                setTimeout(function () {
+                    var treeElement = $('#Blender_conceptTreeDiv').detach();
+                    $('#Blender_conceptTreeContainerDiv').append(treeElement);
+                    $('#Blender_conceptTreeDiv').height($(window).height() - 100)
+                    if (Collection.currentTreeNode) {
+                        var html = ("<div  class='blender_collectionFilter' onclick='Collection.removeTaxonomyFilter()'>" + Collection.currentTreeNode.text + "</div>")
+                        $('#Blender_collectionFilterContainerDiv').html("Collection" + Collection.currentTreeNode.text);
+                    }
 
-            }
-            else{
+                    500
+                })
+
+            } else {
                 self.displayMode = "leftPanel"
-                $( "#Blender_tabs" ).tabs( "enable", 0 );
+                $("#Blender_tabs").tabs("enable", 0);
                 var treeElement = $('#Blender_conceptTreeDiv').detach();
                 $('#Blender_tabs_concepts').append(treeElement);
-
 
 
                 $('#graphDiv').html("")
             }
         }
-
-
-
 
 
         return self;

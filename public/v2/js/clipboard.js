@@ -6,7 +6,7 @@ var Clipboard = (function () {
 
 
 if(!data.source)
-    return console.log("copied data has no source property "+node.label)
+    return console.log("copied data has no source property "+data.label)
 
         data.tool = MainController.currentTool
         data.date = new Date()

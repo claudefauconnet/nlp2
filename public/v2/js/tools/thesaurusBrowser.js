@@ -67,6 +67,7 @@ var ThesaurusBrowser = (function () {
             var jsTreeOptions = options;
             jsTreeOptions.contextMenu = self.getJstreeConceptsContextMenu()
             jsTreeOptions.selectNodeFn = Config.tools[MainController.currentTool].controller.selectNodeFn;
+            jsTreeOptions.source = thesaurusLabel;
             TreeController.drawOrUpdateTree("currentSourceTreeDiv", result, "#", "topConcept", jsTreeOptions)
 
 

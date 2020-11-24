@@ -24,7 +24,7 @@ var Collection = (function () {
             menuItems.editNode = {
                 label: "Edit node",
                 action: function (obj, sss, cc) {
-                    Blender.nodeEdition.editNode()
+                    Blender.nodeEdition.editNode("collection")
                 }
             }
 
@@ -34,7 +34,7 @@ var Collection = (function () {
         menuItems.editNode = {
             label: "Edit node",
             action: function (obj, sss, cc) {
-                Blender.nodeEdition.editNode()
+                Blender.nodeEdition.editNode("collection")
             }
         }
         if (Blender.displayMode == "leftPanel") {
@@ -216,7 +216,7 @@ var Collection = (function () {
                 return MainController.UI.message(err)
             }
             var triple = {subject: newParent, predicate: "http://www.w3.org/2004/02/skos/core#member", object: id, valueType: "uri"}
-            Sparql_generic.update(Blender.currentSource, [triple], function (err, result) {
+            Sparql_generic.insertTriples(Blender.currentSource, [triple], function (err, result) {
                 if (err) {
                     return MainController.UI.message(err)
                 }
@@ -310,7 +310,7 @@ var Collection = (function () {
         getSingleNodeAllDescendants: function (sourceLabel, id, callback) {
             var variables = self.Sparql.getVariables(sourceLabel);
             var query = "";
-            query += prefixesStr;
+            query += "PREFIX  skos:<http://www.w3.org/2004/02/skos/core#>"
             query += " select distinct * FROM <" + variables.graphUri + ">  WHERE {"
             query += "  ?collection   skos:member*  ?narrower." +
                 "filter (?collection=<" + id + ">) " +
@@ -321,7 +321,7 @@ var Collection = (function () {
             query += "limit " + variables.limit + " ";
 
 
-            Sparql_proxy.querySPARQL_GET_proxy(url, query, queryOptions, null, function (err, result) {
+            Sparql_proxy.querySPARQL_GET_proxy(variables.serverUrl, query, {}, null, function (err, result) {
                 if (err) {
                     return callback(err)
                 }
