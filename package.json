@@ -25,7 +25,7 @@
     "inflected": "^2.1.0",
     "jade": "~1.11.0",
     "js2xmlparser": "^4.0.0",
-    "jsoneditor": "^8.1.2",
+    "jsoneditor": "^9.5.6",
     "lemmatizer": "0.0.1",
     "libmime": "^4.2.1",
     "logger": "0.0.1",
